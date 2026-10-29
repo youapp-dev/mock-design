@@ -1,0 +1,194 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>YouApp Full Flow (Client)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+:root{
+  --bg:#f3f1f7; --surface:#ffffff; --surface-2:#f6f4fa; --text:#1a181b; --text-2:#5b5862; --text-3:#8a8791;
+  --rule:#e4e0ec; --accent:#38168e; --accent-soft:#efe9fb; --bezel:#111014; --ok:#1f8a4c; --ok-soft:#e5f5ec;
+  color-scheme:light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#121016; --surface:#1c1a21; --surface-2:#25222c; --text:#f2f0f5; --text-2:#b9b5c2; --text-3:#8d8996;
+    --rule:#33303b; --accent:#b9a2f0; --accent-soft:#2b2440; --bezel:#000; --ok:#5fd394; --ok-soft:#1d3428; color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#121016; --surface:#1c1a21; --surface-2:#25222c; --text:#f2f0f5; --text-2:#b9b5c2; --text-3:#8d8996;
+  --rule:#33303b; --accent:#b9a2f0; --accent-soft:#2b2440; --bezel:#000; --ok:#5fd394; --ok-soft:#1d3428; color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0; height:100%}
+body{background:var(--bg); color:var(--text); font:14px/1.45 Inter, system-ui, -apple-system, Segoe UI, sans-serif}
+button{font:inherit; color:inherit; cursor:pointer}
+.stage{min-height:100%; display:flex; align-items:center; justify-content:center; gap:32px; padding:24px}
+.device{position:relative; width:404px; height:868px; max-height:calc(100dvh - 48px); flex:none; border-radius:54px; background:var(--bezel); padding:7px; box-shadow:0 30px 60px rgba(20,10,40,.22)}
+.screenbox{position:relative; width:100%; height:100%; border-radius:47px; overflow:hidden; background:#fff}
+.screenbox iframe{position:absolute; inset:0; width:100%; height:100%; border:0; background:#fff; visibility:hidden; pointer-events:none}
+.screenbox iframe.on{visibility:visible; pointer-events:auto}
+.loading{position:absolute; inset:0; display:grid; place-items:center; color:#8a8791; background:#fff; z-index:2; font-size:13px}
+.panel{width:300px; flex:none; max-height:calc(100dvh - 48px); overflow:auto; background:var(--surface); border:1px solid var(--rule); border-radius:18px; padding:18px}
+.panel h1{font-size:17px; line-height:24px; margin:0 0 2px}
+.panel .sub{color:var(--text-2); margin:0 0 14px; font-size:13px}
+.now{display:flex; align-items:center; gap:8px; background:var(--surface-2); border-radius:12px; padding:10px 12px; margin-bottom:16px}
+.now .tag{font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:3px 8px; border-radius:999px; background:var(--accent-soft); color:var(--accent); white-space:nowrap}
+.now .tag.w2{background:var(--ok-soft); color:var(--ok)}
+.now b{font-weight:600; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.grp{margin:0 0 16px}
+.grp h2{font-size:12px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:.05em; margin:0 0 8px}
+.jumps{display:grid; grid-template-columns:1fr 1fr; gap:6px}
+.jumps button{border:1px solid var(--rule); background:var(--surface); border-radius:10px; padding:8px 10px; text-align:left; font-size:13px; display:flex; flex-direction:column; gap:1px}
+.jumps button small{color:var(--text-3); font-size:11px}
+.jumps button:hover{border-color:var(--accent)}
+.ctl{margin-bottom:10px}
+.ctl > span{display:block; font-size:12.5px; color:var(--text-2); margin:0 0 4px}
+.seg{display:grid; border:1px solid var(--rule); border-radius:10px; overflow:hidden}
+.seg button{border:0; border-left:1px solid var(--rule); background:var(--surface); padding:7px 4px; font-size:12.5px; min-width:0}
+.seg button:first-child{border-left:0}
+.hint{font-size:11.5px; color:var(--text-3); margin:2px 0 0; line-height:16px}
+.seg button[aria-pressed="true"]{background:var(--accent-soft); color:var(--accent); font-weight:600}
+.act{width:100%; border:1px solid var(--rule); background:var(--surface); border-radius:10px; padding:9px 12px; text-align:left; margin-bottom:6px; font-size:13px}
+.act:hover{border-color:var(--accent)}
+.act.danger{color:#c62828}
+.legend{font-size:12px; color:var(--text-2); margin:0; line-height:18px}
+.legend i{display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:6px; background:var(--accent)}
+.legend i.w2{background:var(--ok)}
+.fab{display:none}
+.scrim{display:none}
+@media (max-width: 760px){
+  .stage{padding:0; gap:0; display:block}
+  .device{width:100%; height:100dvh; max-height:none; border-radius:0; padding:0; box-shadow:none; background:#fff}
+  .screenbox{border-radius:0}
+  .panel{position:fixed; left:0; right:0; bottom:0; width:auto; max-height:80dvh; border-radius:20px 20px 0 0; z-index:20; transform:translateY(105%); transition:transform .25s; padding-bottom:calc(18px + env(safe-area-inset-bottom,0px))}
+  .panel.open{transform:none}
+  .scrim.open{display:block; position:fixed; inset:0; background:rgba(0,0,0,.35); z-index:19}
+  .fab{display:grid; place-items:center; position:fixed; right:10px; bottom:calc(104px + env(safe-area-inset-bottom,0px)); z-index:18; width:42px; height:42px; border-radius:14px; border:1px solid var(--rule); background:var(--surface); color:var(--accent); box-shadow:0 6px 16px rgba(0,0,0,.12)}
+}
+@media (prefers-reduced-motion: reduce){ *{transition:none!important} }
+</style>
+</head>
+<body>
+<div class="stage">
+  <div class="device"><div class="screenbox">
+    <div class="loading" id="loading">Loading YouApp…</div>
+    <iframe id="a30" class="on" src="app30.html" title="YouApp 3.0 screens"></iframe>
+    <iframe id="w2" src="wallet2.html" title="Wallet 2.0 screens"></iframe>
+  </div></div>
+
+  <aside class="panel" id="panel" aria-label="Prototype controls">
+    <h1>YouApp full flow</h1>
+    <p class="sub">One app: Wallet 2.0 screens where they changed, 3.0 screens everywhere else.</p>
+    <div class="now" aria-live="polite"><span class="tag" id="nowTag">3.0</span><b id="nowName">Splash</b></div>
+
+    <div class="grp"><h2>Jump to</h2>
+      <div class="jumps">
+        <button data-j="start">Start over<small>Splash, guest</small></button>
+        <button data-j="signup">Log in / sign up<small>Referral code</small></button>
+        <button data-j="discover">Discover<small>Feed, locals</small></button>
+        <button data-j="home">YouPage<small>Balance, tier</small></button>
+        <button data-j="scan">Scan to Pay<small>DuitNow QR</small></button>
+        <button data-j="subscribe">Choose plan<small>VIP, SVIP</small></button>
+        <button data-j="bills">Pay Bill<small>Billers</small></button>
+        <button data-j="invite">Refer a friend<small>Rewards</small></button>
+        <button data-j="host">Host tab<small>Dashboard</small></button>
+        <button data-j="topup">Top Up<small>Stablecoin, FPX</small></button>
+        <button data-j="locals">Locals chat<small>Chats</small></button>
+        <button data-j="settings">Settings<small>PIN, profile</small></button>
+      </div>
+    </div>
+
+    <div class="grp"><h2>Quick scenario</h2>
+      <div class="ctl"><span>Identity (KYC result)</span><div class="seg" role="group" aria-label="Identity (KYC result)" style="grid-template-columns:repeat(3,1fr)"><button data-s="kyc" data-v="none">Not started</button><button data-s="kyc" data-v="rejected">Rejected</button><button data-s="kyc" data-v="approved">Approved</button></div></div>
+      <div class="ctl"><span>Wallet</span><div class="seg" role="group" aria-label="Wallet" style="grid-template-columns:repeat(2,1fr)"><button data-s="wallet" data-v="off">Not active</button><button data-s="wallet" data-v="active">Active</button></div></div>
+      <div class="ctl"><span>Host</span><div class="seg" role="group" aria-label="Host" style="grid-template-columns:repeat(3,1fr)"><button data-s="host" data-v="no">No</button><button data-s="host" data-v="pending">In review</button><button data-s="host" data-v="yes">Approved</button></div></div>
+      <div class="ctl"><span>Tier</span><div class="seg" role="group" aria-label="Tier" style="grid-template-columns:repeat(3,1fr)"><button data-s="tier" data-v="free">Free</button><button data-s="tier" data-v="vip">VIP</button><button data-s="tier" data-v="svip">SVIP</button></div></div>
+      <div class="ctl"><span>VIP end date</span><div class="seg" role="group" aria-label="VIP end date" style="grid-template-columns:repeat(2,1fr)"><button data-s="vipEnd" data-v="far">20 Nov</button><button data-s="vipEnd" data-v="soon">In 3 days</button></div></div>
+      <div class="ctl"><span>Referrer</span><div class="seg" role="group" aria-label="Referrer" style="grid-template-columns:repeat(2,1fr)"><button data-s="ref" data-v="scarlette">Scarlette</button><button data-s="ref" data-v="none">Not referred yet</button></div></div>
+      <div class="ctl"><span>First payment</span><div class="seg" role="group" aria-label="First payment" style="grid-template-columns:repeat(2,1fr)"><button data-s="paid" data-v="no">Not yet</button><button data-s="paid" data-v="yes">Done</button></div></div>
+      <div class="ctl"><span>Elite</span><div class="seg" role="group" aria-label="Elite" style="grid-template-columns:repeat(3,1fr)"><button data-s="sh" data-v="none">Not yet</button><button data-s="sh" data-v="active">Active</button><button data-s="sh" data-v="revoked">Revoked</button></div></div>
+      <div class="ctl"><span>Elite criteria</span><div class="seg" role="group" aria-label="Elite criteria" style="grid-template-columns:repeat(2,1fr)"><button data-s="criteria" data-v="partial">Not yet</button><button data-s="criteria" data-v="met">Both met</button></div></div>
+      <div class="ctl"><span>Business role</span><div class="seg" role="group" aria-label="Business role" style="grid-template-columns:repeat(2,1fr)"><button data-s="biz" data-v="off">None</button><button data-s="biz" data-v="merchant">Merchant</button></div></div>
+      <div class="ctl"><span>Elite merchants</span><div class="seg" role="group" aria-label="Elite merchants" style="grid-template-columns:repeat(2,1fr)"><button data-s="merch" data-v="has">Has merchants</button><button data-s="merch" data-v="none">Empty</button></div></div>
+      <div class="ctl"><span>Prize pool</span><div class="seg" role="group" aria-label="Prize pool" style="grid-template-columns:repeat(2,1fr)"><button data-s="pz" data-v="won">Won a draw</button><button data-s="pz" data-v="none">No wins</button></div></div>
+      <p class="hint">Wallet Active also approves KYC. Elite Active also gives SVIP; Revoked moves back to Free. VIP end date applies to VIP only. Referrer “Not referred yet” + First payment “Not yet” shows Add in Settings › Referral code; with First payment “Done” the row is locked.</p>
+    </div>
+
+    <div class="grp"><h2>More</h2>
+      <button class="act" id="openScen">Open the scenario panel for this screen</button>
+      <button class="act danger" id="resetAll">Reset everything</button>
+    </div>
+    <p class="legend"><i></i>3.0 screens (unchanged features)<br><i class="w2"></i>Wallet 2.0 screens (YouPage, tier, Scan to Pay, Pay Bill, referral, rewards, host tab, sign-up)</p>
+  </aside>
+</div>
+<button class="fab" id="fab" aria-label="Open prototype controls"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M4 7h10M18 7h2M4 17h4M12 17h8" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/><circle cx="16" cy="7" r="2" stroke="currentColor" stroke-width="1.8"/><circle cx="10" cy="17" r="2" stroke="currentColor" stroke-width="1.8"/></svg></button>
+<div class="scrim" id="scrim"></div>
+<script>
+(function(){
+  const F = {a30: document.getElementById('a30'), w2: document.getElementById('w2')};
+  let active = 'a30'; let loaded = 0;
+  const win = k => F[k].contentWindow;
+  const ready = k => { try { return !!win(k).__open; } catch(e){ return false; } };
+  function show(k){ active = k; F.a30.classList.toggle('on', k==='a30'); F.w2.classList.toggle('on', k==='w2'); status(); }
+  window.__bridge = function(from, screen, ctx){
+    const to = from==='a30' ? 'w2' : 'a30';
+    show(to);
+    if (screen==='__back') { try { win(to).__refresh(); } catch(e){} return; }
+    setTimeout(() => { if (ready(to)) win(to).__open(screen, ctx||{}); status(); }, 0);
+  };
+  const ctxOf = k => { try { return win(k).__state(); } catch(e){ return {}; } };
+  function jump(j){
+    const c30 = ctxOf('a30');
+    const w2ctx = {kyc:c30.kyc, wallet:c30.wallet, host:c30.host};
+    const to30 = s => { show('a30'); win('a30').__open(s, {}); };
+    const tow2 = s => { show('w2'); win('w2').__open(s, w2ctx); };
+    if (j==='start') { show('a30'); win('a30').__open('restart', {}); return; }
+    if (['signup','home','scan','subscribe','bills','invite'].includes(j)) {
+      /* park the 3.0 app where Back should land */
+      win('a30').__open(j==='signup' ? 'welcome' : 'discover', {}); tow2(j); return; }
+    win('w2').__open('home', w2ctx);
+    to30(j==='host' ? 'hosttab' : j);
+  }
+  document.querySelectorAll('[data-j]').forEach(b => b.addEventListener('click', () => { if (ready('a30') && ready('w2')) { jump(b.dataset.j); closeP(); } }));
+  document.querySelectorAll('[data-s]').forEach(b => b.addEventListener('click', () => {
+    if (!(ready('a30') && ready('w2'))) return; const k = b.dataset.s, v = b.dataset.v;
+    if (k==='kyc' || k==='wallet' || k==='host') {
+      win('a30').__set(k, v);
+      const a = ctxOf('a30');
+      win('w2').__set('kyc', a.kyc==='approved' && a.wallet==='active' ? 'passed' : a.kyc==='rejected' ? 'rejected' : 'none');
+    } else { win('w2').__set(k, v); try { win('a30').__refresh(); } catch(e){} }
+    status();
+  }));
+  document.getElementById('openScen').addEventListener('click', () => { closeP(); try { win(active).__panel(); } catch(e){} });
+  document.getElementById('resetAll').addEventListener('click', () => { try { localStorage.removeItem('w2scen'); localStorage.removeItem('ya-proto-scen'); } catch(e){} location.reload(); });
+  const panel = document.getElementById('panel'), scrim = document.getElementById('scrim');
+  const closeP = () => { panel.classList.remove('open'); scrim.classList.remove('open'); };
+  document.getElementById('fab').addEventListener('click', () => { panel.classList.add('open'); scrim.classList.add('open'); });
+  scrim.addEventListener('click', closeP);
+
+  const NAMES = {splash:'Splash', welcome:'Welcome', discover:'Discover', guestlock:'Guest page', gate:'Badge Verification', activate:'Activate wallet', walletActive:'Wallet active',
+    home:'YouPage · You', business:'YouPage · Host', scan:'Scan to Pay', confirm:'Confirm payment', done:'Payment done', subscribe:'Choose your plan', checkout:'Checkout', ckResult:'Upgrade result',
+    bills:'Pay Bill', mreload:'Mobile Reload', billInput:'Bill number', billConfirm:'Bill payment', billDone:'Bill paid', invite:'Refer a Friend', rewards:'Rewards', signup:'Get Started', otp:'OTP', obName:'Onboarding · Name', obDob:'Onboarding · Birthday', obGender:'Onboarding · Gender', obRef:'Onboarding · Referral',
+    hosttab:'Host tab (become a host)', settings:'Settings', topup:'Top Up', whist:'Transactions', chats:'Locals chat', chat:'Chatroom', limits:'Limits', profedit:'Edit profile', cexp:'Create experience'};
+  function status(){
+    const st = ctxOf(active);
+    document.getElementById('nowTag').textContent = active==='a30' ? '3.0' : 'Wallet 2.0';
+    document.getElementById('nowTag').classList.toggle('w2', active==='w2');
+    document.getElementById('nowName').textContent = NAMES[st.screen] || st.screen || '…';
+    const a = ctxOf('a30'), w = ctxOf('w2');
+    const cur = {kyc:a.kyc, wallet:a.wallet, host:a.hostSt, tier:w.tier, vipEnd:w.vipEnd, sh:w.sh, ref:w.ref==='none'?'none':'scarlette', paid:w.paid||'no', criteria:w.criteria, biz:w.biz, merch:w.merch||'has', pz:w.pz||'won'};
+    document.querySelectorAll('[data-s]').forEach(b => b.setAttribute('aria-pressed', String(cur[b.dataset.s]===b.dataset.v)));
+  }
+  Object.values(F).forEach(f => f.addEventListener('load', () => { loaded++; if (loaded>=2) { document.getElementById('loading').remove(); status(); } }));
+  setInterval(status, 600);
+})();
+</script>
+</body>
+</html>
+
+</body></html>
