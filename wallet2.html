@@ -6516,7 +6516,7 @@ V.splash = () => `<div class="screen gm-splash">${statusBar()}
   <h1><em>Dance</em> like a local</h1>
   <p>One tap to pay, cashback on YouApp Merchants, activities and experiences. Like a local before you clear immigration.</p>
   <img class="gm-city" src="${GM_IMG.splash}" alt="">
-  <div class="gm-foot"><button class="gm-start" data-act="guestStart">Start Explorings</button><small>Powered by <b>MYRT</b></small></div></div>`;
+  <div class="gm-foot"><button class="gm-start" data-act="guestStart">Start Exploring</button><small>Powered by <b>MYRT</b></small></div></div>`;
 SHEETS.guest = () => `<div class="grab"></div><div class="gm-sh"><div class="row-between" style="width:100%"><span style="width:28px"></span><b class="t-headline">You're in Guest Mode</b><button class="iconbtn" data-act="closeSheet" aria-label="Close">${ic('close')}</button></div>
   <img src="${GM_IMG.login}" alt="">${GM_COPY}${btn('Log In','guestLogin')}</div>`;
 V.guestScan = () => `<div class="screen bz">${statusBar()}
@@ -6567,7 +6567,7 @@ Object.assign(A, {
   A.socLogin = el => { leave(); _soc(el); }; }
 
 Object.assign(META, {
-  splash:{name:'Splash · Start Explorings', ph:1, rules:['Figma 3.0 Guest Mode. Start Exploring enters Guest Mode without an account.']},
+  splash:{name:'Splash · Start Exploring', ph:1, rules:['Figma 3.0 Guest Mode. Start Exploring enters Guest Mode without an account.']},
   guestScan:{name:'Guest · Scan tab', ph:1, rules:['Guests can’t pay. Scan shows “Experience life like a local” with Login.']},
   guestLogin:{name:'Guest · Login', ph:1, rules:['From Log In on the guest sheet. Same email / Google / Apple login, then OTP and onboarding. Leaves Guest Mode once signed in.']},
 });
