@@ -1,0 +1,32 @@
+<!-- @dsCard group="Actions" height=330 subtitle="Big and Small, every variant and state" -->
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../bundle.css">
+<script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="../bundle.js"></script>
+<meta charset="utf-8"><title>Button</title>
+<style>body{margin:0;padding:16px;background:var(--brand-white)}.row{display:flex;flex-wrap:wrap;gap:12px;align-items:center;margin-bottom:14px}.cap{font:500 12px/16px var(--font-sans);color:var(--ink-secondary);width:100%;margin:0 0 -4px}</style></head>
+<body><div id="root"></div>
+<script>
+  var Y = window.YouApp, h = React.createElement;
+  var L = "../../assets/Icons/arrow-left.svg", R = "../../assets/Icons/arrow-right.svg", G = "../../assets/Social/google.svg";
+  function row(cap, variant, size) {
+    return h("div", { className: "row" }, h("p", { className: "cap" }, cap),
+      h(Y.Button, { variant: variant, size: size, iconStart: L, iconEnd: R }, "Button"),
+      h(Y.Button, { variant: variant, size: size, iconStart: L, iconEnd: R, pressed: true }, "Pressed"),
+      h(Y.Button, { variant: variant, size: size, iconStart: L, iconEnd: R, disabled: true }, "Disabled"),
+      h(Y.Button, { variant: variant, size: size, loading: true }, "Loading"));
+  }
+  ReactDOM.createRoot(document.getElementById("root")).render(h(React.Fragment, null,
+    row("Primary · Big", "primary", "lg"),
+    row("Secondary · Big", "secondary", "lg"),
+    row("Tertiary · Small", "tertiary", "sm"),
+    h("div", { className: "row" }, h("p", { className: "cap" }, "Ghost · Destructive · Social login"),
+      h(Y.Button, { variant: "ghost", size: "sm", iconStart: L, iconEnd: R }, "Button"),
+      h(Y.Button, { variant: "destructive", size: "sm", iconStart: L, iconEnd: R }, "Button"),
+      h(Y.Button, { variant: "destructive-ghost", size: "sm" }, "Button"),
+      h("button", { className: "ya-root ya-btn ya-btn-tertiary ya-btn-sm", type: "button" }, h("img", { src: G, width: 20, height: 20, alt: "" }), h("span", { className: "ya-btn-label" }, "Continue with Google")))
+  ));
+</script></body></html>

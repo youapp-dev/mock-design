@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="24" height="24" viewBox="0 0 24 24">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,-84,44)" d="M84 20H108V44H84Z" clip-rule="evenodd"/>
+</clipPath>
+<g id="mask_2_contents">
+<rect x="0" y="0" width="100%" height="100%" fill-opacity="0"/>
+<g>
+<clipPath id="clip_3">
+<path transform="matrix(1,0,0,-1,-84,44)" d="M0 0H256V64H0Z"/>
+</clipPath>
+<g clip-path="url(#clip_3)">
+<path transform="matrix(1,0,0,-1,-84,44)" d="M5 64H251C253.76143 64 256 61.761426 256 59V5C256 2.238575 253.76143 0 251 0H5C2.238576 0 0 2.238575 0 5V59C0 61.761426 2.238576 64 5 64Z"/>
+</g>
+</g>
+</g>
+<mask id="mask_2" mask-type="alpha">
+<use xlink:href="#mask_2_contents"/>
+</mask>
+<clipPath id="clip_4">
+<path transform="matrix(1,0,0,-1,-84,44)" d="M0 0H256V64H0Z"/>
+</clipPath>
+<clipPath id="clip_5">
+<path transform="matrix(1,0,0,-1,-84,44)" d="M5 64H251C253.76143 64 256 61.761426 256 59V5C256 2.238575 253.76143 0 251 0H5C2.238576 0 0 2.238575 0 5V59C0 61.761426 2.238576 64 5 64Z"/>
+</clipPath>
+</defs>
+<g>
+<g clip-path="url(#clip_1)">
+<g mask="url(#mask_2)">
+<g>
+<g clip-path="url(#clip_4)">
+<path transform="matrix(1,0,0,-1,2.25,14.75)" d="M2.75 0C1.23 0 0 1.23 0 2.75 0 4.27 1.23 5.5 2.75 5.5 4.27 5.5 5.5 4.27 5.5 2.75 5.5 1.23 4.27 0 2.75 0ZM2.75 4C2.06 4 1.5 3.44 1.5 2.75 1.5 2.06 2.06 1.5 2.75 1.5 3.44 1.5 4 2.06 4 2.75 4 3.44 3.44 4 2.75 4Z" fill="#19181b"/>
+<path transform="matrix(1,0,0,-1,16.25,14.75)" d="M2.75 0C1.23 0 0 1.23 0 2.75 0 4.27 1.23 5.5 2.75 5.5 4.27 5.5 5.5 4.27 5.5 2.75 5.5 1.23 4.27 0 2.75 0ZM2.75 4C2.06 4 1.5 3.44 1.5 2.75 1.5 2.06 2.06 1.5 2.75 1.5 3.44 1.5 4 2.06 4 2.75 4 3.44 3.44 4 2.75 4Z" fill="#19181b"/>
+<path transform="matrix(1,0,0,-1,9.25,14.75)" d="M2.75 0C1.23 0 0 1.23 0 2.75 0 4.27 1.23 5.5 2.75 5.5 4.27 5.5 5.5 4.27 5.5 2.75 5.5 1.23 4.27 0 2.75 0ZM2.75 4C2.06 4 1.5 3.44 1.5 2.75 1.5 2.06 2.06 1.5 2.75 1.5 3.44 1.5 4 2.06 4 2.75 4 3.44 3.44 4 2.75 4Z" fill="#19181b"/>
+</g>
+</g>
+</g>
+<g clip-path="url(#clip_5)">
+</g>
+</g>
+</g>
+</svg>

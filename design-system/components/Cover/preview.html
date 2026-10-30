@@ -1,0 +1,49 @@
+<!-- @dsCard height=288 -->
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../bundle.css">
+<meta charset="utf-8"><title>YouApp cover</title>
+<style>
+  html, body { margin: 0; background: var(--brand-white); }
+  .cv { position: relative; width: 960px; height: 288px; overflow: hidden; background: var(--brand-white); font-family: var(--font-sans); }
+  .cv svg { position: absolute; left: 0; top: 0; }
+  .txt { position: absolute; left: 48px; bottom: 40px; max-width: 440px; }
+  .name { margin: 0; font-weight: 700; font-size: 104px; line-height: .92; letter-spacing: -0.035em; color: var(--ink); }
+  .tag { margin: 16px 0 0; font-size: 14px; line-height: 20px; color: var(--ink-secondary); }
+  .indigo { fill: var(--brand-indigo); }
+  .lav { fill: var(--brand-primary-start); }
+  .tint { fill: var(--surface-lavender); }
+  .violet { fill: var(--accent-violet); }
+  .black { fill: var(--brand-black); }
+  .ring { fill: none; stroke: var(--brand-white); stroke-width: 6; }
+  .ring-tint { fill: none; stroke: var(--brand-primary-start); stroke-width: 4; }
+  .leaf { fill: var(--surface-lavender); }
+</style></head>
+<body>
+<div class="cv">
+  <!--
+    blocks: brand-indigo slab 200×300 (radius-sheet 26, bleeds off the bottom); surface-lavender 144×152 (radius-md 16);
+            brand-primary-start pill 144×56 (control-lg, rx 28); accent-violet disc r 36; brand-black pill 72×36 (control-sm, rx 18)
+    arrangement: one tall slab with satellites, in the box from x=480 to the right edge
+    pattern: literal motif (leaf in a ring), because the YouApp mark is a leaf inside a ring: one white ring cut out of the indigo slab
+             with one surface-lavender leaf (a vesica of two arcs) inside it, and two lavender rings on the tint block
+    scales: gaps space-4 (16) and space-6 (24); radii radius-md 16, radius-sheet 26, pills at half the short side
+  -->
+  <svg width="960" height="288" viewBox="0 0 960 288" aria-hidden="true">
+    <rect class="lav" x="496" y="24" width="144" height="56" rx="28"/>
+    <rect class="tint" x="496" y="96" width="144" height="152" rx="16"/>
+    <circle class="ring-tint" cx="568" cy="172" r="44"/>
+    <circle class="ring-tint" cx="568" cy="172" r="24"/>
+    <rect class="indigo" x="656" y="24" width="200" height="300" rx="26"/>
+    <circle class="ring" cx="756" cy="148" r="72"/>
+    <path class="leaf" d="M716 188 C716 140 748 108 796 108 C796 156 764 188 716 188 Z"/>
+    <circle class="violet" cx="908" cy="60" r="36"/>
+    <rect class="black" x="872" y="120" width="72" height="36" rx="18"/>
+  </svg>
+  <div class="txt">
+    <h1 class="name">YouApp</h1>
+    <p class="tag">Discover local hosts, book experiences and pay, all in one app.</p>
+  </div>
+</div>
+</body></html>

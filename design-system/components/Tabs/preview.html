@@ -1,0 +1,19 @@
+<!-- @dsCard group="Navigation" height=200 subtitle="Tabs and SegmentedControl" -->
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../bundle.css">
+<script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="../bundle.js"></script>
+<meta charset="utf-8"><title>Tabs</title>
+<style>body{margin:0;padding:16px;background:var(--brand-white)}#root{display:flex;flex-direction:column;gap:24px;max-width:380px}</style></head>
+<body><div id="root"></div>
+<script>
+  var Y = window.YouApp, h = React.createElement;
+  var C = "../../assets/Icons/check-circle.svg";
+  ReactDOM.createRoot(document.getElementById("root")).render(h(React.Fragment, null,
+    h(Y.Tabs, { items: [{ value: "upcoming", label: "Upcoming" }, { value: "past", label: "Past" }] }),
+    h(Y.SegmentedControl, { ariaLabel: "Role", items: [{ value: "buyer", label: "Buyer", icon: C }, { value: "host", label: "Host", icon: C }] })
+  ));
+</script></body></html>

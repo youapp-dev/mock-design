@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="24" height="24" viewBox="0 0 24 24">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,-276,44)" d="M276 20H300V44H276Z" clip-rule="evenodd"/>
+</clipPath>
+<g id="mask_2_contents">
+<rect x="0" y="0" width="100%" height="100%" fill-opacity="0"/>
+<g>
+<clipPath id="clip_3">
+<path transform="matrix(1,0,0,-1,-276,44)" d="M0 0H384V64H0Z"/>
+</clipPath>
+<g clip-path="url(#clip_3)">
+<path transform="matrix(1,0,0,-1,-276,44)" d="M5 64H379C381.7614 64 384 61.761426 384 59V5C384 2.238575 381.7614 0 379 0H5C2.238576 0 0 2.238575 0 5V59C0 61.761426 2.238576 64 5 64Z"/>
+</g>
+</g>
+</g>
+<mask id="mask_2" mask-type="alpha">
+<use xlink:href="#mask_2_contents"/>
+</mask>
+<clipPath id="clip_4">
+<path transform="matrix(1,0,0,-1,-276,44)" d="M0 0H384V64H0Z"/>
+</clipPath>
+<clipPath id="clip_5">
+<path transform="matrix(1,0,0,-1,-276,44)" d="M5 64H379C381.7614 64 384 61.761426 384 59V5C384 2.238575 381.7614 0 379 0H5C2.238576 0 0 2.238575 0 5V59C0 61.761426 2.238576 64 5 64Z"/>
+</clipPath>
+</defs>
+<g>
+<g clip-path="url(#clip_1)">
+<g mask="url(#mask_2)">
+<g>
+<g clip-path="url(#clip_4)">
+<path transform="matrix(1,0,0,-1,2.5,22.75)" d="M9.5 0C4.26 0 0 4.26 0 9.5 0 14.74 4.26 19 9.5 19 14.74 19 19 14.74 19 9.5 19 4.26 14.74 0 9.5 0ZM9.5 17.5C5.09 17.5 1.5 13.91 1.5 9.5 1.5 5.09 5.09 1.5 9.5 1.5 13.91 1.5 17.5 5.09 17.5 9.5 17.5 13.91 13.91 17.5 9.5 17.5Z" fill="#19181b"/>
+<path transform="matrix(1,0,0,-1,11.25,13.75)" d="M.75 0C.34 0 0 .34 0 .75V5.75C0 6.16 .34 6.5 .75 6.5 1.16 6.5 1.5 6.16 1.5 5.75V.75C1.5 .34 1.16 0 .75 0Z" fill="#19181b"/>
+<path transform="matrix(1,0,0,-1,8.25,2.75)" d="M6.75 0H.75C.34 0 0 .34 0 .75 0 1.16 .34 1.5 .75 1.5H6.75C7.16 1.5 7.5 1.16 7.5 .75 7.5 .34 7.16 0 6.75 0Z" fill="#19181b"/>
+</g>
+</g>
+</g>
+<g clip-path="url(#clip_5)">
+</g>
+</g>
+</g>
+</svg>

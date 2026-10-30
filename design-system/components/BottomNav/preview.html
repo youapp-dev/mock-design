@@ -1,0 +1,19 @@
+<!-- @dsCard group="Navigation" height=150 subtitle="Discover · Scan · Locals, with the raised Scan action" -->
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../bundle.css">
+<script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="../bundle.js"></script>
+<meta charset="utf-8"><title>BottomNav</title>
+<style>body{margin:0;padding:48px 16px 16px;background:var(--brand-white)}#root{max-width:430px}</style></head>
+<body><div id="root"></div>
+<script>
+  var Y = window.YouApp, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById("root")).render(h(Y.BottomNav, { items: [
+    { value: "discover", label: "Discover", icon: "../../assets/Icons/discover.svg" },
+    { value: "scan", label: "Scan", center: true, icon: "../../assets/Icons/scan-fill.svg" },
+    { value: "locals", label: "Locals", icon: "../../assets/Icons/user.svg" }
+  ] }));
+</script></body></html>

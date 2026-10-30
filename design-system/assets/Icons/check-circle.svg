@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="24" height="24" viewBox="0 0 24 24">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,-84,46)" d="M84 22H108V46H84Z" clip-rule="evenodd"/>
+</clipPath>
+<g id="mask_2_contents">
+<rect x="0" y="0" width="100%" height="100%" fill-opacity="0"/>
+<g>
+<clipPath id="clip_3">
+<path transform="matrix(1,0,0,-1,-84,46)" d="M0 0H320V66H0Z"/>
+</clipPath>
+<g clip-path="url(#clip_3)">
+<path transform="matrix(1,0,0,-1,-84,46)" d="M5 66H315C317.7614 66 320 63.761426 320 61V5C320 2.238575 317.7614 0 315 0H5C2.238576 0 0 2.238575 0 5V61C0 63.761426 2.238576 66 5 66Z"/>
+</g>
+</g>
+</g>
+<mask id="mask_2" mask-type="alpha">
+<use xlink:href="#mask_2_contents"/>
+</mask>
+<clipPath id="clip_4">
+<path transform="matrix(1,0,0,-1,-84,46)" d="M0 0H320V66H0Z"/>
+</clipPath>
+<clipPath id="clip_5">
+<path transform="matrix(1,0,0,-1,-84,46)" d="M5 66H315C317.7614 66 320 63.761426 320 61V5C320 2.238575 317.7614 0 315 0H5C2.238576 0 0 2.238575 0 5V61C0 63.761426 2.238576 66 5 66Z"/>
+</clipPath>
+</defs>
+<g>
+<g clip-path="url(#clip_1)">
+<g mask="url(#mask_2)">
+<g>
+<g clip-path="url(#clip_4)">
+<path transform="matrix(1,0,0,-1,1.25,22.75)" d="M10.75 0C4.82 0 0 4.82 0 10.75 0 16.68 4.82 21.5 10.75 21.5 16.68 21.5 21.5 16.68 21.5 10.75 21.5 4.82 16.68 0 10.75 0ZM10.75 20C5.65 20 1.5 15.85 1.5 10.75 1.5 5.65 5.65 1.5 10.75 1.5 15.85 1.5 20 5.65 20 10.75 20 15.85 15.85 20 10.75 20Z" fill="#19181b"/>
+<path transform="matrix(1,0,0,-1,7.0024416,15.6521)" d="M3.57746 .0725C3.37746 .0725 3.18746 .1525 3.04746 .2925L.2175 3.1225C-.0725 3.4125-.0725 3.892501 .2175 4.182501 .5075 4.472501 .987499 4.472501 1.277499 4.182501L3.57746 1.8825 8.71746 7.02249C9.00746 7.31249 9.487459 7.31249 9.777459 7.02249 10.067459 6.73249 10.067459 6.252491 9.777459 5.962491L4.10746 .2925C3.96746 .1525 3.77746 .0725 3.57746 .0725Z" fill="#19181b"/>
+</g>
+</g>
+</g>
+<g clip-path="url(#clip_5)">
+</g>
+</g>
+</g>
+</svg>

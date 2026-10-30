@@ -1,0 +1,26 @@
+<!-- @dsCard group="Forms" height=470 subtitle="Title above or label inside; default, disabled, select, helper tones" -->
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../bundle.css">
+<script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="../bundle.js"></script>
+<meta charset="utf-8"><title>TextField</title>
+<style>body{margin:0;padding:16px;background:var(--brand-white)}.g{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:20px 24px}</style></head>
+<body><div id="root" class="g"></div>
+<script>
+  var Y = window.YouApp, h = React.createElement;
+  var INFO = "../../assets/Icons/info-circle.svg", OK = "../../assets/Icons/check-circle-fill.svg", ERR = "../../assets/Icons/close-circle-fill.svg", PEND = "../../assets/Icons/clock-fill.svg";
+  var DOWN = "../../assets/Icons/chevron-down.svg", RIGHT = "../../assets/Icons/chevron-right.svg";
+  ReactDOM.createRoot(document.getElementById("root")).render(h(React.Fragment, null,
+    h(Y.TextField, { label: "Title", required: true, placeholder: "Text", helper: "Info Text", helperIcon: INFO, meta: "Subtitle" }),
+    h(Y.TextField, { label: "Title", required: true, placeholder: "Text", disabled: true, helper: "Info Text", helperIcon: INFO, meta: "Subtitle" }),
+    h(Y.TextField, { label: "Subtitle", labelPosition: "inside", required: true, select: true, placeholder: "Text", trailingIcon: DOWN, helper: "Info Text", helperIcon: INFO, meta: "Subtitle" }),
+    h(Y.TextField, { label: "Subtitle", labelPosition: "inside", required: true, select: true, disabled: true, placeholder: "Text", trailingIcon: DOWN }),
+    h(Y.TextField, { placeholder: "Text", subtitle: "Subtitle", trailingText: "Text", trailingIcon: RIGHT, select: true }),
+    h(Y.TextField, { label: "Email", defaultValue: "name@example", helper: "Enter a valid email address", helperTone: "error", helperIcon: ERR }),
+    h(Y.TextField, { label: "Phone number", defaultValue: "+62 812 3456 7890", helper: "Verified", helperTone: "success", helperIcon: OK }),
+    h(Y.TextField, { label: "ID document", defaultValue: "Passport", helper: "Under review", helperTone: "pending", helperIcon: PEND })
+  ));
+</script></body></html>

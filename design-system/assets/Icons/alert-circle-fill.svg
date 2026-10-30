@@ -1,0 +1,40 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="24" height="24" viewBox="0 0 24 24">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,-84,44)" d="M84 20H108V44H84Z" clip-rule="evenodd"/>
+</clipPath>
+<g id="mask_2_contents">
+<rect x="0" y="0" width="100%" height="100%" fill-opacity="0"/>
+<g>
+<clipPath id="clip_3">
+<path transform="matrix(1,0,0,-1,-84,44)" d="M0 0H320V64H0Z"/>
+</clipPath>
+<g clip-path="url(#clip_3)">
+<path transform="matrix(1,0,0,-1,-84,44)" d="M5 64H315C317.7614 64 320 61.761426 320 59V5C320 2.238575 317.7614 0 315 0H5C2.238576 0 0 2.238575 0 5V59C0 61.761426 2.238576 64 5 64Z"/>
+</g>
+</g>
+</g>
+<mask id="mask_2" mask-type="alpha">
+<use xlink:href="#mask_2_contents"/>
+</mask>
+<clipPath id="clip_4">
+<path transform="matrix(1,0,0,-1,-84,44)" d="M0 0H320V64H0Z"/>
+</clipPath>
+<clipPath id="clip_5">
+<path transform="matrix(1,0,0,-1,-84,44)" d="M5 64H315C317.7614 64 320 61.761426 320 59V5C320 2.238575 317.7614 0 315 0H5C2.238576 0 0 2.238575 0 5V59C0 61.761426 2.238576 64 5 64Z"/>
+</clipPath>
+</defs>
+<g>
+<g clip-path="url(#clip_1)">
+<g mask="url(#mask_2)">
+<g>
+<g clip-path="url(#clip_4)">
+<path transform="matrix(1,0,0,-1,2,22)" d="M10 20C4.49 20 0 15.51 0 10 0 4.49 4.49 0 10 0 15.51 0 20 4.49 20 10 20 15.51 15.51 20 10 20ZM9.25 14C9.25 14.41 9.59 14.75 10 14.75 10.41 14.75 10.75 14.41 10.75 14V9C10.75 8.59 10.41 8.25 10 8.25 9.59 8.25 9.25 8.59 9.25 9V14ZM10.92 5.620001C10.87 5.490001 10.8 5.390001 10.71 5.290001 10.61 5.200001 10.5 5.13 10.38 5.08 10.26 5.03 10.13 5 10 5 9.87 5 9.74 5.03 9.62 5.08 9.5 5.13 9.39 5.200001 9.29 5.290001 9.2 5.390001 9.13 5.490001 9.08 5.620001 9.03 5.740001 9 5.87 9 6 9 6.13 9.03 6.26 9.08 6.38 9.13 6.5 9.2 6.61 9.29 6.71 9.39 6.8 9.5 6.87 9.62 6.92 9.86 7.02 10.14 7.02 10.38 6.92 10.5 6.87 10.61 6.8 10.71 6.71 10.8 6.61 10.87 6.5 10.92 6.38 10.97 6.26 11 6.13 11 6 11 5.87 10.97 5.740001 10.92 5.620001Z" fill="#19181b"/>
+</g>
+</g>
+</g>
+<g clip-path="url(#clip_5)">
+</g>
+</g>
+</g>
+</svg>

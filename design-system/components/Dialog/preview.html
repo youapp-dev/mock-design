@@ -1,0 +1,17 @@
+<!-- @dsCard group="Feedback" height=200 subtitle="Two-action alert dialog" -->
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../bundle.css">
+<script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="../bundle.js"></script>
+<meta charset="utf-8"><title>Dialog</title>
+<style>body{margin:0;padding:16px;background:var(--gray-100)}</style></head>
+<body><div id="root"></div>
+<script>
+  var Y = window.YouApp, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById("root")).render(h(Y.Dialog, {
+    title: "Cancel this booking?", cancelLabel: "Cancel booking", cancelTone: "danger", confirmLabel: "Keep booking"
+  }, "Your host will be notified. Refunds follow the host's cancellation policy."));
+</script></body></html>

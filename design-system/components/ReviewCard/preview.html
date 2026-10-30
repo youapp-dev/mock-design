@@ -1,0 +1,18 @@
+<!-- @dsCard group="Content" height=210 subtitle="Host or buyer review with rating chip" -->
+<!doctype html>
+<html><head>
+<link rel="stylesheet" href="../../tokens.css">
+<link rel="stylesheet" href="../bundle.css">
+<script src="https://cdn.jsdelivr.net/npm/react@18/umd/react.production.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="../bundle.js"></script>
+<meta charset="utf-8"><title>ReviewCard</title>
+<style>body{margin:0;padding:16px;background:var(--brand-white)}</style></head>
+<body><div id="root"></div>
+<script>
+  var Y = window.YouApp, h = React.createElement;
+  ReactDOM.createRoot(document.getElementById("root")).render(h(Y.ReviewCard, {
+    name: "Jane Doe", handle: "@janedoe", rating: 4, starIcon: "../../assets/Icons/star-fill.svg",
+    avatar: "../../assets/Icons/avatar-placeholder.svg", tag: "Landscape photography", date: "23 August 2026"
+  }, "I can be a fun conversation partner. I can sing and am not shy about performing at karaoke. Although I don't drink alcohol, I can still liven up the atmosphere."));
+</script></body></html>

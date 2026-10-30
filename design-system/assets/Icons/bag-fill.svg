@@ -1,0 +1,63 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="24" height="24" viewBox="0 0 24 24">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,-1108,132)" d="M1108 108H1132V132H1108Z" clip-rule="evenodd"/>
+</clipPath>
+<g id="mask_2_contents">
+<rect x="0" y="0" width="100%" height="100%" fill-opacity="0"/>
+<g>
+<clipPath id="clip_3">
+<path transform="matrix(1,0,0,-1,-1108,132)" d="M0 0H1280V152H0Z"/>
+</clipPath>
+<g clip-path="url(#clip_3)">
+<path transform="matrix(1,0,0,-1,-1108,132)" d="M5 152H1275C1277.7615 152 1280 149.76143 1280 147V5C1280 2.238571 1277.7615 0 1275 0H5C2.238576 0 0 2.238571 0 5V147C0 149.76143 2.238576 152 5 152Z"/>
+</g>
+</g>
+</g>
+<mask id="mask_2" mask-type="alpha">
+<use xlink:href="#mask_2_contents"/>
+</mask>
+<clipPath id="clip_4">
+<path transform="matrix(1,0,0,-1,-1108,132)" d="M0 0H1280V152H0Z"/>
+</clipPath>
+<g id="mask_5_contents">
+<rect x="0" y="0" width="100%" height="100%" fill-opacity="0"/>
+<g>
+<clipPath id="clip_6">
+<path transform="matrix(1,0,0,-1,-1108,132)" d="M0 0H1280V152H0Z"/>
+</clipPath>
+<g clip-path="url(#clip_6)">
+<path transform="matrix(1,0,0,-1,-1088,68)" d="M24 24H0V0H24V24Z"/>
+</g>
+</g>
+</g>
+<mask id="mask_5" mask-type="alpha">
+<use xlink:href="#mask_5_contents"/>
+</mask>
+<clipPath id="clip_7">
+<path transform="matrix(1,0,0,-1,-1108,132)" d="M0 0H1280V152H0Z"/>
+</clipPath>
+<clipPath id="clip_8">
+<path transform="matrix(1,0,0,-1,-1108,132)" d="M5 152H1275C1277.7615 152 1280 149.76143 1280 147V5C1280 2.238571 1277.7615 0 1275 0H5C2.238576 0 0 2.238571 0 5V147C0 149.76143 2.238576 152 5 152Z"/>
+</clipPath>
+</defs>
+<g>
+<g clip-path="url(#clip_1)">
+<g mask="url(#mask_2)">
+<g>
+<g clip-path="url(#clip_4)">
+<path transform="matrix(1,0,0,-1,2.2419434,22)" d="M15.757961 16C15.147962 16 14.58796 16.35 14.307961 16.89L13.58796 18.34C13.12796 19.25 11.927961 20 10.907961 20H8.617961C7.587981 20 6.38798 19.25 5.92798 18.34L5.20798 16.89C4.92798 16.35 4.36798 16 3.75798 16 1.58798 16-.13202 14.17 .00798 12.01L.52798 3.75C.64798 1.690001 1.75798 0 4.51798 0H14.997961C17.757962 0 18.857962 1.690001 18.98796 3.75L19.507962 12.01C19.64796 14.17 17.927962 16 15.757961 16ZM8.25796 14.75H11.25796C11.66796 14.75 12.00796 14.41 12.00796 14 12.00796 13.59 11.66796 13.25 11.25796 13.25H8.25796C7.84796 13.25 7.50798 13.59 7.50798 14 7.50798 14.41 7.84796 14.75 8.25796 14.75ZM9.75796 3.879999C7.89796 3.879999 6.37798 5.39 6.37798 7.26 6.37798 9.13 7.88796 10.64 9.75796 10.64 11.62796 10.64 13.13796 9.13 13.13796 7.26 13.13796 5.39 11.61796 3.879999 9.75796 3.879999Z" fill="#19181b"/>
+<g mask="url(#mask_5)">
+<g>
+<g clip-path="url(#clip_7)">
+</g>
+</g>
+</g>
+</g>
+</g>
+</g>
+<g clip-path="url(#clip_8)">
+</g>
+</g>
+</g>
+</svg>

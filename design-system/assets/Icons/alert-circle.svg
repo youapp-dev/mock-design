@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" xmlns:inkscape="http://www.inkscape.org/namespaces/inkscape" version="1.1" width="24" height="24" viewBox="0 0 24 24">
+<defs>
+<clipPath id="clip_1">
+<path transform="matrix(1,0,0,-1,-20,44)" d="M20 20H44V44H20Z" clip-rule="evenodd"/>
+</clipPath>
+<g id="mask_2_contents">
+<rect x="0" y="0" width="100%" height="100%" fill-opacity="0"/>
+<g>
+<clipPath id="clip_3">
+<path transform="matrix(1,0,0,-1,-20,44)" d="M0 0H320V64H0Z"/>
+</clipPath>
+<g clip-path="url(#clip_3)">
+<path transform="matrix(1,0,0,-1,-20,44)" d="M5 64H315C317.7614 64 320 61.761426 320 59V5C320 2.238575 317.7614 0 315 0H5C2.238576 0 0 2.238575 0 5V59C0 61.761426 2.238576 64 5 64Z"/>
+</g>
+</g>
+</g>
+<mask id="mask_2" mask-type="alpha">
+<use xlink:href="#mask_2_contents"/>
+</mask>
+<clipPath id="clip_4">
+<path transform="matrix(1,0,0,-1,-20,44)" d="M0 0H320V64H0Z"/>
+</clipPath>
+<clipPath id="clip_5">
+<path transform="matrix(1,0,0,-1,-20,44)" d="M5 64H315C317.7614 64 320 61.761426 320 59V5C320 2.238575 317.7614 0 315 0H5C2.238576 0 0 2.238575 0 5V59C0 61.761426 2.238576 64 5 64Z"/>
+</clipPath>
+</defs>
+<g>
+<g clip-path="url(#clip_1)">
+<g mask="url(#mask_2)">
+<g>
+<g clip-path="url(#clip_4)">
+<path transform="matrix(1,0,0,-1,2,23.5)" d="M10 1.5V.75C15.914213 .75 20.75 5.585787 20.75 11.5H20 19.25C19.25 6.414213 15.085787 2.25 10 2.25V1.5ZM20 11.5H20.75C20.75 17.414214 15.914213 22.25 10 22.25V21.5 20.75C15.085787 20.75 19.25 16.585787 19.25 11.5H20ZM10 21.5V22.25C4.085786 22.25-.75 17.414214-.75 11.5H0 .75C.75 16.585787 4.914214 20.75 10 20.75V21.5ZM0 11.5H-.75C-.75 5.585787 4.085786 .75 10 .75V1.5 2.25C4.914214 2.25 .75 6.414213 .75 11.5H0Z" fill="#19181b"/>
+<path transform="matrix(1,0,0,-1,12,14.5)" d="M.75 6.5C.75 6.914214 .414214 7.25 0 7.25-.414214 7.25-.75 6.914214-.75 6.5H0 .75ZM-.75 1.5C-.75 1.085786-.414214 .75 0 .75 .414214 .75 .75 1.085786 .75 1.5H0-.75ZM0 6.5H-.75V1.5H0 .75V6.5H0Z" fill="#19181b"/>
+<path transform="matrix(1,0,0,-1,11.994507,18)" d="M0 3C-.552285 3-1 2.552285-1 2-1 1.447715-.552285 1 0 1V2 3ZM.009 1C.561285 1 1.009 1.447715 1.009 2 1.009 2.552285 .561285 3 .009 3V2 1ZM0 2V1H.009V2 3H0V2Z" fill="#19181b"/>
+</g>
+</g>
+</g>
+<g clip-path="url(#clip_5)">
+</g>
+</g>
+</g>
+</svg>
