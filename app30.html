@@ -1,4 +1,4 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><script>if(window.top===window.self)location.replace('index.html');</script><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}
 .device{position:relative}
 #shr{display:none; position:absolute; inset:10px; border-radius:42px; overflow:hidden; z-index:60; font-family:inherit; color:#1a181b}
 #shr.shr-on{display:block}
@@ -238,6 +238,10 @@
 .apdurs{display:flex; flex-wrap:wrap; gap:6px}
 .apdurs button{height:32px; padding:0 12px; border:1px solid #e5e4e7; border-radius:999px; background:#fff; font:inherit; font-size:13px; font-weight:600; color:#433f47}
 .apdurs button[aria-pressed="true"]{border-color:#7f57e5; background:#f4effd; color:#38168e}
+.apcustom{display:grid; gap:8px; padding-top:2px}
+.apunits{display:grid; grid-template-columns:1fr 1fr; gap:4px; padding:3px; border-radius:12px; background:#f4effd}
+.apunits button{height:34px; border:0; border-radius:9px; background:transparent; color:#625f66; font:inherit; font-size:13px; font-weight:700}
+.apunits button[aria-pressed="true"]{background:#fff; color:#38168e; box-shadow:0 1px 4px rgba(56,22,142,.12)}
 .apsum{display:grid; gap:8px; padding:14px; border-radius:14px; background:#faf8fc}
 .apsum div{display:flex; justify-content:space-between; gap:10px; font-size:14px; color:#433f47}
 .apsum small{color:#7a7680; font-size:12px}
@@ -311,23 +315,23 @@
 .aplist{margin-top:6px}
 .apleft{margin:10px 0 0; font-size:12.5px; color:#7a7680}
 .apcancel{margin-top:16px; color:#d92d20}
-.bub.apbub{padding:6px; width:228px; background:#fff}
-.bub.apbub.me{background:#fff}
-.apb{display:flex; gap:10px; align-items:center; width:100%; padding:12px; border:0; border-radius:12px; text-align:left; font:inherit; color:#fff; background:linear-gradient(135deg,#ef4e4a,#b5102a)}
-.apb-ic{width:38px; height:38px; flex:none; border-radius:10px; display:grid; place-items:center; background:rgba(255,255,255,.18); color:#ffe3a3}
-.apb-ic .ico{width:22px; height:22px}
-.apb-t{flex:1; min-width:0; text-align:left}
-.bub.apbub .apb-t b{color:#fff} .bub.apbub .apb-t small{color:rgba(255,255,255,.9); display:block}
-.bub.apbub .apb{justify-content:flex-start}
-.bub.apbub .apb-t, .bub.apbub .apb-t b, .bub.apbub .apb-t small{text-align:left !important}
-.bub.apbub .apb-ic svg{color:#ffe3a3 !important; stroke:currentColor} .bub.apbub.apdim .apb-ic svg{color:#fff !important}
+.bub.apbub,#phone.gxs .bub.apbub{display:grid; grid-template-columns:1fr auto; flex:none; width:248px; max-width:78vw; padding:0; overflow:hidden; background:#fff; color:#2d2930; border:1px solid #eee8f2; border-radius:16px; box-shadow:0 2px 8px rgba(40,20,72,.08)}
+.bub.apbub.me,#phone.gxs .bub.apbub.me{background:#fff; color:#2d2930; border-radius:16px}
+.rp-chat-card{grid-column:1/-1; display:flex; gap:12px; align-items:center; width:100%; min-height:72px; padding:14px; border:0; border-radius:0; text-align:left; font:inherit; color:#fff; background:linear-gradient(135deg,#f04b4f 0%,#cf1738 100%)}
+.rp-chat-icon{width:40px; height:40px; flex:none; border-radius:12px; display:grid!important; place-items:center; margin:0!important; background:rgba(255,255,255,.18); color:#ffe3a3}
+.rp-chat-icon .ico{width:22px; height:22px}
+.rp-chat-copy{flex:1; min-width:0; display:block!important; margin:0!important; text-align:left!important}
+.bub.apbub .rp-chat-copy b{color:#fff} .bub.apbub .rp-chat-copy small{color:rgba(255,255,255,.9); display:block}
+.bub.apbub .rp-chat-card{justify-content:flex-start}
+.bub.apbub .rp-chat-copy, .bub.apbub .rp-chat-copy b, .bub.apbub .rp-chat-copy small{text-align:left !important}
+.bub.apbub .rp-chat-icon svg{color:#ffe3a3 !important; stroke:currentColor} .bub.apbub.apdim .rp-chat-icon svg{color:#fff !important}
 .bub.apbub .apb-f{text-align:left}
-.apb-t b{display:block; font-size:14px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
-.apb-t small{font-size:12px; opacity:.9}
-.apbub.apdim .apb{background:linear-gradient(135deg,#c98a8e,#9c5862)}
-.apbub.apdim .apb-ic{color:#fff}
-.apb-f{display:block; padding:6px 6px 0; font-size:11px; color:#7a7680}
-.apbub .bmeta{padding:0 6px}
+.rp-chat-copy b{display:block; font-size:14px; line-height:19px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.rp-chat-copy small{display:block; margin-top:3px; font-size:12px; line-height:16px; opacity:.9}
+.apbub.apdim .rp-chat-card{background:linear-gradient(135deg,#d98287 0%,#ad5c69 100%)}
+.apbub.apdim .rp-chat-icon{color:#fff}
+.apb-f,.bub.apbub .apb-f{display:block; align-self:center; margin:0!important; padding:9px 0 9px 12px; text-align:left!important; font-size:10.5px; line-height:14px; color:#8a838e}
+.apbub .bmeta,#phone.gxs .apbub .bmeta{align-self:center; display:flex; margin:0!important; padding:9px 12px 9px 8px; color:#9b94a0!important; font-size:10.5px; line-height:14px}
 
 /* red packet recipients board (ref DANA Kaget) */
 .apboard{margin:0 -16px; background:#fff7f2}
@@ -529,6 +533,9 @@
 #phone.gxs .apdurs{gap:8px}
 #phone.gxs .apdurs button{height:34px; padding:0 14px; border:1.5px solid var(--gx-lav2); font:700 13px Inter; color:var(--gx-deep)}
 #phone.gxs .apdurs button[aria-pressed="true"]{background:var(--gx-grad); color:#fff; border-color:transparent}
+#phone.gxs .apunits{background:var(--gx-lav)}
+#phone.gxs .apunits button{font:700 13px Inter; color:var(--gx-mut)}
+#phone.gxs .apunits button[aria-pressed="true"]{background:#fff; color:var(--gx-deep)}
 /* summary = .sum */
 #phone.gxs .apsum{gap:0; padding:6px 16px 10px; background:#fff; border:1.5px solid var(--gx-line); border-radius:18px}
 #phone.gxs .apsum div{padding:8px 0; font:500 14px Inter; color:#3B3360}
@@ -8013,6 +8020,7 @@ const GPEOPLE = [
   {k:'maulbucin', n:'Maulbucin', u:'@maulbucin', av:'ca4', c:'Vietnam'},
   {k:'maulana', n:'Maulana', u:'@maulana', av:'ca5', c:'Vietnam'},
   {k:'catherine', n:'Catherine Lee', u:'@catca', av:'ca2', c:'Malaysia'},
+  {k:'lara', n:'Lara', u:'@lara', av:'ca1', c:'Malaysia'},
   {k:'daniel', n:'Daniel Ed', u:'@daniel22', av:'ca1', c:'Malaysia'},
   {k:'kwang', n:'Lee Kwang Soo', u:'@lks22', av:'ca5', c:'Korea'},
   {k:'fionna', n:'Fionna', u:'@fionna', av:'ca4', c:'Indonesia'},
@@ -8396,11 +8404,34 @@ function apSeed(){
   const ex = apMake({token:'apSeraKopi', creator:'ismaul', type:'random', total:3000, count:6, msg:'Kopi money', claimed:['maulaura','maulana'], expiresAt:NOW()-3600e3, expLbl:'24 hours'}); apTick(ex);
   apMake({token:'apSeraFriday', creator:'maulaura', type:'random', total:8800, count:8, msg:'Happy Friday!', claimed:['me','maulguy','ismaul','kwang']});
   apMake({token:'apSeraGong', creator:'maulana', type:'random', total:2000, count:5, msg:'Gong Xi Fa Cai', claimed:['juan']});
+  apMake({token:'apLaraReady', creator:'lara', type:'random', total:5000, count:5, msg:'For our next adventure!'});
+  apMake({token:'apLaraOpened', creator:'lara', type:'equal', per:500, count:4, msg:'Coffee is on me ☕', claimed:['me']});
+  apMake({token:'apLaraFull', creator:'lara', type:'equal', per:300, count:3, msg:'All claimed!', claimed:['catherine','daniel','fionna']});
+  const laraExpired = apMake({token:'apLaraExpired', creator:'lara', type:'random', total:2400, count:4, msg:'Weekend treat', expiresAt:NOW()-3600e3, expLbl:'24 hours'}); apTick(laraExpired);
+  const laraCancelled = apMake({token:'apLaraCancelled', creator:'lara', type:'random', total:1800, count:3, msg:'Plans changed'}); apEnd(laraCancelled, 'CANCELLED');
+  apMake({token:'apMineActive', creator:'me', type:'random', total:4000, count:4, msg:'Best wishes!', claimed:['lara']});
+  apMake({token:'apMineFull', creator:'me', type:'equal', per:500, count:3, msg:'Enjoy!', claimed:['lara','catherine','daniel']});
+  const mineExpired = apMake({token:'apMineExpired', creator:'me', type:'random', total:2100, count:3, msg:'Yesterday’s treat', expiresAt:NOW()-3600e3, expLbl:'6 hours'}); apTick(mineExpired);
+  const mineCancelled = apMake({token:'apMineCancelled', creator:'me', type:'random', total:1600, count:2, msg:'Cancelled packet'}); apEnd(mineCancelled, 'CANCELLED');
 }
 const _C6ap = C6;
 C6 = function(){ const c = _C6ap(); apSeed();
   c.convs.forEach(v => { if (v.apSeed) return;
     if (v.id === 'c-cat') { v.apSeed = true; v.msgs.push({id:'apm-c1', t:'angpao', tok:'apCatherine', at:'15:02'}); }
+    if (v.id === 'c-lara' && !v.apShowcaseV1) { v.apSeed = true; v.apShowcaseV1 = true; v.draft = ''; v.at = 'Now'; v.msgs.push(
+      {id:'aps-label-in', t:'text', text:'Received from Lara', at:'16:00'},
+      {id:'aps-r1', t:'angpao', tok:'apLaraReady', at:'16:01'},
+      {id:'aps-r2', t:'angpao', tok:'apLaraOpened', at:'16:02'},
+      {id:'aps-r3', t:'angpao', tok:'apLaraFull', at:'16:03'},
+      {id:'aps-r4', t:'angpao', tok:'apLaraExpired', at:'16:04'},
+      {id:'aps-r5', t:'angpao', tok:'apLaraCancelled', at:'16:05'},
+      {id:'aps-r6', t:'angpao', tok:'apMissingDemo', at:'16:06'},
+      {id:'aps-label-out', me:true, t:'text', text:'Sent by you', at:'16:07'},
+      {id:'aps-s1', me:true, t:'angpao', tok:'apMineActive', at:'16:08', st:'sent'},
+      {id:'aps-s2', me:true, t:'angpao', tok:'apMineFull', at:'16:09', st:'sent'},
+      {id:'aps-s3', me:true, t:'angpao', tok:'apMineExpired', at:'16:10', st:'sent'},
+      {id:'aps-s4', me:true, t:'angpao', tok:'apMineCancelled', at:'16:11', st:'sent'}
+    ); }
     if (v.id === 'g-sera') { v.apSeed = true; v.msgs.push({id:'apm-g1', t:'angpao', tok:'apSeraWelcome', who:'maulguy', at:'15:05'}, {id:'apm-g2', t:'angpao', tok:'apSeraKopi', who:'ismaul', at:'15:08'}, {id:'apm-g3', t:'angpao', tok:'apSeraFriday', who:'maulaura', at:'15:10'}, {id:'apm-g4', t:'angpao', tok:'apSeraGong', who:'maulana', at:'15:12'}); }
   }); return c; };
 
@@ -8418,7 +8449,7 @@ const gateHTML = (title, why, resume) => {
 
 /* ---- section 3: create form ---- */
 const DURS = [['1h','1 hour',1],['6h','6 hours',6],['24h','24 hours',24],['3d','3 days',72],['7d','7 days',168],['custom','Custom',0]];
-const apfNew = () => ({type:'random', amt:'', count:'', msg:'', forever:true, dur:'24h', days:'', touched:{}});
+const apfNew = () => ({type:'random', amt:'', count:'', msg:'', forever:true, dur:'24h', days:'', expUnit:'days', touched:{}});
 function apCalc(){
   const f = S.apf, a = Math.round((parseFloat(f.amt) || 0) * 100), n = parseInt(f.count, 10) || 0;
   const total = f.type === 'random' ? a : a * n, fee = total > 0 && n > 0 ? feeOf(total) : 0, ded = total + fee;
@@ -8429,8 +8460,8 @@ function apCalc(){
     else if (n > 100) e.count = 'Maximum 100 people.';
     else if (f.type === 'random' && a >= 100 && n > Math.floor(a / 100)) e.count = `With ${C(a)} MYRT, you can send to up to ${Math.floor(a / 100)} ${Math.floor(a/100)===1?'person':'people'} (min 1 MYRT each).`;
   }
-  const days = parseInt(f.days, 10);
-  if (!f.forever && f.dur === 'custom' && f.days !== '' && !(String(days) === f.days.trim() && days >= 1 && days <= 365)) e.days = 'Enter whole days from 1 to 365.';
+  const customExp = parseInt(f.days, 10), expUnit = f.expUnit || 'days', expMax = expUnit === 'hours' ? 168 : 365;
+  if (!f.forever && f.dur === 'custom' && f.days !== '' && !(String(customExp) === f.days.trim() && customExp >= 1 && customExp <= expMax)) e.days = `Enter whole ${expUnit} from 1 to ${expMax}.`;
   const filled = a > 0 && n > 0 && (f.forever || f.dur !== 'custom' || f.days !== '');
   const bal = apBal(); const lim = LIM[apTier()];
   if (filled && !e.amt && !e.count && ded > bal) e.bal = true;
@@ -8439,7 +8470,7 @@ function apCalc(){
   return {a, n, total, fee, ded, e, ok, bal};
 }
 const expOf = () => { const f = S.apf; if (f.forever) return {at:null, lbl:'Never expires'};
-  if (f.dur === 'custom') { const d = parseInt(f.days, 10); return {at:NOW() + d*864e5, lbl:`${d} day${d===1?'':'s'}`}; }
+  if (f.dur === 'custom') { const n = parseInt(f.days, 10), unit = f.expUnit || 'days', ms = unit === 'hours' ? 3600e3 : 864e5; return {at:NOW() + n*ms, lbl:`${n} ${unit === 'hours' ? 'hour' : 'day'}${n===1?'':'s'}`}; }
   const x = DURS.find(d => d[0] === f.dur); return {at:NOW() + x[2]*3600e3, lbl:x[1]}; };
 const fld = (id, key, label, val, o={}) => `<label class="apfld ${o.err?'err':''}" for="${id}"><span class="apfld-l">${label}</span><span class="apfld-box"><input id="${id}" data-apf="${key}" value="${esc(val)}" inputmode="${o.mode||'text'}" placeholder="${o.ph||''}" ${o.max?`maxlength="${o.max}"`:''} autocomplete="off">${o.suf?`<em>${o.suf}</em>`:''}</span>${o.err?`<small class="apfld-e">${o.err}</small>`:o.help?`<small>${o.help}</small>`:''}</label>`;
 const AP_ILL = '<svg class="aph-art" viewBox="0 0 220 160" aria-hidden="true"><ellipse cx="110" cy="148" rx="96" ry="8" fill="#E9E0FB"/><path d="M28 40l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#C05CA8"/><path d="M190 26l2.4 6.2 6.2 2.4-6.2 2.4-2.4 6.2-2.4-6.2-6.2-2.4 6.2-2.4z" fill="#C05CA8"/><path d="M200 96l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#C05CA8"/><circle cx="18" cy="104" r="3.5" fill="#B79BF0"/><circle cx="172" cy="62" r="3" fill="#B79BF0"/><circle cx="60" cy="18" r="2.5" fill="#B79BF0"/><rect x="44" y="84" width="40" height="58" rx="18" fill="#4B2A9E"/><rect x="52" y="122" width="9" height="24" rx="4.5" fill="#2A1466"/><rect x="67" y="122" width="9" height="24" rx="4.5" fill="#2A1466"/><circle cx="64" cy="68" r="17" fill="#F6D5BD"/><path d="M47 66a17 17 0 0 1 34 0z" fill="#2A1466"/><rect x="78" y="94" width="26" height="9" rx="4.5" fill="#4B2A9E" transform="rotate(-22 78 98)"/><rect x="140" y="88" width="38" height="54" rx="17" fill="#C05CA8"/><rect x="147" y="122" width="9" height="24" rx="4.5" fill="#7A3BB0"/><rect x="162" y="122" width="9" height="24" rx="4.5" fill="#7A3BB0"/><circle cx="159" cy="72" r="16" fill="#F6D5BD"/><path d="M143 70a16 16 0 0 1 32 0z" fill="#2A1466"/><rect x="118" y="96" width="26" height="9" rx="4.5" fill="#C05CA8" transform="rotate(20 144 100)"/><g transform="rotate(-8 112 82)"><rect x="96" y="58" width="34" height="46" rx="6" fill="#E5484D"/><path d="M96 66c5.6 5 11.3 7.5 17 7.5S124.4 71 130 66v-2a6 6 0 0 0-6-6h-22a6 6 0 0 0-6 6z" fill="#C3162F"/><circle cx="113" cy="76" r="7" fill="#F5B82E"/><circle cx="113" cy="76" r="3.6" fill="#FFE3A3"/></g><g><circle cx="98" cy="34" r="10" fill="#F5B82E"/><circle cx="98" cy="34" r="6.5" fill="#FFD66E"/><path d="M98 29.5v9" stroke="#C98A0B" stroke-width="2" stroke-linecap="round"/></g><g><circle cx="130" cy="24" r="8" fill="#F5B82E"/><circle cx="130" cy="24" r="5" fill="#FFD66E"/></g><g><circle cx="120" cy="46" r="6" fill="#F5B82E"/><circle cx="120" cy="46" r="3.6" fill="#FFD66E"/></g></svg>';
@@ -8600,10 +8631,11 @@ msgHTML = function(m, c, idx){
   else { apTick(a);
     if (a.creator === 'me') { st = a.status==='ACTIVE' ? `${a.count-apLeft(a)} of ${a.count} opened · View details` : STL[a.status][0]; dim = a.status !== 'ACTIVE'; }
     else if (a.slots.some(s => s.by === 'me')) { st = 'Opened'; dim = true; }
-    else if (a.status === 'EXPIRED' || a.status === 'CANCELLED') { st = 'Ended'; dim = true; }
+    else if (a.status === 'EXPIRED') { st = 'Expired'; dim = true; }
+    else if (a.status === 'CANCELLED') { st = 'Cancelled by sender'; dim = true; }
     else if (a.status === 'FULLY_CLAIMED') { st = 'Fully claimed'; dim = true; } }
   const p = c.group && !m.me && m.who ? GP(m.who) : null;
-  const bub = `<div class="bub apbub ${m.me?'me':''} ${dim?'apdim':''}" data-id="${m.id}">${p?`<b class="gwho">${esc(p.n)}</b>`:''}<button class="apb" data-act="apTap" data-tok="${m.tok}"><span class="apb-ic">${ic('apGift')}</span><span class="apb-t"><b>${esc((a && a.msg) || 'Best wishes!')}</b><small>${st}</small></span></button><span class="apb-f">YouApp Red Packet</span><span class="bmeta">${m.at}${m.me?' ✓✓':''}</span></div>`;
+  const bub = `<div class="bub apbub ${m.me?'me':''} ${dim?'apdim':''}" data-id="${m.id}">${p?`<b class="gwho">${esc(p.n)}</b>`:''}<button class="rp-chat-card" data-act="apTap" data-tok="${m.tok}"><span class="rp-chat-icon">${ic('apGift')}</span><span class="rp-chat-copy"><b>${esc((a && a.msg) || 'Best wishes!')}</b><small>${st}</small></span></button><span class="apb-f">YouApp Red Packet</span><span class="bmeta">${m.at}${m.me?' ✓✓':''}</span></div>`;
   return p ? `<div class="grow">${img(p.av, p.n, 'gmav')}${bub}</div>` : bub; };
 
 /* ---- overlays: attach row, chooser, chat/group picker, cancel dialog ---- */
@@ -8638,6 +8670,7 @@ Object.assign(A, {
   apType: el => { S.apf.type = el.dataset.v; S.apf.amt = ''; render(); },
   apForever: () => { S.apf.forever = !S.apf.forever; render(); },
   apDur: el => { S.apf.dur = el.dataset.v; render(); },
+  apExpUnit: el => { S.apf.expUnit = el.dataset.v; S.apf.days = ''; render(); },
   apTopUp: () => go('topup'),
   apUpgrade: () => { try { window.parent.__bridge('a30', 'subscribe', {}); } catch(e) { toast('Opens Choose plan (VIP, SVIP).'); } },
   apNext: () => { if (!apCalc().ok) return; S.apKey = 'k' + Date.now(); go('apconf'); },
@@ -8714,7 +8747,7 @@ const _openAp = window.__open;
 if (_openAp) window.__open = function(screen, c){
   const s = String(screen || '');
   if (s === 'apNew') { S.apf = apfNew(); S.apCtx = null; S.apSim = null; return _openAp('apform', c); }
-  if (s === 'apChat') { S.conv = 'c-cat'; _openAp('chat', c); setTimeout(scrollChat, 30); return; }
+  if (s === 'apChat') { S.conv = 'c-lara'; _openAp('chat', c); setTimeout(scrollChat, 30); return; }
   if (s.indexOf('apRecv') === 0) { const t = apDemo(s.split(':')[1] || 'ready'); return _openAp(t, c); }
   return _openAp(screen, c); };
 
@@ -8759,7 +8792,10 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
       <small class="${r.e.count ? 'ap2-e' : 'ap2-h2'}" id="apCountH">${r.e.count || 'Up to 100 people'}</small></div>`;
     const msg = `<div class="ap2-f"><div class="ap2-lr"><label class="ap2-l" for="apMsg">Message <span>(optional)</span></label><small class="ap2-h2">${f.msg.length}/50</small></div>
       <div class="ap2-box"><input id="apMsg" data-apf="msg" value="${esc(f.msg)}" placeholder="Best wishes!" maxlength="50" autocomplete="off"></div></div>`;
-    const exp = `<div class="ap2-info">${CLOCK}<span>Never expires. Cancel anytime to get unclaimed MYRT back.</span></div>`;
+    const unit = f.expUnit || 'days', max = unit === 'hours' ? 168 : 365;
+    const exp = `<div class="apexp"><button class="apchk" role="checkbox" aria-checked="${f.forever}" data-act="apForever"><i>${f.forever?'✓':''}</i><span><b>Never expires</b><small>${f.forever?'Unclaimed MYRT comes back when you cancel.':'Choose when unclaimed MYRT returns to your wallet.'}</small></span></button>
+      ${f.forever ? '' : `<div class="apdurs">${DURS.map(([v,t])=>`<button aria-pressed="${f.dur===v}" data-act="apDur" data-v="${v}">${t}</button>`).join('')}</div>
+        ${f.dur==='custom' ? `<div class="apcustom"><div class="apunits" role="group" aria-label="Custom expiry unit"><button aria-pressed="${unit==='hours'}" data-act="apExpUnit" data-v="hours">Hours</button><button aria-pressed="${unit==='days'}" data-act="apExpUnit" data-v="days">Days</button></div>${fld('apDays','days',`Number of ${unit}`, f.days, {mode:'numeric', ph:`1–${max}`, suf:unit, err:r.e.days, help:`Whole ${unit}, 1 to ${max}`})}</div>` : ''}`}</div>`;
     const lim = r.e.lim && !r.e.bal ? `<div class="aplim">${ic('info')}<span>${r.e.lim}</span><button class="link" data-act="apUpgrade">Upgrade</button></div>` : '';
     const label = r.total > 0 && n > 0 && !r.e.amt && !r.e.count ? `Send ${MY_(r.total)}` : 'Send';
     return `<div class="screen">${statusBar()}${topBar('Send Red Packet', `<button class="iconbtn" data-act="apList" aria-label="My red packets">${ic('apList')}</button>`)}
@@ -8780,7 +8816,7 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
   const _authAp = auth;
   auth = function(reason, ok, opts){ if (reason === 'Send angpao' && S.apAuthSum) reason = S.apAuthSum; return _authAp(reason, ok, opts); };
   if (typeof META === 'object') {
-    if (META.apform) META.apform.rules = ['Gate: logged in, KYC approved, wallet active; otherwise onboarding, then back to this form','Random: Total ≥ people × 1 MYRT, people ≤ floor(total). Equal: amount per person ≥ 1 MYRT. Max 100 people (stepper − / + or type)','Message ≤ 50 characters, empty uses “Best wishes!”','No fee: you pay exactly the red packet total. Never expires; cancel anytime to get unclaimed MYRT back','Send {total} opens PIN with the summary (no separate confirm screen). Double tap never charges twice'];
+    if (META.apform) META.apform.rules = ['Gate: logged in, KYC approved, wallet active; otherwise onboarding, then back to this form','Random: Total ≥ people × 1 MYRT, people ≤ floor(total). Equal: amount per person ≥ 1 MYRT. Max 100 people (stepper − / + or type)','Message ≤ 50 characters, empty uses “Best wishes!”','Expiry: Never expires, presets from 1 hour to 7 days, or Custom using 1–168 hours / 1–365 days. Unclaimed MYRT returns on expiry or cancellation','No fee: you pay exactly the red packet total','Send {total} opens PIN with the summary (no separate confirm screen). Double tap never charges twice'];
     if (META.apconf) META.apconf.rules = ['Not used in the main flow any more: Send on the form goes straight to PIN'];
     if (META.apdet) META.apdet.rules = (META.apdet.rules || []).map(x => x.replace('Status, total, fee, validity', 'Status, total, validity').replace(', fee not refunded', ''));
   }

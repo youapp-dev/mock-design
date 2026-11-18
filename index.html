@@ -91,8 +91,8 @@ button{font:inherit; color:inherit; cursor:pointer}
 <div class="stage">
   <div class="device"><div class="screenbox">
     <div class="loading" id="loading">Loading YouApp…</div>
-    <iframe id="a30" class="on" src="app30.html" title="YouApp 3.0 screens"></iframe>
-    <iframe id="w2" src="wallet2.html" title="Wallet 2.0 screens"></iframe>
+    <iframe id="a30" src="app30.html" title="YouApp 3.0 screens"></iframe>
+    <iframe id="w2" class="on" src="wallet2.html" title="Wallet 2.0 screens"></iframe>
     <div class="wv-ov" id="wvOv" role="dialog" aria-modal="true" aria-labelledby="wvTitle">
       <div class="wv-bar"><button class="wv-x" id="wvX" type="button" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
         <div class="wv-t"><b id="wvTitle">Elite application</b></div></div>
@@ -103,7 +103,7 @@ button{font:inherit; color:inherit; cursor:pointer}
   <aside class="panel" id="panel" aria-label="Prototype controls">
     <h1>YouApp full flow</h1>
     <p class="sub">One app: Wallet 2.0 screens where they changed, 3.0 screens everywhere else.</p>
-    <div class="now" aria-live="polite"><span class="tag" id="nowTag">3.0</span><b id="nowName">Splash</b></div>
+    <div class="now" aria-live="polite"><span class="tag w2" id="nowTag">Wallet 2.0</span><b id="nowName">YouPage · You</b></div>
 
     <div class="grp"><h2>Jump to</h2>
       <div class="jumps">
@@ -158,7 +158,7 @@ button{font:inherit; color:inherit; cursor:pointer}
 <script>
 (function(){
   const F = {a30: document.getElementById('a30'), w2: document.getElementById('w2')};
-  let active = 'a30'; let loaded = 0;
+  let active = 'w2'; let loaded = 0;
   const win = k => F[k].contentWindow;
   const ready = k => { try { return !!win(k).__open; } catch(e){ return false; } };
   function show(k){ active = k; F.a30.classList.toggle('on', k==='a30'); F.w2.classList.toggle('on', k==='w2'); status(); }

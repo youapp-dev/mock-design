@@ -4159,8 +4159,7 @@ V.home = () => { const t = T(); const k = scen.kyc; const ok = kycOk();
   ${youTabs('you')}
   <div class="scroll" style="padding-bottom:24px">
     <div class="pad16 stack" style="padding-top:6px">${ok ? ybCard(t, ok) : lockedTop}
-    ${ok?`<button class="yp-rp" data-act="apOpen" aria-label="Share luck with Red Packet. Send now"><span class="yp-rp-art" aria-hidden="true"><svg viewBox="0 0 56 56"><g transform="rotate(-12 28 28)"><rect x="12" y="8" width="30" height="40" rx="5" fill="#E8333A"/><path d="M12 13a5 5 0 0 1 5-5h20a5 5 0 0 1 5 5v6c-4.5 4-9.5 6-15 6s-10.5-2-15-6z" fill="#C81E2B"/><circle cx="27" cy="25" r="5.5" fill="#F7C548"/><circle cx="27" cy="25" r="2.4" fill="#E0A528"/></g><path d="M45 9l1.6 4.2M50 15l-4 1.2M48 6.5l.2 2.5" stroke="#F2B035" stroke-width="2.2" stroke-linecap="round"/></svg></span><span class="yp-rp-t"><b>Share luck with Red Packet</b><small>Surprise your friends</small></span><span class="yp-rp-cta">Send now<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
-    <div class="ywt yp2">${[['plus','Top Up','topUpOpen',''],['scan','Scan','nav','data-to="scan"']].map(([i,l,a,d])=>`<button data-act="${a}" ${d}><span>${ic(i)}</span>${l}</button>`).join('')}</div>${ybStrip(t, ok)}<!--yp-wl-->`:''}
+    ${ok?`<div class="ywt yp2">${[['plus','Top Up','topUpOpen',''],['scan','Scan','nav','data-to="scan"']].map(([i,l,a,d])=>`<button data-act="${a}" ${d}><span>${ic(i)}</span>${l}</button>`).join('')}</div>${ybStrip(t, ok)}<!--yp-wl-->`:''}
     ${P()>=2&&ok?`<button class="coupon" data-act="rewards" data-tab="all">${ic('gift')}<span><b>Rewards</b><small>Cashback, referral</small></span><span style="text-align:right"><small>Internal balance</small><b>${RM(rewardsTotal())}</b></span></button>`:''}
     </div>
     ${refSec}
