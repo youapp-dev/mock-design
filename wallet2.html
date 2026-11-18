@@ -382,6 +382,106 @@ button.hs-sh{border:0; cursor:pointer; font:inherit; font-size:12px; font-weight
 .seg button:has(.pl-curtag){position:relative; overflow:visible}
 .pl-curtag{position:absolute!important; left:50%; bottom:-11px; transform:translateX(-50%); margin:0!important; background:#1ec26b!important; color:#fff!important; font-size:11px!important; font-weight:700!important; line-height:16px!important; padding:2px 9px!important; border-radius:999px; white-space:nowrap; vertical-align:baseline!important; z-index:2}
 [aria-selected="true"] .pl-curtag{background:#1ec26b!important; color:#fff!important}
+
+/* V2 Elite levels */
+.el-how{display:grid; gap:10px}
+.el-step{display:flex; gap:10px; align-items:flex-start}
+.el-step .n{flex:none; width:22px; height:22px; border-radius:50%; background:var(--a-indigo,#38168e); color:#fff; font-size:12px; font-weight:700; display:grid; place-items:center}
+.el-step b{display:block; font-size:14px} .el-step small{display:block; font-size:12px; color:var(--a-ink-3,#8a8791)}
+.el-note{margin:6px 0 0; font-size:12px; line-height:16px; color:var(--a-ink-3,#8a8791)}
+.el-lv{display:inline-flex; gap:4px; align-items:center; font-size:12px; font-weight:700; color:#8a5a00; background:#fff3d6; border-radius:999px; padding:2px 8px}
+.el-pools .el-prow{display:flex; justify-content:space-between; align-items:center; gap:10px; padding:10px 0; border-top:1px solid var(--a-line,#ece9f1)}
+.el-pools .el-prow:first-of-type{border-top:0}
+.el-pools .el-prow b{display:block; font-size:14px} .el-pools .el-prow small{display:block; font-size:12px; color:var(--a-ink-3,#8a8791)}
+.el-pv{text-align:right; font-weight:700; font-size:15px; white-space:nowrap} .el-pv em{display:block; font-style:normal; font-weight:500; font-size:11px; color:var(--a-ink-3,#8a8791)}
+.el-prow.off .el-pv{color:var(--a-ink-3,#8a8791)}
+
+/* V2 Elite application webview */
+.ea .ea-top{display:flex; align-items:center; gap:8px; padding:6px 8px; border-bottom:1px solid var(--a-line,#ece9f1)}
+.ea .ea-tt{flex:1; display:flex; flex-direction:column; align-items:center; line-height:1.2}
+.ea .ea-tt b{font-size:15px} .ea .ea-tt small{display:inline-flex; gap:4px; align-items:center; font-size:11px; color:var(--a-ink-3,#8a8791)}
+.ea .ea-tt small .ico{width:11px; height:11px}
+.ea .ea-ta{height:auto; min-height:84px; padding-top:10px; resize:none; font:inherit}
+.ea select.input{appearance:auto}
+.ea .ea-agree{display:flex; gap:10px; align-items:center; font-size:14px}
+.ea .ea-agree input{width:20px; height:20px; accent-color:var(--a-indigo,#38168e)}
+.ea .ea-agree.err span{color:var(--a-error,#c62828)}
+.ea .ea-help{display:block; margin-top:6px; padding:0; font-weight:600; text-align:left}
+
+/* V2 Merchant application */
+.ea .ea-sec{margin:6px 0 -4px; font-size:13px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; color:var(--a-ink-3,#8a8791)}
+.ea .ea-file{display:flex; gap:8px; align-items:center; border:1px solid var(--a-line,#ece9f1); border-radius:12px; padding:12px; font-size:14px}
+.ea .ea-file span{flex:1}
+.mc-pend{display:flex; flex-direction:column; align-items:flex-start; gap:4px; text-align:left; padding:14px}
+.mc-pend .mc-pi{width:40px; height:40px; border-radius:12px; display:grid; place-items:center; background:var(--a-surface-2,#f4f2f8)}
+.mc-pend em{position:static}
+.rg-card.mc-pend{padding:14px!important; display:flex!important; flex-direction:column; align-items:flex-start; gap:6px; background:#fff!important; color:#1a181b!important; border:1px dashed #d8cdf3; box-shadow:none; min-height:0; height:auto; aspect-ratio:auto}
+.rg-card.mc-pend::before,.rg-card.mc-pend::after{display:none!important; content:none!important}
+.rg-card.mc-pend b{color:#1a181b!important; font-size:15px}
+.rg-card.mc-pend em{color:#9a5b00!important; background:#fff3d6!important}
+.mc-pend small{color:var(--a-ink-3,#8a8791); font-size:12px}
+
+/* Multi-wallet */
+.mw-bd{flex:none; width:36px; height:36px; border-radius:12px; display:grid; place-items:center; font-weight:700; font-size:15px; color:#fff; background:var(--a-grad,linear-gradient(90deg,#996cb7,#38168e))}
+.mw-bd.ext{background:#f4f3f6; color:#38168e; border:1px solid #e5e4e7}
+.mw-bd.sm{width:22px; height:22px; border-radius:7px; font-size:11px; margin-right:6px}
+.mw-bd.lg{width:44px; height:44px; font-size:18px}
+.mw-bd.xl{width:64px; height:64px; border-radius:20px; font-size:26px}
+.mw-main{background:#38168e!important; color:#fff!important}
+.mw-list{display:flex; flex-direction:column; gap:8px}
+.mw-row{display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:#fff; border:1px solid #e5e4e7; border-radius:14px; padding:12px; font:inherit; color:inherit}
+.mw-row.on{border-color:#7f57e5; box-shadow:0 0 0 3px #f2edfc}
+.mw-row.off{opacity:.45}
+.mw-row .m{flex:1; min-width:0; display:flex; flex-direction:column}
+.mw-row .m b{font-size:15px} .mw-row .m small,.mw-row .r small{font-size:12px; color:#99949e}
+.mw-row .r{text-align:right; display:flex; flex-direction:column}
+.mw-tk{display:inline-grid; place-items:center; width:20px; height:20px; border-radius:50%; background:#f2edfc; color:#38168e; font-size:11px; font-weight:700; margin-right:6px}
+.mw-tk.lg{width:36px; height:36px; font-size:14px; margin:0}
+.mw-pick{display:grid; grid-template-columns:1fr 1fr; gap:8px}
+.mw-pick button,.mw-pick1{display:flex; flex-direction:column; align-items:flex-start; gap:2px; position:relative; background:#fff; border:1px solid #e5e4e7; border-radius:14px; padding:10px 34px 10px 12px; font:inherit; color:inherit; text-align:left; width:100%}
+.mw-pick small,.mw-pick1 small{font-size:12px; color:#99949e}
+.mw-pick b,.mw-pick1 b{display:flex; align-items:center; font-size:14px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; max-width:100%}
+.mw-pick b em,.mw-pick1 b em{font-style:normal; color:#99949e; font-weight:500; margin-left:4px}
+.mw-pick .ico,.mw-pick1 .ico{position:absolute; right:10px; top:50%; transform:translateY(-50%); width:16px; height:16px}
+.mw-card{position:relative; display:flex; flex-direction:column; gap:6px; text-align:left; background:#fff; border:1.5px solid #e5e4e7; border-radius:16px; padding:16px; font:inherit; color:inherit}
+.mw-card.on{border-color:#38168e; box-shadow:0 0 0 3px #f2edfc}
+.mw-card small{color:#66616b; font-size:13px}
+.mw-chips{display:flex; flex-wrap:wrap; gap:6px}
+.mw-chips em{font-style:normal; font-size:12px; border:1px solid #e5e4e7; border-radius:999px; padding:3px 9px; color:#66616b}
+.mw-chips.big button{border:1px solid #e5e4e7; background:#fff; border-radius:999px; padding:8px 14px; font:inherit; font-weight:600; color:#38168e}
+.mw-chips.big button.on{background:#38168e; color:#fff; border-color:#38168e}
+.mw-tot{background:var(--a-grad,linear-gradient(90deg,#996cb7,#38168e)); color:#fff; border-radius:18px; padding:16px; display:flex; flex-direction:column; gap:2px}
+.mw-tot small{opacity:.85} .mw-tot b{font-size:28px}
+.mw-hd{display:flex; align-items:center; gap:12px} .mw-hd span{flex:1; display:flex; flex-direction:column} .mw-hd b{font-size:24px} .mw-hd small{color:#99949e}
+.mw-acts{display:flex; gap:8px; flex-wrap:wrap} .mw-acts .btn{flex:1}
+.mw-disc{color:#d3252f!important; align-self:flex-start}
+.mw-nudge{display:flex; flex-direction:column; gap:6px; border:1px dashed #b2afb6; border-radius:14px; padding:12px} .mw-nudge small{color:#66616b}
+.mw-tg{display:flex; align-items:center; gap:12px; width:100%; text-align:left; background:#fff; border:1px solid #e5e4e7; border-radius:14px; padding:12px; font:inherit; color:inherit}
+.mw-tg span{flex:1; display:flex; flex-direction:column} .mw-tg small{color:#99949e; font-size:12px}
+.mw-tg i{width:44px; height:26px; border-radius:999px; background:#e5e4e7; position:relative; flex:none}
+.mw-tg i::after{content:""; position:absolute; top:3px; left:3px; width:20px; height:20px; border-radius:50%; background:#fff; transition:left .15s}
+.mw-tg i.on{background:#38168e} .mw-tg i.on::after{left:21px}
+.mw-hrow{display:flex; align-items:center; gap:4px; width:100%; margin-top:10px; background:#fff; border:1px solid #e5e4e7; border-radius:14px; padding:10px 12px; font:inherit; color:inherit; text-align:left}
+.mw-hrow .mw-ht{flex:1; min-width:0; display:flex; flex-direction:column; margin-left:10px} .mw-hrow .mw-hic{flex:none; width:32px; height:32px; border-radius:10px; background:#f2edfc; color:#38168e; display:grid; place-items:center} .mw-hrow .mw-hic .ico{width:18px; height:18px} .mw-hrow b{white-space:nowrap}
+.mw-hrow .mw-bd.sm{margin-right:-8px; border:2px solid #fff; box-sizing:content-box} .mw-hrow small{color:#99949e; font-size:12px} .mw-hrow em{font-style:normal; color:#38168e; font-weight:600; font-size:13px}
+.mw-qr{width:200px; height:200px}
+.mw-search{display:flex; align-items:center; gap:8px; height:44px; border:1px solid #e5e4e7; border-radius:12px; padding:0 12px; background:#fff; margin-bottom:10px}
+.mw-search:focus-within{border-color:#7f57e5; box-shadow:0 0 0 3px #f2edfc}
+.mw-search .ico{width:18px; height:18px; color:#99949e}
+.mw-search input{flex:1; min-width:0; border:0; outline:0; font:inherit; font-size:16px; background:none}
+.mw-tscroll{max-height:52vh; overflow-y:auto; display:flex; flex-direction:column; gap:8px; padding:2px}
+.mw-grp{font-size:12px; font-weight:600; color:#99949e; margin-top:4px}
+.mw-none{text-align:center; color:#99949e; font-size:14px; margin:16px 0}
+.mw-tscroll [hidden]{display:none!important}
+.mw-search input:focus,.mw-search input:focus-visible{outline:none!important; box-shadow:none!important}
+
+/* V2 Badge Verification gate */
+.kg-badge{width:64px;height:64px;margin:4px auto 0;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#996cb7,#38168e);color:#fff}
+.kg-badge .ico,.kg-badge svg{width:30px;height:30px}
+.kg-steps{display:grid;gap:8px;padding:12px;border:1px solid #e5e4e7;border-radius:14px}
+.kg-step{display:flex;align-items:center;gap:10px;font-size:14px;color:#1d1b20}
+.kg-step svg{width:20px;height:20px;color:#38168e;flex:none}
+
 </style><style>
 /* Layout: phone simulator centred, scenario panel docked right on desktop, slide-over sheet on phones.
    Outside the phone follows the viewer's theme; inside the phone the app keeps YouApp's light design (Figma is light-only). */
@@ -3792,6 +3892,45 @@ div.sp-fr{cursor:pointer} .sp-fr .rf-chat{margin-left:auto}
 .gm-item{display:flex; flex-direction:column; gap:12px} .gm-acts{display:flex; gap:10px} .gm-acts button{flex:1; height:44px; border:1px solid var(--a-line); border-radius:12px; background:#fff; display:flex; align-items:center; justify-content:center; gap:6px; font-weight:600} .gm-acts .ico{width:18px; height:18px}
 .gm-city{position:absolute; left:0; right:0; bottom:70px; margin:0}
 .gm-foot{background:linear-gradient(180deg,rgba(122,85,192,0) 0,#7a55c0 40%); padding-top:30px}
+
+/* YouPage 3.1 */
+.ywt.yp2{grid-template-columns:1fr 1fr; gap:8px}
+.ywt.yp2 button{font-size:14px; padding:14px 6px 12px; gap:10px}
+.yb-cta.yp-vip{width:100%; margin:0; padding:12px; border:1px solid #e5e4e7; border-radius:16px; background:#fff; box-shadow:0 2px 8px -4px rgba(56,22,142,.15)}
+.yb-cta.yp-vip.warn{background:linear-gradient(180deg,#fff1e2 0%,#fffaf4 100%); border-color:#f6dcc0}
+.mw-hrow.yp-wl{margin-top:0}
+.yp-book .yp-vip, .yp-book .yp-wl{display:none}
+.yb-card.book .yb-top{display:flex; align-items:center; justify-content:space-between}
+.yb-eye.yb-eye-top{margin:0}
+.yb-card.book{min-height:212px}
+/* YouPage 3.1: both balance cards share one height (Figma 398 x 212) */
+.yb-car .yb-card{box-sizing:border-box; height:212px; min-height:212px}
+.yb-car .yb-card .yb-foot{font-size:11.5px; line-height:16px; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.yb-car .yb-card .yb-top{margin-bottom:2px}
+.yb-car .yb-card.free .yb-foot,.yb-car .yb-card.vip .yb-foot,.yb-car .yb-card.svip .yb-foot{margin:0; padding:0; height:16px}
+.yb-car .yb-card .yb-acts{margin-top:auto}
+.yb-car .yb-card.book .yb-foot{margin-top:auto}
+/* Elite ended: paused progress + Reapply */
+.sp-paused .sp-bar i{background:#c9c5d1!important}
+.sp-paused .sp-ch b{color:#8a8791}
+.sp-due.pz{background:#efedf3; color:#5b5862}
+.sp-due.pz .ico{width:12px; height:12px}
+.sp-paused .sp-st{color:#5b5862}
+.sp-reapply{width:100%; margin-top:12px}
+.ywt.yp3{grid-template-columns:repeat(3,1fr); gap:8px}
+.ywt.yp3 button{font-size:14px; padding:14px 6px 12px; gap:10px}
+
+/* YouPage · Red Packet entry banner */
+.yp-rp{position:relative; overflow:hidden; display:flex; align-items:center; gap:10px; width:100%; min-height:72px; padding:10px 12px 10px 8px; border:0; border-radius:18px; background:linear-gradient(100deg,#F6EEFF 0%,#EBDDFD 100%); text-align:left; font:inherit; cursor:pointer}
+.yp-rp::after{content:""; position:absolute; right:-28px; bottom:-46px; width:150px; height:110px; border-radius:50%; background:rgba(183,155,240,.28); pointer-events:none}
+.yp-rp-art{flex:none; width:46px; height:46px; display:grid; place-items:center} .yp-rp-art svg{width:46px; height:46px; display:block}
+.yp-rp-t{flex:1; min-width:0; display:grid; gap:2px; position:relative; z-index:1}
+.yp-rp-t b{font:700 15px/1.25 Inter, sans-serif; color:#4B2A9E}
+.yp-rp-t small{font:500 12.5px/1.3 Inter, sans-serif; color:#6E6688; white-space:nowrap; overflow:hidden; text-overflow:ellipsis}
+.yp-rp-cta{position:relative; z-index:1; flex:none; display:inline-flex; align-items:center; gap:4px; height:36px; padding:0 14px; border-radius:999px; background:linear-gradient(100deg,#7B4FC4,#3D1C96); color:#fff; font:600 13.5px Inter, sans-serif; white-space:nowrap}
+.yp-rp-cta .ico{width:16px; height:16px}
+.yp-rp:active{transform:scale(.99)}
+.yp-rp:focus-visible{outline:3px solid #B79BF0; outline-offset:2px}
 </style>
 <div class="stage">
   <div class="device"><div class="phone" id="phone" aria-live="polite"></div></div>
@@ -3848,7 +3987,7 @@ const MERCH = {
 };
 
 /* ---------- scenario + state ---------- */
-const SCEN0 = {payRes:'ok', phase:'4', tier:'free', kyc:'passed', bal:'enough', ref:'scarlette', sh:'none', criteria:'partial', svip:'none', biz:'off', float:'ok', merch:'has', pz:'won', xsRes:'ok', meHost:'yes', paid:'no', svipP:'early', mdata:'has'};
+const SCEN0 = {payRes:'ok', phase:'4', tier:'free', kyc:'passed', bal:'enough', ref:'scarlette', sh:'none', criteria:'partial', svip:'none', biz:'off', float:'ok', merch:'has', pz:'won', xsRes:'ok', meHost:'yes', paid:'no', svipP:'early', mdata:'has', fph:'1', lvl:'0', elChk:'first90'};
 let scen = {...SCEN0};
 try { const s = JSON.parse(localStorage.getItem('w2scen')||'null'); if (s) scen = {...SCEN0, ...s}; } catch(e) {}
 const saveScen = () => { try { localStorage.setItem('w2scen', JSON.stringify(scen)); } catch(e) {} };
@@ -3860,6 +3999,37 @@ const P = () => +scen.phase;
 const kycOk = () => scen.kyc === 'passed';
 const bal = () => scen.bal==='enough' ? 1240.50 : 12.40;
 const shActive = () => scen.sh === 'active';
+/* ===== V2 · Elite levels, fee phase, own fee rebate (Superhost rules for tech v1 + Fee simulation v1, 26 Oct 2026) =====
+   Docs say Superhost / Ultrahost 1-3; the app says Elite / Elite 1-3. */
+const LV = [
+  {n:'Elite',   up:100000,   keep:300000,    bonus:0.10, reb:0},
+  {n:'Elite 1', up:500000,   keep:5000000,   bonus:0.10, reb:0.10},
+  {n:'Elite 2', up:2000000,  keep:25000000,  bonus:0.20, reb:0.20},
+  {n:'Elite 3', up:15000000, keep:150000000, bonus:0.30, reb:0.30}];
+const FPH = () => scen.fph==='2' ? 2 : 1;
+const LVL = () => (FPH()===2 && shActive()) ? Math.min(3, Math.max(0, +scen.lvl||0)) : 0;
+const elLv = () => LV[LVL()];
+const elName = () => elLv().n;
+const RF_SH2 = () => elLv().bonus;
+const rebFor = amt => (amt>0 && shActive() && FPH()===2) ? Math.round(amt*elLv().reb)/100 : 0;
+const elOn = () => scen.criteria==='met';
+const elStage = () => (LVL()>0 || scen.elChk==='year') ? 'year' : 'first90';
+const elDue = () => elStage()==='first90' ? {d:'22 Jan 2027', left:87, lab:'First 90 days'} : LVL()>0 ? {d:'1 Nov 2027', left:369, lab:'Until 1 Nov 2027'} : {d:'24 Oct 2027', left:362, lab:'Until 24 Oct 2027'};
+const elBars = () => { const L = LVL(), ok = elOn(), out = [];
+  if (elStage()==='first90') out.push({l:'Volume since approval', cur: ok?180000:62000, tgt:100000});
+  else { const k = LV[L].keep; out.push({l:'Volume this year', cur: Math.round(k*(ok?1.08:0.46)), tgt:k}); }
+  if (FPH()===2 && L<3) { const nx = LV[L+1]; out.push({l:'Rolling 90 days · '+nx.n, cur: Math.round(nx.up*(ok?0.84:0.38)), tgt:nx.up, next:true}); }
+  return out.map(b => ({...b, ok: b.cur>=b.tgt, pc: Math.min(100, b.cur/b.tgt*100)})); };
+const elStatus = () => { const L = LVL(), d = elDue().d, ok = elOn();
+  if (elStage()==='first90') return ok ? `On track. Keep RM100k by ${d} (day 90).` : `Reach RM100k by ${d} (day 90), or Elite ends and you go back to your earlier tier.`;
+  const k = RMs(LV[L].keep);
+  if (ok) return `Target reached. ${elName()} is kept and a new 365 days starts on ${d}.`;
+  return L>0 ? `Reach ${k} by ${d}, or you move down to ${LV[L-1].n}.` : `Reach ${k} by ${d}, or Elite ends and you go back to your earlier tier.`; };
+const elNextNote = () => FPH()===1 ? 'Elite 1, 2 and 3 open in Phase 2. Volume counts from day one, so you can move up the day they open.' : LVL()>=3 ? 'You are on the top level.' : `Move up the day your rolling 90-day volume hits ${RMs(LV[LVL()+1].up)}. A new 365 days starts that day.`;
+const EL_HOW = [['Fill in a short form','Management reviews within 48 hours. Free SVIP, one time only'],['First 90 days','RM100k volume, or Elite ends'],['Every year','RM300k volume to keep Elite'],['Move up (Phase 2)','Elite 1 / 2 / 3 at RM500k / RM2m / RM15m rolling 90-day volume']];
+const EL_VOL_NOTE = 'Volume = settled payments by you, your referrals and their referrals. Transfers to your own account, sponsored and reversed payments don’t count.';
+const elHowHtml = () => `<div class="el-how">${EL_HOW.map(([a,b],i)=>`<div class="el-step"><span class="n">${i+1}</span><span><b>${a}</b><small>${b}</small></span></div>`).join('')}<p class="el-note">${EL_VOL_NOTE}</p></div>`;
+const elLvTag = () => shActive() ? `<span class="el-lv">${ic('starf')}${elName()}</span>` : '';
 const usedMon = () => 4320;
 const refEarn = r => r.v ? r.spent * T().ref / 100 : 0;
 const REF_ALL = 20, REF_VER = 18, REF_SPEND = 90000;
@@ -3900,10 +4070,10 @@ const META = {
   bizDash:{name:'Business Dashboard', ph:4, fb:['F5'], rules:['Shows float, cashback rate, promo code and customer demographics (Douglas: no transaction list, their POS already reconciles).','Float alert below 20% goes to the business and its superhost. At RM0 cashback pauses.']},
   cbSettings:{name:'Cashback Settings', ph:4, rules:['Rate minimum 5%. Top up float from wallet balance.','Split of every claimed cashback: user 35 / 40 / 45% by tier, YouApp 20 / 15 / 10%, superhost 25%, scheme pool 20%.']},
 };
-const ORDER = [['Phase 1 · Referral and fees',['signup','otp','home','invite','kyc','limits','scan','confirm','done']],
-  ['Phase 2 · Referral reward and Rewards',['rewards','withdraw']],
-  ['Phase 3 · Subscription and superhost',['subscribe','checkout','ckResult','svip','shApply','profile','shTab']],
-  ['Phase 4 · Business cashback',['addMerchant','merchConfirm','business','bizDash','cbSettings']]];
+const ORDER = [['Release 1 · Referral and fees',['signup','otp','home','invite','kyc','limits','scan','confirm','done']],
+  ['Release 2 · Referral reward and Rewards',['rewards','withdraw']],
+  ['Release 3 · Subscription and Elite',['subscribe','checkout','ckResult','svip','shApply','profile','shTab']],
+  ['Release 4 · Business cashback',['addMerchant','merchConfirm','business','bizDash','cbSettings']]];
 const FB = {F1:'Email instead of phone number at sign-up', F2:'VIP verified by KYC, not passport', F3:'SVIP limits as high numbers, never "Unlimited". No DNAAS / "off ramp" wording', F4:'Personal DuitNow QR allowed, pay-out only', F5:'Merchant dashboard: customer demographics, no transaction list', F6:'Elite view shows the upgrade sheet when you are not a superhost'};
 
 /* ---------- navigation ---------- */
@@ -3976,9 +4146,9 @@ V.home = () => { const t = T(); const k = scen.kyc; const ok = kycOk();
       :`<div class="tp-up"><span>You have our lowest fee and highest limits.</span></div>`}
     </section></div>`; })() : '';
   const c = crit();
-  const shLine = P()<3 ? '' : shActive() ? `<div class="rs-sh"><span class="shtag">${ic('starf')}Elite</span><span class="t-caption muted" style="flex:1">You're an Elite</span><span class="link" style="font-size:13px">Open</span></div>`
+  const shLine = P()<3 ? '' : shActive() ? `<div class="rs-sh"><span class="shtag">${ic('starf')}${elName()}</span><span class="t-caption muted" style="flex:1">You're ${elName()==='Elite'?'an Elite':elName()}</span><span class="link" style="font-size:13px">Open</span></div>`
     : scen.sh==='pending' ? `<div class="rs-sh">${ic('star')}<span class="t-caption" style="flex:1"><b>Elite</b> · in review</span><span class="tag unv">In review</span></div>`
-    : `<div class="rs-sh col"><div class="row-between t-caption"><span><b>Elite</b> · last 60 days</span><span class="muted">${c.users}/30 · ${RMs(c.vol)}/RM100k</span></div>${pbar(Math.min(c.users/30, c.vol/100000)*100)}</div>`;
+    : `<div class="rs-sh"><span class="t-caption" style="flex:1"><b>Elite</b> · free SVIP, referral bonus and merchant cashback</span><span class="link" style="font-size:13px">Learn more</span></div>`;
   const by = rfRefBy();
   const refSec = `<h2 class="sec pad16" style="margin-bottom:10px">Referral</h2>
     <div class="pad16"><section class="yr-card" data-act="nav" data-to="invite" role="button" tabindex="0" aria-label="Open Refer a Friend">
@@ -3989,9 +4159,9 @@ V.home = () => { const t = T(); const k = scen.kyc; const ok = kycOk();
   ${youTabs('you')}
   <div class="scroll" style="padding-bottom:24px">
     <div class="pad16 stack" style="padding-top:6px">${ok ? ybCard(t, ok) : lockedTop}
-    ${ok?`<div class="ywt">${[['plus','Top Up','topUpOpen',''],['scan','Scan','nav','data-to="scan"'],['bill','Bills','bills',''],['mreload','Mobile Reload','mreload','']].map(([i,l,a,d])=>`<button data-act="${a}" ${d}><span>${ic(i)}</span>${l}</button>`).join('')}</div>`:''}
-    ${P()>=2&&ok?`<button class="coupon" data-act="rewards" data-tab="all">${ic('gift')}<span><b>Rewards</b><small>Cashback, referral</small></span><span style="text-align:right"><small>Internal balance</small><b>${RM(rewardsTotal())}</b></span></button>
-    <button class="coupon cpn" data-act="toast" data-msg="Your coupons: 3 available for discounts at checkout.">${ic('coupon')}<span><b>You Coupon</b><small>Available coupon for discount</small></span><span style="text-align:right"><small>Available Coupon</small><b>3 Coupons</b></span></button>`:''}
+    ${ok?`<button class="yp-rp" data-act="apOpen" aria-label="Share luck with Red Packet. Send now"><span class="yp-rp-art" aria-hidden="true"><svg viewBox="0 0 56 56"><g transform="rotate(-12 28 28)"><rect x="12" y="8" width="30" height="40" rx="5" fill="#E8333A"/><path d="M12 13a5 5 0 0 1 5-5h20a5 5 0 0 1 5 5v6c-4.5 4-9.5 6-15 6s-10.5-2-15-6z" fill="#C81E2B"/><circle cx="27" cy="25" r="5.5" fill="#F7C548"/><circle cx="27" cy="25" r="2.4" fill="#E0A528"/></g><path d="M45 9l1.6 4.2M50 15l-4 1.2M48 6.5l.2 2.5" stroke="#F2B035" stroke-width="2.2" stroke-linecap="round"/></svg></span><span class="yp-rp-t"><b>Share luck with Red Packet</b><small>Surprise your friends</small></span><span class="yp-rp-cta">Send now<svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></span></button>
+    <div class="ywt yp2">${[['plus','Top Up','topUpOpen',''],['scan','Scan','nav','data-to="scan"']].map(([i,l,a,d])=>`<button data-act="${a}" ${d}><span>${ic(i)}</span>${l}</button>`).join('')}</div>${ybStrip(t, ok)}<!--yp-wl-->`:''}
+    ${P()>=2&&ok?`<button class="coupon" data-act="rewards" data-tab="all">${ic('gift')}<span><b>Rewards</b><small>Cashback, referral</small></span><span style="text-align:right"><small>Internal balance</small><b>${RM(rewardsTotal())}</b></span></button>`:''}
     </div>
     ${refSec}
     <h2 class="sec pad16" style="margin-bottom:12px">Your traveller profile</h2>
@@ -4131,7 +4301,7 @@ V.rewards = () => { const t = T(); const tab = S.rtab;
      <p class="t-caption subtle" style="margin:0">Unverified referrals earn nothing until they pass KYC.</p>
      ${btn(ic('userplus')+'Invite Friends','nav',{kind:'btn-secondary', data:'data-to="invite"'})}`;
   if (tab==='superhost') body = `<div class="w2-list">
-      <div class="w2-row">${ic('star')}<span class="m"><b>Elite bonus</b><small>0.1% · this month</small></span><b class="pos">+${RM(300)}</b></div>
+      <div class="w2-row">${ic('star')}<span class="m"><b>Elite bonus</b><small>${RF_SH2()}% · this month</small></span><b class="pos">+${RM(300)}</b></div>
       ${P()>=4?`<div class="w2-row">${ic('store')}<span class="m"><b>Merchant cashback</b><small>25% from 6 merchants you closed</small></span><b class="pos">+${RM(86.40)}</b></div>`:''}
       <div class="w2-row">${ic('pool')}<span class="m"><b>Scheme pool</b><small>Locked · rolling total</small></span><b>${RM(2140)}</b></div></div>
       ${btn('Open Elite','nav',{kind:'btn-secondary', data:'data-to="shTab"'})}`;
@@ -4304,33 +4474,30 @@ V.svip = () => { const st = scen.svip;
 
 const crit = () => scen.criteria==='met' ? {vol:104200, users:31} : {vol:84000, users:18};
 V.shApply = () => { const c = crit(); const met = c.vol>=100000 && c.users>=30; const st = scen.sh;
-  const banner = st==='pending' ? `<div class="hint warn">${ic('hourglass')}<span><b>Application in review.</b> Management replies within 48 hours.</span></div>`
+  const banner = st==='pending' ? `<div class="hint warn">${ic('hourglass')}<span><b>Request in review.</b> Sent ${EA_SENT} · Ref ${EA_REF}. Management replies within 48 hours.</span></div>`
     : st==='active' ? `<div class="hint ok">${ic('check')}<span><b>You're an Elite.</b> Your tag, free SVIP and Elite bonus are active.</span></div>`
     : st==='revoked' ? `<div class="hint err">${ic('xcircle')}<span><b>Your superhost status was cancelled.</b> The bonus, pool share and free SVIP were removed.</span></div>` : '';
   const crow = (icn, lab, now, max, txt) => `<div class="sc-row"><span class="sc-ic">${ic(icn)}</span><span class="sc-m"><span class="row-between"><b>${lab}</b><b class="${now>=max?'okt':''}">${txt}</b></span>${pbar(now/max*100, now>=max?'ok':'')}</span></div>`;
-  const foot = st==='active' ? btn('Open Elite','nav',{data:'data-to="shTab"'}) : st==='pending' ? btn('Back to Refer a Friend','back',{kind:'btn-tertiary'})
-    : met ? btn('Apply as Elite','shApplyGo') : btn(`Apply as Elite`,'noop',{disabled:true});
+  const foot = st==='active' ? btn('Open Elite','nav',{data:'data-to="shTab"'}) : st==='pending' ? btn('View my request','elApplyOpen',{kind:'btn-secondary'})
+    : btn('Apply to become an Elite','elApplyOpen');
   return `<div class="screen">${statusBar()}<div class="topbar"><button class="iconbtn" data-act="back" aria-label="Back">${ic('back')}</button><span style="flex:1"></span></div>
   <div class="scroll" style="padding-bottom:16px"><div class="pad16 stack">
     <div class="sh-head"><span class="sh-badge">${ic('starf')}</span><h1 class="t-title" style="margin:6px 0 0">Become an Elite</h1><p class="t-body muted" style="margin:0">Bring your people to YouApp and earn more from every payment they make.</p></div>
     ${banner}
-    <section class="scard"><h2>${ic('trend')}Your Progress</h2>
-      ${crow('users','Verified direct referrals', c.users, 30, `${c.users} / 30`)}
-      ${crow('chart','Volume from your referrals and theirs', c.vol, 100000, `${RMs(c.vol)} / RM100k`)}
-      <p class="sc-note">${ic('clock')}Last 60 days, counted daily. Only referrals who passed KYC count.</p></section>
+
     <section class="scard"><h2>${ic('gift')}What You Get</h2>
-      ${[['Free SVIP, one time','Worth '+SVIP_RM()],['Elite bonus 0.1%','On payments by people your referrals bring in'],['25% of merchant cashback','From the businesses you close'],['Scheme pool','Your share when it unlocks']].map(([a,b])=>`<div class="sc-li"><span><b>${a}</b><small>${b}</small></span><span class="okdot">${ic('check')}</span></div>`).join('')}</section>
+      ${[['Free SVIP, one time','Worth '+SVIP_RM()],['Elite bonus '+RF_SH2()+'%','On payments by people your referrals bring in'],['25% of merchant cashback','From the businesses you close'],['Scheme pool','Your share when it unlocks']].map(([a,b])=>`<div class="sc-li"><span><b>${a}</b><small>${b}</small></span><span class="okdot">${ic('check')}</span></div>`).join('')}</section>
     <section class="scard"><h2>${ic('doc')}How It Works</h2>
-      ${[['Reach both requirements','Within any 60 days'],['Apply here','The button turns on when both bars are full'],['Management reviews','Within 48 hours. They can also approve before both bars are full'],['Get your Elite tag','Free SVIP and the bonus start right away']].map(([a,b],i)=>`<div class="sc-step ${i===0&&met?'done':''} ${st==='pending'&&i<2?'done':''} ${st==='active'?'done':''}"><span class="n">${i+1}</span><span><b>${a}</b><small>${b}</small></span></div>`).join('')}</section>
-    <div class="sc-warn">If your status is cancelled, you lose the bonus, the pool share and the free SVIP. A second free SVIP isn't given.</div>
+      ${[['Fill in a short form','No referral or volume minimum to apply'],['Management reviews','Within 48 hours'],['First 90 days','RM100k volume, or Elite ends'],['Every year','RM300k volume to keep Elite. Elite 1 / 2 / 3 open in Phase 2']].map(([a,b],i)=>`<div class="sc-step ${st==='pending'&&i<1?'done':''} ${st==='active'?'done':''}"><span class="n">${i+1}</span><span><b>${a}</b><small>${b}</small></span></div>`).join('')}</section>
+    <div class="sc-warn">If Elite ends, you go back to your earlier tier and lose the bonus, the pool share and the free SVIP. A second free SVIP isn't given.</div>
   </div></div>
-  <div class="w2foot">${foot}${st==='none'&&!met?`<p class="t-caption subtle" style="margin:0; text-align:center">${Math.max(0,30-c.users)} more verified referrals and ${RM(Math.max(0,100000-c.vol),0)} more volume to go</p>`:''}</div></div>`; };
+  <div class="w2foot">${foot}</div></div>`; };
 
 V.profile = () => `<div class="screen">${statusBar()}${topBar('Profile')}
   <div class="scroll" style="padding-bottom:20px"><div class="shead">${img('avatar','Elsa')}<b class="t-headline">Elsa Japasal</b>
-    ${shActive()?`<span class="shtag">${ic('starf')}Elite since 1 Nov 2026</span>`:'<span class="tag ind">Not a superhost yet</span>'}<span class="t-caption subtle">${T().name} tier</span></div>
+    ${shActive()?`<span class="shtag">${ic('starf')}${elName()} · since 1 Nov 2026</span>`:'<span class="tag ind">Not a superhost yet</span>'}<span class="t-caption subtle">${T().name} tier</span></div>
   <div class="pad16 stack" style="margin-top:12px">
-    ${shActive()?`<h2 class="sec" style="margin:0">Benefits active</h2><div class="w2-list">${['SVIP tier, free, one time','Elite bonus 0.1%','Merchant cashback 25%','Scheme pool (locked)'].map(x=>`<div class="w2-row">${ic('check')}<span class="m"><b>${x}</b></span></div>`).join('')}</div>`:btn('See Elite Criteria','nav',{kind:'btn-secondary', data:'data-to="shApply"'})}
+    ${shActive()?`<h2 class="sec" style="margin:0">Benefits active</h2><div class="w2-list">${['SVIP tier, free, one time','Elite bonus '+RF_SH2()+'%',...(rebFor(100)?['Own fee rebate '+elLv().reb.toFixed(2)+'%']:[]),'Merchant cashback 25%','Scheme pools (locked)'].map(x=>`<div class="w2-row">${ic('check')}<span class="m"><b>${x}</b></span></div>`).join('')}</div>`:btn('See Elite Criteria','nav',{kind:'btn-secondary', data:'data-to="shApply"'})}
     <div class="stat2"><div>Referrals<b>38</b></div><div>Merchants closed<b>${P()>=4?6:0}</b></div></div>
   </div></div></div>`;
 
@@ -4419,8 +4586,7 @@ V.cbSettings = () => { const [left, of] = kopiFloat(); const pct = left/of*100; 
 const SHEETS = {
   upsell: () => { const c = crit(); const t = T(); return `<div class="grab"></div><div class="stack">
     <h2 class="t-title" style="margin:0">Become an Elite</h2><p class="t-body muted" style="margin:0">Elite bonus, merchant cashback and the scheme pool show here once you're a superhost.</p>
-    <div class="stp"><div class="row-between t-caption"><b>Volume from your referrals and theirs</b><span>${RMs(c.vol)} / RM100k</span></div>${pbar(c.vol/1000)}</div>
-    <div class="stp"><div class="row-between t-caption"><b>Verified direct referrals</b><span>${c.users} / 30</span></div>${pbar(c.users/30*100)}</div>
+    ${elHowHtml()}
     ${btn('See Elite Criteria','nav',{data:'data-to="shApply"'})}
     ${NEXT[t.key]?`<div class="hint">${ic('crown')}<span>Earn more while you get there: ${TIERS[NEXT[t.key]].name} pays ${TIERS[NEXT[t.key]].ref}% on referrals. <button class="link" data-act="upgrade">Upgrade</button></span></div>`:''}
     ${btn('Not Now','closeSheet',{kind:'btn-tertiary'})}</div>`; },
@@ -4583,7 +4749,6 @@ ORDER[3][1].splice(ORDER[3][1].indexOf('business')+1, 0, 'bizQr', 'vouchers', 'h
 const RF_ME = {name:'Elsa Japasal', handle:'@elsaa', code:'AC3N9', av:'avEmma'};
 const RF_CODES = {SCAR88:'Scarlette', JU4N7:'Juan'};
 const RF_OWN_DOWN = ['CATH3','DANED','LEEKS'];
-const RF_SH2 = 0.1;
 const RF_F = [ // referred friends (1st downline); via = 2nd downline under this friend
   {n:'Catherine Lee', h:'@cathl33', av:'fh1', v:true, host:true},
   {n:'Daniel Ed', h:'@dandadan', av:'avLucas', v:true},
@@ -4618,7 +4783,7 @@ const RF_PZ = [ // draws this user won (scenario: won / none)
 const pzVis = () => (shActive() || shPast()) && scen.pz!=='none' ? RF_PZ : [];
 const pzSum = () => pzVis().reduce((s,r)=>s+r.v,0);
 const mcThumb = r => { const m = HS_M.find(x=>x.id===r.mid) || {}; return m.img ? `<img class="rw-mth" src="${HS_IMG[m.img]}" alt="">` : `<span class="rw-mth ini">${m.ini||r.n[0]}</span>`; };
-const rfRate = l => l===2 ? RF_SH2 : shPast() ? 0.4 : T().ref;
+const rfRate = l => l===2 ? RF_SH2() : shPast() ? 0.4 : T().ref;
 const rfL1 = () => shPast() ? 90000*0.4/100 : refTotal();
 const rfAmt = r => Math.round(r.p * rfRate(r.l)) / 100;
 const shPast = () => scen.sh==='revoked';
@@ -4630,10 +4795,9 @@ const rfTierTags = () => `${shActive()?'<span class="rf-tag sh">'+ic('starf')+'E
 const rfRefBy = () => scen.ref==='none' ? null : scen.ref==='scarlette' ? {n:'Scarlette', c:'SCAR88'} : {n:S.rfLinked||scen.refName||'Juan', c:S.rfLinkedCode||scen.refCode||'JU4N7'};
 
 V.invite = () => { const by = rfRefBy(); const ok = kycOk(); const bal = rfBal(); const tab = S.rfTab || 'friends';
-  const shCard = shPast() ? `<section class="rf-sh ended"><div class="rf-row"><span class="rf-shic">${ic('starf')}</span><span class="rf-col"><b>Elite ended</b><small>${SH_END}</small></span></div><p class="rf-note">${ic('info')}You're now on ${TIERS[scen.tier].name} (${T().ref}%). Past rewards stay.${T().key!=='svip'?' Get SVIP again for 0.4%.':''}</p></section>` : shActive() ? (() => { const c = crit(); return `<section class="rf-sh"><div class="rf-row"><span class="rf-shic">${ic('starf')}</span><span class="rf-col"><b>Stay an Elite</b><small>Last 60 days</small></span></div>
-      <div class="rf-bar"><div class="rf-row"><span>Referral volume</span><b>${RMs(c.vol)} / ${RMs(100000)}</b></div>${pbar(Math.min(100,c.vol/1000), c.vol>=100000?'ok':'warn')}</div>
-      <div class="rf-bar"><div class="rf-row"><span>Verified referrals</span><b>${c.users} / 30</b></div>${pbar(Math.min(100,c.users/30*100), c.users>=30?'ok':'warn')}</div>
-      <p class="rf-note">${c.vol>=100000&&c.users>=30?ic('check')+'You\'re on track.':ic('alert')+'Below target. Reach both within 60 days to stay Elite.'}</p></section>`; })() : '';
+  const shCard = shPast() ? `<section class="rf-sh ended"><div class="rf-row"><span class="rf-shic">${ic('starf')}</span><span class="rf-col"><b>Elite ended</b><small>${SH_END}</small></span></div><p class="rf-note">${ic('info')}You're back on your earlier tier, ${TIERS[scen.tier].name} (${T().ref}%). Past rewards stay. Free SVIP is never given twice.${T().key!=='svip'?' Get SVIP again for 0.4%.':''}</p></section>` : shActive() ? (() => `<section class="rf-sh"><div class="rf-row"><span class="rf-shic">${ic('starf')}</span><span class="rf-col"><b>Stay ${elName()}</b><small>${elDue().lab}</small></span></div>
+      ${elBars().map(b=>`<div class="rf-bar"><div class="rf-row"><span>${b.l}</span><b>${RMs(b.cur)} / ${RMs(b.tgt)}</b></div>${pbar(b.pc, b.ok?'ok':b.next?'':'warn')}</div>`).join('')}
+      <p class="rf-note">${elOn()?ic('check'):ic('alert')}${elStatus()}</p></section>`)() : '';
   const lastOf = n => (RF_H.find(r=>r.n===n)||{}).d;
   const fr = f => { const amt = f.share*(f.l2?120:rfL1()); const last = lastOf(f.n);
     return `<div class="rf-fr">${img(f.av,f.n)}<span class="rf-col"><b>${vName(f)}${f.host?'<span class="rfc-h" style="margin-left:4px; vertical-align:-2px" aria-label="Host">H</span>':''}</b><small>${f.via?'Joined through '+f.via:f.v?'Active since '+(RN_JOIN[f.n]||'23 Oct 2026'):'Rewards start after verification'}</small></span>${f.v?`<span class="rf-amt">+${RM(amt)}</span>`:''}${f.v?'':`<button class="rf-chat" data-act="rfChat" data-n="${esc(f.n)}" aria-label="Remind ${esc(f.n)} to verify">${ic('chat')}Chat</button>`}</div>`; };
@@ -4740,7 +4904,7 @@ V.rewards = () => { const ok = kycOk(); const bal = rfBal(); const canW = bal >=
     <div class="pad16" style="padding-top:4px"><section class="rw-card"><div class="rf-row"><small>Total rewards</small><span class="rf-tags">${rfTierTags()}</span></div><b>${RM(bal)}</b>
       <button class="btn" data-act="${canW?'sheet':'noop'}" data-s="wdSheet" ${canW?'':'aria-disabled="true"'}>Withdraw</button>
       ${canW?'':'<small class="rw-cap">Minimum withdraw amount is RM100.</small>'}</section>
-      <p class="rw-rate">${ic('info')}<span>You get <b>${T().ref}%</b> from direct referrals${shActive()?`, <b>${RF_SH2}%</b> from indirect referrals and <b>${RF_SH_MC}%</b> of merchant cashback`:''}.${shPast()?` Elite ended ${SH_END}, past rewards stay.${T().key!=='svip'?' <button class="link" data-act="upgrade">Get SVIP for 0.4%</button>':''}`:''}</span></p></div>
+      <p class="rw-rate">${ic('info')}<span>You get <b>${T().ref}%</b> from direct referrals${shActive()?`, <b>${RF_SH2()}%</b> from indirect referrals and <b>${RF_SH_MC}%</b> of merchant cashback`:''}.${shPast()?` Elite ended ${SH_END}, past rewards stay.${T().key!=='svip'?' <button class="link" data-act="upgrade">Get SVIP for 0.4%</button>':''}`:''}</span></p></div>
     ${fn?`<div class="pad16" style="margin-top:12px"><button class="rw-fchip" data-act="rwFriendClear">${ic('person')}Rewards from ${fn}${ic('close')}</button></div>`:''}
     <div class="chips" style="margin-top:4px; ${fn?'display:none':''}">${filters.map(([k,l])=>`<button class="ptab ${f===k?'on':''}" data-act="rwf" data-k="${k}" aria-pressed="${f===k}">${l}</button>`).join('')}</div>
     <div class="pad16">${shown.length ? months.map(m=>`<h3 class="rw-m">${m}</h3>${shown.filter(i=>i.m===m).map(row).join('')}`).join('')
@@ -4767,7 +4931,7 @@ V.rewardDetail = (notif) => { const id = S.rwId; const ref = 'RW'+String(id).toU
       'Every month, one active Elite is picked at random to win a fixed prize. Your win goes straight to your Rewards.');
   const r = RF_H.find(x=>x.id===id) || RF_H[0]; const a = rfAmt(r);
   const rows = r.l===2
-    ? [['Reward type','Indirect Referral'],['From',r.n],['Elite bonus',RF_SH2+'%'],['Date',r.d],['Reference',ref],['Total rewards',RM(a)]]
+    ? [['Reward type','Indirect Referral'],['From',r.n],['Elite bonus',RF_SH2()+'%'],['Date',r.d],['Reference',ref],['Total rewards',RM(a)]]
     : [['Reward type','Direct Referral'],['From',r.n],['Your bonus',`${rfRate(r.l)}% ${shPast()?'':rdTier()}`],['Date',r.d],['Reference',ref],['Total rewards',RM(a)]];
   return rdPage(a, rows, notif); };
 V.rewardNotif = () => V.rewardDetail(true);
@@ -4957,11 +5121,13 @@ ORDER[0][1].splice(ORDER[0][1].indexOf('confirm')+1, 0, 'pin', 'processing');
 
 
 /* ---------- Pay flow (3.1 Figma node 3:3371) ---------- */
-const GAS = 1.00, MIN_PAY = 20;
+const GAS = 1.00, MIN_PAY = 0; /* V2: no minimum payment */
 const myrt = v => v.toLocaleString('en-MY',{minimumFractionDigits:2, maximumFractionDigits:2});
 const tierBadge = t => `<span class="tbadge ${t.key}">${ic('crown')}${t.key==='free'?'FREE':t.name}</span>`;
-const spFees = amt => { const t = T(); const fee = amt>0?feeFor(amt):0; const gas = amt>0?GAS:0; return {fee, gas, total: Math.round((amt+fee+gas)*100)/100}; };
-V.confirm = () => { const p = S.pay; const m = MERCH[p.id]; const t = T(); const amt = +p.amt || 0; const {fee, gas, total} = spFees(amt);
+/* V2: no gas fee on Scan and Pay (fee docs: no gas line). Elite 1-3 get the own fee rebate in Phase 2. */
+const spFees = amt => { const fee = amt>0?feeFor(amt):0; const reb = rebFor(amt); return {fee, gas:0, reb, total: Math.round((amt+fee-reb)*100)/100}; };
+const rebRow = reb => reb ? `<div class="kv"><span>${elName()} fee rebate</span><b class="pos"><i class="sp-pct g">${elLv().reb.toFixed(2)}%</i>-${reb.toFixed(2)}</b></div>` : '';
+V.confirm = () => { const p = S.pay; const m = MERCH[p.id]; const t = T(); const amt = +p.amt || 0; const {fee, gas, reb, total} = spFees(amt);
   const overLim = amt > t.per; const low = total > bal(); const under = !m.fixed && amt>0 && amt < MIN_PAY; const zero = amt<=0; const short = Math.max(0, total-bal());
   const tu = [50,100,120,240].find(v=>v>=short) || Math.ceil(short);
   const off = overLim||zero||under;
@@ -4973,8 +5139,7 @@ V.confirm = () => { const p = S.pay; const m = MERCH[p.id]; const t = T(); const
       ${overLim?`<small class="sp-err">This is above your ${RM(t.per,0)} per-payment limit on ${t.name}.</small>`:under?`<small class="sp-err">minimum payment is RM ${MIN_PAY}</small>`:''}
       ${m.fixed?'':`<div class="sp-chips c">${[50,100,120,240].map(v=>`<button class="${+p.amt===v?'on':''}" data-act="amtChip" data-v="${v}">${v}</button>`).join('')}</div>`}</div>
     <div class="kvbox sp-box">
-      <div class="kv"><span>Gas Fee</span><b>${gas.toFixed(2)}</b></div>
-      <div class="kv"><span class="sp-pf">Payment Fee ${tierBadge(t)}</span><b><i class="sp-pct g">${t.fee.toFixed(2)}%</i>${fee.toFixed(2)}</b></div>
+      <div class="kv"><span class="sp-pf">Payment Fee ${tierBadge(t)}</span><b><i class="sp-pct g">${t.fee.toFixed(2)}%</i>${fee.toFixed(2)}</b></div>${rebRow(reb)}
       <div class="kv"><span>Pay from</span><b>YouWallet · MYRT ${myrt(bal())}</b></div></div>
     ${low&&!zero?`<div class="sp-short">${ic('alert')}<span><b>${RM(short)} short</b>Wallet MYRT ${myrt(bal())}. Top up and pay in one step below.</span></div>`:''}
     ${overLim&&NEXT[t.key]?`<button class="sp-unlock" data-act="upgrade"><span><b>Unlock More Rewards</b><small>Upgrade for more referral rewards and higher payment limits.</small></span>${ic('chev')}</button>`:''}
@@ -4982,7 +5147,7 @@ V.confirm = () => { const p = S.pay; const m = MERCH[p.id]; const t = T(); const
   </div></div>
   <div class="w2foot sp-foot">${btn(label, off?'noop':low?'spTopUp':'spPay', {loading:S.busy, disabled:off||S.busy})}<p class="t-caption subtle" style="margin:0; text-align:center">The recipient receives ringgit instantly. You keep the memory and the cashback.</p></div>
   ${(!m.fixed && (low||overLim)) ? '' : keypad()}</div>`; };
-V.done = () => { const p = S.pay; const m = MERCH[p.id]; const t = T(); const amt = +p.amt; const {fee, gas, total} = spFees(amt); const cbOn = P()>=4 && m.cbRate; const cb = cbOn ? amt*m.cbRate/100*t.cb/100 : 0;
+V.done = () => { const p = S.pay; const m = MERCH[p.id]; const t = T(); const amt = +p.amt; const {fee, gas, reb, total} = spFees(amt); const cbOn = P()>=4 && m.cbRate; const cb = cbOn ? amt*m.cbRate/100*t.cb/100 : 0;
   const used = usedMon()+total;
   return `<div class="screen">${statusBar()}${topBar('Scan and Pay')}
   <div class="scroll"><div class="success" style="padding-top:4px">${cele()}<small class="sp-paid">Paid</small><b class="sp-big">RM ${amt.toLocaleString('en-MY',{maximumFractionDigits:2})}</b><span class="t-body subtle">to ${m.name} · DuitNow QR</span></div>
@@ -4990,15 +5155,13 @@ V.done = () => { const p = S.pay; const m = MERCH[p.id]; const t = T(); const am
     <div class="kv"><span>Updated Balance</span><b>MYRT ${myrt(Math.max(0,bal()-total))}</b></div>
     <div class="kv"><span>Reference</span><b>YA-2610-0941</b></div>
     ${cbOn?`<div class="kv"><span>Cashback</span><b class="pos">+${RM(cb)}</b></div>`:''}
-    <div class="kv"><span>Gas Fee</span><b>${gas.toFixed(2)}</b></div>
-    <div class="kv"><span class="sp-pf">Payment Fee ${tierBadge(t)}</span><b><i class="sp-pct g">${t.fee.toFixed(2)}%</i>${fee.toFixed(2)}</b></div>
+    <div class="kv"><span class="sp-pf">Payment Fee ${tierBadge(t)}</span><b><i class="sp-pct g">${t.fee.toFixed(2)}%</i>${fee.toFixed(2)}</b></div>${rebRow(reb)}
     <div class="kv"><span>Date</span><b>23 Oct 2026, 6:25 pm</b></div></div>
-    ${cbOn?`<div class="sp-used"><div class="bz-row"><span>Cashback Used</span><b>${RM(used)} / ${RM(t.mon,0)}</b></div>${pbar(Math.min(100,used/t.mon*100))}</div>`:''}
   </div></div>
   <div class="w2foot">${btn('Done','home')}${btn('Share this moment','shrPay',{kind:'btn-secondary'})}</div></div>`; };
 Object.assign(META, {
-  confirm:{name:'Scan and Pay', ph:1, fb:['F4'], rules:['From the 3.1 Figma pay flow (node 3:3371).','You Pay with amount chips 50 / 100 / 120 / 240 and the keypad. Below RM20: “Minimum payment is RM 20”, Pay off.','Fees: Gas Fee (RM1.00) and Payment Fee with the tier badge (FREE / VIP / SVIP) and rate (2.00 / 1.85 / 1.70%, RM1.50 minimum for Free and VIP). Pay from YouWallet · MYRT.','Enough balance: Pay Now. Low balance: “RMx short” and Top Up & Pay RMx (smallest chip that covers it).','Above the per-payment limit: red message, Unlock More Rewards card (opens Choose your plan), button off.','Fixed-price QR: no chips or keypad.','RM100 or more asks for the PIN.'], open:['Figma fixed-price frames still show the keypad; the prototype hides it because the amount can’t change.']},
-  done:{name:'Paid', ph:1, rules:['3.1 Figma Transfer Complete: Updated Balance, Reference, Cashback (merchants with cashback), Gas Fee, Payment Fee with tier badge and rate, Date.','With cashback: a usage bar under the receipt.'], open:['Figma labels the bar “Cashback Used RM4,422 / RM15,000”, but RM15,000 is the Free monthly payment limit. Prototype labels it “Used this month”. Confirm which it is.']},
+  confirm:{name:'Scan and Pay', ph:1, fb:['F4'], rules:['From the 3.1 Figma pay flow (node 3:3371).','You Pay with amount chips 50 / 100 / 120 / 240 and the keypad. V2: no minimum payment amount (was RM20). Any amount above RM0 can be paid; the RM1.50 minimum fee still applies on Free/VIP.','V2: no Gas Fee row (fee docs have no gas line). Elite 1-3 in Phase 2 see an own fee rebate row (0.10 / 0.20 / 0.30%). Payment Fee with the tier badge (FREE / VIP / SVIP) and rate (2.00 / 1.85 / 1.70%, RM1.50 minimum for Free and VIP). Pay from YouWallet · MYRT.','Enough balance: Pay Now. Low balance: “RMx short” and Top Up & Pay RMx (smallest chip that covers it).','Above the per-payment limit: red message, Unlock More Rewards card (opens Choose your plan), button off.','Fixed-price QR: no chips or keypad.','RM100 or more asks for the PIN.'], open:['Figma fixed-price frames still show the keypad; the prototype hides it because the amount can’t change.']},
+  done:{name:'Paid', ph:1, rules:['Updated Balance, Reference, Cashback (merchants with cashback), Payment Fee with tier badge and rate, own fee rebate (Elite 1–3, Phase 2), Date.','V2: no Gas Fee row and no Cashback Used bar.']},
 });
 
 
@@ -5038,7 +5201,7 @@ const MIN_FLOAT = 100;
 const mLocked = m => m.left < MIN_FLOAT;
 const mOn = m => !mLocked(m) && !(S.mOff||{})[m.id];
 const mSw = m => `<button class="switch ${mOn(m)?'on':''}" role="switch" aria-checked="${mOn(m)}" aria-label="Merchant cashback for ${m.name}" data-act="mTog" data-id="${m.id}"${mLocked(m)?' aria-disabled="true"':''}><i></i></button>`;
-const mEmpty = (cls='') => `<div class="hs-emp ${cls}"><span class="hs-empi">${ic('store')}</span><b>No merchants registered yet</b><small>You haven’t added any partner businesses yet. Start onboarding your first merchant today and grow your network! Contact YouApp admin to register a merchant.</small></div>`;
+const mEmpty = (cls='') => `<div class="hs-emp ${cls}"><span class="hs-empi">${ic('store')}</span><b>No merchants registered yet</b><small>You haven’t added any partner businesses yet. Start onboarding your first merchant today and grow your network! Tap Add a Merchant and fill in a short form.</small></div>`;
 const hsState = m => !mOn(m) ? ['paused','Paused'] : hsPct(m)<20 ? ['low','Low'] : ['ok','Healthy'];
 const hsThumb = (m, cls='') => m.img ? `<img class="hs-th ${cls}" src="${HS_IMG[m.img]}" alt="">` : `<span class="hs-th ini ${cls}">${m.ini}</span>`;
 const hsMid = m => `<b>${m.name}</b><small>DuitNow merchant · YouApp partner</small><small>Registered in ${m.reg}</small>`;
@@ -5074,7 +5237,7 @@ V.business = () => { const sh = shActive(); const hide = S.hsHide; const ms = hs
         <small>RM</small><b>${hide?'••••':'0.00'}</b>
         <em>12 sessions · 4.9 ★ from 86 guests</em></section>
       <div class="hs-qa">
-        <button data-act="createExp">${ic('plus')}<b>Create Activity</b></button>
+        <button data-act="createSvcW">${ic('plus')}<b>Create Service</b></button>
         <button data-act="plansSheet">${ic('cal')}<b>Plans</b></button>
         <button data-act="availability">${ic('sliders')}<b>Availability</b></button>
         </div>
@@ -5109,9 +5272,9 @@ const bzHostBecome = () => { const idOk = kycOk(); const chip = d => `<span clas
     if (role==='host' && isHostRole()) { const h = _hostV(); const i = h.indexOf('<div class="scroll"'); return h.slice(0,i) + seg + h.slice(i); }
     let body, foot = '', cls = '';
     if (role==='host') { body = bzHostBecome(); foot = btn('Become a Host','nav',{data:'data-to="becomeHost"'}); }
-    else if (role==='elite') { if (shNot()) { body = bzJoin('elite','Become an Elite','Join and work closely with the YouApp Team.'); foot = `<button class="btn btn-primary bz-cta" data-act="contactAdmin" data-k="Elite">${ic('phone')}Contact Admin</button>`; }
+    else if (role==='elite') { if (shNot()) { body = bzJoin('elite','Become an Elite','Join and work closely with the YouApp Team.'); foot = `<button class="btn btn-primary bz-cta" data-act="contactAdmin" data-k="Elite">${scen.sh==='pending'?'View my request':'Become Elite'}</button>`; }
       else { S._body = 1; body = V.superhost(); S._body = 0; cls = 'sp'; } }
-    else { if (!isMerch()) { body = bzJoin('merchant','Become Merchant','To register as a Merchant, please contact our admin. They’ll guide you through the requirements and next steps.'); foot = `<button class="btn btn-primary bz-cta" data-act="contactAdmin" data-k="Merchant">${ic('phone')}Contact Admin</button>`; }
+    else { if (!isMerch()) { body = bzJoin('merchant','Become Merchant',scen.mreq==='pending'?'Your merchant request is in review. We’ll reply within 48 hours.':'Fill in a short form about your business. We review every request within 48 hours.'); foot = `<button class="btn ${scen.mreq==='pending'?'btn-secondary':'btn-primary'} bz-cta" data-act="mcApplyOpen" data-mode="self">${scen.mreq==='pending'?'View my request':'Become Merchant'}</button>`; }
       else { const m = OWN_SHOP(); S._m = m; S._own = 1; S._body = 1; body = `<div class="hs-pad md-col bz-own"><div class="md-head"><img class="md-th" src="${HS_IMG[m.img]}" alt=""><span><b>${m.name}</b><small>DuitNow merchant · YouApp partner</small><small>Registered in ${m.reg}</small></span></div>` + V.merchDetail().replace(/^<div class="hs-pad md-col">\s*<div class="md-head">[\s\S]*?<\/div>/,'') ; S._body = 0; S._own = 0; S._m = null; cls = 'md'; } }
     return `<div class="screen bz hs ${cls}">${statusBar()}${hsTabs()}${seg}<div class="scroll" style="padding-bottom:${foot?110:28}px">${body}</div>${foot?`<div class="w2foot">${foot}</div>`:''}</div>`; };
 }
@@ -5138,41 +5301,51 @@ const SH_SINCE = '24 Oct 2026';
 const poolRow = () => `<button class="pz-row" data-act="shRw" data-k="pz"><span class="pz-ic">${ic('pool')}</span><span class="pz-t"><b>Prize pool</b></span><b class="pz-v">${RM(pzSum())}</b></button>`;
 const SH_VOL = {'Catherine Lee':12400, 'Daniel Ed':9850, 'Lee Kwang Soo':4120, 'Mei Lin':0, 'Amir Hakim':3600, 'Siti Aisyah':2250};
 const shEarn = () => { const ind = 120, mc = mcVis().reduce((s,r)=>s+mcAmt(r),0), pz = pzSum(); return {ind, mc, pz, tot:ind+mc}; }; // prize wins are not earnings: shown in the Prize pool card
-const shBanner = () => { if (shNot())
+const shBanner = () => { if (scen.sh==='pending')
+    return `<button class="yb-cta sh-cta" data-act="elApplyOpen"><span class="yb-ci">${ic('clock')}</span><span class="yb-ct"><b>Elite request in review</b><small>We’ll reply within 48 hours</small></span><span class="yb-pill">View</span></button>`;
+  if (shNot())
     return `<button class="yb-cta sh-cta" data-act="shJoinOpen"><span class="yb-ci">${ic('crown')}</span><span class="yb-ct"><b>Unlock Elite Benefits</b><small>Enjoy exclusive perks and bonuses</small></span><span class="yb-pill">Apply Now</span></button>`;
-  if (!shActive()) return ''; const c = crit(); const met = c.vol>=100000 && c.users>=30; const warn = SH_DUE.left<=7 && !met;
-  const sub = met ? 'Criteria met · you\u2019re on track' : warn ? `${Math.max(0,30-c.users)} more verified referrals needed` : `${RM(shEarn().tot)} earned · keep it by ${SH_DUE.d.replace(' 2026','')}`;
-  return `<button class="yb-cta sh-cta ${warn?'warn':''}" data-act="nav" data-to="superhost"><span class="yb-ci">${ic(warn?'clock':'crown')}</span><span class="yb-ct"><b>${warn?`Elite ends in ${SH_DUE.left} days`:'Elite'}</b><small>${sub}</small></span><span class="yb-pill">View</span></button>`; };
+  if (!shActive()) return ''; const met = elOn(); const warn = !met && elStage()==='first90';
+  const sub = met ? 'Target met · you\u2019re on track' : warn ? `${RMs(100000-62000)} more volume by ${SH_DUE.d}` : `${RM(shEarn().tot)} earned · keep it by ${SH_DUE.d}`;
+  return `<button class="yb-cta sh-cta ${warn?'warn':''}" data-act="nav" data-to="superhost"><span class="yb-ci">${ic(warn?'clock':'crown')}</span><span class="yb-ct"><b>${warn?`${elName()} · first 90 days`:elName()}</b><small>${sub}</small></span><span class="yb-pill">View</span></button>`; };
+const elPoolsHtml = () => { const p2 = FPH()===2, ul = LVL()>0;
+  const row = (t, sub, v, on) => `<div class="el-prow ${on?'':'off'}"><span><b>${t}</b><small>${sub}</small></span><span class="el-pv">${on?RM(v,0):'—'}<em>${on?'Locked':p2?'Elite 1+ only':'Phase 2'}</em></span></div>`;
+  return `<section class="sp-card el-pools"><div class="sp-h"><b>Scheme pools</b><span class="sp-due">${ic('lock')}Display only</span></div>
+    ${row('Cashback pool','20% of every merchant cashback · Elite and up', 2140, true)}
+    ${row('Transaction pool','0.20% of every payment · Elite 1, 2, 3', 18450, p2 && ul)}
+    <p class="el-note">No payout or redemption until management sets the criteria.</p></section>`; };
 const shNot = () => scen.sh==='none' || scen.sh==='pending'; // no "applied" state any more: becoming an Elite goes through Support on WhatsApp
 const WA_IC = '<svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2Zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.8 11.9 11.9 0 0 0 4.6 4c1.7.7 2.4.8 3.2.7.5-.1 1.5-.6 1.8-1.2.2-.6.2-1.1.1-1.2l-.4-.3Z"/></svg>';
-const shGap = () => { const c = crit(); const u = Math.max(0,30-c.users), v = Math.max(0,100000-c.vol);
-  return u && v ? `${u} more verified referrals and ${RMs(v)} more volume to qualify.` : u ? `${u} more verified referrals to qualify.` : v ? `${RMs(v)} more volume to qualify.` : ''; };
+const shGap = () => 'No referral or volume minimum to apply. Fill in a short form and management reviews it within 48 hours.';
 V.superhost = () => { const st = scen.sh==='pending' ? 'none' : scen.sh; const e = shEarn(); const c = crit(); const okV = c.vol>=100000, okU = c.users>=30;
   const tab = S.shTab || 'all';
   const head = st==='none' ? `<section class="sp-hd"><i class="hs-orb"></i><span class="sp-badge">${ic('crown')}Not an Elite yet</span><b class="sp-h1">Become an Elite</b><p>Earn more from your referrals’ payments and the merchants you bring in.</p>
-        <div class="sp-perks"><span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Free SVIP</span><span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>${RF_SH2}% referral bonus</span><span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>${RF_SH_MC}% merchant cashback</span></div></section>`
-    : `<section class="sp-hd"><i class="hs-orb"></i><span class="sp-badge el ${st==='revoked'?'end':''}">${st==='revoked' ? 'Elite ended on '+SH_END : 'Elite since '+SH_SINCE}</span>
+        <div class="sp-perks"><span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>Free SVIP</span><span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>${RF_SH2()}% referral bonus</span><span><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>${RF_SH_MC}% merchant cashback</span></div></section>`
+    : `<section class="sp-hd"><i class="hs-orb"></i><span class="sp-badge el ${st==='revoked'?'end':''}">${st==='revoked' ? 'Elite ended on '+SH_END : elName()+' · since '+SH_SINCE}</span>
         <small>RM</small><b>${RM(e.tot).replace(/^RM\s?/,'')}</b>
         <div class="sp-split"><button data-act="shRw" data-k="l2"><small>Referral bonus</small><b>${RM(e.ind)}</b></button><button data-act="shRw" data-k="mc"><small>Merchant cashback</small><b>${RM(e.mc)}</b></button></div>
       </section>`;
   const bar = (l, cur, tgt, pc, ok) => `<div class="sp-c"><div class="sp-ch"><span>${l}</span><b>${cur} <small>/ ${tgt}</small></b></div><div class="sp-bar ${ok?'ok':''}" role="progressbar" aria-valuenow="${Math.round(pc)}" aria-valuemin="0" aria-valuemax="100" aria-label="${l}"><i style="width:${pc}%"></i></div></div>`;
   const met = okV&&okU;
-  const progNo = `<section class="sp-card"><div class="sp-h"><b>Your progress</b><span class="sp-due">${ic('clock')}Last 60 days</span></div>
-      ${bar('Referral volume', RMs(c.vol), RMs(100000), Math.min(100, c.vol/1000), okV)}
-      ${bar('Verified referrals', c.users, 30, Math.min(100, c.users/30*100), okU)}
-      <p class="sp-st ${met?'ok':''}">${met ? ic('check')+'You meet both criteria. Contact Support to become an Elite.' : ic('info')+shGap()+' Support can also review you early.'}</p>
+  const progNo = `<section class="sp-card"><div class="sp-h"><b>How Elite works</b><span class="sp-due">${ic('clock')}Review in 48h</span></div>
+      ${elHowHtml()}
       <button class="sp-link" data-act="sheet" data-s="shInfo">See criteria and benefits${ic('chev')}</button></section>`;
-  const prog = st==='none' ? progNo : st!=='active' ? '' : `<section class="sp-card"><div class="sp-h"><b>Elite Progress</b><span class="sp-due">${ic('clock')}${SH_DUE.left} days left</span></div>
-      ${bar('Referral volume', RMs(c.vol), RMs(100000), Math.min(100, c.vol/1000), okV)}
-      ${bar('Verified referrals', c.users, 30, Math.min(100, c.users/30*100), okU)}
-      <p class="sp-st ${okV&&okU?'ok':''}">${okV&&okU ? ic('check')+'On track. Keep it up until '+SH_DUE.d+'.' : ic('alert')+'Reach both by '+SH_DUE.d+' to stay Elite.'}</p>
+  const eb = elBars();
+  const progEnd = `<section class="sp-card sp-paused"><div class="sp-h"><b>Elite progress</b><span class="sp-due pz">${ic('pause')}Paused</span></div>
+      ${eb.map(b=>bar(b.l, RMs(b.cur), RMs(b.tgt), b.pc, false)).join('')}
+      <p class="sp-st">${ic('info')}Your Elite ended on ${SH_END}. Progress is paused and new volume doesn’t count until you’re an Elite again.</p>
+      <button class="btn btn-primary sp-reapply" data-act="sheet" data-s="elReWa">Reapply as Elite</button></section>`;
+  const prog = scen.sh==='pending' ? elReviewCard() : st==='none' ? progNo : st==='revoked' ? progEnd : st!=='active' ? '' : `<section class="sp-card"><div class="sp-h"><b>${elName()} progress</b><span class="sp-due">${ic('clock')}${elDue().lab}</span></div>
+      ${eb.map(b=>bar(b.l, RMs(b.cur), RMs(b.tgt), b.pc, b.ok)).join('')}
+      <p class="sp-st ${elOn()?'ok':''}">${elOn() ? ic('check') : ic('alert')}${elStatus()}</p>
+      <p class="el-note">${elNextNote()}</p>
       <button class="sp-link" data-act="sheet" data-s="shInfo">See criteria and benefits${ic('chev')}</button></section>`;
   const win = pzVis()[0];
   const pool = `<button class="pz-card ${st==='active'?'':'off'}" data-act="sheet" data-s="pzHow">
       <div class="pz-top"><span class="pz-wi">${PZ_WHEEL}</span><span class="pz-tt"><b>Prize pool</b><span class="pz-tags"><em class="pz-tag ${st==='active'?'ok':'no'}">${st==='active'?'Eligible':'Not eligible'}</em></span></span>
         <span class="pz-amt"><b>RM ${PZ_POOL.toLocaleString('en-MY')}</b><small>${ic('trend7')}+${RM(PZ_TODAY,0)} added today</small></span></div>
       <p class="pz-txt">${st==='active' ? 'You’re part of the program and the pool will keep growing. Aim higher to boost your chances of winning.' : st==='none' ? 'Only Elites join the draw. Become one to get a chance to win.' : 'Meet the Elite criteria again to rejoin the program and get a chance to win.'}</p>
-      <span class="pz-ft"><small class="pz-soon">Reward criteria coming soon.</small>${ic('chev')}</span></button>`;
+      <span class="pz-ft"><small class="pz-soon">Reward criteria coming soon.</small>${ic('chev')}</span></button>` + (st!=='active' ? '' : elPoolsHtml());
   const ms = hsList(); const paused = ms.filter(m=>!mOn(m)).length;
   const merch = st!=='active' ? '' : `<section><h3 class="sp-t">Your merchants</h3>${ms.length ? `<button class="sp-row" data-act="hsAll"><span class="sp-ri">${ic('store')}</span><span class="sp-rt"><b>${ms.length} merchant${ms.length>1?'s':''}</b><small>${paused ? paused+' paused · float under RM100' : 'All active'}</small></span>${ic('chev')}</button>` : `<button class="sp-row" data-act="hsAll"><span class="sp-ri">${ic('store')}</span><span class="sp-rt"><b>No Registered Merchants</b><small>You haven’t registered any merchants yet. Add a merchant to get started.</small></span>${ic('chev')}</button>`}</section>`;
   const pk = S.spP || 'all'; const vv = n => spVolP(n, pk); const inSheet = SP_MORE.some(x=>x[0]===pk);
@@ -5184,15 +5357,15 @@ V.superhost = () => { const st = scen.sh==='pending' ? 'none' : scen.sh; const e
   const refs = `<section><div class="sp-h2"><h3 class="sp-t">Referrals</h3><button class="sp-net" data-act="nav" data-to="refNet">Referral network${ic('chev')}</button></div>
       <div class="md-mf" role="group" aria-label="Period">${SP_QUICK.map(([k,l])=>`<button class="${k===pk?'on':''}" data-act="spPer" data-k="${k}" aria-pressed="${k===pk}">${l}</button>`).join('')}<button class="sp-more ${inSheet?'on':''}" data-act="sheet" data-s="spPeriod" aria-haspopup="dialog">${ic('cal')}${inSheet?SP_MORE.find(x=>x[0]===pk)[1]:'More'}${ic('chevdown')}</button></div>
       ${grp('Direct referrals', dir)}${grp('Indirect referrals', ind)}</section>`;
-  const fab = st==='none' ? `<div class="sp-fab"><button class="btn btn-primary" data-act="sheet" data-s="shWa">${WA_IC}Contact Support to become Elite</button></div>` : '';
+  const fab = scen.sh==='pending' ? `<div class="sp-fab"><button class="btn btn-secondary" data-act="elApplyOpen">View my request</button></div>` : st==='none' ? `<div class="sp-fab"><button class="btn btn-primary" data-act="elApplyOpen">Apply to become an Elite</button></div>` : '';
   if (S._body) return `<div class="hs-pad sp-col">${head}${pool}${prog}${merch}${refs}</div>`;
   return `<div class="screen bz hs sp">${statusBar()}${topBar('Elite')}
   <div class="scroll" style="padding-bottom:${fab?104:28}px"><div class="hs-pad sp-col">
     ${head}${pool}${prog}${merch}${refs}
   </div></div>${fab}</div>`; };
-SHEETS.shWa = () => { const c = crit(); const msg = `Hi YouApp Support, I'd like to become an Elite. My account: ${RF_ME.handle}. Progress (last 60 days): ${c.users}/30 verified referrals, ${RMs(c.vol)}/RM100k referral volume.`;
+SHEETS.shWa = () => { const c = crit(); const msg = `Hi YouApp Support, I'd like to apply to become an Elite. My account: ${RF_ME.handle}.`;
   return `<div class="grab"></div><div class="stack" style="gap:14px">
-    <div><h2 class="t-title" style="margin:0 0 4px">Contact Support on WhatsApp</h2><p class="t-body muted" style="margin:0">We’ll open WhatsApp with this message ready. Our team checks your progress and helps you become an Elite.</p></div>
+    <div><h2 class="t-title" style="margin:0 0 4px">Contact Support on WhatsApp</h2><p class="t-body muted" style="margin:0">We’ll open WhatsApp with this message ready. Management reviews your application within 48 hours.</p></div>
     <div class="sh-wa-msg"><small>Message</small><p>${esc(msg)}</p></div>
     <div class="hint">${ic('info')}<span>Support replies within 48 hours on working days. You’ll get a notification once your Elite status is on.</span></div>
     <button class="btn btn-primary sh-wa-btn" data-act="shWaGo">${WA_IC}Open WhatsApp</button>${btn('Cancel','closeSheet',{kind:'btn-tertiary'})}</div>`; };
@@ -5301,8 +5474,8 @@ Object.assign(META, {business: Object.assign({}, META.business, {name:'YouPage �
   myMerch:{name:'Merchant dashboard (own shop)', ph:4, rules:['Float with Top Up, Show QR, Vouchers, Insights, Today, vouchers strip, cashback settings.','Back returns to the merchant list.']}});
 
 V.regMerchants = () => { const ms = hsList(); const RG_IMG = ['mer1','mer2','mer4','mer3'];
-  if (!ms.length) return `<div class="screen bz hs">${statusBar()}${topBar('Registered Merchant')}<div class="scroll" style="padding-bottom:110px">${bzJoin('reg','Let’s Add a Merchant','Register merchants and earn a reward every time they get a transaction. To get started, contact our admin')}</div>
-    <div class="w2foot"><button class="btn btn-primary bz-cta" data-act="contactAdmin" data-k="Merchant">${ic('phone')}Contact Admin</button></div></div>`;
+  if (!ms.length) return `<div class="screen bz hs">${statusBar()}${topBar('Registered Merchant')}<div class="scroll" style="padding-bottom:110px">${bzJoin('reg','Let’s Add a Merchant','Register merchants and earn a reward every time they get a transaction. Fill in a short form for each shop you bring in.')}</div>
+    <div class="w2foot"><button class="btn btn-primary bz-cta" data-act="mcApplyOpen" data-mode="elite">Add a Merchant</button></div></div>`;
   return `<div class="screen bz hs">${statusBar()}${topBar('Registered Merchant')}<div class="scroll" style="padding-bottom:24px"><div class="pad16 rg-list">
     ${ms.map((m,i)=>{ const on = mOn(m); return `<button class="rg-card" data-act="hsOpen" data-id="${m.id}"><img src="${m.img&&HS_IMG[m.img]?HS_IMG[m.img]:IMG[RG_IMG[i%4]]}" alt=""><em class="rg-st ${on?'on':'off'}">${on?'Active':'Paused'}</em><span class="rg-b"><b>${m.name}</b><small>Cashback ${m.rate}%</small></span></button>`; }).join('')}
   </div></div></div>`;
@@ -5426,16 +5599,21 @@ const ybCard = (t, ok) => { const hide = S.balHide; const nx = t.key!=='svip' ? 
     : ctaRow('svip','upgrade','Go SVIP, one time payment','Lowest fees, most benefits','Upgrade');
   const myrt = (window.XS_TOKW && window.XS_TOKW.MYRT) ? `<img class="yb-tk" src="${window.XS_TOKW.MYRT}" alt="">` : '';
   const book = ok ? `<div class="yb-slide"><section class="yb-card book"><span class="yb-leaf">${LEAF}</span><i class="yb-orb"></i>
-    <div class="yb-top"><span>Booking Balance <button class="yb-info" data-act="toast" data-msg="Booking Balance holds what you pay for bookings until the session is done. It isn’t used for Scan to Pay." aria-label="About Booking Balance">${ic('info')}</button></span></div>
-    <small class="yb-cur">${myrt}MYRT</small>
-    <div class="yb-amt"><b>${S.balHide?'••••':'0.00'}</b><button class="yb-eye" data-act="balEye" aria-label="${S.balHide?'Show':'Hide'} balance">${ic(S.balHide?'eyeoff':'eye')}</button></div>
+    <div class="yb-top"><span>Booking Balance <button class="yb-info" data-act="toast" data-msg="Booking Balance holds what you pay for bookings until the session is done. It isn’t used for Scan to Pay." aria-label="About Booking Balance">${ic('info')}</button></span><button class="yb-eye yb-eye-top" data-act="balEye" aria-label="${S.balHide?'Show':'Hide'} balance">${ic(S.balHide?'eyeoff':'eye')}</button></div>
+    <small class="yb-cur" style="margin-top:auto">${myrt}MYRT</small>
+    <div class="yb-amt"><b>${S.balHide?'••••':'0.00'}</b></div>
     <span class="yb-foot"><b>1 MYRT = 1 MYR.</b> reserve held at trustee</span></section></div>` : '';
   return `<div class="yb-car"><div class="yb-slide"><div class="yb-wrap ${strip?'has':''}"><section class="yb-card ${t.key}"><span class="yb-leaf">${LEAF}</span><i class="yb-orb"></i>
-    <div class="yb-top"><span>YouWallet Balance</span>${ok?`<button class="yb-badge" data-act="tierInfo" aria-label="${t.name} tier benefits">${ic('crown')}${t.key==='free'?'Free Tier':t.name}${ic('chev')}</button>`:''}</div>
+    <div class="yb-top"><span>YouWallet Balance</span>${ok?`<button class="yb-badge" data-act="tierInfo" aria-label="${t.name} tier benefits">${ic('crown')}${t.key==='free'?'Free Tier':t.name}</button>`:''}</div>
     <small class="yb-cur">${myrt}MYRT</small>
     <div class="yb-amt"><b>${!ok?'0.00':hide?'••••':bal().toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2})}</b>${ok?`<button class="yb-eye" data-act="balEye" aria-label="${hide?'Show':'Hide'} balance">${ic(hide?'eyeoff':'eye')}</button>`:''}</div>
     ${ok?'<span class="yb-foot">reserve held at trustee · <b>1 MYRT = 1 MYR</b></span><div class="yb-acts"><button data-act="xsOpen">'+ic('xsUp')+'Send</button><button data-act="xsRecv">'+ic('xsDown')+'Receive</button></div>':`<span class="yb-foot">${ic('lock')}Wallet locked until KYC</span>`}
-  </section>${strip}</div></div>${book}</div>`; };
+  </section></div></div>${book}</div>`; };
+const ybStrip = (t, ok) => { const nx = t.key!=='svip' ? TIERS[NEXT[t.key]] : null; if (!ok || !nx) return '';
+  const row = (cls, act, title, sub, pill) => `<button class="yb-cta yp-vip ${cls}" data-act="${act}"><span class="yb-ci">${ic(cls==='warn'?'clock':'crown')}</span><span class="yb-ct"><b>${title}</b><small>${sub}</small></span><span class="yb-pill">${pill}</span></button>`;
+  return vipSoon() ? row('warn','renewVip','VIP ends in 3 days','Renew to keep your 1.85% fee','Renew')
+    : t.key==='free' ? row('','upgrade','Unlock more with VIP','Lower fees, more rewards','Upgrade')
+    : row('svip','upgrade','Go SVIP, one time payment','Lowest fees, most benefits','Upgrade'); };
 
 const tmRM = v => v>=1e6 ? 'RM'+(v/1e6)+'M' : 'RM'+v.toLocaleString('en-MY');
 SHEETS.tierInfo = () => { const t = T(); const nx = t.key!=='svip' ? TIERS[NEXT[t.key]] : null;
@@ -5452,7 +5630,7 @@ SHEETS.tierInfo = () => { const t = T(); const nx = t.key!=='svip' ? TIERS[NEXT[
   <div class="tm-cta">${cta}</div>`; };
 const MODALS = new Set(['tierInfo', 'shInfo']);
 /* Elite chip on the Business tab: benefits + criteria progress (rolling 60 days) */
-const SH_DUE = {d:'30 Nov 2026', left:34};
+const SH_DUE = { get d(){ return elDue().d; }, get left(){ return elDue().left; } };
 SHEETS.pzHow = () => { const on = scen.sh==='active'; const w = pzVis()[0];
   const pts = on ? [['check','You’re part of the program','You have a chance to win rewards from the pool.'],['trend7','The pool keeps growing','The prize pool will continue to grow. Aim higher to boost your chances of winning.'],['clock','Reward criteria coming soon','Stay tuned for the full requirements and reward details.']]
     : [['alert','You’re not in the program right now','Meet the Elite criteria again to rejoin and get a chance to win.'],['trend7','The pool keeps growing','The prize pool will continue to grow while you work your way back.'],['clock','Reward criteria coming soon','Stay tuned for the full requirements and reward details.']];
@@ -5463,26 +5641,23 @@ SHEETS.pzHow = () => { const on = scen.sh==='active'; const w = pzVis()[0];
   <div class="pzs-list">${pts.map(([i,a,b])=>`<div><span class="pzs-i">${ic(i)}</span><span><b>${a}</b><small>${b}</small></span></div>`).join('')}</div>
   ${btn('Got It','closeSheet')}`; };
 SHEETS.shInfo = () => { const c = crit(); const vp = Math.min(100, c.vol/1000), up = Math.min(100, c.users/30*100); const okV = c.vol>=100000, okU = c.users>=30;
-  if (shNot()) { const ben0 = [['userplus','Referral bonus', RF_SH2+'%'],['store','Merchant cashback', RF_SH_MC+'%'],['crown','SVIP', 'Free']];
+  if (shNot()) { const ben0 = [['userplus','Referral bonus', RF_SH2()+'%'],['store','Merchant cashback', RF_SH_MC+'%'],['crown','SVIP', 'Free']];
     const bar0 = (l, cur, tgt, p, ok) => `<div class="shm-c"><div class="shm-ch"><span>${l}</span><b>${cur} <small>/ ${tgt}</small></b></div><div class="shm-bar ${ok?'ok':''}" role="progressbar" aria-valuenow="${Math.round(p)}" aria-valuemin="0" aria-valuemax="100" aria-label="${l}"><i style="width:${p}%"></i></div></div>`;
     return `<button class="tm-x" data-act="closeSheet" aria-label="Close">${ic('close')}</button>
   <div class="tm-hd"><span class="tm-crown">${ic('starf')}</span><h2>Become an Elite</h2><p>Benefits once you're in</p></div>
   <div class="shm-ben">${ben0.map(([i,l,v])=>`<div><span class="tm-bi">${ic(i)}</span><b>${v}</b><small>${l}</small></div>`).join('')}</div>
-  <div class="shm-crit"><div class="shm-hd"><b>Criteria</b><span class="shm-due">${ic('clock')}Last 60 days</span></div>
-    ${bar0('Referral volume', RMs(c.vol), RMs(100000), vp, okV)}
-    ${bar0('Verified referrals', c.users, 30, up, okU)}
-    <p class="shm-st">${okV&&okU?ic('check')+'You meet both criteria.':shGap()} Only referrals who passed KYC count. Support can review you before both are met.</p></div>
-  <div class="tm-cta"><button class="btn btn-primary sh-wa-btn" data-act="sheet" data-s="shWa">${WA_IC}Contact Support</button></div>`; }
+  <div class="shm-crit"><div class="shm-hd"><b>How it works</b><span class="shm-due">${ic('clock')}Review in 48h</span></div>
+    ${elHowHtml()}</div>
+  <div class="tm-cta">${scen.sh==='pending' ? btn('View my request','elApplyOpen',{kind:'btn-secondary'}) : btn('Apply to become an Elite','elApplyOpen')}</div>`; }
   const earned = 120 + mcVis().reduce((s,r)=>s+mcAmt(r),0);
-  const ben = [['userplus','Indirect referrals', RF_SH2+'%'],['store','Merchant cashback', RF_SH_MC+'%'],['crown','SVIP', 'Free']];
+  const ben = [['userplus','Indirect referrals', RF_SH2()+'%'],['store','Merchant cashback', RF_SH_MC+'%'],rebFor(100)?['pct','Own fee rebate', elLv().reb.toFixed(2)+'%']:['crown','SVIP', 'Free']];
   const bar = (l, cur, tgt, p, ok) => `<div class="shm-c"><div class="shm-ch"><span>${l}</span><b>${cur} <small>/ ${tgt}</small></b></div><div class="shm-bar ${ok?'ok':''}" role="progressbar" aria-valuenow="${Math.round(p)}" aria-valuemin="0" aria-valuemax="100" aria-label="${l}"><i style="width:${p}%"></i></div></div>`;
   return `<button class="tm-x" data-act="closeSheet" aria-label="Close">${ic('close')}</button>
-  <div class="tm-hd"><span class="tm-crown">${ic('starf')}</span><h2>Elite</h2><p>${RM(earned)} earned since 1 Nov 2026</p></div>
+  <div class="tm-hd"><span class="tm-crown">${ic('starf')}</span><h2>${elName()}</h2><p>${RM(earned)} earned since 1 Nov 2026</p></div>
   <div class="shm-ben">${ben.map(([i,l,v])=>`<div><span class="tm-bi">${ic(i)}</span><b>${v}</b><small>${l}</small></div>`).join('')}</div>
-  <div class="shm-crit"><div class="shm-hd"><b>Stay an Elite</b><span class="shm-due">${ic('clock')}${SH_DUE.left} days left</span></div>
-    ${bar('Referral volume', RMs(c.vol), RMs(100000), vp, okV)}
-    ${bar('Verified referrals', c.users, 30, up, okU)}
-    <p class="shm-st">${okV&&okU?ic('check')+'On track. Keep it up until '+SH_DUE.d+'.':'Reach both by '+SH_DUE.d+' to keep Elite.'}</p></div>
+  <div class="shm-crit"><div class="shm-hd"><b>Stay ${elName()}</b><span class="shm-due">${ic('clock')}${elDue().lab}</span></div>
+    ${elBars().map(b=>bar(b.l, RMs(b.cur), RMs(b.tgt), b.pc, b.ok)).join('')}
+    <p class="shm-st">${elStatus()}</p></div>
   <div class="tm-cta">${btn('Close','closeSheet')}</div>`; };
 
 META.home.rules = ['Balance card: tier badge with an info icon (after KYC) opens the tier benefits modal: current plan vs the next tier, Upgrade and Compare all plans.','Strip under the card: Free → Unlock lower fees with VIP; VIP → Go Permanent with SVIP; VIP in its last 3 days → Renew now. SVIP and pre-KYC: no strip.','Eye icon hides the balance. Top Up, Pay, Bills, Mobile Reload tiles (Invite tile removed; referral stays reachable from Rewards, Refer and Settings). The old plan card is removed.', ...(META.home.rules||[]).slice(0,0)];
@@ -6151,9 +6326,9 @@ V.txReceipt = () => { const x = TXS.find(t=>t.id===S.txId)||TXS[0]; const top = 
       ${v3row('Transaction Type', top?'Top up · Ethereum':'DuitNow QR')}
       ${v3row('Timestamp', x.d)}${top?v3row('Confirmations','12 of 12'):''}</div></section>
     <section><h2 class="bl-cap">Payment detail</h2><div class="kvbox sp-box">
-      ${top?v3row('Top Up','50.00 USDT')+v3row('Exchange Rate','1 USDT = 4.21 MYRT')+v3row('Gas Fee','0.0001 USDT'):v3row('Payment',RM(a))+v3row('Gas Fee','RM1.00')}
+      ${top?v3row('Top Up','50.00 USDT')+v3row('Exchange Rate','1 USDT = 4.21 MYRT')+v3row('Gas Fee','0.0001 USDT'):v3row('Payment',RM(a))+v3row('Payment Fee',RM(feeFor(a)))}
       ${v3row('Payment method', top?'USDT wallet':'YouWallet · MYRT')}
-      ${v3row('Total', `${myrt(top?a:a+1)} MYRT`, 'total')}</div></section>
+      ${v3row('Total', `${myrt(top?a:a+feeFor(a))} MYRT`, 'total')}</div></section>
     <div class="bl-rcact"><button data-act="toast" data-msg="Saves the receipt as a PDF.">${ic('download')}Download</button><button data-act="toast" data-msg="Opens the share sheet.">${ic('share')}Share</button></div>
   </div></div></div>`; };
 
@@ -6477,7 +6652,7 @@ Object.assign(A, {
   kyGo: () => { go('kycVerifying'); setTimeout(() => { if (S.screen!=='kycVerifying') return; if (scen.kycOut==='reject') { scen.kyc='rejected'; saveScen(); S.hist=['discover']; S.screen='home'; render(); toast('Verification rejected. See the reason on the You page.'); } else go('kycConfirmed',{replace:true}); }, 1600); },
   kyAct: () => { S.otp=''; S.otpErr=false; go('kycOtp'); },
   kok: el => { if ((S.otp||'').length>=6 && !S.otpErr) return; if (S.otpErr) { S.otp=''; S.otpErr=false; } S.otp=(S.otp||'')+el.dataset.k; render();
-    if (S.otp.length===6) setTimeout(() => { if (S.otp==='123456') { scen.kyc='passed'; saveScen(); go('kycActive',{replace:true}); } else { S.otpErr=true; render(); } }, 300); },
+    if (S.otp.length===6) setTimeout(() => { if (S.otp==='123456') { scen.kyc='passed'; saveScen(); S.wCtx='activate'; S.wPick='ya'; go('wChoose',{replace:true}); } else { S.otpErr=true; render(); } }, 300); },
   kokDel: () => { S.otp=(S.otp||'').slice(0,-1); S.otpErr=false; render(); },
   kyTop: () => { S.hist=['discover','home']; A.topUpOpen(); },
   kyHome: () => { S.hist=['discover']; S.screen='home'; render(); },
@@ -6614,12 +6789,13 @@ function renderPanel(){ const m = META[S.screen] || META.home;
     <div style="display:grid; gap:6px"><span class="kicker">YouApp Wallet 2.0 · draft</span><h1>Scenario panel</h1><span class="badge">Spec v5 · 20 Oct 2026 · Douglas feedback applied</span></div>
     <button class="pbtn close" data-act="closePanel" aria-label="Close panel">${ic('close')}</button></div>
   <div class="pgroup"><h2>On screen</h2>
-    <div class="now"><span class="nm">${esc(m.name)}${S.sheet==='upsell'?' + Become an Elite sheet':S.sheet==='soon'?' + Upgrade opens soon sheet':S.sheet==='floatTop'?' + Top Up Float sheet':S.sheet==='gateway'?' + Payment approval sheet':''}</span><span class="ref">Phase ${m.ph}</span>
+    <div class="now"><span class="nm">${esc(m.name)}${S.sheet==='upsell'?' + Become an Elite sheet':S.sheet==='soon'?' + Upgrade opens soon sheet':S.sheet==='floatTop'?' + Top Up Float sheet':S.sheet==='gateway'?' + Payment approval sheet':''}</span><span class="ref">Release ${m.ph}</span>
       ${(m.fb||[]).length?`<div>${m.fb.map(f=>`<span class="fbtag" title="${esc(FB[f])}">${f} Douglas</span>`).join('')}</div>`:''}
       <ul>${m.rules.map(r=>`<li>${esc(r)}</li>`).join('')}</ul>
       ${(m.open||[]).length?`<div><span class="optag">Open</span></div><ul class="opens">${m.open.map(o=>`<li>${esc(o)}</li>`).join('')}</ul>`:''}</div></div>
   <div class="pgroup"><h2>Scenario</h2>
-    ${segCtl('Phase live','phase',[['1','1'],['2','2'],['3','3'],['4','4']],'Shows what is switched on up to this phase.')}
+    ${segCtl('Release live','phase',[['1','1'],['2','2'],['3','3'],['4','4']],'Product release (screens switched on). Not the same as the fee phase below.')}
+    ${segCtl('Fee phase','fph',[['1','Phase 1'],['2','Phase 2']],'Fee docs: Phase 2 opens Elite 1-3, the own fee rebate and the transaction pool.')}
     ${segCtl('Account tier','tier',[['free','Free'],['vip','VIP'],['svip','SVIP']])}
     ${segCtl('VIP end date','vipEnd',[['far','20 Nov'],['soon','In 3 days']],'Only for VIP. In 3 days shows the renew reminder on the You page.')}
     ${segCtl('KYC','kyc',[['none','Not started'],['review','In review'],['passed','Passed'],['rejected','Rejected']])}
@@ -6628,14 +6804,22 @@ function renderPanel(){ const m = META[S.screen] || META.home;
     ${segCtl('Referral at sign-up','ref',[['scarlette','Scarlette'],['none','No code']])}
     ${segCtl('Referred friends','refs',[['has','Has friends'],['none','None yet']],'Refer a Friend empty state.')}
     ${segCtl('First payment','paid',[['no','Not yet'],['yes','Done']],'A referrer can only be linked before the first payment. Use “Open Scarlette’s invite link” below.')}
-    ${segCtl('Elite','sh',[['none','Not yet'],['active','Active'],['revoked','Revoked']],'Active also sets the free SVIP. Not yet: users contact Support on WhatsApp to become one.')}
-    ${segCtl('Elite criteria','criteria',[['partial','Not yet'],['met','Both met']])}
+    ${segCtl('Elite','sh',[['none','Not yet'],['pending','In review'],['active','Active'],['revoked','Ended']],'Not yet: apply with the webview form. In review: request sent, waiting up to 48 hours. Active also sets the free SVIP. Ended: back to the earlier tier.')}
+    ${segCtl('Elite level','lvl',[['0','Elite'],['1','Elite 1'],['2','Elite 2'],['3','Elite 3']],'Elite 1-3 need Fee phase 2.')}
+    ${segCtl('Elite check','elChk',[['first90','First 90 days'],['year','Yearly']],'First 90 days: RM100k. Yearly: RM300k for Elite, RM5m / RM25m / RM150m for Elite 1-3.')}
+    ${segCtl('Elite target','criteria',[['partial','Behind'],['met','On track']])}
     ${segCtl('SVIP application','svip',[['none','Not sent'],['review','In review'],['approved','Approved'],['rejected','Rejected']])}
     ${segCtl('Plan payment result','payRes',[['ok','Success'],['fail','Failed']])}
     ${segCtl('SVIP price','svipP',[['early','RM1,888 · until 31 Dec 2026'],['late','RM8,888 · from 1 Jan 2027']],'SVIP costs RM1,888 before 1 Jan 2027 and RM8,888 from then on.')}
     ${segCtl('You are a host','meHost',[['yes','Yes'],['no','No']],'Decides who you can chat with from Refer a Friend.')}
     ${segCtl('Send MYRT result','xsRes',[['ok','Sent'],['slow','Network busy'],['fail','Failed']],'On-chain transfer outcome after PIN.')}
+    ${segCtl('Wallets','wl',[['ya','YouApp only'],['ya,mm,cb','YouApp + 2 external'],['mm','External only']],'Multi-wallet brainstorm (9 Nov 2026). One wallet is Main for transfers and Scan to Pay.')}
+    ${segCtl('Main wallet','mainW',[['ya','YouApp wallet'],['mm','MetaMask']])}
+    ${segCtl('ETH for gas (external)','eth',[['ok','Enough'],['low','Too low']])}
+    ${segCtl('External session','extSess',[['on','Connected'],['off','Expired']])}
+    ${segCtl('Approval in wallet app','extOk',[['ok','Approve'],['cancel','Cancel']])}
     ${segCtl('Business role','biz',[['off','None'],['merchant','Merchant']])}
+    ${segCtl('Merchant request','mreq',[['none','Not sent'],['pending','In review']],'Become Merchant form (self). Elite-added shops show In review in Registered Merchant after submit.')}
     ${segCtl('Merchant data','mdata',[['has','Has data'],['none','No data']],'Business › Merchant overview with or without sales yet.')}
     ${segCtl('Merchant float','float',[['ok','84%'],['low','16%'],['empty','RM0']])}
     <div class="later">Demo codes: OTP <code class="k">123456</code> · referral <code class="k">SCAR88</code> · promo <code class="k">KOL-SCAR</code></div></div>
@@ -6646,7 +6830,7 @@ function renderPanel(){ const m = META[S.screen] || META.home;
     <button class="pbtn" data-act="reset">${ic('refresh')}Reset demo</button></div></div>
   <div class="pgroup"><h2>Douglas feedback applied</h2><ul class="fblist">${Object.entries(FB).map(([k,v])=>`<li><b>${k}</b> ${esc(v)}</li>`).join('')}</ul></div>
   <div class="pgroup"><h2>Jump to screen</h2><div class="jump">
-    ${ORDER.map(([g,ks])=>`<h3>${g}</h3>${ks.map(k=>`<button data-act="jump" data-to="${k}" aria-current="${S.screen===k}" class="${META[k].ph>P()?'off':''}"><span>${META[k].name}</span><small>${META[k].ph>P()?'turns on phase '+META[k].ph:(META[k].fb||[]).join(' ')}</small></button>`).join('')}`).join('')}
+    ${ORDER.map(([g,ks])=>`<h3>${g}</h3>${ks.map(k=>`<button data-act="jump" data-to="${k}" aria-current="${S.screen===k}" class="${META[k].ph>P()?'off':''}"><span>${META[k].name}</span><small>${META[k].ph>P()?'turns on release '+META[k].ph:(META[k].fb||[]).join(' ')}</small></button>`).join('')}`).join('')}
   </div></div>
   <div class="pgroup"><h2>Still open</h2><p class="later" style="margin:0">Overflow fee above the normal e-wallet limit (1.5%?) · where the 25% superhost share goes for a host with no superhost · scheme pool unlock rules · SVIP review time · store review risk on paid tiers outside In-App Purchase.</p></div>`;
 }
@@ -6754,7 +6938,7 @@ Object.assign(A, {
     }
     const sc = document.querySelector('#phone .scroll'); if (sc) sc.scrollTop = 0;
   };
-  window.__state = () => ({ref:scen.ref, paid:scen.paid, pz:scen.pz, merch:scen.merch, screen:S.screen, kyc:scen.kyc, tier:scen.tier, sh:scen.sh, criteria:scen.criteria, biz:scen.biz, vipEnd:scen.vipEnd});
+  window.__state = () => ({wl:scen.wl||'ya', mainW:scen.mainW||'ya', eth:scen.eth||'ok', mreq:scen.mreq||'none', fph:scen.fph, lvl:scen.lvl, elChk:scen.elChk, ref:scen.ref, paid:scen.paid, pz:scen.pz, merch:scen.merch, screen:S.screen, kyc:scen.kyc, tier:scen.tier, sh:scen.sh, criteria:scen.criteria, biz:scen.biz, vipEnd:scen.vipEnd});
   window.__panel = () => { const p = document.getElementById('panel'); if (p) p.classList.add('open'); };
   window.__refresh = () => render();
 })();
@@ -6899,10 +7083,10 @@ Object.assign(A, {
 })();
 
 
-A.shrPay = () => { const p = S.pay; const m = MERCH[p.id]; const t = T(); const amt = +p.amt; const {fee, gas, total} = spFees(amt); const cbOn = P()>=4 && m.cbRate; const cb = cbOn ? amt*m.cbRate/100*t.cb/100 : 0;
+A.shrPay = () => { const p = S.pay; const m = MERCH[p.id]; const t = T(); const amt = +p.amt; const {fee, gas, reb, total} = spFees(amt); const cbOn = P()>=4 && m.cbRate; const cb = cbOn ? amt*m.cbRate/100*t.cb/100 : 0;
   SHR.open({title:'Paid', amount:'RM'+amt.toLocaleString('en-MY',{maximumFractionDigits:2}), sub:`to ${m.name} · DuitNow QR`, ref:'YA-2610-0941', caption:SHR.caption('pay'),
     tx:[['Reference','YA-2610-0941'],['Transaction Type','DuitNow QR'],['Timestamp','23 Oct 2026, 6:25 PM']],
-    pay:[['Amount',RM(amt)],['Gas Fee',gas.toFixed(2)],['Payment Fee',`${t.fee.toFixed(2)}% · ${fee.toFixed(2)}`],...(cbOn?[['Cashback','+'+RM(cb),'pos']]:[])], total:['Total',RM(total)]}); };
+    pay:[['Amount',RM(amt)],['Payment Fee',`${t.fee.toFixed(2)}% · ${fee.toFixed(2)}`],...(reb?[[elName()+' fee rebate','-'+reb.toFixed(2),'pos']]:[]),...(cbOn?[['Cashback','+'+RM(cb),'pos']]:[])], total:['Total',RM(total)]}); };
 A.shrBill = () => { const b = S.bill; const B = bl(b.id); const amt = +b.amt; const cb = amt*B.cb/100;
   SHR.open({title:'Successfully paid', amount:RM(amt), sub:`to ${B.name} · ${B.kind==='phone'?'+60 ':''}${b.acct}`, ref:'YA-2610-0417', caption:SHR.caption('bill'),
     tx:[['Reference','YA-2610-0417'],['Transaction Type', B.kind==='phone'?'Mobile Reload':'Bill Payment'],['Timestamp','26 Oct 2026, 11:42 AM']],
@@ -6934,16 +7118,16 @@ const xsByAddr = a => XS_PEOPLE.find(p=>p.addr && p.addr.toLowerCase()===String(
 const xsInit = () => { if (!S.xs) S.xs = {q:'', to:null, ext:null, amt:'', note:'', ack:false}; return S.xs; };
 const xsTo = () => { const x = xsInit(); return x.to ? xsP(x.to) : x.ext ? {n:'External wallet', ext:true, addr:x.ext} : null; };
 const xsFirst = () => { const x = xsInit(); return x.ext ? true : !XS_RECENT.includes(x.to); };
-const xsFees = a => spFees(a); // transfer uses the same tier payment fee (rate, RM1.50 minimum) + gas as Scan and Pay
-const xsAvail = () => { const t = T(), b = bal(); const c1 = Math.floor((b-GAS)/(1+t.fee/100)*100)/100;
+const xsFees = a => { const r = (typeof RATE!=='undefined' && RATE[xsTokSym()]) || 1; const fee = a>0 ? Math.round(feeFor(a*r)/r*100)/100 : 0; const gas = a>0 && !xsFromExt() ? Math.round(GAS/r*100)/100 : 0; return {fee, gas, total: Math.round((a+fee+gas)*100)/100}; }; // on-chain transfer: tier payment fee + network gas (V2 keeps gas here, Scan and Pay has none)
+const xsAvail = () => { const t = T(), b = xsFromBal(); const c1 = Math.floor((b-GAS)/(1+t.fee/100)*100)/100;
   const v = c1*t.fee/100 >= t.floor ? c1 : Math.floor((b-GAS-t.floor)*100)/100; return Math.max(0, v); };
 const xsFeeRows = (a, cls='kv') => { const t = T(); const f = xsFees(a);
   return `<div class="${cls}"><span class="sp-pf">Payment fee ${tierBadge(t)}</span><b><i class="sp-pct g">${t.fee.toFixed(2)}%</i>${f.fee.toFixed(2)}</b></div><div class="${cls}"><span>Gas fee</span><b>${f.gas.toFixed(2)}</b></div>`; };
-const xsErr = () => { const a = +(xsInit().amt||0); if (!a) return ''; if (a < XS_MIN) return `Minimum is MYRT ${XS_MIN.toFixed(2)}.`;
-  if (xsFees(a).total > bal()) return `Not enough MYRT. With fees this needs ${xsMoney(xsFees(a).total)}.`; return ''; };
+const xsErr = () => { const a = +(xsInit().amt||0); if (!a) return ''; if (a < XS_MIN) return `Minimum is ${xsTokSym()} ${XS_MIN.toFixed(2)}.`;
+  if (xsFees(a).total > xsFromBal()) return `Not enough ${xsTokSym()}. With fees this needs ${xsMoney(xsFees(a).total)}.`; return ''; };
 const xsAv = (p, cls='') => p.ext ? `<span class="xs-avx ${cls}">${ic('xsWallet')}</span>` : `<span class="xs-av ${cls}">${img(p.av,p.n)}</span>`;
 const xsName = p => `${esc(p.n)}${p.v?`<span class="vbdg" aria-label="Verified">${ic('verify')}</span>`:''}`;
-const xsMoney = v => 'MYRT '+(+v).toLocaleString('en-MY',{minimumFractionDigits:2, maximumFractionDigits:2});
+const xsMoney = v => xsTokSym()+' '+(+v).toLocaleString('en-MY',{minimumFractionDigits:2, maximumFractionDigits:2});
 
 /* 1 · Send to */
 V.xsTo = () => { const x = xsInit(); const q = x.q.trim(); const ql = q.toLowerCase().replace(/[\s-]/g,'');
@@ -6957,7 +7141,7 @@ V.xsTo = () => { const x = xsInit(); const q = x.q.trim(); const ql = q.toLowerC
   else if (looksA) body = `<div class="xs-note err">${ic('alert')}<span>That doesn’t look like a full Ethereum address. It should start with 0x and have 42 characters.</span></div>`;
   else body = `${!q?`<p class="xs-sec">Recent</p><div class="xs-rec">${XS_RECENT.map(id=>{ const p = xsP(id); return `<button data-act="xsPick" data-id="${p.id}">${xsAv(p,'lg')}<small>${esc(p.n.split(' ')[0])}</small></button>`; }).join('')}</div>`:''}
     <p class="xs-sec">${q?'Results':'YouApp friends'}</p>${list.length?`<div class="xs-list">${list.map(row).join('')}</div>`:`<div class="xs-empty"><b>No one found</b><small>Try a name, @handle or phone number, or paste a wallet address.</small></div>`}`;
-  return `<div class="screen bz">${statusBar()}${topBar('Send MYRT')}
+  return `<div class="screen bz">${statusBar()}${topBar('Send')}
   <div class="scroll"><div class="pad16 stack" style="gap:12px; padding-top:4px">
     <label class="xs-search">${ic('search')}<input id="xsQ" data-in="xsQ" value="${esc(x.q)}" placeholder="Name, @handle, phone or 0x address" autocomplete="off" spellcheck="false" aria-label="Search recipient">${q?`<button data-act="xsClear" aria-label="Clear">${ic('close')}</button>`:''}</label>
     <div class="xs-quick"><button data-act="xsScan">${ic('scan')}Scan QR</button><button data-act="xsPaste">${ic('copy')}Paste address</button></div>
@@ -6967,13 +7151,13 @@ V.xsTo = () => { const x = xsInit(); const q = x.q.trim(); const ql = q.toLowerC
 /* 2 · Amount */
 V.xsAmt = () => { const x = xsInit(); const p = xsTo(); const a = x.amt||''; const err = xsErr(); const ok = +a>0 && !err;
   const scanned = x.src==='scan' ? `<div class="xs-scan">${ic('scan')}<span>${p.ext?'Wallet address QR scanned.':'YouApp QR scanned.'} You’re sending MYRT, not paying a merchant.</span></div>` : '';
-  return `<div class="screen bz xs-amtscr">${statusBar()}${topBar('Send MYRT')}
+  return `<div class="screen bz xs-amtscr">${statusBar()}${topBar('Send')}
   <div class="scroll"><div class="pad16 stack" style="gap:16px; padding-top:8px; padding-bottom:20px">
     ${scanned}
     <button class="xs-to" data-act="xsChange">${xsAv(p)}<span class="xs-rt"><b>${p.ext?'External wallet':xsName(p)}</b><small class="mono">${p.ext?'':esc(p.h)+' · '}${xsShort(p.addr)}</small></span><em>Change</em></button>
     ${xsFirst() ? `<div class="xs-note warn">${ic('info')}<span>${p.ext?'First time sending to this address. Check every character before you send.':`First time sending to ${esc(p.n.split(' ')[0])}. Make sure it’s the right person.`}</span></div>`:''}
-    <div class="xs-amt ${err?'err':''}"><small>You send</small><div><span>MYRT</span><b class="${a?'':'ph'}">${a||'0.00'}</b></div>
-      <span class="xs-av2">${err?`<em class="xs-e">${err}</em>`:`Available ${xsMoney(bal())}`}<button data-act="xsMax">Max</button></span>${+a>0&&!err?`<span class="xs-tot">+ fees ${xsMoney(xsFees(+a).fee+xsFees(+a).gas)} · Total ${xsMoney(xsFees(+a).total)}</span>`:''}</div>
+    ${mwSendRows()}<div class="xs-amt ${err?'err':''}"><small>You send</small><div><span>${xsTokSym()}</span><b class="${a?'':'ph'}">${a||'0.00'}</b></div>
+      <span class="xs-av2">${err?`<em class="xs-e">${err}</em>`:`Available ${xsMoney(xsFromBal())}`}<button data-act="xsMax">Max</button></span>${+a>0&&!err?`<span class="xs-tot">+ fees ${xsMoney(xsFees(+a).fee+xsFees(+a).gas)} · Total ${xsMoney(xsFees(+a).total)}</span>`:''}</div>
     <div class="xs-nw"><label class="xs-notein">${ic('edit')}<input id="xsNote" data-in="xsNote" maxlength="60" value="${esc(x.note)}" placeholder="Add a note (optional)" aria-label="Note"></label>
     <small class="xs-cap">${p.ext?'Notes stay in YouApp. They aren’t stored on-chain.':`Only you and ${esc(p.n.split(' ')[0])} see the note. It isn’t stored on-chain.`}</small></div>
   </div></div>
@@ -6992,7 +7176,7 @@ SHEETS.xsReview = () => { const x = xsInit(); const p = xsTo(); const a = +x.amt
       <div class="kv"><span>Arrives in</span><b>About 1 minute</b></div>
       ${x.note?`<div class="kv"><span>Note</span><b>${esc(x.note)}</b></div>`:''}
       <div class="kv tot"><span>Total</span><b>${xsMoney(xsFees(a).total)}</b></div></div>
-    ${need ? `<button class="xs-ack ${x.ack?'on':''}" data-act="xsAck" role="checkbox" aria-checked="${x.ack}"><i>${ic('check')}</i><span>I’ve checked this address supports MYRT on Ethereum. Sending to the wrong address or network can’t be undone.</span></button>`
+    ${need ? `<button class="xs-ack ${x.ack?'on':''}" data-act="xsAck" role="checkbox" aria-checked="${x.ack}"><i>${ic('check')}</i><span>I’ve checked this address supports ${xsTokSym()} on Ethereum. Sending to the wrong address or network can’t be undone.</span></button>`
       : `<p class="xs-irr">${ic('lock')}On-chain transfers can’t be reversed once sent.</p>`}
     ${btn('Send '+xsMoney(a), !need||x.ack?'xsConfirm':'noop', {disabled: need && !x.ack})}</div>`; };
 
@@ -7010,7 +7194,7 @@ V.xsPin = () => { const n = (S.xsPin||'').length;
 const XS_HASH = '0x9c4e2b7f1a8d3c6e5b0a9f8e7d6c5b4a3f2e1d0c9b8a7f6e5d4c3b2a1f0eb71a';
 V.xsProc = () => { const x = xsInit(); const p = xsTo(); const r = x.run || {st:0, conf:0}; const slow = scen.xsRes==='slow' && r.st===2 && r.conf>=3;
   const steps = [['Signed','Approved with your PIN'],['Submitted to Ethereum', r.st>=1?`Tx ${xsShort(XS_HASH)}`:'Broadcasting…'],['Confirming', r.st>=2?`${r.conf} of 12 confirmations`:'Waiting for a block'],['Sent', r.st>=3?`${esc(p.ext?xsShort(p.addr):p.n)} has it`:'Lands in their wallet']];
-  return `<div class="screen bz">${statusBar()}${topBar('Send MYRT')}
+  return `<div class="screen bz">${statusBar()}${topBar('Send')}
   <div class="scroll"><div class="pad16 stack" style="gap:14px; padding-top:8px">
     <div class="xs-ph">${xsAv(p,'lg')}<b>${xsMoney(+x.amt)}</b><small>to ${p.ext?xsShort(p.addr):esc(p.n)}</small></div>
     <ol class="xs-steps">${steps.map(([a,b],i)=>`<li class="${i<r.st?'done':i===r.st?'xs-cur':''}"><i>${i<r.st?ic('check'):''}</i><span><b>${a}</b><small>${b}</small>${i===2&&r.st===2?`<em class="xs-bar"><s style="width:${r.conf/12*100}%"></s></em>`:''}</span></li>`).join('')}</ol>
@@ -7033,7 +7217,7 @@ const xsFinish = () => { const x = xsInit(); const p = xsTo();
 
 /* 6 · Result */
 V.xsDone = () => { const x = xsInit(); const p = xsTo(); const a = +x.amt;
-  return `<div class="screen bz">${statusBar()}${topBar('Send MYRT')}
+  return `<div class="screen bz">${statusBar()}${topBar('Send')}
   <div class="scroll"><div class="success" style="padding-top:4px">${cele()}<b class="bl-ok">Sent</b><b class="sp-big">${xsMoney(a)}</b><span class="t-body subtle">to ${p.ext?'external wallet '+xsShort(p.addr):esc(p.n)+' · '+esc(p.h)}</span></div>
   <div class="pad16 stack" style="padding-top:10px; gap:10px"><div class="kvbox sp-box">
     <div class="kv"><span>To</span><b class="mono">${xsShort(p.addr)}</b></div>
@@ -7048,7 +7232,7 @@ V.xsDone = () => { const x = xsInit(); const p = xsTo(); const a = +x.amt;
   </div></div>
   <div class="w2foot">${btn('Done','xsDoneGo')}${btn('Share this moment','xsShare',{kind:'btn-secondary'})}</div></div>`; };
 V.xsFail = () => { const x = xsInit(); const p = xsTo();
-  return `<div class="screen bz">${statusBar()}${topBar('Send MYRT')}
+  return `<div class="screen bz">${statusBar()}${topBar('Send')}
   <div class="scroll"><div class="success"><span class="big err">${ic('xcircle')}</span><b class="t-headline">Transfer didn’t go through</b>
     <span class="t-body muted">The Ethereum network rejected it. ${xsMoney(+x.amt)} is back in your wallet. The payment fee is refunded too. The gas fee of ${xsMoney(GAS)} was used by the network and can’t be refunded.</span></div>
     <div class="pad16"><div class="kvbox sp-box"><div class="kv"><span>To</span><b>${p.ext?xsShort(p.addr):esc(p.n)}</b></div><div class="kv"><span>Tx hash</span><b><button class="xs-lnk" data-act="xsScanTx">${xsShort(XS_HASH)}${ic('xsExt')}</button></b></div><div class="kv"><span>Status</span><b style="color:#b3261e">Failed</b></div></div></div></div>
@@ -7113,7 +7297,7 @@ Object.assign(A, {
   return s; }; }
 V.xsAddr = () => { const x = xsInit(); const v = (x.addr||'').trim(); const ok = xsIsAddr(v); const own = ok && v.toLowerCase()===XS_ME.addr.toLowerCase(); const hit = ok ? xsByAddr(v) : null;
   const err = !v ? '' : own ? 'This is your own wallet address.' : !/^0x/i.test(v) ? 'Ethereum addresses start with 0x.' : !ok ? `Check the address. It should be 42 characters (you have ${v.length}).` : '';
-  return `<div class="screen bz">${statusBar()}${topBar('Send MYRT')}
+  return `<div class="screen bz">${statusBar()}${topBar('Send')}
   <div class="scroll"><div class="pad16 stack" style="gap:12px; padding-top:4px">
     <div><h2 class="t-title" style="margin:0">Enter wallet address</h2><p class="t-caption subtle" style="margin:4px 0 0">Send MYRT to any Ethereum (ERC-20) wallet, including a YouApp user’s.</p></div>
     <div class="field ${err?'err':''}"><div class="xs-ain"><textarea id="xsA" data-in="xsA" rows="2" placeholder="0x…" autocomplete="off" spellcheck="false" aria-label="Wallet address">${esc(x.addr||'')}</textarea><button data-act="${v?'xsAClear':'xsAPaste'}">${v?'Clear':'Paste'}</button></div>
@@ -7141,4 +7325,476 @@ Object.assign(META, {
   xsRecv:{name:'Receive MYRT', ph:1, rules:['QR with avatar, name, @handle. Full address in groups of 4 with Copy.','YouApp users scan it in Scan → it opens Send MYRT, not Pay.','Warning: from other wallets, only MYRT on Ethereum (ERC-20).']},
 });
 
+
+/* ===== V2 spec notes ===== */
+try {
+  META.superhost.rules = ['V2 (fee docs, 26 Oct 2026): no referral or volume minimum to apply. Users contact Support; management approves within 48 hours.','First 90 days after approval: RM100k volume, or Elite ends and the user goes back to their earlier tier.','Yearly: RM300k within 365 days of the last level change. Each level change starts a new 365 days.','Phase 2: Elite 1 / 2 / 3 at RM500k / RM2m / RM15m rolling 90-day volume (checked daily), kept with RM5m / RM25m / RM150m a year. A miss drops exactly one level.','Elite bonus by level: 0.10 / 0.10 / 0.20 / 0.30%. Own fee rebate: 0 / 0.10 / 0.20 / 0.30%.','Scheme pools: cashback pool (20% of every merchant cashback, Elite and up) and transaction pool (0.20% of every payment, Elite 1-3, Phase 2). Both locked, display only.','Volume = settled payments by the Elite, their referrals and their referrals’ referrals. Own-account transfers, sponsored and reversed payments don’t count.', ...(META.superhost.rules||[]).filter(r=>!/60 days|30 verified/.test(r))];
+  META.superhost.open = ['Docs name the levels Superhost / Ultrahost 1-3; the app uses Elite / Elite 1-3.','Phase 2 small payments: the thinnest case keeps 0.50% minus RM0.14, so payments under about RM28 lose money. SVIP and Elite have no minimum fee.','Docs price SVIP at RM1,200; this build uses RM1,888 / RM8,888.', ...((META.superhost.open)||[])];
+  if (META.shApply) META.shApply.rules = ['V2: no requirements to apply. Contact Support; management reviews within 48 hours.','Shows how Elite works: first 90 days RM100k, then RM300k a year; Elite 1-3 in Phase 2.'];
+  if (META.shTab) META.shTab.rules = ['Merchants you closed with their float health. Below 20% both you and the merchant are notified.','V2: two scheme pools, both locked: cashback pool (20%) and transaction pool (0.20% of payments, Elite 1-3, Phase 2).'];
+} catch(e) {}
+try { render(); } catch(e) {}
+
+/* ===== V2 · Elite application webview form (new direction, 5 Nov 2026) =====
+   Elite (and Merchant) registration is a simple form. Admins edit it in the admin panel;
+   Kevon and Florence get an email alert for every new request. Replaces WhatsApp Contact Support for Elite. */
+const EA_REF = 'EL-2611-0042', EA_SENT = '5 Nov 2026';
+const EA_CITIES = ['Kuala Lumpur','Petaling Jaya','Shah Alam','Subang Jaya','Johor Bahru','Penang','Other'];
+const eaInit = () => S.ea || (S.ea = {name:'Elsa Japasal', email:S.su&&S.su.email||'elsa.japasal@gmail.com', phone:'', city:'', why:'', agree:false, err:{}});
+const elReviewCard = () => `<section class="sp-card"><div class="sp-h"><b>Request in review</b><span class="sp-due">${ic('clock')}Up to 48h</span></div>
+  <p class="sp-st">${ic('info')}Sent ${EA_SENT} · Ref ${EA_REF}. Management reviews every request and replies within 48 hours. You’ll get a notification and an email.</p></section>`;
+const eaTop = () => `<div class="ea-top"><button class="iconbtn" data-act="back" aria-label="Close">${ic('close')}</button><span class="ea-tt"><b>Elite application</b><small>${ic('lock')}youapp.ai · secure</small></span><span style="width:40px"></span></div>`;
+V.elApply = () => { const f = eaInit(); const ro = scen.sh==='pending'; const e = f.err||{};
+  const fld = (id, lab, inner, err, help) => `<div class="field ${err?'err':''}"><label for="${id}">${lab}</label>${inner}${err?`<span class="helper">${err}</span>`:help?`<span class="helper neutral">${help}</span>`:''}</div>`;
+  const dis = ro ? 'disabled' : '';
+  return `<div class="screen ea">${statusBar()}${eaTop()}
+  <div class="scroll" style="padding-bottom:20px"><div class="pad16 stack" style="gap:14px">
+    ${ro ? `<div class="hint warn">${ic('hourglass')}<span><b>In review.</b> Sent ${EA_SENT} · Ref ${EA_REF}. You can’t send another request while this one is in review.<button class="link ea-help" data-act="eaSupport">Need to change something? Contact Support</button></span></div>`
+         : `<p class="t-body muted" style="margin:0">Tell us a bit about you. Management reviews every request within 48 hours.</p>`}
+    ${fld('eaName','Full name',`<input id="eaName" class="input" data-in="eaName" value="${esc(f.name)}" autocomplete="name" ${dis}>`, e.name)}
+    ${fld('eaAcc','YouApp account',`<input id="eaAcc" class="input" value="${esc(RF_ME.handle)}" readonly>`, '', 'From your account. Can’t be changed.')}
+    ${fld('eaEmail','Email',`<input id="eaEmail" class="input" type="email" data-in="eaEmail" value="${esc(f.email)}" autocomplete="email" ${dis}>`, e.email)}
+    ${fld('eaPhone','Phone (WhatsApp)',`<input id="eaPhone" class="input" type="tel" inputmode="tel" data-in="eaPhone" value="${esc(f.phone)}" placeholder="+60 12-345 6789" autocomplete="tel" ${dis}>`, e.phone)}
+    ${fld('eaCity','City',`<select id="eaCity" class="input" data-in="eaCity" ${dis}><option value="">Choose your city</option>${EA_CITIES.map(c=>`<option ${f.city===c?'selected':''}>${c}</option>`).join('')}</select>`, e.city)}
+    ${fld('eaWhy','How will you grow your network?',`<textarea id="eaWhy" class="input ea-ta" rows="3" maxlength="300" data-in="eaWhy" placeholder="For example: I run a cafe community of 200 people in PJ." ${dis}>${esc(f.why)}</textarea>`, e.why, `${f.why.length}/300`)}
+    <label class="ea-agree ${e.agree?'err':''}"><input type="checkbox" id="eaAgree" data-in="eaAgree" ${f.agree||ro?'checked':''} ${dis}><span>I agree to the Elite terms</span></label>
+    ${e.agree?`<span class="helper" style="margin-top:-8px; color:var(--a-error)">${e.agree}</span>`:''}
+  </div></div>
+  <div class="w2foot">${ro ? btn('Close','back',{kind:'btn-secondary'}) : btn('Submit request','eaSubmit',{loading:S.busy, disabled:S.busy})}</div></div>`; };
+V.elApplyDone = () => `<div class="screen ea">${statusBar()}${eaTop()}
+  <div class="scroll"><div class="pad16 stack" style="gap:14px; align-items:center; text-align:center; padding-top:48px">
+    ${cele()}<h1 class="t-title" style="margin:0">Request sent</h1>
+    <p class="t-body muted" style="margin:0">We’ll review it within 48 hours and let you know in the app and by email.</p>
+    <span class="tag">Ref ${EA_REF}</span></div></div>
+  <div class="w2foot">${btn('Back to YouApp','back')}</div></div>`;
+SHEETS.shJoin = () => `<button class="tm-x" data-act="closeSheet" aria-label="Close">${ic('close')}</button>
+  <div class="tm-hd"><span class="tm-crown sj-crown">${ic('crown')}</span><h2>Become an Elite</h2><p>Join and work closely with the YouApp team.</p></div>
+  <p class="sj-lead">You’ll be eligible for</p>
+  <ul class="sj-list">${['Up to 25% cashback from the merchants you bring in','A one-time free SVIP upgrade','A spot in our special prize pool','Earning extra referrals bonus'].map(t=>`<li><span class="sj-ck">${ic('check')}</span><span>${t}</span></li>`).join('')}</ul>
+  ${btn('Apply now','elApplyOpen')}<p class="t-caption subtle" style="margin:8px 0 0; text-align:center">A short form. We reply within 48 hours.</p>`;
+const _contactAdmin = A.contactAdmin;
+Object.assign(A, {
+  elApplyOpen: () => { S.sheet = null; eaInit(); go('elApply'); },
+  eaSupport: () => toast(`Opening WhatsApp: “Hi YouApp Support, I have a question about my Elite request ${EA_REF}.”`),
+  shJoinGo: () => A.elApplyOpen(),
+  contactAdmin: el => el.dataset.k==='Elite' ? A.elApplyOpen() : _contactAdmin(el),
+  eaSubmit: () => { const f = eaInit(); const e = {};
+    if (!f.name.trim()) e.name = 'Enter your full name.';
+    if (!/^\S+@\S+\.\S+$/.test(f.email.trim())) e.email = 'Enter a valid email address, like name@example.com.';
+    if (f.phone.replace(/\D/g,'').length < 9) e.phone = 'Enter a phone number with at least 9 digits.';
+    if (!f.city) e.city = 'Choose your city.';
+    if (f.why.trim().length < 10) e.why = 'Write at least 10 characters.';
+    if (!f.agree) e.agree = 'Tick the box to agree to the Elite terms.';
+    f.err = e; if (Object.keys(e).length) { render(); return; }
+    S.busy = true; render();
+    setTimeout(() => { S.busy = false; scen.sh = 'pending'; saveScen(); go('elApplyDone', {replace:true}); }, 700); },
+});
+document.addEventListener('input', ev => { const k = ev.target.dataset && ev.target.dataset.in; if (!k || k.slice(0,2)!=='ea') return; const f = eaInit(); const t = ev.target;
+  const map = {eaName:'name', eaEmail:'email', eaPhone:'phone', eaCity:'city', eaWhy:'why', eaAgree:'agree'}; const key = map[k]; if (!key) return;
+  f[key] = key==='agree' ? t.checked : t.value; if (f.err && f.err[key]) { delete f.err[key]; reRender(ev); }
+  else if (key==='why' || key==='city' || key==='agree') reRender(ev); });
+META.elApply = {name:'Elite application (webview)', ph:3, rules:['Opens from every Elite apply entry: Host tab card and pop-up, Elite page, criteria sheet, Become an Elite, Business › Elite.','Prefilled: full name, YouApp account (locked), email. User adds phone, city and one short answer, then agrees to the terms.','Submit sets the request to In review. One request at a time: while in review, the same entries open this form read-only.','In review banner has a text button “Need to change something? Contact Support”. It opens WhatsApp with YouApp Support, prefilled with the request reference.','Back office: each new request sends an email alert to Kevon and Florence. They review and can edit it in the admin panel; approve turns on Elite, reject shows the reason in the app.'], open:['Merchant registration should use the same form pattern; not built yet.','Final field list to confirm with the team.']};
+META.elApplyDone = {name:'Elite application · Sent', ph:3, rules:['Success with the reference number. Back to YouApp closes the webview and returns to where the user started.']};
+try { render(); } catch(e) {}
+
+/* ===== V2 · Merchant application webview form (same pattern as Elite, 5 Nov 2026) =====
+   Two modes: self = Business › Merchant · Become Merchant; elite = Elite › Registered Merchant · Add a Merchant.
+   Admins review and edit in the admin panel; Kevon and Florence get an email alert for every new request. */
+const MC_REF = 'MC-2611-0007', MC_SENT = '5 Nov 2026';
+const MC_CATS = ['F&B','Retail','Services','Health & beauty','Others'];
+const MC_SALES = ['Under RM10k','RM10k – RM50k','RM50k – RM200k','Over RM200k'];
+const mcInit = mode => { if (!S.mc || (mode && S.mc.mode!==mode)) S.mc = {mode:mode||'self', biz:'', cat:'', addr:'', city:'', ssm:'', qr:false, rate:'5', sales:'',
+  name:'Elsa Japasal', email:(S.su&&S.su.email)||'elsa.japasal@gmail.com', phone:'', eliteRef:'', ownName:'', ownPhone:'', ownEmail:'', ownAcc:'', agree:false, err:{}}; return S.mc; };
+const mcRO = () => S.mc && (S.mc.mode==='self' ? scen.mreq==='pending' : !!S.mcView);
+V.mcApply = () => { const f = mcInit(); const ro = mcRO(); const e = f.err||{}; const dis = ro ? 'disabled' : ''; const el = f.mode==='elite';
+  const fld = (id, lab, inner, err, help) => `<div class="field ${err?'err':''}"><label for="${id}">${lab}</label>${inner}${err?`<span class="helper">${err}</span>`:help?`<span class="helper neutral">${help}</span>`:''}</div>`;
+  const inp = (id, k, ph='', type='text', extra='') => `<input id="${id}" class="input" type="${type}" data-in="${id}" value="${esc(f[k])}" placeholder="${ph}" ${extra} ${dis}>`;
+  const sel = (id, k, opts, ph) => `<select id="${id}" class="input" data-in="${id}" ${dis}><option value="">${ph}</option>${opts.map(o=>`<option ${f[k]===o?'selected':''}>${esc(o)}</option>`).join('')}</select>`;
+  const noKyc = !el && !kycOk() && !ro;
+  const top = `<div class="ea-top"><button class="iconbtn" data-act="mcClose" aria-label="Close">${ic('close')}</button><span class="ea-tt"><b>${el?'Add a merchant':'Merchant application'}</b><small>${ic('lock')}youapp.ai · secure</small></span><span style="width:40px"></span></div>`;
+  return `<div class="screen ea">${statusBar()}${top}
+  <div class="scroll" style="padding-bottom:20px"><div class="pad16 stack" style="gap:14px">
+    ${ro ? `<div class="hint warn">${ic('hourglass')}<span><b>In review.</b> Sent ${MC_SENT} · Ref ${MC_REF}. ${el?'We’ll contact the owner to verify the shop.':'You can’t send another request while this one is in review.'}<button class="link ea-help" data-act="mcSupport">Need to change something? Contact Support</button></span></div>`
+      : noKyc ? `<div class="hint warn">${ic('alert')}<span><b>Verify your identity first.</b> Merchant payouts go to your wallet, so we need your KYC before you apply. <button class="link ea-help" data-act="nav" data-to="kyc">Verify identity</button></span></div>`
+      : `<p class="t-body muted" style="margin:0">${el?'Tell us about the shop you’re bringing in. You’re its signing Elite and earn 25% of its cashback.':'Tell us about your business. We review every request within 48 hours.'}</p>`}
+    <h2 class="ea-sec">The business</h2>
+    ${fld('mcBiz','Business name', inp('mcBiz','biz','e.g. Kopitiam Ah Seng'), e.biz, 'Shown to customers when they pay.')}
+    ${fld('mcCat','Category', sel('mcCat','cat',MC_CATS,'Choose a category'), e.cat)}
+    ${fld('mcAddr','Business address', inp('mcAddr','addr','Street, building, postcode'), e.addr)}
+    ${fld('mcCity','City', sel('mcCity','city',EA_CITIES,'Choose a city'), e.city)}
+    ${fld('mcSsm','SSM registration number (optional)', inp('mcSsm','ssm','e.g. 202301012345'), '', 'Leave empty if the business isn’t registered.')}
+    <div class="field"><label>DuitNow QR (optional)</label>${f.qr ? `<div class="ea-file">${ic('check')}<span>duitnow-qr.jpg</span>${ro?'':'<button class="link" data-act="mcQr">Remove</button>'}</div>` : `<button class="btn btn-secondary" data-act="mcQr" ${dis}>Upload a photo of your QR</button>`}<span class="helper neutral">No DuitNow QR yet? Leave it. We’ll help you set one up.</span></div>
+    ${fld('mcRate','Cashback you’d like to offer (%)', inp('mcRate','rate','5','text','inputmode="decimal"'), e.rate, 'Minimum 5%. We confirm the final rate when we approve.')}
+    ${fld('mcSales','Monthly sales, estimate (optional)', sel('mcSales','sales',MC_SALES,'Choose a range'), '')}
+    <h2 class="ea-sec">${el?'Shop owner':'Contact'}</h2>
+    ${el ? `
+      ${fld('mcOwnName','Owner name', inp('mcOwnName','ownName','Full name'), e.ownName)}
+      ${fld('mcOwnPhone','Owner phone (WhatsApp)', inp('mcOwnPhone','ownPhone','+60 12-345 6789','tel','inputmode="tel"'), e.ownPhone, 'We contact the owner to verify the shop.')}
+      ${fld('mcOwnEmail','Owner email (optional)', inp('mcOwnEmail','ownEmail','name@example.com','email'), e.ownEmail)}
+      ${fld('mcOwnAcc','Owner’s YouApp account (optional)', inp('mcOwnAcc','ownAcc','@handle'), '', 'If the owner has YouApp, the Merchant role goes on that account.')}
+      ${fld('mcSign','Signing Elite', `<input id="mcSign" class="input" value="${esc(RF_ME.handle)} (you)" readonly>`, '', 'You get 25% of this shop’s merchant cashback.')}`
+    : `
+      ${fld('mcName','Your name', inp('mcName','name','Full name','text','autocomplete="name"'), e.name)}
+      ${fld('mcAcc','YouApp account', `<input id="mcAcc" class="input" value="${esc(RF_ME.handle)}" readonly>`, '', 'From your account. Can’t be changed.')}
+      ${fld('mcEmail','Email', inp('mcEmail','email','name@example.com','email'), e.email)}
+      ${fld('mcPhone','Phone (WhatsApp)', inp('mcPhone','phone','+60 12-345 6789','tel','inputmode="tel"'), e.phone)}
+      ${fld('mcRef','Elite who referred you (optional)', inp('mcRef','eliteRef','@handle'), '', 'That Elite becomes your shop’s signing Elite.')}`}
+    <label class="ea-agree ${e.agree?'err':''}"><input type="checkbox" id="mcAgree" data-in="mcAgree" ${f.agree||ro?'checked':''} ${dis}><span>${el?'The owner agreed to join YouApp as a merchant':'I agree to the Merchant terms'}</span></label>
+    ${e.agree?`<span class="helper" style="margin-top:-8px; color:var(--a-error)">${e.agree}</span>`:''}
+  </div></div>
+  <div class="w2foot">${ro ? btn('Close','mcClose',{kind:'btn-secondary'}) : btn('Submit request','mcSubmit',{loading:S.busy, disabled:S.busy||noKyc})}</div></div>`; };
+V.mcApplyDone = () => { const el = S.mc && S.mc.mode==='elite';
+  return `<div class="screen ea">${statusBar()}<div class="ea-top"><button class="iconbtn" data-act="back" aria-label="Close">${ic('close')}</button><span class="ea-tt"><b>${el?'Add a merchant':'Merchant application'}</b><small>${ic('lock')}youapp.ai · secure</small></span><span style="width:40px"></span></div>
+  <div class="scroll"><div class="pad16 stack" style="gap:14px; align-items:center; text-align:center; padding-top:48px">
+    ${cele()}<h1 class="t-title" style="margin:0">Request sent</h1>
+    <p class="t-body muted" style="margin:0">${el?`We’ll contact ${esc(S.mc.ownName||'the owner')} and review ${esc(S.mc.biz||'the shop')} within 48 hours. It shows as In review in Registered Merchant.`:'We’ll review it within 48 hours and let you know in the app and by email.'}</p>
+    <span class="tag">Ref ${MC_REF}</span></div></div>
+  <div class="w2foot">${btn('Back to YouApp','back')}</div></div>`; };
+const _regMerchants = V.regMerchants;
+V.regMerchants = () => { if (!S.mcE) return _regMerchants();
+  const card = `<button class="rg-card mc-pend" data-act="mcPendOpen"><span class="mc-pi">${ic('store')}</span><em class="rg-st off">In review</em><b>${esc(S.mcE.biz)}</b><small>Sent ${MC_SENT} · Ref ${MC_REF}</small></button>`;
+  const ms = hsList();
+  if (!ms.length) return `<div class="screen bz hs">${statusBar()}${topBar('Registered Merchant')}<div class="scroll" style="padding-bottom:110px"><div class="pad16 rg-list">${card}</div></div>
+    <div class="w2foot"><button class="btn btn-secondary bz-cta" data-act="mcApplyOpen" data-mode="elite">Add another merchant</button></div></div>`;
+  return _regMerchants().replace('<div class="pad16 rg-list">', '<div class="pad16 rg-list">'+card); };
+Object.assign(A, {
+  mcApplyOpen: el => { const mode = el && el.dataset && el.dataset.mode || 'self'; S.sheet = null;
+    if (mode==='elite') { S.mcView = false; S.mc = null; } mcInit(mode); go('mcApply'); },
+  mcPendOpen: () => { S.mc = Object.assign(mcInit('elite'), S.mcE.data); S.mcView = true; go('mcApply'); },
+  mcClose: () => { S.mcView = false; A.back ? A.back() : history.back(); },
+  mcQr: () => { const f = mcInit(); f.qr = !f.qr; render(); },
+  mcSupport: () => toast(`Opening WhatsApp: “Hi YouApp Support, I have a question about my merchant request ${MC_REF}.”`),
+  mcSubmit: () => { const f = mcInit(); const e = {}; const el = f.mode==='elite';
+    if (!f.biz.trim()) e.biz = 'Enter the business name.';
+    if (!f.cat) e.cat = 'Choose a category.';
+    if (f.addr.trim().length < 8) e.addr = 'Enter the full address.';
+    if (!f.city) e.city = 'Choose a city.';
+    if (!(+f.rate >= 5)) e.rate = 'Cashback must be at least 5%.';
+    if (el) { if (!f.ownName.trim()) e.ownName = 'Enter the owner’s name.'; if (f.ownPhone.replace(/\D/g,'').length < 9) e.ownPhone = 'Enter a phone number with at least 9 digits.'; if (f.ownEmail && !/^\S+@\S+\.\S+$/.test(f.ownEmail)) e.ownEmail = 'Enter a valid email address, like name@example.com.'; }
+    else { if (!f.name.trim()) e.name = 'Enter your name.'; if (!/^\S+@\S+\.\S+$/.test(f.email.trim())) e.email = 'Enter a valid email address, like name@example.com.'; if (f.phone.replace(/\D/g,'').length < 9) e.phone = 'Enter a phone number with at least 9 digits.'; }
+    if (!f.agree) e.agree = el ? 'Tick the box to confirm the owner agreed.' : 'Tick the box to agree to the Merchant terms.';
+    f.err = e; if (Object.keys(e).length) { render(); const first = document.querySelector('.ea .field.err, .ea .ea-agree.err'); first && first.scrollIntoView({block:'center'}); return; }
+    S.busy = true; render();
+    setTimeout(() => { S.busy = false; if (el) S.mcE = {biz:f.biz, data:JSON.parse(JSON.stringify(f))}; else { scen.mreq = 'pending'; saveScen(); } go('mcApplyDone', {replace:true}); }, 700); },
+});
+document.addEventListener('input', ev => { const id = ev.target.id; if (!id || id.slice(0,2)!=='mc' || !S.mc) return; const f = S.mc;
+  const map = {mcBiz:'biz', mcCat:'cat', mcAddr:'addr', mcCity:'city', mcSsm:'ssm', mcRate:'rate', mcSales:'sales', mcName:'name', mcEmail:'email', mcPhone:'phone', mcRef:'eliteRef', mcOwnName:'ownName', mcOwnPhone:'ownPhone', mcOwnEmail:'ownEmail', mcOwnAcc:'ownAcc', mcAgree:'agree'};
+  const k = map[id]; if (!k) return; f[k] = k==='agree' ? ev.target.checked : ev.target.value;
+  if (f.err && f.err[k]) { delete f.err[k]; reRender(ev); } else if (['cat','city','sales','agree'].includes(k)) reRender(ev); });
+META.mcApply = {name:'Merchant application (webview)', ph:4, rules:['Two entries, one form. Business › Merchant · Become Merchant (self) and Elite › Registered Merchant · Add a Merchant (an Elite registers a shop they bring in).','The business: name, category, address, city required; SSM number, DuitNow QR photo and monthly sales optional; cashback rate (minimum 5%, final rate confirmed on approval).','Self: name, YouApp account (locked), email, phone required; Elite who referred you optional (becomes the signing Elite). Self needs KYC passed first.','Elite mode: owner name and phone required, owner email and YouApp account optional; signing Elite = the Elite filling it in (locked).','Submit sets the request to In review (self: Business › Merchant shows View my request; Elite: the shop shows In review in Registered Merchant). Read-only while in review, with “Need to change something? Contact Support”.','Back office: each new request sends an email alert to Kevon and Florence. They review and can edit it in the admin panel. Approve turns on the Merchant role, then the owner confirms the cashback rate and funds the float as before. Reject shows the reason and Apply again.'], open:['Ask Your Elite on the merchant card is kept for now.','KYC before applying (self) is an assumption to confirm.']};
+META.mcApplyDone = {name:'Merchant application · Sent', ph:4, rules:['Success with the reference number. Back to YouApp closes the webview.']};
+try { render(); } catch(e) {}
+
+/* ===== Multi-wallet: YouApp wallet (Privy embedded) + external wallets (Privy connectors), all stablecoins (9 Nov 2026) =====
+   Activate wallet: create a YouApp wallet or connect MetaMask / Coinbase Wallet / Rainbow / Phantom / WalletConnect.
+   Many wallets, one Main (transfers and Scan to Pay). Send / Receive any verified ERC-20 stablecoin on Ethereum.
+   Assumptions from the brainstorm: external wallets pay gas in ETH; allowlist of verified stablecoins; up to 5 external wallets. */
+const RATE = {'MYRT':1, 'USDT':4.21, 'USDC':4.21, 'XSGD':3.3, 'DAI':4.21, 'PYUSD':4.21, 'FDUSD':4.21, 'TUSD':4.21, 'USDP':4.21, 'GUSD':4.21, 'LUSD':4.21, 'FRAX':4.21, 'USDe':4.21, 'crvUSD':4.21, 'GHO':4.21, 'USDS':4.21, 'RLUSD':4.21, 'USD0':4.21, 'USDM':4.21, 'EURC':4.88, 'EURS':4.88, 'EURe':4.88, 'EURA':4.88, 'XIDR':0.00027, 'GYEN':0.028, 'ZCHF':5.25, 'BRZ':0.75, 'MXNT':0.23, 'CADC':3.05, 'TRYB':0.12, 'NZDS':2.5, 'AUDD':2.75, 'GBPT':5.6, 'HKDR':0.54, 'THBX':0.13, 'PHPC':0.073, 'KRWB':0.0031, 'CNHT':0.58, 'XAUT':11400, 'PAXG':11450};
+const TOKN = {'MYRT':'Malaysian Ringgit', 'USDT':'Tether USD', 'USDC':'USD Coin', 'XSGD':'StraitsX SGD', 'DAI':'Dai', 'PYUSD':'PayPal USD', 'FDUSD':'First Digital USD', 'TUSD':'TrueUSD', 'USDP':'Pax Dollar', 'GUSD':'Gemini Dollar', 'LUSD':'Liquity USD', 'FRAX':'Frax', 'USDe':'Ethena USDe', 'crvUSD':'Curve USD', 'GHO':'Aave GHO', 'USDS':'Sky Dollar', 'RLUSD':'Ripple USD', 'USD0':'Usual USD', 'USDM':'Mountain USD', 'EURC':'Euro Coin', 'EURS':'STASIS Euro', 'EURe':'Monerium EUR', 'EURA':'Angle Euro', 'XIDR':'StraitsX IDR', 'GYEN':'GMO JPY', 'ZCHF':'Frankencoin', 'BRZ':'Brazilian Digital Token', 'MXNT':'Tether MXN', 'CADC':'CAD Coin', 'TRYB':'BiLira', 'NZDS':'NZD Stablecoin', 'AUDD':'Australian Digital Dollar', 'GBPT':'Poundtoken', 'HKDR':'HKD Stablecoin', 'THBX':'Thai Baht Token', 'PHPC':'Philippine Peso Coin', 'KRWB':'KRW Stablecoin', 'CNHT':'Tether CNH', 'XAUT':'Tether Gold', 'PAXG':'Pax Gold'};
+const W_ALL = {
+  ya:{id:'ya', name:'YouApp wallet', ext:false, app:'YouApp', ini:'Y', addr:XS_ME.addr, get tok(){ return {MYRT:bal(), USDT:57, DAI:25, EURC:12.40, XSGD:30}; }, hidden:0},
+  mm:{id:'mm', name:'MetaMask', ext:true, app:'MetaMask', ini:'M', addr:'0x7B21aE90c4F35d8812Ab6f0C9e3D47a5B6c1D2e3', tok:{USDC:410, USDT:100, MYRT:42.90, PYUSD:18}, hidden:2},
+  cb:{id:'cb', name:'Coinbase Wallet', ext:true, app:'Coinbase Wallet', ini:'C', addr:'0x5D3c9A71e8B24f60C1d2E3f4A5b6C7d8E9f0A1b2', tok:{USDC:12.25}, hidden:0}};
+const wIds = () => String(scen.wl||'ya').split(',').filter(k=>W_ALL[k]);
+const wList = () => wIds().map(k=>W_ALL[k]);
+const wMain = () => { const l = wList(); return l.find(w=>w.id===scen.mainW) || l[0]; };
+const wHasYa = () => wIds().includes('ya');
+const wRM = w => Object.entries(w.tok).reduce((t,[k,v])=>t+v*(RATE[k]||1),0);
+const wToks = w => Object.entries(w.tok).filter(([k,v])=>v>0).sort((a,b)=>b[1]*(RATE[b[0]]||1)-a[1]*(RATE[a[0]]||1));
+const wTokLine = w => wToks(w).slice(0,2).map(([k,v])=>`${k} ${v.toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2})}`).join(' · ');
+const wBadge = (w, cls='') => `<span class="mw-bd ${w.ext?'ext':''} ${cls}">${w.ini}</span>`;
+const wMainTag = '<span class="tag mw-main">Main</span>';
+const tokAmt = (k,v) => `${k} ${(+v).toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2})}`;
+/* send helpers used by the in-place edits */
+function xsFromW(){ const x = S.xs||{}; const l = wList(); return l.find(w=>w.id===x.from) || wMain(); }
+function xsFromExt(){ return !!xsFromW().ext; }
+function xsTokSym(){ const x = S.xs||{}; const w = xsFromW(); if (x.tok && w.tok[x.tok]>0) return x.tok; return (wToks(w)[0]||['MYRT'])[0]; }
+function xsFromBal(){ return xsFromW().tok[xsTokSym()]||0; }
+function mwSendRows(){ const w = xsFromW(); const k = xsTokSym();
+  return `<div class="mw-pick"><button data-act="sheet" data-s="mwFrom"><small>From</small><b>${wBadge(w,'sm')}${esc(w.name)}${w.id===wMain().id?' <em>Main</em>':''}</b>${ic('chevdown')}</button>
+    <button data-act="sheet" data-s="mwTok"><small>Token</small><b><span class="mw-tk">${k[0]}</span>${k} <em>${tokAmt('',w.tok[k]||0).trim()}</em></b>${ic('chevdown')}</button></div>
+    ${w.ext ? `<div class="xs-note">${ic('info')}<span>You’ll confirm in ${esc(w.app)}. The network fee is paid in ETH from ${esc(w.app)}.</span></div>` : ''}`; }
+SHEETS.mwFrom = () => { const cur = xsFromW().id;
+  return `<div class="grab"></div><h2 class="t-title" style="margin:0 0 12px">Send from</h2><div class="mw-list">${wList().map(w=>`<button class="mw-row ${cur===w.id?'on':''}" data-act="mwFromPick" data-id="${w.id}">${wBadge(w)}<span class="m"><b>${esc(w.name)}</b><small>${RM(wRM(w))} · ${w.ext?'confirm in '+esc(w.app):'confirm with PIN'}</small></span>${w.id===wMain().id?wMainTag:''}</button>`).join('')}</div>`; };
+SHEETS.mwTok = () => { const w = xsFromW(); const cur = xsTokSym(); const all = Object.keys(RATE);
+  const held = all.filter(k=>(w.tok[k]||0)>0).sort((a,b)=>w.tok[b]*RATE[b]-w.tok[a]*RATE[a]); const rest = all.filter(k=>!((w.tok[k]||0)>0)).sort((a,b)=>a.localeCompare(b,'en',{sensitivity:'base'}));
+  const row = k => { const v = w.tok[k]||0; return `<button class="mw-row ${cur===k?'on':''} ${v>0?'':'off'}" data-q="${(k+' '+TOKN[k]).toLowerCase()}" ${v>0?`data-act="mwTokPick" data-k="${k}"`:'disabled'}><span class="mw-tk lg">${k[0].toUpperCase()}</span><span class="m"><b>${k}</b><small>${TOKN[k]}</small></span><span class="r"><b>${tokAmt('',v).trim()}</b><small>${RM(v*RATE[k])}</small></span></button>`; };
+  return `<div class="grab"></div><h2 class="t-title" style="margin:0 0 4px">Choose a token</h2><p class="t-caption subtle" style="margin:0 0 10px">In ${esc(w.name)} · ${all.length} verified stablecoins</p>
+  <label class="mw-search">${ic('search')}<input id="mwTokQ" type="search" placeholder="Search name or symbol" aria-label="Search tokens" autocomplete="off"></label>
+  <div class="mw-tscroll"><small class="mw-grp" data-g="held">In your wallet · ${held.length}</small><div class="mw-list">${held.map(row).join('')}</div>
+  <small class="mw-grp" data-g="rest">Other supported tokens · ${rest.length}</small><div class="mw-list">${rest.map(row).join('')}</div>
+  <p class="mw-none" hidden>No token matches “<span></span>”.</p></div>
+  ${w.hidden?`<p class="t-caption subtle" style="margin:10px 0 0">${w.hidden} unverified tokens are hidden and can’t be sent.</p>`:''}`; };
+document.addEventListener('input', ev => { if (ev.target.id !== 'mwTokQ') return; const q = ev.target.value.trim().toLowerCase(); const box = ev.target.closest('.sheet') || document;
+  let n = 0; box.querySelectorAll('.mw-tscroll .mw-row').forEach(r => { const hit = !q || r.dataset.q.includes(q); r.hidden = !hit; if (hit) n++; });
+  box.querySelectorAll('.mw-tscroll .mw-list').forEach(l => { const g = l.previousElementSibling; if (g) g.hidden = ![...l.children].some(c=>!c.hidden); });
+  const none = box.querySelector('.mw-none'); if (none) { none.hidden = n>0; none.querySelector('span').textContent = ev.target.value.trim(); } });
+
+/* review sheet: From row, ETH network fee, confirm in the wallet app, not enough ETH */
+const _xsReview = SHEETS.xsReview;
+SHEETS.xsReview = () => { let h = _xsReview(); const w = xsFromW();
+  h = h.replace('<div class="kv"><span>Network</span><b>Ethereum · ERC-20</b></div>', `<div class="kv"><span>From</span><b>${esc(w.name)}</b></div><div class="kv"><span>Network</span><b>Ethereum · ERC-20</b></div>${w.ext?'<div class="kv"><span>Network fee</span><b>≈ 0.0006 ETH (RM 7.80)</b></div>':''}`);
+  if (!w.ext) return h;
+  h = h.replace(/<div class="kv"><span>Gas fee<\/span><b>0\.00<\/b><\/div>/, '');
+  if (scen.eth==='low') return h.replace(/<button class="btn btn-primary[^"]*"[^>]*data-act="(xsConfirm|noop)"[\s\S]*?<\/button>/, `<div class="hint warn">${ic('alert')}<span><b>Not enough ETH for the network fee.</b> ${esc(w.app)} has 0.0001 ETH. Add ETH to ${esc(w.app)}${wHasYa()?', or send from your YouApp wallet':''}.</span></div>${wHasYa()?btn('Send from YouApp wallet','mwUseYa'):''}`);
+  return h.replace('data-act="xsConfirm"', 'data-act="mwSendExt"').replace(/>Send ([A-Z]{4} [\d,.]+)</, `>Confirm in ${esc(w.app)}<`); };
+
+/* waiting for the external wallet app (send, pay, top up, connect, sign) */
+V.mwWait = () => { const k = S.mwWait||{}; const app = k.app||'MetaMask';
+  const t = {send:'Approve the transfer', pay:'Approve the payment', topup:'Approve the top up', connect:'Approve the connection', sign:'Sign the message'}[k.kind]||'Approve';
+  return `<div class="screen bz">${statusBar()}${topBar(k.title||'Confirm')}
+  <div class="scroll"><div class="pad16 stack" style="gap:14px; align-items:center; text-align:center; padding-top:56px">
+    <span class="mw-bd ext xl">${app[0]}</span><h1 class="t-title" style="margin:0">Waiting for ${esc(app)}…</h1>
+    <p class="t-body muted" style="margin:0">${t} in ${esc(app)}, then come back here.</p>
+    ${k.kind==='sign'||k.kind==='connect'?'<span class="tag act">No gas fee</span>':''}</div></div>
+  <div class="w2foot">${btn(`Open ${esc(app)}`,'mwApprove')}${btn('Cancel','mwCancel',{kind:'btn-tertiary'})}<p class="t-caption subtle" style="margin:0; text-align:center">Demo: Open ${esc(app)} plays the result from the scenario “Approval in wallet app”.</p></div></div>`; };
+V.mwCancelled = () => { const k = S.mwWait||{}; const app = k.app||'MetaMask';
+  const msg = k.kind==='pay' ? 'Payment cancelled in '+app : k.kind==='sign'||k.kind==='connect' ? 'Signature cancelled' : 'Cancelled in '+app;
+  return `<div class="screen bz">${statusBar()}${topBar(k.title||'Confirm')}
+  <div class="scroll"><div class="pad16 stack" style="gap:12px; padding-top:40px; text-align:center; align-items:center"><span class="big warn">${ic('xcircle')}</span><h1 class="t-title" style="margin:0">${esc(msg)}</h1>
+  <p class="t-body muted" style="margin:0">${k.kind==='sign'||k.kind==='connect'?'The wallet wasn’t linked. Try again when you’re ready.':'Nothing was charged.'}</p></div></div>
+  <div class="w2foot">${btn('Try again','mwRetry')}${k.kind==='pay'&&wHasYa()?btn('Pay with YouApp wallet','mwPayYa',{kind:'btn-secondary'}):btn('Close','mwClose',{kind:'btn-tertiary'})}</div></div>`; };
+
+/* Activate wallet: choose */
+V.wChoose = () => { const p = S.wPick||'ya';
+  const card = (k, t, d, chips, rec) => `<button class="mw-card ${p===k?'on':''}" data-act="wPick" data-k="${k}" aria-pressed="${p===k}"><span class="row-between"><b>${t}</b>${rec?'<span class="tag act">Recommended</span>':''}</span><small>${d}</small><span class="mw-chips">${chips.map(c=>`<em>${c}</em>`).join('')}</span><i class="rd"></i></button>`;
+  return `<div class="screen bz">${statusBar()}${topBar('Activate wallet')}
+  <div class="scroll"><div class="pad16 stack" style="gap:12px; padding-top:6px">
+    <h1 class="t-title" style="margin:0">How do you want to hold your money?</h1><p class="t-body muted" style="margin:0">You can add more wallets later and pick one as Main.</p>
+    ${card('ya','Create YouApp wallet','Ready in seconds. No other app needed. Confirm payments with your PIN.',['No setup','PIN','Backed up for you'],true)}
+    ${card('ext','Connect my wallet','Use a wallet you already have.',['MetaMask','Coinbase Wallet','Rainbow','Phantom','WalletConnect'],false)}
+    <p class="t-caption subtle" style="margin:0">Ethereum network · stablecoins only</p></div></div>
+  <div class="w2foot">${btn('Continue','wChooseGo')}</div></div>`; };
+SHEETS.wProv = () => { const row = (k, ini, t, d) => `<button class="mw-row" data-act="wProvGo" data-k="${k}"><span class="mw-bd ext">${ini}</span><span class="m"><b>${t}</b><small>${d}</small></span>${ic('chev')}</button>`;
+  return `<div class="grab"></div><h2 class="t-title" style="margin:0 0 4px">Connect a wallet</h2><p class="t-caption subtle" style="margin:0 0 12px">Choose the wallet app you already use.</p>
+  <div class="mw-list">${row('MetaMask','M','MetaMask','The most popular wallet app')}${row('Coinbase Wallet','C','Coinbase Wallet','Self-custody wallet by Coinbase')}${row('Rainbow','R','Rainbow','Simple, friendly wallet app')}${row('Phantom','P','Phantom','Wallet app for mobile and browser')}${row('WalletConnect','W','WalletConnect','Link any other wallet with a QR code')}</div>
+  <p class="t-caption subtle" style="margin:12px 0 0">YouApp never sees your recovery phrase.</p>`; };
+SHEETS.wQR = () => `<div class="grab"></div><div class="stack" style="gap:12px; align-items:center; text-align:center"><h2 class="t-title" style="margin:0">Scan with your wallet</h2><div class="mw-qr">${typeof qrSvg==='function'?qrSvg(200):''}</div><p class="t-caption subtle" style="margin:0">Open your wallet app on another phone and scan this code, or copy the link.</p>${btn('Copy link','toast',{kind:'btn-secondary', data:'data-msg="WalletConnect link copied."'})}${btn('I’ve scanned it (demo)','wQrDone')}</div>`;
+V.wVerify = () => { const app = S.wApp||'MetaMask'; const w = S.wApp==='Coinbase Wallet' ? W_ALL.cb : W_ALL.mm;
+  return `<div class="screen bz">${statusBar()}${topBar('Verify your wallet')}
+  <div class="scroll"><div class="pad16 stack" style="gap:12px; padding-top:6px">
+    <p class="t-body muted" style="margin:0">Sign a message to prove this wallet is yours. It’s free and doesn’t move any money.</p>
+    <div class="kvbox sp-box"><div class="kv"><span>Wallet</span><b>${esc(app)} · ${xsShort(w.addr)}</b></div><div class="kv"><span>Message</span><b style="text-align:right">YouApp: link this wallet to ${esc(XS_ME.h)} · nonce 48213</b></div></div></div></div>
+  <div class="w2foot">${btn('Sign in '+esc(app),'wSign')}</div></div>`; };
+V.wConnected = () => { const app = S.wApp||'MetaMask'; const w = app==='Coinbase Wallet' ? W_ALL.cb : W_ALL.mm; const first = S.wCtx==='activate'; const on = S.wUseMain!==undefined ? S.wUseMain : first;
+  return `<div class="screen bz">${statusBar()}${topBar('Wallet connected')}
+  <div class="scroll"><div class="success" style="padding-top:8px">${cele()}<b class="t-headline">${esc(app)} connected</b><span class="t-body subtle mono">${xsShort(w.addr)}</span></div>
+  <div class="pad16 stack" style="gap:10px"><button class="mw-tg" data-act="wUseMain" role="switch" aria-checked="${on}" ${first?'aria-disabled="true"':''}><span><b>Use as Main wallet</b><small>${first?'Your first wallet is Main.':'Main is used for transfers and Scan to Pay.'}</small></span><i class="${on?'on':''}"></i></button></div></div>
+  <div class="w2foot">${btn('Done','wConnDone')}</div></div>`; };
+
+/* Entry from the 3.0 Activate Wallet screen (Connect my wallet) */
+V.wActConnect = () => { S.wCtx = 'activate'; scen.kyc = 'passed';
+  const row = (k, ini, t, d) => `<button class="mw-row" data-act="wProvGo" data-k="${k}"><span class="mw-bd ext">${ini}</span><span class="m"><b>${t}</b><small>${d}</small></span>${ic('chev')}</button>`;
+  return `<div class="screen bz">${statusBar()}${topBar('Connect a wallet')}
+  <div class="scroll"><div class="pad16 stack" style="gap:12px; padding-top:6px"><p class="t-body muted" style="margin:0">Choose the wallet app you already use.</p>
+  <div class="mw-list">${row('MetaMask','M','MetaMask','The most popular wallet app')}${row('Coinbase Wallet','C','Coinbase Wallet','Self-custody wallet by Coinbase')}${row('Rainbow','R','Rainbow','Simple, friendly wallet app')}${row('Phantom','P','Phantom','Wallet app for mobile and browser')}${row('WalletConnect','W','WalletConnect','Link any other wallet with a QR code')}</div>
+  <p class="t-caption subtle" style="margin:0">YouApp never sees your recovery phrase.</p></div></div></div>`; };
+META.wActConnect = {name:'Connect a wallet (from Activate Wallet)', ph:1, rules:['Opened from the 3.0 Activate Wallet screen when the user picks Connect my wallet.','After signing, the wallet is active and Main; the 3.0 app is told the wallet is active.']};
+
+/* My wallets and wallet detail */
+V.wallets = () => { const l = wList(); const m = wMain(); const nExt = l.filter(w=>w.ext).length;
+  return `<div class="screen bz">${statusBar()}${topBar('My wallets')}
+  <div class="scroll"><div class="pad16 stack" style="gap:12px; padding-top:6px">
+    <div class="mw-tot"><small>Total in ${l.length} wallet${l.length>1?'s':''}</small><b>${RM(l.reduce((t,w)=>t+wRM(w),0))}</b></div>
+    <p class="t-caption subtle" style="margin:0">Main is used for transfers and Scan to Pay.</p>
+    <div class="mw-list">${l.map(w=>`<button class="mw-row" data-act="wOpen" data-id="${w.id}">${wBadge(w)}<span class="m"><b>${esc(w.name)}</b><small class="mono">${xsShort(w.addr)} · ${RM(wRM(w))}</small></span>${w.id===m.id?wMainTag:ic('chev')}</button>`).join('')}</div>
+    ${!wHasYa() ? `<div class="mw-nudge"><b>Create a YouApp wallet</b><small>Pay with your PIN, no other app needed. Needed for Top Up.</small>${btn('Create','wCreateYa',{kind:'btn-secondary', cls:'btn-sm'})}</div>` : ''}
+    ${btn('+ Add wallet', nExt<5?'wAdd':'noop', {kind:'btn-secondary', disabled:nExt>=5})}<p class="t-caption subtle" style="margin:0; text-align:center">Up to 5 connected wallets.</p></div></div></div>`; };
+V.wDetail = () => { const w = W_ALL[S.wSel] || wMain(); const isMain = w.id===wMain().id;
+  return `<div class="screen bz">${statusBar()}${topBar(w.name)}
+  <div class="scroll"><div class="pad16 stack" style="gap:12px; padding-top:6px">
+    <div class="mw-hd">${wBadge(w,'lg')}<span><small class="mono">${xsShort(w.addr)} · Ethereum</small><b>${RM(wRM(w))}</b></span>${isMain?wMainTag:''}</div>
+    <div class="mw-list">${wToks(w).map(([k,v])=>`<div class="mw-row"><span class="mw-tk lg">${k[0]}</span><span class="m"><b>${k}</b><small>${TOKN[k]}</small></span><span class="r"><b>${tokAmt('',v).trim()}</b><small>${RM(v*RATE[k])}</small></span></div>`).join('')}</div>
+    ${w.hidden?`<button class="mw-row" data-act="toast" data-msg="Hidden tokens aren’t verified by YouApp. They can’t be sent or used to pay.">${ic('eye')}<span class="m"><b>Hidden tokens (${w.hidden})</b><small>Not verified by YouApp. Can’t be sent or used to pay.</small></span>${ic('chev')}</button>`:''}
+    <div class="mw-acts">${isMain?'':btn('Set as Main','wSetMain',{kind:'btn-secondary', cls:'btn-sm'})}${btn('Receive','wRecvOf',{kind:'btn-secondary', cls:'btn-sm'})}${btn('Rename','toast',{kind:'btn-secondary', cls:'btn-sm', data:'data-msg="Rename opens a short text field (demo)."'})}</div>
+    ${w.ext?`<button class="link mw-disc" data-act="sheet" data-s="wDisc">Disconnect wallet</button>`:'<p class="t-caption subtle" style="margin:0">The YouApp wallet can’t be removed.</p>'}</div></div></div>`; };
+SHEETS.wDisc = () => { const w = W_ALL[S.wSel]; const isMain = w.id===wMain().id; const alt = wList().find(x=>x.id!==w.id);
+  return `<div class="grab"></div><div class="stack" style="gap:12px"><h2 class="t-title" style="margin:0">Disconnect ${esc(w.name)}?</h2><p class="t-body muted" style="margin:0">Your money stays in ${esc(w.app)}. You can connect it again anytime.</p>
+  ${isMain&&alt?`<div class="hint">${ic('info')}<span>This is your Main wallet. ${esc(alt.name)} becomes Main.</span></div>`:''}
+  ${isMain&&!alt?`<div class="hint warn">${ic('alert')}<span>You need at least one wallet. Create a YouApp wallet first.</span></div>`:btn('Disconnect','wDiscGo')}${btn('Cancel','closeSheet',{kind:'btn-tertiary'})}</div>`; };
+
+/* Top up from a connected wallet */
+const _tuPick = SHEETS.tuPick;
+SHEETS.tuPick = () => { const ex = wList().filter(w=>w.ext);
+  const g = `<div class="pm-g"><small>From my connected wallet</small>${ex.length ? ex.map(w=>`<button class="pmrow" data-act="tuExtGo" data-id="${w.id}">${wBadge(w)}<span><b>${esc(w.name)}</b><small>${wTokLine(w)} · confirm in ${esc(w.app)}</small></span>${ic('chev')}</button>`).join('') : `<button class="pmrow" data-act="wAdd"><span class="mw-bd ext">+</span><span><b>Connect a wallet</b><small>MetaMask, Coinbase Wallet, Rainbow, Phantom, WalletConnect</small></span>${ic('chev')}</button>`}</div>`;
+  return _tuPick().replace('<div class="pm-g">', g+'<div class="pm-g">'); };
+V.tuExt = () => { const t = S.tuX || (S.tuX = {from:'mm', tok:null, amt:100}); const w = W_ALL[t.from]; const tk = t.tok && w.tok[t.tok] ? t.tok : (wToks(w)[0]||['USDC'])[0]; t.tok = tk; const max = w.tok[tk]||0; const over = t.amt>max;
+  if (!wHasYa()) return `<div class="screen bz">${statusBar()}${topBar('Top Up')}<div class="scroll"><div class="pad16 stack" style="gap:12px; padding-top:40px; text-align:center; align-items:center"><span class="mw-bd xl">Y</span><h1 class="t-title" style="margin:0">Create a YouApp wallet first</h1><p class="t-body muted" style="margin:0">Top Up moves money from ${esc(w.app)} into your YouApp wallet.</p></div></div><div class="w2foot">${btn('Create YouApp wallet','wCreateYa')}</div></div>`;
+  return `<div class="screen bz">${statusBar()}${topBar('Top Up')}
+  <div class="scroll"><div class="pad16 stack" style="gap:12px; padding-top:6px">
+    <div class="kvbox sp-box"><div class="kv"><span>From</span><b>${esc(w.name)}</b></div><div class="kv"><span>To</span><b>YouApp wallet</b></div></div>
+    <div class="mw-chips big">${wToks(w).map(([k])=>`<button class="${k===tk?'on':''}" data-act="tuXTok" data-k="${k}">${k}</button>`).join('')}</div>
+    <div class="tu-amt"><span class="tu-cur">${tk}</span><b>${t.amt.toFixed(2)}</b></div>
+    <div class="mw-chips big">${[50,100,200].map(v=>`<button class="${t.amt===v?'on':''}" data-act="tuXAmt" data-v="${v}">${v}</button>`).join('')}<button data-act="tuXAmt" data-v="${Math.floor(max)}">Max</button></div>
+    <small class="tu-help">${over?`<span style="color:var(--a-error)">${esc(w.app)} has ${tokAmt(tk,max)}.</span>`:`≈ ${RM(t.amt*RATE[tk])} · ${esc(w.app)} has ${tokAmt(tk,max)}`}</small>
+    <div class="kvbox sp-box"><div class="kv"><span>Network fee</span><b>≈ 0.0006 ETH, paid in ${esc(w.app)}</b></div><div class="kv tot"><span>You receive</span><b>${tokAmt(tk,t.amt)}</b></div></div></div></div>
+  <div class="w2foot">${btn('Confirm in '+esc(w.app), over?'noop':'tuXGo', {disabled:over})}</div></div>`; };
+V.tuExtDone = () => { const t = S.tuX; const w = W_ALL[t.from];
+  return `<div class="screen bz">${statusBar()}${topBar('Top Up')}<div class="scroll"><div class="success" style="padding-top:8px">${cele()}<b class="t-headline">${tokAmt(t.tok,t.amt)} added</b><span class="t-body subtle">From ${esc(w.name)} to your YouApp wallet</span></div>
+  <div class="pad16"><div class="kvbox sp-box"><div class="kv"><span>Tx hash</span><b><button class="xs-lnk" data-act="xsScanTx">0x9a1f…c33e${ic('xsExt')}</button></b></div><div class="kv"><span>Confirmations</span><b>12 of 12</b></div><div class="kv"><span>Network</span><b>Ethereum · ERC-20</b></div></div></div></div>
+  <div class="w2foot">${btn('Done','home')}</div></div>`; };
+
+/* Receive: pick a wallet, any verified stablecoin */
+const _xsRecv = V.xsRecv;
+V.xsRecv = () => { const w = W_ALL[S.wRecv] && wIds().includes(S.wRecv) ? W_ALL[S.wRecv] : wMain(); let h = _xsRecv();
+  h = h.split(xsChunk(XS_ME.addr)).join(xsChunk(w.addr)).split(XS_ME.addr).join(w.addr);
+  h = h.replace('<b>Accepts MYRT, XSGD, USDT and USDC</b><small>Ethereum (ERC-20) only. XSGD, USDT and USDC convert to MYRT on arrival. YouApp fee 0%.</small>', '<b>Send stablecoins on Ethereum only</b><small>Accepts MYRT, USDT, USDC, XSGD and other verified stablecoins (ERC-20). Other networks or tokens may be lost.</small>');
+  h = h.replace('<small>Your wallet address · Ethereum</small>', `<small>${esc(w.name)} · Ethereum</small>`).replace(">Send MYRT<", ">Send<");
+  return h.replace('<section class="xs-qr">', `${wList().length>1?`<button class="mw-pick1" data-act="sheet" data-s="wRecvPick"><small>Wallet</small><b>${wBadge(w,'sm')}${esc(w.name)}${w.id===wMain().id?' <em>Main</em>':''}</b>${ic('chevdown')}</button>`:''}<section class="xs-qr">`); };
+SHEETS.wRecvPick = () => `<div class="grab"></div><h2 class="t-title" style="margin:0 0 12px">Receive to</h2><div class="mw-list">${wList().map(w=>`<button class="mw-row" data-act="wRecvSet" data-id="${w.id}">${wBadge(w)}<span class="m"><b>${esc(w.name)}</b><small class="mono">${xsShort(w.addr)}</small></span>${w.id===wMain().id?wMainTag:''}</button>`).join('')}</div>`;
+
+/* YouPage: Main wallet card and My wallets */
+const _home = V.home;
+V.home = () => { let h = _home(); if (!kycOk()) return h; const m = wMain(); const l = wList();
+  const fmt = v => v.toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2});
+  if (!S.balHide) h = h.replace(/(<div class="yb-amt"><b>)[\d,]+\.\d{2}(<\/b>)/, `$1${fmt(wRM(m))}$2`);
+  const row = `<button class="mw-hrow" data-act="nav" data-to="wallets"><span class="mw-hic">${ic('wallet2')}</span><span class="mw-ht"><b>My wallets (${l.length})</b><small>${RM(l.reduce((t,w)=>t+wRM(w),0))} in total</small></span><em>Manage</em>${ic('chev')}</button>`;
+  return h.replace('<!--yp-wl-->', row.replace('class="mw-hrow"','class="mw-hrow yp-wl"')); };
+
+/* Scan to Pay with an external Main wallet */
+const _confirm = V.confirm, _done = V.done;
+V.confirm = () => { let h = _confirm(); const m = wMain(); if (!m.ext || S.payYa) return h;
+  const p = S.pay; const amt = +p.amt||0; const {total} = spFees(amt); const tk = (wToks(m)[0]||['USDC'])[0]; const need = Math.round(total/RATE[tk]*100)/100;
+  h = h.replace(`<div class="kv"><span>Pay from</span><b>YouWallet · MYRT ${myrt(bal())}</b></div>`, `<div class="kv"><span>Pay from</span><b>${esc(m.name)} (Main) · ${tk}</b></div>${tk!=='MYRT'?`<div class="kv"><span>${tk} to pay</span><b>${need.toFixed(2)} · 1 ${tk} = RM ${RATE[tk]}</b></div>`:''}<div class="kv"><span>Network fee</span><b>≈ 0.0006 ETH</b></div>`);
+  if (scen.extSess==='off') return h.replace(/<div class="w2foot sp-foot">[\s\S]*?<\/div>/, `<div class="w2foot sp-foot"><div class="hint warn">${ic('alert')}<span><b>${esc(m.app)} isn’t connected.</b> Reconnect to pay${wHasYa()?', or pay from your YouApp wallet':''}.</span></div>${btn('Reconnect '+esc(m.app),'mwReconnect')}${wHasYa()?btn('Pay with YouApp wallet','mwPayYa',{kind:'btn-secondary'}):''}</div>`);
+  return h.replace(/data-act="(spPay|spTopUp)"/, 'data-act="mwPayExt"').replace(/>(Pay Now|Top Up &amp; Pay RM\d+)</, `>Pay with ${esc(m.app)}<`); };
+V.done = () => { let h = _done(); const m = wMain(); if (!m.ext || S.payYa) return h; const p = S.pay; const {total} = spFees(+p.amt); const tk = (wToks(m)[0]||['USDC'])[0];
+  return h.replace(/<div class="kv"><span>Updated Balance<\/span><b>[^<]*<\/b><\/div>/, `<div class="kv"><span>Paid from</span><b>${esc(m.name)} · ${tokAmt(tk, total/RATE[tk])}</b></div>`); };
+
+/* Settings › Wallets */
+const _settings = V.settings;
+V.settings = () => _settings().replace(/<button class="st-row" data-act="copy"[^>]*data-v="0x7a3F[^"]*"[^>]*>[\s\S]*?<\/button>/, `<button class="st-row" data-act="nav" data-to="wallets">${ic('wallet2')}<span><b>My wallets</b><small>${wList().length} wallet${wList().length>1?'s':''} · Main: ${esc(wMain().name)}</small></span>${ic('chev')}</button>`);
+
+const wSetWl = ids => { scen.wl = ids.join(','); if (!ids.includes(scen.mainW)) scen.mainW = ids[0]; saveScen(); };
+const mwStart = (kind, app, title, next) => { S.sheet = null; S.mwWait = {kind, app, title, next}; go('mwWait'); };
+Object.assign(A, {
+  mwFromPick: el => { const x = xsInit(); x.from = el.dataset.id; x.tok = null; x.amt=''; S.sheet = null; render(); },
+  mwTokPick: el => { const x = xsInit(); x.tok = el.dataset.k; x.amt=''; S.sheet = null; render(); },
+  mwUseYa: () => { const x = xsInit(); x.from = 'ya'; x.tok = null; S.sheet = null; render(); toast('Switched to your YouApp wallet. Check the amount again.'); },
+  mwSendExt: () => { const w = xsFromW(); mwStart('send', w.app, 'Send', 'send'); },
+  mwPayExt: () => { const m = wMain(); S.payYa = false; mwStart('pay', m.app, 'Scan and Pay', 'pay'); },
+  mwPayYa: () => { S.payYa = true; S.mwWait = null; S.hist = S.hist.filter(k=>k!=='mwWait' && k!=='mwCancelled' && k!=='confirm'); go('confirm'); toast('Paying from your YouApp wallet.'); },
+  mwReconnect: () => { scen.extSess = 'on'; saveScen(); render(); toast(`${wMain().app} reconnected.`); },
+  mwApprove: () => { const k = S.mwWait||{}; if (scen.extOk==='cancel') { go('mwCancelled',{replace:true}); return; }
+    if (k.next==='send') { const x = xsInit(); x.fail=false; x.bgDone=false; go('xsProc',{replace:true}); xsRun(); }
+    else if (k.next==='pay') go('done',{replace:true});
+    else if (k.next==='topup') go('tuExtDone',{replace:true});
+    else if (k.next==='connect') go('wVerify',{replace:true});
+    else if (k.next==='sign') { S.wUseMain = undefined; go('wConnected',{replace:true}); } },
+  mwCancel: () => { go('mwCancelled',{replace:true}); },
+  mwRetry: () => { const k = S.mwWait||{}; go('mwWait',{replace:true}); },
+  mwClose: () => { S.hist = S.hist.filter(k=>!/^(mw|w[A-Z])/.test(k)); S.screen = S.hist.pop() || 'home'; render(); },
+  wPick: el => { S.wPick = el.dataset.k; render(); },
+  wChooseGo: () => { if ((S.wPick||'ya')==='ya') { wSetWl(['ya']); scen.mainW='ya'; saveScen(); go('kycActive',{replace:true}); } else { S.sheet = 'wProv'; render(); } },
+  wAdd: () => { S.wCtx = 'add'; S.sheet = 'wProv'; render(); },
+  wProvGo: el => { const k = el.dataset.k; S.wApp = k==='WalletConnect' ? 'MetaMask' : k; if (k==='WalletConnect') { S.sheet='wQR'; render(); return; } mwStart('connect', S.wApp, 'Connect wallet', 'connect'); },
+  wQrDone: () => { S.sheet = null; go('wVerify'); },
+  wSign: () => mwStart('sign', S.wApp||'MetaMask', 'Verify your wallet', 'sign'),
+  wUseMain: () => { if (S.wCtx==='activate') return; S.wUseMain = !(S.wUseMain); render(); },
+  wConnDone: () => { const id = S.wApp==='Coinbase Wallet' ? 'cb' : 'mm'; if (id==='mm') { const a = S.wApp||'MetaMask'; Object.assign(W_ALL.mm, {name:a, app:a, ini:a[0]}); }
+    if (S.wCtx==='activate') { wSetWl([id]); scen.mainW = id; scen.kyc = 'passed'; saveScen(); S.wCtx = null;
+      try { const a = window.parent.document.getElementById('a30').contentWindow; a.__set && a.__set('wallet','active'); } catch(e){}
+      S.hist=['discover']; S.screen='home'; render(); toast(`${W_ALL[id].name} is your Main wallet.`); return; }
+    let ids = wIds(); if (!ids.includes(id)) ids.push(id); else if (!ids.includes('cb')) { ids.push('cb'); } wSetWl(ids); if (S.wUseMain) { scen.mainW = id; saveScen(); }
+    S.hist = S.hist.filter(k=>!/^(mw|w[A-Z])/.test(k)); go('wallets',{replace:true}); toast(`${W_ALL[id].name} added.`); },
+  wOpen: el => { S.wSel = el.dataset.id; go('wDetail'); },
+  wSetMain: () => { scen.mainW = S.wSel; saveScen(); render(); toast(`${W_ALL[S.wSel].name} is now your Main wallet.`); },
+  wRecvOf: () => { S.wRecv = S.wSel; go('xsRecv'); },
+  wRecvSet: el => { S.wRecv = el.dataset.id; S.sheet = null; render(); },
+  wDiscGo: () => { const id = S.wSel; wSetWl(wIds().filter(k=>k!==id)); S.sheet = null; S.hist = S.hist.filter(k=>k!=='wDetail'); go('wallets',{replace:true}); toast(`${W_ALL[id].name} disconnected. Your money stays there.`); },
+  wCreateYa: () => { const ids = wIds(); if (!ids.includes('ya')) ids.unshift('ya'); wSetWl(ids); render(); toast('YouApp wallet created.'); },
+  tuExtGo: el => { S.sheet = null; S.tuX = {from:el.dataset.id, tok:null, amt:100}; go('tuExt'); },
+  tuXTok: el => { S.tuX.tok = el.dataset.k; render(); },
+  tuXAmt: el => { S.tuX.amt = +el.dataset.v; render(); },
+  tuXGo: () => { const w = W_ALL[S.tuX.from]; mwStart('topup', w.app, 'Top Up', 'topup'); },
+});
+Object.assign(META, {
+  wChoose:{name:'Activate wallet · choose', ph:1, rules:['After KYC: Create YouApp wallet (Privy embedded, recommended) or Connect my wallet.','The first wallet becomes Main.']},
+  wVerify:{name:'Verify wallet ownership', ph:1, rules:['Sign a free message in the wallet app to link it. Rejected or risky (AML) addresses aren’t linked.']},
+  wConnected:{name:'Wallet connected', ph:1, rules:['Use as Main toggle (locked on for the first wallet).']},
+  wallets:{name:'My wallets', ph:1, rules:['One YouApp wallet and up to 5 external wallets. Main tag on one. Total in RM.','Users without a YouApp wallet see a nudge to create one (needed for Top Up).']},
+  wDetail:{name:'Wallet detail', ph:1, rules:['Verified ERC-20 stablecoins with RM value; unverified tokens hidden.','Set as Main, Receive, Rename, Disconnect (external only; money stays in the wallet).']},
+  mwWait:{name:'Waiting for the wallet app', ph:1, rules:['External wallets confirm in their own app (deep link or WalletConnect). Open again or cancel.']},
+  mwCancelled:{name:'Cancelled in the wallet app', ph:1, rules:['Nothing charged. Try again, or pay with the YouApp wallet.']},
+  tuExt:{name:'Top up from a connected wallet', ph:1, rules:['From an external wallet into the YouApp wallet, same token, no conversion. Network fee in ETH paid in the external wallet.']},
+  tuExtDone:{name:'Top up · landed', ph:1, rules:['Tx hash and confirmations.']},
+});
+if (META.xsAmt) META.xsAmt.rules = ['Multi-wallet: From (default Main) and Token rows. Any verified stablecoin the wallet holds.','External wallet: confirm in the wallet app; network fee in ETH. YouApp wallet: PIN as before.', ...(META.xsAmt.rules||[])];
+try { render(); } catch(e) {}
+
+/* ===== V2 · Badge Verification gate before Become Elite / Become Merchant =====
+   Registration forms need a verified identity. Unverified users get a sheet that sends them to
+   Badge Verification (3.0 KYC: ID, selfie, phone). Runs in the capture phase on window, so it fires
+   before the shell's webview-form hook. */
+const kgA30 = () => { try { return JSON.parse(localStorage.getItem('ya-proto-scen') || '{}'); } catch(e){ return {}; } };
+const kgState = () => { const a = kgA30().kyc;
+  if (scen.kyc==='passed' || a==='approved') return 'ok';
+  if (scen.kyc==='review') return 'review';
+  if (scen.kyc==='rejected' || a==='rejected') return 'rejected';
+  return 'none'; };
+const KG_EL = /^(become (an )?elite|apply to become (an )?elite|apply as (an )?elite|contact support to become (an )?elite|apply now)$/;
+const KG_MC = /^(become (a )?merchant|(let.?s )?add (a|another) merchant)$/;
+const kgFor = b => { const act = b.dataset.act || ''; const t = (b.textContent||'').replace(/\s+/g,' ').trim().toLowerCase();
+  if (/view my request/.test(t)) return null;
+  if (act==='elApplyOpen' || act==='shJoinGo' || (act==='contactAdmin' && b.dataset.k==='Elite') || KG_EL.test(t)) return 'elite';
+  if (act==='mcApplyOpen' || (act==='contactAdmin' && b.dataset.k==='Merchant') || KG_MC.test(t)) return 'merchant';
+  return null; };
+window.addEventListener('click', e => {
+  const b = e.target.closest && e.target.closest('button,a,[data-act]'); if (!b || b.closest('#panel')) return;
+  const k = kgFor(b); if (!k || kgState()==='ok') return;
+  if (S.sheet==='kycGate') return;
+  e.preventDefault(); e.stopImmediatePropagation();
+  S.kgFor = k; S.sheet = 'kycGate'; render();
+}, true);
+SHEETS.kycGate = () => { const st = kgState(); const what = S.kgFor==='merchant' ? 'register as a Merchant' : 'become an Elite';
+  const head = st==='review' ? 'Verification in review' : st==='rejected' ? 'Verify your identity again' : 'Verify your identity first';
+  const body = st==='review' ? `We’re checking your Badge Verification. You can ${what} once it’s approved, usually within 24 hours.`
+    : st==='rejected' ? `Your last Badge Verification didn’t go through. Please try again to ${what}.`
+    : `To ${what}, you need a verified badge first. It takes about 2 minutes.`;
+  const steps = st==='review' ? '' : `<div class="kg-steps">${[['card','Photo of your ID (MyKad or passport)'],['face','A quick selfie'],['phone','Your mobile number']].map(([i,t])=>`<div class="kg-step">${ic(i)}<span>${t}</span></div>`).join('')}</div>`;
+  const cta = st==='review' ? btn('OK, got it','closeSheet') : btn(st==='rejected'?'Try again':'Start Badge Verification','kgStart');
+  return `<div class="grab"></div><div class="stack kg" style="gap:14px"><div class="kg-badge">${ic(st==='review'?'hourglass':'verify')}</div>
+    <h2 class="t-title" style="margin:0;text-align:center">${head}</h2><p class="t-body muted" style="margin:0;text-align:center">${body}</p>${steps}
+    ${cta}${st==='review'?'':btn('Not now','closeSheet',{kind:'btn-tertiary'})}</div>`; };
+A.kgStart = () => { S.sheet = null; S.kgBack = S.kgFor; A.kycStart(); };
+META.kycGate = META.kycGate || {name:'Badge Verification gate', rules:['Become an Elite and Become Merchant need Badge Verification first. Not verified → this sheet → Badge Verification (KYC). In review → wait message. Rejected → Try again.']};
+try { render(); } catch(e) {}
+
+/* YouPage (Figma 3.1 · 89:3594 / 184:4224): swiping to Booking Balance hides the VIP banner and My wallets */
+document.addEventListener('scroll', e => { const c = e.target; if (!c.classList || !c.classList.contains('yb-car')) return;
+  const book = c.scrollLeft > c.clientWidth/2; if (S.ybBook === book) return; S.ybBook = book;
+  const sc = c.closest('.screen'); if (sc) sc.classList.toggle('yp-book', book); }, true);
+const _homeYP = V.home;
+V.home = () => { const h = _homeYP(); return S.ybBook ? h.replace('<div class="screen">', '<div class="screen yp-book">') : h; };
+const _renderYP = render;
+render = function(){ const r = _renderYP.apply(this, arguments); if (S.screen==='home' && S.ybBook) { const c = document.querySelector('.yb-car'); if (c) c.scrollLeft = c.scrollWidth; } return r; };
+
+/* Elite ended → Reapply as Elite → contact the admin team (WhatsApp) */
+SHEETS.elReWa = () => { const msg = `Hi YouApp Admin, my Elite ended on ${SH_END}. I'd like to reapply as an Elite. My account: ${RF_ME.handle}.`;
+  return `<div class="grab"></div><div class="stack" style="gap:14px">
+    <div><h2 class="t-title" style="margin:0 0 4px">Contact Admin to reapply</h2><p class="t-body muted" style="margin:0">We’ll open WhatsApp with this message ready. The admin team checks your account and replies within 48 hours.</p></div>
+    <div class="sh-wa-msg"><small>Message</small><p>${esc(msg)}</p></div>
+    <button class="btn btn-primary sh-wa-btn" data-act="elReWaGo">${WA_IC}Contact Admin</button>${btn('Cancel','closeSheet',{kind:'btn-tertiary'})}</div>`; };
+A.elReWaGo = () => { S.sheet = null; render(); toast('Opening WhatsApp with your message to the YouApp admin team.'); };
+
+/* V2 · Red Packet tile on YouPage → create form (lives in the 3.0 app frame) */
+SVG.apGift = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="3" width="16" height="18" rx="2.5"/><path d="M4 8.5c2.6 2.2 5.2 3.3 8 3.3s5.4-1.1 8-3.3"/><circle cx="12" cy="12" r="2.4" fill="currentColor" stroke="none"/></svg>';
+A.apOpen = () => { try { window.parent.__bridge('w2', 'apNew', {kyc:scen.kyc}); } catch(e) { toast('Red Packet opens in the full flow.'); } };
+/* main-wallet balance shared with the Red Packet flow; red packet sent/received in the 3.0 frame adjust the YouPage figure */
+const apA30 = () => { try { return window.parent.document.getElementById('a30').contentWindow; } catch(e) { return null; } };
+window.__apBal = () => { try { return Math.round(wRM(wMain()) * 100); } catch(e) { return null; } };  /* red packet pays from the active wallet: same figure as YouWallet Balance */
+const _homeAp = V.home;
+V.home = () => { let h = _homeAp(); const a = apA30(); const d = a && a.AP ? a.AP.delta : 0;
+  if (d && kycOk() && !S.balHide) { try { const v = wRM(wMain()) + d/100; h = h.replace(/(<div class="yb-amt"><b>)[\d,]+\.\d{2}(<\/b>)/, `$1${v.toLocaleString('en-MY',{minimumFractionDigits:2, maximumFractionDigits:2})}$2`); } catch(e) {}  try { h = h.replace(/RM([\d,]+\.\d{2}) in total/, (m, x) => `RM${(parseFloat(x.replace(/,/g,'')) + d/100).toLocaleString('en-MY',{minimumFractionDigits:2, maximumFractionDigits:2})} in total`); } catch(e) {} }
+  return h; };
+try { render(); } catch(e) {}
+
+/* V2 · Activity V3: My Activities on the You page, Create Service on the Host tab */
+A.actMineW = () => { try { window.parent.__bridge('w2', 'actMine', {kyc:scen.kyc}); } catch(e) { toast('My Activities opens in the full flow.'); } };
+A.createSvcW = () => { try { window.parent.__bridge('w2', 'actNewSvc', {kyc:scen.kyc}); } catch(e) { toast('Create Service opens in the full flow.'); } };
+const _homeAct = V.home;
+V.home = () => { let h = _homeAct(); const ref = '<h2 class="sec pad16" style="margin-bottom:10px">Referral</h2>';
+  const row = `<div class="pad16" style="margin:4px 0 14px"><button class="mw-hrow" data-act="actMineW"><span class="mw-hic">${ic('cal')}</span><span class="mw-ht"><b>My Activities</b><small>Your activities and join requests</small></span><em>Open</em>${ic('chev')}</button></div>`;
+  return kycOk() ? h.replace(ref, row + ref) : h; };
+try { render(); } catch(e) {}
 </script>

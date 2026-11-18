@@ -1,0 +1,849 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>YouApp Registration Forms</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
+<style>
+
+/* Layout: two columns on desktop (story left, sign-up card right), one column on phones. Light brand world, lilac ground. */
+:root{
+  --ground:#F4EFFF; --card:#FFFFFF; --ink:#1B1530; --muted:#6E6688; --line:#E6DEF7;
+  --plum:#2A1466; --violet:#5E35B8; --lilac:#C9B4F5; --mint:#0F9D6E; --mintbg:#E2F6EE; --gold:#FFC83D; --hib:#E3263C;
+  --display:"Baloo 2","Nunito Sans",system-ui,"PingFang SC","Noto Sans SC",sans-serif;
+  --body:"Nunito Sans",system-ui,"PingFang SC","Noto Sans SC",sans-serif;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--ground:#140A2E;--card:#1F1442;--ink:#F4EEFF;--muted:#B5A9D6;--line:#33275C;--mintbg:#0F3A2C;color-scheme:dark}}
+:root[data-theme="dark"]{--ground:#140A2E;--card:#1F1442;--ink:#F4EEFF;--muted:#B5A9D6;--line:#33275C;--mintbg:#0F3A2C;color-scheme:dark}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--ground);color:var(--ink);font-family:var(--body);-webkit-font-smoothing:antialiased;
+  padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+.wrap{max-width:1080px;margin:0 auto;padding-block:20px 40px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+header{display:flex;align-items:center;justify-content:space-between;gap:12px}
+.brand{display:flex;align-items:center;gap:8px;font:800 22px var(--display);color:var(--violet);text-decoration:none}
+.brand svg{width:32px;height:32px}
+.lang{display:flex;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px}
+.lang button{border:0;background:none;font:700 12.5px var(--body);color:var(--muted);padding:6px 11px;border-radius:999px;cursor:pointer}
+.lang button.on{background:var(--violet);color:#fff}
+main{display:grid;grid-template-columns:1.1fr .9fr;gap:36px;align-items:center;margin-top:28px}
+@media (max-width:860px){main{grid-template-columns:1fr;gap:20px;margin-top:16px}.perks{display:none}.art{margin-top:14px}}
+@media (max-width:520px){h1{font-size:32px}.lede{font-size:15px}}
+.story{min-width:0}
+.from{display:inline-flex;align-items:center;gap:10px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:6px 14px 6px 6px;font-weight:700;font-size:14px}
+.from .av{width:34px;height:34px;border-radius:50%;background:linear-gradient(135deg,#FFB86B,#E07A2E);display:flex;align-items:center;justify-content:center;color:#fff;font:800 15px var(--display)}
+h1{font:800 clamp(34px,5.4vw,56px)/1.02 var(--display);margin:4px 0 10px;letter-spacing:-.01em;text-wrap:balance}
+h1 em{font-style:normal;color:var(--violet)}
+.lede{font-size:17px;line-height:1.5;color:var(--muted);margin:0;max-width:44ch}
+.art{margin-top:18px;width:100%;max-width:560px;aspect-ratio:560/400;display:block;border-radius:32px;box-shadow:0 20px 50px rgba(42,20,102,.22)}
+.perks{display:flex;flex-wrap:wrap;gap:8px;margin-top:14px}
+.perks>span{display:inline-flex;align-items:center;gap:6px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:7px 12px;font-weight:700;font-size:13px}
+.perks svg{width:16px;height:16px;stroke:var(--violet);fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+
+.card{background:var(--card);border:1px solid var(--line);border-radius:28px;padding:24px;box-shadow:0 24px 60px rgba(42,20,102,.14);min-width:0}
+.gift{display:flex;align-items:center;gap:12px;border-radius:18px;padding:12px 14px;background:linear-gradient(100deg,#FFF1D6,#F6E6FF);color:#2A1466;margin-bottom:18px}
+.gift .gi{width:46px;height:52px;flex:none}.gift .gi svg,.si svg,.ea svg,.ok svg{width:100%;height:100%;display:block;overflow:visible}
+.gift b{display:block;font:800 16px var(--display)}.gift span{font-size:13px;color:#6E5A2A}
+.card h2{font:800 24px var(--display);margin:0 0 4px}
+#s1 h2{margin-bottom:6px}
+.card p.s{margin:0 0 16px;color:var(--muted);font-size:14px}
+label.f{display:block;margin-top:12px}
+label.f span{display:block;font:800 11.5px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.inp{display:flex;align-items:center;gap:8px;border:1.5px solid var(--line);border-radius:16px;padding:0 14px;background:var(--ground)}
+.inp:focus-within{border-color:var(--violet)}
+.inp input{flex:1;min-width:0;border:0;background:none;font:700 16px var(--body);color:var(--ink);padding:14px 0;outline:none}
+.inp .who{display:flex;align-items:center;gap:6px}.inp .pp{width:28px;height:28px;border-radius:50%;border:2px solid #fff;box-shadow:0 0 0 1.5px var(--mint);flex:none;object-fit:cover}
+.inp .tag{font:800 11px var(--body);color:var(--mint);background:var(--mintbg);padding:4px 8px;border-radius:999px;white-space:nowrap}
+.chk{display:flex;gap:10px;align-items:flex-start;margin-top:14px;font-size:13px;color:var(--muted);line-height:1.45;cursor:pointer}
+.chk input{width:18px;height:18px;accent-color:var(--violet);margin-top:1px;flex:none}
+.chk a{color:var(--violet);font-weight:700}
+.btn{display:block;width:100%;border:0;border-radius:18px;padding:16px;margin-top:16px;font:800 18px var(--display);color:#fff;cursor:pointer;
+  background:linear-gradient(90deg,#B08BE8,#6F42C9 45%,#3D2296);box-shadow:0 10px 24px rgba(94,53,184,.3)}
+.btn:disabled{opacity:.45;cursor:default;box-shadow:none}
+.btn:focus-visible,.lang button:focus-visible,.copy:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.err{color:var(--hib);font-weight:700;font-size:13px;margin-top:8px;min-height:18px}
+.otp{display:flex;gap:8px;justify-content:space-between;margin-top:6px}
+.otp input{width:100%;min-width:0;aspect-ratio:1/1.15;text-align:center;font:800 24px var(--display);border:1.5px solid var(--line);border-radius:14px;background:var(--ground);color:var(--ink)}
+.otp input:focus{outline:none;border-color:var(--violet)}
+.muted{color:var(--muted);font-size:13px;text-align:center;margin-top:12px}
+.muted button{border:0;background:none;color:var(--violet);font:800 13px var(--body);cursor:pointer}
+.stores{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:16px}
+.stores a{display:flex;align-items:center;gap:10px;justify-content:center;background:#1B1530;color:#fff;text-decoration:none;border-radius:14px;padding:12px;font-weight:800;font-size:14px}
+.stores svg{width:20px;height:20px;fill:#fff}
+.ok{width:96px;height:96px;margin:4px auto 10px;display:block}
+.code{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1.5px dashed var(--lilac);border-radius:16px;padding:12px 14px;margin-top:14px}
+.code b{font:800 20px var(--display);letter-spacing:.12em}
+.copy{border:0;background:var(--ground);color:var(--violet);font:800 13px var(--body);padding:8px 12px;border-radius:10px;cursor:pointer}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:42px}
+@media (max-width:700px){.steps{grid-template-columns:1fr}}
+.step{background:var(--card);border:1px solid var(--line);border-radius:22px;padding:18px;display:flex;gap:14px;align-items:flex-start}
+.step .si{flex:none;width:58px;height:58px}
+.step .n{flex:none;width:34px;height:34px;border-radius:12px;background:var(--violet);color:#fff;font:800 17px var(--display);display:flex;align-items:center;justify-content:center}
+.step b{display:block;font:800 17px var(--display)}.step span{color:var(--muted);font-size:14px;line-height:1.45}
+.earn{margin-top:14px;border-radius:22px;padding:18px 20px;background:var(--plum);color:#F4EEFF;display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.earn .ea{width:112px;height:72px;flex:none}
+.earn b{font:800 20px var(--display)}.earn span{color:#C9B4F5;font-size:14px}
+footer{margin-top:34px;color:var(--muted);font-size:12.5px;line-height:1.6;text-align:center}
+footer a{color:var(--muted)}
+.hide{display:none}
+.blink,.flap,.bob,.wave,.wiggle,.drift,.twk{transform-box:fill-box;transform-origin:center}
+.blink{animation:blink 3.6s infinite}@keyframes blink{0%,92%,100%{transform:scaleY(1)}95%{transform:scaleY(.1)}}
+.bob{animation:bob 1.4s ease-in-out infinite}@keyframes bob{50%{transform:translateY(-4px)}}
+.wave{animation:wave .6s ease-in-out infinite alternate;transform-origin:10% 90%!important}@keyframes wave{from{transform:rotate(-20deg)}to{transform:rotate(25deg)}}
+.wiggle{animation:wiggle 1.2s ease-in-out infinite}@keyframes wiggle{50%{transform:rotate(6deg)}}
+.drift{animation:drift 18s linear infinite}@keyframes drift{from{transform:translateX(-40px)}to{transform:translateX(40px)}}
+.twk{animation:twk 1.8s ease-in-out infinite}@keyframes twk{50%{opacity:.25;transform:scale(.6)}}
+.flap{animation:flap .35s ease-in-out infinite alternate;transform-origin:20% 80%!important}@keyframes flap{from{transform:rotate(-26deg)}to{transform:rotate(20deg)}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important}}
+
+/* ---- additions for the registration forms (same tokens as the invite page) ---- */
+.tabs{display:flex;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px;margin-left:auto;margin-right:10px}
+.tabs button{border:0;background:none;font:700 12.5px var(--body);color:var(--muted);padding:6px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
+.lang button{white-space:nowrap}
+@media (max-width:620px){header{flex-wrap:wrap}.tabs{order:3;width:100%;margin:12px 0 0}.tabs button{flex:1;padding:9px 12px}}
+.tabs button.on{background:var(--plum);color:#fff}
+.tabs button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.lede{margin-top:2px}
+.secure{display:inline-flex;align-items:center;gap:6px;font:700 12px var(--body);color:var(--mint);background:var(--mintbg);padding:5px 10px;border-radius:999px;margin-bottom:12px}
+.secure svg{width:13px;height:13px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.inp.locked{background:transparent;border-style:dashed}
+.inp.locked input{color:var(--muted)}
+.inp .lk{display:inline-flex;align-items:center;gap:4px;font:800 11px var(--body);color:var(--muted);background:var(--line);padding:4px 8px;border-radius:999px;white-space:nowrap}
+.inp .lk svg{width:12px;height:12px;stroke:currentColor;fill:none;stroke-width:2.4;stroke-linecap:round}
+.inp .pre{font:800 15px var(--body);color:var(--muted);padding-right:8px;border-right:1.5px solid var(--line)}
+.inp select{flex:1;min-width:0;border:0;background:none;font:700 16px var(--body);color:var(--ink);padding:14px 0;outline:none;appearance:none;-webkit-appearance:none;cursor:pointer}
+.inp .chev{width:16px;height:16px;stroke:var(--muted);fill:none;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round;pointer-events:none;flex:none}
+.inp.ta{display:block;padding:0 14px}
+.inp textarea{display:block;width:100%;border:0;background:none;font:600 15.5px/1.5 var(--body);color:var(--ink);padding:13px 0 6px;outline:none;resize:none;min-height:96px}
+.inp textarea::placeholder,.inp input::placeholder{color:var(--muted);opacity:.7;font-weight:600}
+.cnt{display:block;text-align:right;font:700 11.5px var(--body);color:var(--muted);padding-bottom:8px}
+.cnt.over{color:var(--hib)}
+.hint{display:block;font-size:12px;color:var(--muted);margin-top:6px;line-height:1.4}
+.fe{display:block;color:var(--hib);font-weight:700;font-size:12.5px;margin-top:6px;min-height:0}
+.fe:empty{display:none}
+.bad .inp{border-color:var(--hib)}
+.chk.bad{color:var(--hib)}
+.row2{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:12px}
+.row2>*{min-width:0}
+a.btn{text-align:center;text-decoration:none}
+@media (max-width:520px){.row2{grid-template-columns:1fr}}
+.btn .sp{display:none;width:18px;height:18px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite;vertical-align:-3px;margin-right:8px}
+.btn.loading .sp{display:inline-block}
+@keyframes spin{to{transform:rotate(360deg)}}
+.ref{display:flex;align-items:center;justify-content:space-between;gap:10px;border:1.5px dashed var(--lilac);border-radius:16px;padding:12px 14px;margin-top:16px}
+.ref span{font-size:12px;color:var(--muted);font-weight:700}
+.ref b{display:block;font:800 20px var(--display);letter-spacing:.08em}
+.summary{margin-top:14px;border:1px solid var(--line);border-radius:16px;padding:4px 14px}
+.summary div{display:flex;justify-content:space-between;gap:12px;padding:10px 0;border-bottom:1px solid var(--line);font-size:13.5px}
+.summary div:last-child{border:0}
+.summary span{color:var(--muted)}
+.summary b{text-align:right;word-break:break-word}
+.next{margin-top:14px;display:grid;gap:8px}
+.next div{display:flex;gap:10px;align-items:flex-start;font-size:13.5px;line-height:1.45}
+.next i{flex:none;width:22px;height:22px;border-radius:8px;background:var(--violet);color:#fff;font:800 12px var(--display);font-style:normal;display:flex;align-items:center;justify-content:center;margin-top:1px}
+.btn.ghost{background:var(--ground);color:var(--violet);box-shadow:none;border:1.5px solid var(--line)}
+.steps.four{grid-template-columns:repeat(4,1fr)}
+@media (max-width:980px){.steps.four{grid-template-columns:1fr 1fr}}
+@media (max-width:560px){.steps.four{grid-template-columns:1fr}}
+.warn{margin-top:14px;border-radius:22px;padding:16px 20px;background:var(--card);border:1px solid var(--line);display:flex;gap:12px;align-items:flex-start}
+.warn svg{flex:none;width:22px;height:22px;stroke:#C9861A;fill:none;stroke-width:2.2;stroke-linecap:round;stroke-linejoin:round;margin-top:1px}
+.warn b{display:block;font:800 16px var(--display)}
+.warn span{color:var(--muted);font-size:14px;line-height:1.45}
+.mode{display:grid;grid-template-columns:1fr 1fr;background:var(--ground);border:1px solid var(--line);border-radius:14px;padding:3px;margin:0 0 16px}
+.mode button{border:0;background:none;font:800 13px var(--body);color:var(--muted);padding:9px 8px;border-radius:11px;cursor:pointer}
+.mode button.on{background:var(--card);color:var(--violet);box-shadow:0 2px 8px rgba(42,20,102,.12)}
+.mode button:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.grp-h{font:800 15px var(--display);color:var(--violet);margin:22px 0 2px;padding-top:16px;border-top:1px dashed var(--line)}
+form .grp-h:first-of-type{border-top:0;padding-top:0;margin-top:14px}
+.opt{font-style:normal;text-transform:none;letter-spacing:0;font-weight:700;color:var(--muted);opacity:.75;margin-left:4px}
+label.f span .opt,.f .lbl .opt{font-size:11px}
+.f .lbl{display:block;font:800 11.5px var(--body);letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+div.f{margin-top:12px}
+.up{display:flex;align-items:center;gap:12px;border:1.5px dashed var(--lilac);border-radius:16px;padding:14px;background:var(--ground);cursor:pointer}
+.up:hover{border-color:var(--violet)}
+.up:focus-visible{outline:3px solid var(--gold);outline-offset:2px}
+.up svg{width:34px;height:34px;flex:none;stroke:var(--violet);fill:none;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;background:var(--card);border-radius:10px;padding:6px}
+.up b{display:block;font-size:14px;color:var(--ink)}
+.up small{display:block;font-size:12px;color:var(--muted);margin-top:2px}
+.vh{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none}
+.file{display:flex;align-items:center;gap:10px;border:1.5px solid var(--mint);background:var(--mintbg);border-radius:16px;padding:12px 14px}
+.file svg{width:18px;height:18px;flex:none;stroke:var(--mint);fill:none;stroke-width:2.6;stroke-linecap:round;stroke-linejoin:round}
+.file b{flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:14px}
+.file button{border:0;background:var(--card);color:var(--hib);font:800 12.5px var(--body);padding:6px 10px;border-radius:10px;cursor:pointer}
+.bad .up{border-color:var(--hib)}
+.inp .suf{border-right:0;border-left:1.5px solid var(--line);padding:0 0 0 10px}
+.row2.wide{grid-template-columns:minmax(0,1.5fr) minmax(0,1fr)}
+@media (max-width:520px){.row2.wide{grid-template-columns:1fr}}
+.step .si svg{overflow:visible}
+.file.hide,.up.hide{display:none}
+label.f>span>span,label.f>span>.opt{display:inline}
+#v-merchant main{align-items:start}
+#v-merchant .story{position:sticky;top:20px}
+@media (max-width:860px){#v-merchant .story{position:static}}
+.empty{text-align:center;padding:12px 4px 4px}
+.empty .si{width:96px;height:96px;margin:0 auto 6px;display:block}
+.empty p{color:var(--muted);font-size:14px;margin:6px 0 0}
+
+/* Remove benefits under the button (5 Nov 2026): keep only the 48-hour review note */
+.story{display:none!important}
+main{grid-template-columns:minmax(0,560px)!important;justify-content:center}
+.steps{display:none!important}
+/* No animation: only the form, ending at the Submit button */
+.art,#art{display:none!important}
+*:not(.sp),*::before,*::after{animation:none!important;transition:none!important}
+.warn{display:none!important}
+/* In-app webview (opened from the YouApp prototype): the app draws its own top bar */
+html.wv header, html.wv footer{display:none!important}
+html.wv .wrap{padding-block:12px 24px}
+html.wv main{margin-top:0!important}
+html.wv .card{box-shadow:none;border-radius:20px;padding:18px}
+
+/* Match the V2 app (YouApp design tokens from wallet2: Inter, indigo #38168e, lavender→indigo gradient, #e5e4e7 lines) */
+html:root:not([data-zz]), html:root[data-theme="dark"]{
+  --ground:#ffffff; --card:#ffffff; --ink:#1a181b; --muted:#66616b; --line:#e5e4e7;
+  --plum:#38168e; --violet:#38168e; --lilac:#e4dcfa; --mint:#2f9e5b; --mintbg:#eaf6ee; --hib:#d3252f;
+  --a-info:#7f57e5; --a-indigo-100:#f2edfc; --a-gray-100:#f4f3f6; --a-ink-3:#99949e; --a-placeholder:#74787a;
+  --a-grad:linear-gradient(90deg,#996cb7 0%,#38168e 100%); --a-grad-pressed:linear-gradient(90deg,#7d539c 0%,#2a0f6e 100%);
+  --display:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI","PingFang SC","Noto Sans SC",sans-serif;
+  --body:"Inter",ui-sans-serif,system-ui,-apple-system,"Segoe UI","PingFang SC","Noto Sans SC",sans-serif;
+  color-scheme:light }
+body{background:#ffffff}
+.card{border-color:var(--line);box-shadow:none}
+html.wv .card{border:0;padding:4px 0 8px}
+.card h2{font-weight:700}
+.inp{border:1px solid var(--line);border-radius:12px;background:#fff}
+.inp:focus-within{border-color:var(--a-info);box-shadow:0 0 0 3px var(--a-indigo-100)}
+.bad .inp{border-color:var(--hib);box-shadow:0 0 0 3px #fdf1f2}
+.inp input,.inp select{font-weight:400}
+.inp textarea{font-weight:400}
+.inp textarea::placeholder,.inp input::placeholder{color:var(--a-placeholder);opacity:1;font-weight:400}
+.inp.locked{background:var(--a-gray-100);border-style:solid}
+.inp.locked input{color:var(--a-ink-3)}
+.inp .lk{background:#e5e4e7;color:#66616b}
+.inp .pre{border-right-width:1px}
+.inp .suf{border-left-width:1px}
+.btn{border-radius:999px;font:600 16px var(--body);background:var(--a-grad);box-shadow:none;padding:16px}
+.btn:active{background:var(--a-grad-pressed)}
+.btn.ghost{background:#fff;color:var(--violet);border:1.5px solid var(--violet)}
+.btn:focus-visible,.copy:focus-visible,.up:focus-visible,.mode button:focus-visible{outline:2px solid var(--violet)}
+.secure{color:var(--mint);background:var(--mintbg)}
+.chk a{color:var(--violet)}
+.hint{color:var(--a-ink-3)}
+.next i{background:var(--violet)}
+.up{border:1px dashed #b2afb6;background:#fff;border-radius:12px}
+.up svg{background:var(--a-indigo-100)}
+.copy{background:var(--a-indigo-100);color:var(--violet)}
+.ref{border-color:var(--lilac)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <a class="brand" href="https://youapp.ai"><svg viewBox="0 0 30 30" aria-hidden="true"><defs><linearGradient id="lgBrand" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#986DB5"/><stop offset="1" stop-color="#38168E"/></linearGradient><symbol id="lotus" viewBox="0 0 30 30"><g fill="url(#lgBrand)"><path fill-rule="evenodd" clip-rule="evenodd" d="M8.59313 12.2326C8.59313 10.6136 9.01805 9.01386 9.89175 7.5978C10.7846 9.02836 11.2381 10.6474 11.2381 12.281C11.2381 13.8855 10.7989 15.5046 9.92517 16.9013C9.05147 15.4853 8.59313 13.8662 8.59313 12.2326ZM6.79321 12.2326C6.79321 14.393 7.45207 16.5775 8.76501 18.4141L8.73159 18.4479C7.09877 20.1008 4.95987 20.9514 2.80664 21.0045L4.45379 22.6768C6.45901 22.3191 8.39261 21.3622 9.9395 19.7963L9.95859 19.777L10.0111 19.7286L10.0445 19.6948L11.2381 18.4817C11.2047 18.4479 11.1713 18.4141 11.1379 18.3802C12.4174 16.5582 13.0715 14.4123 13.0715 12.2665C13.0715 10.1013 12.4174 7.92161 11.1044 6.08023C10.7846 5.64043 10.4313 5.21513 10.0254 4.80432C7.61917 6.74719 6.79321 9.54066 6.79321 12.2326Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12.6005 19.6087C13.9994 18.7242 15.5797 18.2796 17.1648 18.2796C18.7785 18.2796 20.3779 18.7387 21.7911 19.6425C20.3922 20.5269 18.8119 20.9522 17.2125 20.9522C15.6131 20.9716 14.0137 20.5124 12.6005 19.6087ZM11.1205 18.4004C11.087 18.3666 11.0536 18.3327 11.0202 18.2989L9.82662 19.5072L9.7932 19.541L9.74069 19.5942L9.72636 19.6087C8.1938 21.1939 7.24848 23.1367 6.88086 25.1618L8.0076 26.3024L8.5471 26.8485C8.59485 24.6688 9.42081 22.523 11.0727 20.8507L11.1061 20.8169C12.9204 22.146 15.0593 22.8129 17.2125 22.8129C19.8909 22.8129 22.6314 21.9575 24.5316 19.5555C24.1305 19.1495 23.7104 18.7919 23.2712 18.4681C21.4521 17.139 19.318 16.472 17.1648 16.472C15.0593 16.4575 12.9395 17.1052 11.1205 18.4004Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M12.45 17.0713C12.4165 15.9646 12.5645 14.8385 12.9369 13.7849C13.3571 12.5718 14.0446 11.4312 15.0042 10.4598C15.9639 9.48837 17.0906 8.79242 18.289 8.36711C19.3298 7.99014 20.4422 7.83548 21.5355 7.86931C21.5689 8.9809 21.4162 10.1022 21.0485 11.1606C20.6284 12.3688 19.9361 13.5094 18.9765 14.4809C18.0168 15.4523 16.8901 16.1531 15.6965 16.5784C14.756 16.9167 13.7772 17.0713 12.7842 17.0713C12.6648 17.0713 12.5645 17.0713 12.45 17.0713ZM17.7829 6.91721C16.3697 7.41018 15.0568 8.24629 13.93 9.37238C12.8033 10.513 11.9916 11.842 11.5046 13.2726C10.9842 14.7515 10.8171 16.3222 10.9842 17.8736L11.0511 18.4826L11.6574 18.5551C13.1709 18.7242 14.7369 18.5551 16.2026 18.0234C17.5967 17.5305 18.9096 16.7137 20.0364 15.5876L20.0698 15.5538C21.1822 14.4325 21.9891 13.1035 22.4761 11.6681C23.0012 10.1892 23.1683 8.62326 23.0012 7.07187L22.9344 6.45808L22.3281 6.39042C21.9557 6.35658 21.588 6.32275 21.2156 6.32275C20.0555 6.32275 18.8953 6.52574 17.7829 6.91721Z"/><path fill-rule="evenodd" clip-rule="evenodd" d="M2.06598 14.5812C2.06598 7.40899 7.81905 1.58522 14.9042 1.58522C21.9893 1.58522 27.7471 7.40899 27.7471 14.5812C27.7471 21.7533 21.9893 27.5819 14.9042 27.5819C7.81905 27.5819 2.06598 21.7533 2.06598 14.5812ZM0.5 14.5812C0.5 22.6233 6.96445 29.1623 14.9042 29.1623C22.8487 29.1623 29.3083 22.6233 29.3083 14.5812C29.3083 6.54388 22.8487 0 14.9042 0C6.96445 0 0.5 6.54388 0.5 14.5812Z"/></g></symbol></defs><use href="#lotus" width="30" height="30"/></svg>YouApp</a>
+    <div class="tabs" id="tabs" role="tablist" aria-label="Form"><button type="button" role="tab" class="on" data-f="elite" data-t="tabE">Become an Elite</button><button type="button" role="tab" data-f="merchant" data-t="tabM">Merchant</button></div>
+    <div class="lang" id="lang" role="group" aria-label="Language"><button type="button" class="on" data-l="en">EN</button><button type="button" data-l="zh">中文</button><button type="button" data-l="ms">BM</button></div>
+  </header>
+
+  <!-- ================= ELITE ================= -->
+  <div id="v-elite">
+  <main>
+    <section class="story">
+      <h1 data-t="h1">Bring your people. <em>Earn from every payment.</em></h1>
+      <p class="lede" data-t="lede">Become an Elite and earn more from every payment your referrals and your merchants make. No referral or volume minimum to apply.</p>
+      <svg class="art" id="art" viewBox="0 0 560 400" role="img" aria-label="Abang Utan with a gift while Kak Hornbill flies Coin-chan over Kuala Lumpur"></svg>
+      <div class="perks">
+        <span><svg viewBox="0 0 24 24"><path d="M12 3l2.6 5.6 6 .7-4.5 4.1 1.2 6L12 16.4 6.7 19.4l1.2-6L3.4 9.3l6-.7z"/></svg><span data-t="p1">Free SVIP, one time</span></span>
+        <span><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2 20a7 7 0 0 1 14 0M17 5a3 3 0 0 1 0 6M22 20a6 6 0 0 0-4-5.7"/></svg><span data-t="p2">Elite bonus 0.1%</span></span>
+        <span><svg viewBox="0 0 24 24"><path d="M4 9h16l-1 11H5zM8 9V6a4 4 0 0 1 8 0v3"/></svg><span data-t="p3">25% of merchant cashback</span></span>
+        <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg><span data-t="p4">Scheme pool</span></span>
+      </div>
+    </section>
+
+    <section class="card" aria-live="polite">
+      <form id="e1" novalidate>
+        <span class="secure"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>youapp.ai · <span data-t="sec">secure</span></span>
+        <h2 data-t="t1">Elite application</h2>
+        <p class="s" data-t="s1">Tell us a bit about you. Management reviews every request within 48 hours.</p>
+
+        <div class="row2">
+          <label class="f" for="eName" id="fName"><span data-t="lName">Full name</span><div class="inp"><input id="eName" autocomplete="name" value="Elsa Japasal"></div><em class="fe" id="erName"></em></label>
+          <label class="f" for="eAcc"><span data-t="lAcc">YouApp account</span><div class="inp locked"><input id="eAcc" value="@elsaa" readonly aria-readonly="true"><span class="lk"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span data-t="locked">Locked</span></span></div></label>
+        </div>
+        <label class="f" for="eMail" id="fMail"><span data-t="lMail">Email</span><div class="inp"><input id="eMail" type="email" inputmode="email" autocomplete="email" value="elsa.japasal@gmail.com"></div><em class="fe" id="erMail"></em></label>
+        <div class="row2">
+          <label class="f" for="ePhone" id="fPhone"><span data-t="lPhone">Phone (WhatsApp)</span><div class="inp"><span class="pre">+60</span><input id="ePhone" type="tel" inputmode="tel" autocomplete="tel-national" value="12-345 6789"></div><em class="fe" id="erPhone"></em></label>
+          <label class="f" for="eCity" id="fCity"><span data-t="lCity">City</span><div class="inp"><select id="eCity">
+            <option value="" data-t="cityPick">Choose your city</option>
+            <option>Kuala Lumpur</option><option selected>Petaling Jaya</option><option>Shah Alam</option><option>Subang Jaya</option><option>Johor Bahru</option><option>George Town</option><option>Ipoh</option><option>Melaka</option><option>Kota Kinabalu</option><option>Kuching</option><option value="other" data-t="cityOther">Other</option>
+          </select><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div><em class="fe" id="erCity"></em></label>
+        </div>
+        <label class="f" for="eWhy" id="fWhy"><span data-t="lWhy">How will you grow your network?</span><div class="inp ta"><textarea id="eWhy" maxlength="300" rows="4" data-ph="phWhy" placeholder="For example: I run a running club of 200 people in PJ and know 15 cafe owners nearby."></textarea><span class="cnt" id="cnt">0 / 300</span></div><em class="fe" id="erWhy"></em></label>
+
+        <label class="chk" for="eAgree" id="fAgree"><input type="checkbox" id="eAgree"><span data-t="agree">I agree to the <a href="https://youapp.ai/en-us/terms-of-service">Elite terms</a> and the <a href="https://youapp.ai/en-us/privacy-policy">Privacy Policy</a>.</span></label>
+        <div class="err" id="erAll"></div>
+        <button class="btn" type="submit" id="eBtn"><span class="sp"></span><span data-t="b1">Submit Request</span></button>
+      </form>
+
+      <div id="e2" class="hide">
+        <span class="ok" data-icon="ok"></span>
+        <h2 style="text-align:center" data-t="t2">Request sent</h2>
+        <p class="s" style="text-align:center" data-t="s2">We'll review it within 48 hours and let you know in the app and by email.</p>
+        <div class="ref"><div><span data-t="refL">Reference number</span><b id="refNo">EL-2611-0042</b></div><button class="copy" type="button" id="copyRef" data-t="copy">Copy</button></div>
+        <div class="summary" id="sum"></div>
+        <div class="next">
+          <div><i>1</i><span data-t="n1">Management reviews your request within 48 hours.</span></div>
+          <div><i>2</i><span data-t="n2">Once approved, Elite starts right away and your free SVIP is added.</span></div>
+          <div><i>3</i><span data-t="n3">Reach RM100k volume in your first 90 days to keep Elite.</span></div>
+        </div>
+        <a class="btn" href="https://youapp.ai" id="back" data-t="b2">Back to YouApp</a>
+      </div>
+    </section>
+  </main>
+
+  <section class="steps four" aria-label="How it works">
+    <div class="step"><span class="si" data-icon="step1"></span><div><b data-t="h1s">Fill in a short form</b><span data-t="h1d">No referral or volume minimum.</span></div></div>
+    <div class="step"><span class="si" data-icon="step2"></span><div><b data-t="h2s">Management reviews</b><span data-t="h2d">Within 48 hours.</span></div></div>
+    <div class="step"><span class="si" data-icon="step3"></span><div><b data-t="h3s">First 90 days</b><span data-t="h3d">RM100k volume, or Elite ends.</span></div></div>
+    <div class="step"><span class="si" data-icon="year"></span><div><b data-t="h4s">Every year</b><span data-t="h4d">RM300k to keep Elite. Elite 1–3 open in Phase 2.</span></div></div>
+  </section>
+  <div class="warn"><svg viewBox="0 0 24 24"><path d="M12 3l9.5 17h-19z"/><path d="M12 10v4M12 17h.01"/></svg><div><b data-t="wb">If Elite ends</b><span data-t="ws">You go back to your earlier tier and lose the Elite bonus, pool share and free SVIP. A second free SVIP isn't given.</span></div></div>
+  </div>
+
+  <!-- ================= MERCHANT (V2 · Merchant application, 2 modes) ================= -->
+  <div id="v-merchant" class="hide">
+  <main>
+    <section class="story">
+      <h1 data-t="mh1">Grow with YouApp. <em>Get paid in ringgit.</em></h1>
+      <p class="lede" id="mLede" data-t="mlede">Accept YouApp payments from verified customers, offer cashback that brings them back, and get paid in ringgit.</p>
+      <div class="perks">
+        <span><svg viewBox="0 0 24 24"><path d="M4 8V5a1 1 0 0 1 1-1h3M16 4h3a1 1 0 0 1 1 1v3M20 16v3a1 1 0 0 1-1 1h-3M8 20H5a1 1 0 0 1-1-1v-3M5 12h14"/></svg><span data-t="mp1">Paid in ringgit</span></span>
+        <span><svg viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2 20a7 7 0 0 1 14 0M17 5a3 3 0 0 1 0 6M22 20a6 6 0 0 0-4-5.7"/></svg><span data-t="mp2">Verified customers</span></span>
+        <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12h8M12 8v8"/></svg><span data-t="mp3">Cashback that brings them back</span></span>
+        <span><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span data-t="mp4">Reviewed in 48 hours</span></span>
+      </div>
+    </section>
+
+    <section class="card" aria-live="polite">
+      <form id="m1" novalidate>
+        <span class="secure"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>youapp.ai · <span data-t="sec">secure</span></span>
+        <div class="mode" id="mMode" role="radiogroup" aria-label="Who is applying">
+          <button type="button" role="radio" aria-checked="true" class="on" data-m="self" data-t="modeSelf">My business</button>
+          <button type="button" role="radio" aria-checked="false" data-m="elite" data-t="modeElite">Add a merchant (Elite)</button>
+        </div>
+        <h2 id="mTitle" data-t="mt1">Merchant application</h2>
+        <p class="s" id="mSub" data-t="ms1">Fill in a short form about your business. We review every request within 48 hours.</p>
+
+        <div class="grp-h" data-t="gBiz">The business</div>
+        <label class="f" for="mName" id="gName"><span data-t="lBiz">Business name</span><div class="inp"><input id="mName" autocomplete="organization" value="Kopitiam Ah Seng"></div><em class="fe" id="xName"></em></label>
+        <label class="f" for="mCat" id="gCat"><span data-t="lCat">Category</span><div class="inp"><select id="mCat">
+          <option value="" data-t="pick">Choose one</option><option value="fnb" selected data-t="cat1">Food &amp; drinks</option><option value="retail" data-t="cat2">Retail &amp; shops</option><option value="beauty" data-t="cat3">Beauty &amp; wellness</option><option value="act" data-t="cat4">Activities &amp; tours</option><option value="svc" data-t="cat5">Services</option><option value="other" data-t="cityOther">Other</option>
+        </select><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div><em class="fe" id="xCat"></em></label>
+        <div class="row2 wide">
+          <label class="f" for="mAddr" id="gAddr"><span data-t="lAddr">Business address</span><div class="inp"><input id="mAddr" autocomplete="street-address" value="12 Jalan SS2/24"></div><em class="fe" id="xAddr"></em></label>
+          <label class="f" for="mCity" id="gCity"><span data-t="lCity">City</span><div class="inp"><select id="mCity">
+            <option value="" data-t="cityPick">Choose your city</option>
+            <option>Kuala Lumpur</option><option selected>Petaling Jaya</option><option>Shah Alam</option><option>Subang Jaya</option><option>Johor Bahru</option><option>George Town</option><option>Ipoh</option><option>Melaka</option><option>Kota Kinabalu</option><option>Kuching</option><option value="other" data-t="cityOther">Other</option>
+          </select><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div><em class="fe" id="xCity"></em></label>
+        </div>
+        <label class="f" for="mSsm" id="gSsm"><span><span data-t="lSsm">SSM number</span> <i class="opt" data-t="opt">Optional</i></span><div class="inp"><input id="mSsm" inputmode="numeric" placeholder="202301012345"></div><em class="hint" data-t="hSsm">12-digit registration number from your SSM certificate.</em><em class="fe" id="xSsm"></em></label>
+        <div class="f" id="gQr"><span class="lbl"><span data-t="lQr">DuitNow QR</span> <i class="opt" data-t="opt">Optional</i></span>
+          <label class="up" id="upBox" for="mQr"><svg viewBox="0 0 24 24"><path d="M4 8V5h3M17 5h3v3M20 16v3h-3M7 19H4v-3"/><path d="M9 9h6v6H9z"/></svg><span><b data-t="upB">Upload a photo of your DuitNow QR</b><small data-t="upS">JPG or PNG, up to 5 MB</small></span></label>
+          <input id="mQr" type="file" accept="image/png,image/jpeg" class="vh">
+          <div class="file hide" id="fileChip"><svg viewBox="0 0 24 24"><path d="M6 12.5l4 4 8-9"/></svg><b id="fileName"></b><button type="button" id="fileRm" data-t="remove">Remove</button></div>
+          <em class="fe" id="xQr"></em>
+        </div>
+        <div class="row2">
+          <label class="f" for="mCb" id="gCb"><span data-t="lCb">Cashback to offer</span><div class="inp"><input id="mCb" inputmode="decimal" value="5"><span class="pre suf">%</span></div><em class="hint" data-t="hCb">Minimum 5%. We confirm the final rate when we approve.</em><em class="fe" id="xCb"></em></label>
+          <label class="f" for="mSales" id="gSales"><span><span data-t="lSales">Monthly sales</span> <i class="opt" data-t="opt">Optional</i></span><div class="inp"><select id="mSales">
+            <option value="" data-t="range">Choose a range</option><option value="1" data-t="r1">Below RM10k</option><option value="2" data-t="r2">RM10k – RM50k</option><option value="3" data-t="r3">RM50k – RM200k</option><option value="4" data-t="r4">Above RM200k</option>
+          </select><svg class="chev" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg></div></label>
+        </div>
+
+        <!-- self mode: contact -->
+        <div id="secSelf">
+          <div class="grp-h" data-t="gContact">Contact</div>
+          <div class="row2">
+            <label class="f" for="cName" id="gCName"><span data-t="lYour">Your name</span><div class="inp"><input id="cName" autocomplete="name" value="Elsa Japasal"></div><em class="fe" id="xCName"></em></label>
+            <label class="f" for="cAcc"><span data-t="lAcc">YouApp account</span><div class="inp locked"><input id="cAcc" value="@elsaa" readonly aria-readonly="true"><span class="lk"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span data-t="locked">Locked</span></span></div></label>
+          </div>
+          <div class="row2">
+            <label class="f" for="cMail" id="gCMail"><span data-t="lMail">Email</span><div class="inp"><input id="cMail" type="email" inputmode="email" autocomplete="email" value="elsa.j@gmail.com"></div><em class="fe" id="xCMail"></em></label>
+            <label class="f" for="cPhone" id="gCPhone"><span data-t="lPhone">Phone (WhatsApp)</span><div class="inp"><span class="pre">+60</span><input id="cPhone" type="tel" inputmode="tel" value="12-345 6789"></div><em class="fe" id="xCPhone"></em></label>
+          </div>
+          <label class="f" for="cRef" id="gCRef"><span><span data-t="lRef">Elite who referred you</span> <i class="opt" data-t="opt">Optional</i></span><div class="inp"><input id="cRef" autocomplete="off" placeholder="@handle"></div><em class="hint" data-t="hRef">They become your signing Elite.</em><em class="fe" id="xCRef"></em></label>
+          <label class="chk" for="cAgree" id="gCAgree"><input type="checkbox" id="cAgree"><span data-t="mAgree">I agree to the <a href="https://youapp.ai/en-us/terms-of-service">Merchant terms</a> and the <a href="https://youapp.ai/en-us/privacy-policy">Privacy Policy</a>.</span></label>
+        </div>
+
+        <!-- elite mode: shop owner -->
+        <div id="secElite" class="hide">
+          <div class="grp-h" data-t="gOwner">Shop owner</div>
+          <div class="row2">
+            <label class="f" for="oName" id="gOName"><span data-t="lOName">Owner name</span><div class="inp"><input id="oName" value="Siti Rahmah"></div><em class="fe" id="xOName"></em></label>
+            <label class="f" for="oPhone" id="gOPhone"><span data-t="lOPhone">Owner phone (WhatsApp)</span><div class="inp"><span class="pre">+60</span><input id="oPhone" type="tel" inputmode="tel" value="13-888 1234"></div><em class="fe" id="xOPhone"></em></label>
+          </div>
+          <div class="row2">
+            <label class="f" for="oMail" id="gOMail"><span><span data-t="lOMail">Owner email</span> <i class="opt" data-t="opt">Optional</i></span><div class="inp"><input id="oMail" type="email" inputmode="email" placeholder="name@example.com"></div><em class="fe" id="xOMail"></em></label>
+            <label class="f" for="oAcc" id="gOAcc"><span><span data-t="lOAcc">Owner's YouApp account</span> <i class="opt" data-t="opt">Optional</i></span><div class="inp"><input id="oAcc" autocomplete="off" placeholder="@handle"></div><em class="fe" id="xOAcc"></em></label>
+          </div>
+          <label class="f" for="oElite"><span data-t="lSign">Signing Elite</span><div class="inp locked"><input id="oElite" data-v="you" value="@elsaa (you)" readonly aria-readonly="true"><span class="lk"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg><span data-t="locked">Locked</span></span></div><em class="hint" data-t="hSign">You earn 25% of this shop's cashback.</em></label>
+          <label class="chk" for="oAgree" id="gOAgree"><input type="checkbox" id="oAgree"><span data-t="oAgree">The owner agreed to join YouApp as a merchant.</span></label>
+        </div>
+
+        <div class="err" id="xAll"></div>
+        <button class="btn" type="submit" id="mBtn"><span class="sp"></span><span data-t="b1">Submit Request</span></button>
+      </form>
+
+      <div id="m2" class="hide">
+        <span class="ok" data-icon="ok"></span>
+        <h2 style="text-align:center" data-t="t2">Request sent</h2>
+        <p class="s" style="text-align:center" data-t="s2">We'll review it within 48 hours and let you know in the app and by email.</p>
+        <div class="ref"><div><span data-t="refL">Reference number</span><b id="mRefNo">MC-2611-0007</b></div><button class="copy" type="button" id="mCopy" data-t="copy">Copy</button></div>
+        <div class="summary" id="mSum"></div>
+        <div class="next">
+          <div><i>1</i><span data-t="mn1">We review the request within 48 hours.</span></div>
+          <div><i>2</i><span id="mn2" data-t="mn2">Once approved, you confirm the cashback rate.</span></div>
+          <div><i>3</i><span id="mn3" data-t="mn3">Fund your cashback float and start taking payments.</span></div>
+        </div>
+        <a class="btn" href="https://youapp.ai" data-t="b2">Back to YouApp</a>
+      </div>
+    </section>
+  </main>
+
+  <section class="steps four" aria-label="How it works">
+    <div class="step"><span class="si" data-icon="step1"></span><div><b data-t="h1s">Fill in a short form</b><span data-t="mh1d">About the business and how to reach you.</span></div></div>
+    <div class="step"><span class="si" data-icon="step2"></span><div><b data-t="mh2s">We review</b><span data-t="h2d">Within 48 hours.</span></div></div>
+    <div class="step"><span class="si" data-icon="step3"></span><div><b data-t="mh3s">Confirm cashback</b><span data-t="mh3d">The owner confirms the final cashback rate.</span></div></div>
+    <div class="step"><span class="si" data-icon="earn"></span><div><b data-t="mh4s">Fund and go live</b><span data-t="mh4d">Top up the cashback float and accept payments.</span></div></div>
+  </section>
+  </div>
+
+  <footer><span>YouApp Pte. Ltd.</span><br><a href="https://youapp.ai/en-us/terms-of-service" data-t="terms">Terms</a> · <a href="https://youapp.ai/en-us/privacy-policy" data-t="priv">Privacy</a></footer>
+</div>
+
+<script>
+
+let cc='my';
+const face=(x,y,s=1,mouth='smile')=>`<g transform="translate(${x} ${y}) scale(${s})">
+  <g class="blink"><ellipse cx="-6" cy="0" rx="2.6" ry="3.2" fill="#2A1A3A"/><ellipse cx="6" cy="0" rx="2.6" ry="3.2" fill="#2A1A3A"/></g>
+  <circle cx="-5.2" cy="-1.2" r="1" fill="#fff"/><circle cx="6.8" cy="-1.2" r="1" fill="#fff"/>
+  <ellipse cx="-10" cy="4.5" rx="3.2" ry="2" fill="#FF7BA3" opacity=".7"/><ellipse cx="10" cy="4.5" rx="3.2" ry="2" fill="#FF7BA3" opacity=".7"/>
+  ${mouth==='open'?'<path d="M-3.5 4 Q0 9.5 3.5 4 Z" fill="#B3284A"/>':'<path d="M-3 4 Q0 7 3 4" stroke="#2A1A3A" stroke-width="1.6" fill="none" stroke-linecap="round"/>'}</g>`;
+const coinRaw=(id,c0,c1,c2,lab)=>`<g id="${id}"><g class="bob"><ellipse cx="-6" cy="19" rx="4" ry="2.5" fill="${c1}"/><ellipse cx="6" cy="19" rx="4" ry="2.5" fill="${c1}"/>
+  <circle r="17" fill="${c1}"/><circle r="15" fill="${c0}"/><circle r="11.5" fill="none" stroke="#fff" stroke-opacity=".45" stroke-width="1.5"/>
+  <text y="-6" text-anchor="middle" font-family="Baloo 2,sans-serif" font-weight="800" font-size="8" fill="${c2}">${lab}</text>${face(0,3,.62)}
+  <path d="M-15 2 q-7 -4 -6 -10" stroke="${c1}" stroke-width="3" fill="none" stroke-linecap="round"/><path class="wave" d="M15 2 q7 -4 6 -10" stroke="${c1}" stroke-width="3" fill="none" stroke-linecap="round"/></g></g>`;
+const cloud=(x,y,s)=>`<g transform="translate(${x} ${y}) scale(${s})"><g class="drift"><path d="M-30 8 a12 12 0 0 1 4-22 a16 16 0 0 1 30-6 a13 13 0 0 1 24 10 a10 10 0 0 1 -2 18 Z" fill="#fff" opacity=".92"/>${face(0,-2,.55)}</g></g>`;
+const cat=(id)=>`<g id="${id}"><ellipse cx="0" cy="22" rx="16" ry="14" fill="#fff"/><path d="M-8 12 q8 -6 16 0 v8 h-16Z" fill="#F2A35E" opacity=".9"/>
+  <path class="wiggle" d="M14 26 q16 -2 14 -18" stroke="#F2A35E" stroke-width="5" fill="none" stroke-linecap="round"/>
+  <circle cx="0" cy="0" r="14" fill="#fff"/><path d="M-12 -6 l-2 -12 l9 6Z M12 -6 l2 -12 l-9 6Z" fill="#fff"/><path d="M-11 -9 l-1 -6 l4 3Z" fill="#FF9CB8"/><path d="M4 -10 a6 6 0 0 1 8 2 a8 8 0 0 1 -8 4Z" fill="#F2A35E"/>
+  ${face(0,2,.6)}<path class="wave" d="M-14 16 q-12 -6 -10 -18" stroke="#fff" stroke-width="5" fill="none" stroke-linecap="round"/></g>`;
+const stars=[[24,40],[288,30],[200,18],[110,60],[60,120],[300,150]].map(([x,y],i)=>`<path class="twk" style="animation-delay:${i*.35}s" d="M${x} ${y-5} l1.5 3.5 l3.5 1.5 l-3.5 1.5 l-1.5 3.5 l-1.5 -3.5 l-3.5 -1.5 l3.5 -1.5Z" fill="#FFF3C4"/>`).join('');
+const moon=`<g transform="translate(46 54)"><circle r="18" fill="#FFF3C4"/><circle cx="7" cy="-5" r="16" fill="#B48ADB" opacity="0"/>${face(0,2,.6)}</g>`;
+const cup=(id,clip,liq,lab,s=1)=>`<g id="${id}" transform="scale(${s})"><g clip-path="url(#${clip})"><rect id="${liq}" x="-32" y="-30" width="64" height="80"/><ellipse id="${liq}f" cx="0" cy="-30" rx="30" ry="5" fill="#FFF1DC"/></g>
+  <path d="M-26 -30 L26 -30 L20 30 Q0 37 -20 30 Z" fill="none" stroke="#fff" stroke-width="4" stroke-linejoin="round"/>${face(0,8,.7)}
+  <text x="0" y="52" text-anchor="middle" font-family="Baloo 2,sans-serif" font-weight="800" font-size="13" fill="#fff">${lab}</text></g>`;
+const eth=`<g id="eth"><g class="bob"><path d="M0 -22 L15 2 L0 10 L-15 2 Z" fill="#fff"/><path d="M0 13 L15 5 L0 26 L-15 5 Z" fill="#E7DBFF"/><path d="M0 -22 L0 10 L15 2 Z" fill="#D7C6FF"/>${face(0,0,.5)}<path class="wave" d="M14 4 q8 -4 9 -12" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M-14 4 q-8 -4 -9 -12" stroke="#fff" stroke-width="3" fill="none" stroke-linecap="round"/></g></g>`;
+
+const hornbill=(id)=>`<g id="${id}">
+  <path d="M-30 4 q-16 6 -20 18 q12 -2 22 -10Z" fill="#fff"/><path d="M-44 18 q8 -3 14 -8" stroke="#2A2A3A" stroke-width="3"/>
+  <ellipse cx="0" cy="6" rx="26" ry="16" fill="#2E2A3D"/><ellipse cx="4" cy="12" rx="15" ry="9" fill="#fff"/>
+  <path class="flap" d="M-6 0 q-10 -30 10 -36 q8 14 6 34Z" fill="#3F3954"/>
+  <circle cx="22" cy="-8" r="12" fill="#2E2A3D"/>
+  <path d="M28 -16 q22 -8 30 2 q-10 -2 -26 6Z" fill="#FFB020"/><path d="M30 -8 q26 2 32 14 q-16 -6 -30 -6Z" fill="#FFD25A"/><path d="M31 -6 q20 4 24 10" stroke="#E07A00" stroke-width="1.2" fill="none"/>
+  ${face(20,-8,.55)}<g transform="translate(2 22)"><path d="M-4 0 v8 M4 0 v8" stroke="#FFB020" stroke-width="2.5" stroke-linecap="round"/></g></g>`;
+const egret=(id)=>`<g id="${id}">
+  <path d="M-28 6 q-18 2 -24 10 q12 2 24 -4Z" fill="#E9EEF5"/>
+  <ellipse cx="0" cy="8" rx="24" ry="14" fill="#fff"/>
+  <path class="flap" d="M-8 2 q-8 -32 14 -36 q6 16 4 36Z" fill="#E9EEF5"/>
+  <path d="M16 2 q14 -6 6 -18 q-6 -8 4 -12" stroke="#fff" stroke-width="9" fill="none" stroke-linecap="round"/>
+  <circle cx="28" cy="-30" r="10" fill="#fff"/><path d="M36 -32 l26 4 l-26 4Z" fill="#FFC83D"/>
+  ${face(26,-30,.48)}<g transform="translate(0 20)"><path d="M-4 0 v14 M4 0 v14" stroke="#2A2A3A" stroke-width="2.5" stroke-linecap="round"/></g></g>`;
+const BIRD={my:hornbill,sg:hornbill,vn:egret};
+
+const MP={utan:{body:'#D4661F',belly:'#F2A35E',head:'#E07A2E',mask:'#F7C08A',earIn:'#F2A35E'},
+ otter:{body:'#7E5034',belly:'#E8CBA6',head:'#8E5C3C',mask:'#F0D8B8',earIn:'#E8CBA6'},
+ buffalo:{body:'#6F7C8E',belly:'#B9C3D0',head:'#7F8C9E',mask:'#CBD3DD',earIn:'#E6B8C2'}};
+const KIND={my:'utan',sg:'otter',vn:'buffalo'};
+const ARMS={wave:'<path class="wave" d="M20 34 q20 -6 24 -26" stroke="{C}" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M-20 34 q-18 8 -20 26" stroke="{C}" stroke-width="9" fill="none" stroke-linecap="round"/>',
+ tarik:'<path id="armL" d="M-20 34 q-30 -14 -46 -66" stroke="{C}" stroke-width="9" fill="none" stroke-linecap="round"/><path d="M20 34 q24 18 38 50" stroke="{C}" stroke-width="9" fill="none" stroke-linecap="round"/>',
+ cheer:'<path class="wave" d="M20 34 q16 -16 18 -40" stroke="{C}" stroke-width="9" fill="none" stroke-linecap="round"/><path class="wave" d="M-20 34 q-16 -16 -18 -40" stroke="{C}" stroke-width="9" fill="none" stroke-linecap="round"/>',
+ ride:'<path d="M-16 40 q-10 -4 -14 -16" stroke="{C}" stroke-width="9" fill="none" stroke-linecap="round"/>'};
+const mascot=(cc,id,hat,arms='wave')=>{const k=KIND[cc],m=MP[k];const ar=ARMS[arms].split('{C}').join(m.body);
+  let ears,top='',extra='';
+  if(k==='utan'){ears=`<circle cx="-21" cy="2" r="7" fill="${m.body}"/><circle cx="21" cy="2" r="7" fill="${m.body}"/><circle cx="-21" cy="2" r="3.5" fill="${m.earIn}"/><circle cx="21" cy="2" r="3.5" fill="${m.earIn}"/>`;top=`<path d="M-8 -21 q4 -10 8 -2 q4 -9 8 2" fill="${m.head}"/>`;}
+  else if(k==='otter'){ears=`<circle cx="-17" cy="-12" r="5" fill="${m.body}"/><circle cx="17" cy="-12" r="5" fill="${m.body}"/>`;extra=`<ellipse cx="0" cy="5" rx="3.4" ry="2.4" fill="#3A2416"/><path d="M-8 9 h-10 M-8 11 l-9 3 M8 9 h10 M8 11 l9 3" stroke="#5A3A26" stroke-width="1" stroke-linecap="round"/>`;}
+  else{ears=`<ellipse cx="-24" cy="-2" rx="9" ry="5" fill="${m.body}" transform="rotate(-20 -24 -2)"/><ellipse cx="24" cy="-2" rx="9" ry="5" fill="${m.body}" transform="rotate(20 24 -2)"/><ellipse cx="-24" cy="-2" rx="5" ry="2.5" fill="${m.earIn}" transform="rotate(-20 -24 -2)"/><ellipse cx="24" cy="-2" rx="5" ry="2.5" fill="${m.earIn}" transform="rotate(20 24 -2)"/>`;
+    top=`<path d="M-14 -16 q-18 -4 -20 -20 q8 8 18 10Z M14 -16 q18 -4 20 -20 q-8 8 -18 10Z" fill="#F3E9D2"/>`;extra=`<circle cx="-4" cy="12" r="1.6" fill="#5B6676"/><circle cx="4" cy="12" r="1.6" fill="#5B6676"/>`;}
+  const chef='<g transform="translate(0 -24)"><rect x="-12" y="-4" width="24" height="8" rx="3" fill="#fff"/><circle cx="-8" cy="-9" r="7" fill="#fff"/><circle cx="0" cy="-13" r="8" fill="#fff"/><circle cx="8" cy="-9" r="7" fill="#fff"/></g>';
+  const non='<g transform="translate(0 -18)"><path d="M-30 4 L0 -22 L30 4 Q0 10 -30 4Z" fill="#F2D27A"/><path d="M-20 -1 L0 -18 M20 -1 L0 -18 M-10 -6 L0 -18 M10 -6 L0 -18" stroke="#D9B456" stroke-width="1"/></g>';
+  return `<g id="${id}"><ellipse cx="0" cy="44" rx="24" ry="26" fill="${m.body}"/><ellipse cx="0" cy="48" rx="13" ry="15" fill="${m.belly}"/>${ar}${ears}
+  ${top}<circle cx="0" cy="0" r="22" fill="${m.head}"/><ellipse cx="0" cy="${k==='buffalo'?8:5}" rx="16" ry="${k==='buffalo'?12:13}" fill="${m.mask}"/>${face(0,k==='buffalo'?1:3,.9,'open')}${extra}
+  ${hat?(k==='buffalo'?non:chef):''}</g>`;};
+
+const palm=`<rect x="-2" y="-26" width="4" height="26" fill="#6B3FA8"/><path d="M0 -26 q-16 -4 -22 4 q10 -2 22 -4 q-10 -12 -20 -8 q12 0 20 8 q6 -14 20 -14 q-12 6 -20 14 q16 -6 22 4 q-12 -6 -22 -4" fill="#5CC98D"/>`;
+const bamboo=`<g fill="#5CC98D"><rect x="-6" y="-38" width="4" height="38" rx="2"/><rect x="0" y="-46" width="4" height="46" rx="2"/><rect x="6" y="-32" width="4" height="32" rx="2"/><path d="M2 -46 q10 -6 16 0 q-8 -2 -16 0Z M-4 -38 q-10 -6 -16 0 q8 -2 16 0Z M8 -32 q10 -4 14 2 q-8 -2 -14 -2Z"/></g>`;
+const bush=`<g fill="#5CC98D"><circle cx="-8" cy="-6" r="8"/><circle cx="4" cy="-9" r="10"/><circle cx="14" cy="-5" r="7"/></g>`;
+const lights=(xs)=>`<g fill="#FFE9A8">${xs.map((p,i)=>`<rect class="twk" style="animation-delay:${(i*.29)%2}s" x="${p[0]}" y="${p[1]}" width="2" height="4" rx="1"/>`).join('')}</g>`;
+const SKY={
+ my:`<g fill="#D9C8FF"><path d="M224 340 V250 l5-12 v-10 l3-9 v-16 l2-15 2 15 v16 l3 9 v10 l5 12 V340Z"/><path d="M258 340 V250 l5-12 v-10 l3-9 v-16 l2-15 2 15 v16 l3 9 v10 l5 12 V340Z"/><rect x="238" y="262" width="24" height="5" rx="2"/></g>
+   ${lights([0,1,2,3,4,5].flatMap(i=>[[229+(i%2)*4,270+i*10],[263+(i%2)*4,268+i*10]]))}<path d="M150 340 V286 h4 v-26 l4-9 l4 9 v26 h4 V340Z" fill="#CDB8FA"/><circle cx="158" cy="276" r="7" fill="#CDB8FA"/>`,
+ sg:`<g fill="#D9C8FF"><path d="M212 340 L214 254 h14 L230 340Z"/><path d="M234 340 L236 254 h14 L252 340Z"/><path d="M256 340 L258 254 h14 L274 340Z"/><path d="M204 246 h82 q8 0 8 4 q0 4 -8 4 h-82 q-4 0 -4 -4 q0 -4 4 -4Z"/></g>
+   ${lights([0,1,2,3,4,5,6].flatMap(i=>[[219,262+i*10],[241,262+i*10],[263,262+i*10]]))}
+   <g transform="translate(118 300)" stroke="#CDB8FA" stroke-width="2" fill="none"><circle r="24"/>${[0,1,2,3,4,5].map(i=>`<path d="M0 0 L${(Math.cos(i*Math.PI/3)*24).toFixed(1)} ${(Math.sin(i*Math.PI/3)*24).toFixed(1)}"/>`).join('')}<path d="M-12 40 L0 0 L12 40" stroke-width="3"/></g>
+   ${[160,182].map((x,i)=>`<g transform="translate(${x} ${300-i*10})"><path d="M-3 40 L-1 0 h2 L3 40Z" fill="#CDB8FA"/><path d="M-16 -2 Q0 -14 16 -2 Q0 4 -16 -2Z" fill="#CDB8FA"/>${lights([[-10,-6],[-2,-9],[7,-6]])}</g>`).join('')}
+   <g transform="translate(46 312)" fill="#E3D6FF"><path d="M-6 28 q-2 -18 6 -26 q10 -4 12 6 q2 8 -6 10 q8 6 4 10Z"/><circle cx="4" cy="-2" r="8"/><path d="M12 -2 q22 -6 26 14" stroke="#fff" stroke-width="2.5" fill="none" stroke-dasharray="3 4" class="twk"/></g>`,
+ vn:`<g fill="#D9C8FF"><path d="M226 340 V236 h20 V340Z"/><path d="M229 236 V210 h14 V236Z"/><path d="M232 210 V190 h8 V210Z"/><path d="M235 190 V170 h2 V190Z"/>
+   <path d="M266 340 L270 236 q6 -10 12 0 L286 340Z"/><ellipse cx="276" cy="262" rx="14" ry="3"/></g>
+   ${lights([0,1,2,3,4,5,6].flatMap(i=>[[231,244+i*12],[239,248+i*12],[275,276+i*9]]))}
+   <g transform="translate(150 300)" fill="#CDB8FA"><rect x="-3" y="10" width="6" height="30"/><rect x="-14" y="-2" width="28" height="12" rx="2"/><path d="M-24 0 Q-14 -4 -10 -14 h20 Q14 -4 24 0 Q0 -6 -24 0Z"/></g>`};
+const DECO={my:[30,90,300].map((x,i)=>`<g transform="translate(${x} ${340-i*4})">${palm}</g>`).join(''),
+ sg:[30,92,300].map((x,i)=>`<g transform="translate(${x} ${344-i*4})">${bush}</g>`).join(''),
+ vn:[28,96,302].map((x,i)=>`<g transform="translate(${x} ${344-i*4})">${bamboo}</g>`).join('')};
+const LAYER={my:['#FF8FB8','#FFF1DC','#5CC98D'],sg:['#E9B96E','#8FBF5A','#FFF1B8'],vn:['#6CC27A','#F6D36B']};
+const CUR={my:{lab:'RM',coin:['#FFC83D','#E9A100','#7A4A00'],plus:'+RM100',cup:'#C98B4E'},sg:{lab:'S$',coin:['#E8EDF3','#B7C2CF','#4A5566'],plus:'+S$30',cup:'#9A6A3E'},vn:{lab:'₫',coin:['#FFC83D','#E9A100','#7A4A00'],plus:'+150.000₫',cup:'#6B4423'}};
+const SHOP={my:{name:'KOPI HUTAN',sign:'#1F6B4A',ink:'#FFF6E8',aw:['#E3263C','#fff'],qr:'DuitNow',qc:'#E4007C',lan:'#E3263C'},
+ sg:{name:'AH HUAT',sign:'#C8102E',ink:'#FFF6E8',aw:['#1F9E8E','#fff'],qr:'PayNow',qc:'#7A2C8F',lan:'#E3263C'},
+ vn:{name:'BÁNH MÌ CÔ BA',sign:'#D52B1E',ink:'#FFE15A',aw:['#FFC83D','#D52B1E'],qr:'VietQR',qc:'#0A5BB5',lan:'#FFB020'}};
+const shopSvg=(cc)=>{const s=SHOP[cc];return `<g id="shop" transform="translate(150 186)">
+  <rect x="0" y="34" width="160" height="148" rx="8" fill="#FFF6E8"/>
+  <rect x="6" y="4" width="148" height="26" rx="8" fill="${s.sign}"/><text x="80" y="22" text-anchor="middle" font-family="Baloo 2,sans-serif" font-weight="800" font-size="${s.name.length>10?12:14}" fill="${s.ink}" letter-spacing=".5">${s.name}</text>
+  ${[0,1,2,3,4,5,6,7,8].map(i=>`<path d="M${i*17.8} 32 h17.8 v14 q-8.9 10 -17.8 0Z" fill="${s.aw[i%2]}"/>`).join('')}
+  ${[22,138].map(x=>`<g transform="translate(${x} 58)"><g class="wiggle"><path d="M0 -8 v6" stroke="#7A4A00" stroke-width="2"/><ellipse cx="0" cy="8" rx="9" ry="11" fill="${s.lan}"/><rect x="-4" y="-3" width="8" height="4" rx="1" fill="#FFD25A"/><rect x="-3" y="18" width="6" height="5" fill="#FFD25A"/></g></g>`).join('')}
+  <rect id="win" x="14" y="80" width="62" height="50" rx="8" fill="#FFE29A"/><path d="M45 80 v50 M14 105 h62" stroke="#FFF6E8" stroke-width="3"/>
+  <rect x="94" y="80" width="50" height="102" rx="8" fill="#B07A4A"/><circle cx="134" cy="132" r="3" fill="#FFE29A"/>
+  <g transform="translate(22 140)"><rect width="30" height="40" rx="5" fill="${s.qc}"/><rect x="6" y="6" width="18" height="18" rx="3" fill="#fff"/><path d="M9 9h5v5h-5zM16 16h5v5h-5zM16 9h5v5h-5z" fill="${s.qc}"/><text x="15" y="35" text-anchor="middle" font-family="Nunito Sans,sans-serif" font-weight="800" font-size="7" fill="#fff">${s.qr}</text></g>
+  <g transform="translate(-8 150) scale(.8)"><path d="M-10 30 h20 l-3 14 h-14Z" fill="#C2552B"/><path d="M0 30 q-14 -10 -10 -26 q8 8 10 26 q2 -22 12 -26 q2 16 -12 26" fill="#3FB97A"/></g></g>`;};
+const coinC=(id,cc)=>{const c=CUR[cc];return coinRaw(id,c.coin[0],c.coin[1],c.coin[2],c.lab);};
+const vehicle=(cc)=>{const rider=`<g transform="translate(14 -26) scale(.55)">${mascot(cc,'becaUtan',cc==='vn','ride')}</g>`;
+  if(cc==='vn')return `<g id="beca"><circle cx="-30" cy="22" r="14" fill="none" stroke="#fff" stroke-width="4"/><circle cx="30" cy="22" r="14" fill="none" stroke="#fff" stroke-width="4"/>
+   <g id="spokes" stroke="#fff" stroke-width="1.5"><path d="M-30 8 V36 M-44 22 H-16"/></g>
+   <path d="M-44 14 q4 -18 26 -18 h20 l14 -14 h8 l-10 20 q10 4 16 22 h-20 q-4 -10 -16 -10 h-22 q-12 0 -16 10Z" fill="#E3263C"/><rect x="-30" y="-8" width="28" height="7" rx="3" fill="#2A1A3A"/>
+   <circle cx="36" cy="-14" r="4" fill="#FFE29A"/><g transform="translate(-34 -24)">${coinC('becaCoin',cc)}</g>
+   <g transform="translate(-6 -40) scale(.55)">${mascot(cc,'becaUtan',true,'ride')}</g></g>`;
+  const can=cc==='sg'?['#1F9E8E','#FFC83D']:['#E3263C','#FFD25A'];
+  return `<g id="beca"><circle cx="-26" cy="20" r="16" fill="none" stroke="#fff" stroke-width="4"/><circle cx="-26" cy="20" r="3" fill="#fff"/>
+  <circle cx="30" cy="22" r="14" fill="none" stroke="#fff" stroke-width="4"/><circle cx="30" cy="22" r="3" fill="#fff"/>
+  <g id="spokes" stroke="#fff" stroke-width="1.5"><path d="M-26 6 V34 M-40 20 H-12"/></g>
+  <path d="M-46 6 h40 v-6 q-20 -6 -40 0Z" fill="${can[0]}"/><path d="M-50 -2 q24 -34 48 0" fill="${can[1]}" stroke="${can[0]}" stroke-width="2"/>
+  <rect x="-46" y="4" width="40" height="8" rx="3" fill="${can[0]}"/><path d="M-6 10 L30 22 M8 10 v-14" stroke="#fff" stroke-width="3"/>
+  <g transform="translate(-24 -8)">${coinC('becaCoin',cc)}</g>${rider}</g>`;};
+const flowerSvg=(cc)=>{
+  if(cc==='sg')return `<g id="flower">${[[-1,-1],[1,-1]].map(([sx])=>`<path d="M0 0 C${sx*-6} -30 ${sx*18} -70 ${sx*30} -66 C${sx*44} -56 ${sx*20} -20 0 0Z" fill="#D46BD4"/>`).join('')}
+   ${[-1,1].map(sx=>`<path d="M0 0 C${sx*30} -26 ${sx*76} -26 ${sx*78} 0 C${sx*72} 18 ${sx*30} 16 0 0Z" fill="#E694E6"/>`).join('')}
+   <path d="M0 0 C-34 10 -36 60 0 66 C36 60 34 10 0 0Z" fill="#9B2C9E"/><path d="M0 8 C-16 16 -16 44 0 50 C16 44 16 16 0 8Z" fill="#C24FC4"/><circle r="12" fill="#FFD25A"/>${face(0,1,.9,'open')}</g>`;
+  if(cc==='vn')return `<g id="flower" transform="translate(0 20)">${[-2,-1,0,1,2].map(i=>`<path d="M0 0 C${-20+i*14} -20 ${-14+i*20} -70 ${i*22} -80 C${14+i*20} -70 ${20+i*14} -20 0 0Z" fill="#F7A8C8" transform="rotate(${i*14})"/>`).join('')}
+   ${[-1,0,1].map(i=>`<path d="M0 6 C${-24+i*16} -10 ${-16+i*18} -54 ${i*20} -62 C${16+i*18} -54 ${24+i*16} -10 0 6Z" fill="#FF7FB0" transform="rotate(${i*22})"/>`).join('')}
+   <ellipse cx="0" cy="-34" rx="16" ry="9" fill="#FFD25A"/>${face(0,-22,1,'open')}<path d="M-46 10 q46 16 92 0" stroke="#5CC98D" stroke-width="6" fill="none" stroke-linecap="round"/></g>`;
+  return `<g id="flower">${[0,1,2,3,4].map(i=>`<path d="M0 0 C-30 -18 -28 -70 0 -74 C28 -70 30 -18 0 0Z" fill="${i%2?'#E3263C':'#F04A5E'}" transform="rotate(${i*72})"/><path d="M0 -10 C-8 -30 -6 -50 0 -58" stroke="#FF8FA0" stroke-width="2" fill="none" transform="rotate(${i*72})"/>`).join('')}
+  <circle r="20" fill="#B0122C"/>${face(0,1,1.1,'open')}<path d="M8 -12 Q22 -40 38 -54" stroke="#FFE29A" stroke-width="4" fill="none" stroke-linecap="round"/><g fill="#FFD25A"><circle cx="38" cy="-54" r="5"/><circle cx="31" cy="-58" r="3.5"/><circle cx="44" cy="-47" r="3.5"/></g></g>`;};
+const phin=`<g id="cT"><g clip-path="url(#cP)"><rect id="lA" x="-22" y="-16" width="44" height="30"/><ellipse id="lAf" cx="0" cy="-16" rx="20" ry="3" fill="#B8F2E1"/></g>
+  <rect x="-22" y="-18" width="44" height="30" rx="4" fill="none" stroke="#fff" stroke-width="3.5"/><rect x="-30" y="12" width="60" height="6" rx="3" fill="#E1E5EA"/>
+  <path d="M-18 -18 h36 v-5 q-18 -9 -36 0Z" fill="#E1E5EA"/><circle cy="-27" r="3.2" fill="#E1E5EA"/>${face(0,-3,.6)}
+  <text x="0" y="-36" text-anchor="middle" font-family="Baloo 2,sans-serif" font-weight="800" font-size="13" fill="#fff">USDT</text></g>`;
+
+
+/* ---------- hero scene, built from the YouApp payment-animation kit ---------- */
+const RM=matchMedia('(prefers-reduced-motion: reduce)').matches;
+const art=document.getElementById('art');
+const gift=(id,s=1)=>`<g id="${id}" transform="scale(${s})"><g class="bob">
+  <rect x="-22" y="-6" width="44" height="34" rx="6" fill="#FF8FB8"/><rect x="-4" y="-6" width="8" height="34" fill="#FFD25A"/>
+  ${face(0,12,.75,'open')}
+  <g id="${id}Lid"><rect x="-26" y="-16" width="52" height="12" rx="5" fill="#F06A9E"/><rect x="-4" y="-16" width="8" height="12" fill="#FFD25A"/>
+  <path d="M0 -16 C-6 -30 -22 -30 -18 -20 C-15 -14 -6 -16 0 -16Z M0 -16 C6 -30 22 -30 18 -20 C15 -14 6 -16 0 -16Z" fill="#FFD25A"/></g></g></g>`;
+const heart=(c='#FF6B9A')=>`<path d="M0 4 C-10 -4 -6 -12 0 -7 C6 -12 10 -4 0 4Z" fill="${c}"/>`;
+function scene(){
+  const hills=LAYER.my;
+  art.innerHTML=`<defs><linearGradient id="isky" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#9C6FD6"/><stop offset=".7" stop-color="#C9A6F0"/><stop offset="1" stop-color="#F6D7EC"/></linearGradient>
+    <clipPath id="iclip"><rect width="560" height="400" rx="32"/></clipPath></defs>
+  <g clip-path="url(#iclip)">
+  <rect width="560" height="400" fill="url(#isky)"/>
+  <g transform="scale(1.75 1.2)">${stars}</g>
+  <g transform="translate(14 -10) scale(1.2)">${moon}</g>
+  ${cloud(170,64,1)}${cloud(470,92,.8)}${cloud(330,40,.6)}
+  <g transform="translate(66 -90) scale(1.26)">${SKY.my}</g>
+  <path d="M0 330 Q120 296 250 322 T560 312 V400 H0Z" fill="#B994EC"/>
+  <path d="M0 352 Q150 332 300 350 T560 344 V400 H0Z" fill="#9B74E0"/>
+  <g transform="translate(250 30) scale(.9)">${shopSvg('my')}</g>
+  <g transform="translate(-10 22)">${[0,1].map(i=>`<g transform="translate(${30+i*60} ${340-i*6}) scale(1.4)">${palm}</g>`).join('')}</g>
+  <g transform="translate(540 380) scale(1.4)">${palm}</g>
+  <g transform="translate(506 340) scale(.85)">${cat('icat')}</g>
+  <g transform="translate(150 262) scale(1.45)" id="utanWrap">${mascot('my','utan',false,'wave')}</g>
+  <g transform="translate(236 334)">${gift('igift',1.15)}</g>
+  <g id="hearts"></g>
+  <g transform="translate(36 386) scale(.42)">${flowerSvg('my')}</g>
+  <g id="flyer"><g id="flyInner">
+    <path id="rope" d="M-40 10 L-92 22" stroke="#fff" stroke-width="1.6" stroke-dasharray="3 3"/>
+    <g transform="translate(-176 22)"><path d="M-84 -14 h168 l-10 14 l10 14 h-168 l10 -14Z" fill="#FFD25A"/><text id="banner" x="0" y="5" text-anchor="middle" font-family="Baloo 2,sans-serif" font-weight="800" font-size="13" fill="#2A1466"></text></g>
+    <g transform="scale(1.05)">${hornbill('ihb')}</g>
+    <g transform="translate(4 44) scale(.85)">${coinC('icoin','my')}</g>
+  </g></g>
+  <g id="conf"></g>
+  </g>`;
+}
+scene();
+let t0=performance.now(),party=0;
+const flyer=document.getElementById('flyer'),hearts=document.getElementById('hearts'),confG=document.getElementById('conf');
+const NS='http://www.w3.org/2000/svg';
+let H=[],C=[];
+function spawnHeart(){const g=document.createElementNS(NS,'g');g.innerHTML=heart(['#FF6B9A','#FFD25A','#fff'][Math.random()*3|0]);hearts.appendChild(g);H.push({g,x:236+(Math.random()*30-15),y:304,vx:Math.random()*.6-.3,vy:-.6-Math.random()*.5,life:0,s:.8+Math.random()*.6});}
+function burst(n=70){const cols=['#FFD25A','#FF8FB8','#5CC98D','#fff','#E3263C','#7A4BD6'];for(let i=0;i<n;i++){const r=document.createElementNS(NS,'rect');r.setAttribute('width',6);r.setAttribute('height',10);r.setAttribute('rx',2);r.setAttribute('fill',cols[i%cols.length]);confG.appendChild(r);
+  C.push({r,x:236,y:300,vx:(Math.random()-.5)*9,vy:-4-Math.random()*7,a:Math.random()*360,va:(Math.random()-.5)*20,life:0});}}
+let last=0;
+function frame(now){
+  const t=(now-t0)/1000;
+  /* hornbill loops across the sky with the banner */
+  const P=14, u=(t%P)/P, x=-180+u*(560+360), y=120+Math.sin(u*Math.PI*2)*22+Math.sin(t*3)*4;
+  flyer.setAttribute('transform',`translate(${x.toFixed(1)} ${y.toFixed(1)})`);
+  if(now-last>(party?120:520)){spawnHeart();last=now;}
+  H=H.filter(h=>{h.life++;h.x+=h.vx+Math.sin(h.life/12)*.3;h.y+=h.vy;const o=Math.max(0,1-h.life/150);h.g.setAttribute('transform',`translate(${h.x.toFixed(1)} ${h.y.toFixed(1)}) scale(${h.s})`);h.g.setAttribute('opacity',o.toFixed(2));if(o<=0){h.g.remove();return false;}return true;});
+  C=C.filter(c=>{c.life++;c.vy+=.22;c.vx*=.99;c.x+=c.vx;c.y+=c.vy;c.a+=c.va;c.r.setAttribute('transform',`translate(${c.x.toFixed(1)} ${c.y.toFixed(1)}) rotate(${c.a.toFixed(0)})`);if(c.y>420){c.r.remove();return false;}return true;});
+  requestAnimationFrame(frame);
+}
+function setBanner(txt){document.getElementById('banner').textContent=txt;}
+function utan(arms){document.getElementById('utanWrap').innerHTML=mascot('my','utan',false,arms);}
+function openGift(){const lid=document.getElementById('igiftLid');if(lid){lid.style.transition='transform .6s cubic-bezier(.3,1.6,.5,1)';lid.style.transform='translate(-18px,-30px) rotate(-28deg)';}}
+function celebrate(){party=1;utan('cheer');openGift();burst(90);setTimeout(()=>burst(60),500);setTimeout(()=>party=0,3500);}
+function cheerOnce(){utan('cheer');burst(24);setTimeout(()=>utan('wave'),1800);}
+if(!RM)requestAnimationFrame(frame);else{flyer.setAttribute('transform','translate(380 110)');}
+window.__scene={setBanner,celebrate,cheerOnce};
+
+/* small spot illustrations */
+const spot=(inner,vb='-40 -40 80 80')=>`<svg viewBox="${vb}" aria-hidden="true">${inner}</svg>`;
+const ICONS={
+ step1:spot(`<circle r="36" fill="#EFE6FF"/><g class="bob"><rect x="-24" y="-14" width="48" height="34" rx="6" fill="#fff" stroke="#B79BF0" stroke-width="2"/><path d="M-24 -12 L0 6 L24 -12" fill="none" stroke="#B79BF0" stroke-width="2"/>${face(0,10,.6)}<g transform="translate(16 -16)">${heart('#FF6B9A')}</g></g>`),
+ step2:spot(`<circle r="36" fill="#E2F6EE"/><g class="bob"><rect x="-26" y="-16" width="52" height="34" rx="6" fill="#fff" stroke="#7FD3B4" stroke-width="2"/><circle cx="-11" cy="0" r="8" fill="#FFB86B"/>${face(-11,1,.42)}<rect x="2" y="-6" width="16" height="4" rx="2" fill="#BFE9D8"/><rect x="2" y="2" width="12" height="4" rx="2" fill="#BFE9D8"/>
+   <g transform="translate(20 16)"><circle r="10" fill="#0F9D6E"/><path d="M-4 0 l3 3 l5 -6" stroke="#fff" stroke-width="2.4" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></g>`),
+ step3:spot(`<circle r="36" fill="#FFF1D6"/><g transform="translate(10 -2)"><rect x="-14" y="-18" width="28" height="36" rx="5" fill="#E4007C"/><rect x="-9" y="-13" width="18" height="18" rx="3" fill="#fff"/><path d="M-6 -10h5v5h-5zM1 -3h5v5h-5zM1 -10h5v5h-5z" fill="#E4007C"/></g><g transform="translate(-14 12) scale(.8)">${coinC('sc3','my')}</g>`),
+ earn:spot(`<g transform="translate(-26 6)">${coinC('e1','my')}</g><g transform="translate(26 6) scale(-1 1)">${coinRaw('e2','#2FBF94','#1C8F6C','#fff','₮')}</g><g class="twk"><path d="M0 -26 l3 7 l7 3 l-7 3 l-3 7 l-3 -7 l-7 -3 l7 -3Z" fill="#FFD25A"/></g>`,'-56 -40 112 72'),
+ gift:spot(`<g transform="translate(0 8)">${gift('gg',1)}</g>`,'-32 -36 64 72'),
+ ok:spot(`<circle r="38" fill="#E2F6EE"/><g transform="translate(0 6) scale(1.3)">${coinC('okc','my')}</g><g transform="translate(-24 -22)" class="twk">${heart('#FF6B9A')}</g><g transform="translate(26 -18)" class="twk" style="animation-delay:.6s">${heart('#FFD25A')}</g>`)
+};
+document.querySelectorAll('[data-icon]').forEach(e=>{e.innerHTML=ICONS[e.dataset.icon];});
+
+
+</script>
+<script>
+(function(){
+const $=id=>document.getElementById(id);
+/* extra spot illustration: "every year" calendar */
+const yr=`<svg viewBox="-40 -40 80 80" aria-hidden="true"><circle r="36" fill="#F6E6FF"/><g class="bob"><rect x="-22" y="-18" width="44" height="40" rx="7" fill="#fff" stroke="#B79BF0" stroke-width="2"/><rect x="-22" y="-18" width="44" height="11" rx="5" fill="#B79BF0"/><path d="M-12 -24v8M12 -24v8" stroke="#7A4BD6" stroke-width="3" stroke-linecap="round"/><path d="M-9 8 l6 6 l12 -14" stroke="#0F9D6E" stroke-width="3.2" fill="none" stroke-linecap="round" stroke-linejoin="round"/></g></svg>`;
+document.querySelectorAll('[data-icon="year"]').forEach(e=>e.innerHTML=yr);
+
+const T={
+ en:{banner:'Welcome, future Elite!',tabE:'Become an Elite',tabM:'Merchant',h1:'Bring your people. <em>Earn from every payment.</em>',lede:'Become an Elite and earn more from every payment your referrals and your merchants make. No referral or volume minimum to apply.',
+  p1:'Free SVIP, one time',p2:'Elite bonus 0.1%',p3:'25% of merchant cashback',p4:'Scheme pool',sec:'secure',t1:'Elite application',s1:'Tell us a bit about you. Management reviews every request within 48 hours.',
+  lName:'Full name',lAcc:'YouApp account',locked:'Locked',lMail:'Email',lPhone:'Phone (WhatsApp)',lCity:'City',cityPick:'Choose your city',cityOther:'Other',lWhy:'How will you grow your network?',phWhy:'For example: I run a running club of 200 people in PJ and know 15 cafe owners nearby.',
+  agree:'I agree to the <a href="https://youapp.ai/en-us/terms-of-service">Elite terms</a> and the <a href="https://youapp.ai/en-us/privacy-policy">Privacy Policy</a>.',b1:'Submit Request',
+  t2:'Request sent',s2:"We'll review it within 48 hours and let you know in the app and by email.",refL:'Reference number',copy:'Copy',copied:'Copied',sName:'Name',sAcc:'Account',sMail:'Email',sPhone:'WhatsApp',sCity:'City',
+  n1:'Management reviews your request within 48 hours.',n2:'Once approved, Elite starts right away and your free SVIP is added.',n3:'Reach RM100k volume in your first 90 days to keep Elite.',b2:'Back to YouApp',
+  h1s:'Fill in a short form',h1d:'No referral or volume minimum.',h2s:'Management reviews',h2d:'Within 48 hours.',h3s:'First 90 days',h3d:'RM100k volume, or Elite ends.',h4s:'Every year',h4d:'RM300k to keep Elite. Elite 1–3 open in Phase 2.',
+  wb:'If Elite ends',ws:"You go back to your earlier tier and lose the Elite bonus, pool share and free SVIP. A second free SVIP isn't given.",
+  mh1:'Grow with YouApp. <em>Get paid in ringgit.</em>',mlede:'Register your shop to accept YouApp payments and offer cashback to verified customers.',mt:'Merchant form coming next',ms:'This form will use the same layout as the Elite application, with the Merchant fields from V2.',terms:'Terms',priv:'Privacy',
+  eName:'Enter your full name.',eMail:'Enter a valid email.',ePhone:'Enter a Malaysian mobile number, like 12-345 6789.',eCity:'Choose your city.',eWhy:'Tell us how you will grow your network (at least 20 characters).',eAgree:'Please agree to the Elite terms first.',eAll:'Please check the highlighted fields.'},
+ zh:{banner:'欢迎，未来的 Elite！',tabE:'成为 Elite',tabM:'商家',h1:'带上你的人脉，<em>每笔付款都有收益。</em>',lede:'成为 Elite，你推荐的用户和商家每付一笔款，你都能赚更多。申请无推荐人数或交易额门槛。',
+  p1:'免费 SVIP（一次）',p2:'Elite 奖励 0.1%',p3:'商家回扣的 25%',p4:'奖励池',sec:'安全',t1:'Elite 申请',s1:'简单介绍一下你自己。管理团队会在 48 小时内审核每个申请。',
+  lName:'全名',lAcc:'YouApp 账户',locked:'已锁定',lMail:'邮箱',lPhone:'电话（WhatsApp）',lCity:'城市',cityPick:'选择城市',cityOther:'其他',lWhy:'你打算如何扩展人脉？',phWhy:'例如：我在 PJ 经营一个 200 人的跑步俱乐部，还认识附近 15 位咖啡馆老板。',
+  agree:'我同意<a href="https://youapp.ai/en-us/terms-of-service">Elite 条款</a>和<a href="https://youapp.ai/en-us/privacy-policy">隐私政策</a>。',b1:'提交申请',
+  t2:'申请已提交',s2:'我们会在 48 小时内审核，并通过 App 和邮件通知你。',refL:'参考编号',copy:'复制',copied:'已复制',sName:'姓名',sAcc:'账户',sMail:'邮箱',sPhone:'WhatsApp',sCity:'城市',
+  n1:'管理团队会在 48 小时内审核你的申请。',n2:'通过后 Elite 立即生效，并赠送免费 SVIP。',n3:'在前 90 天内达到 RM100k 交易额即可保留 Elite。',b2:'返回 YouApp',
+  h1s:'填写简短表格',h1d:'无推荐人数或交易额门槛。',h2s:'管理团队审核',h2d:'48 小时内完成。',h3s:'前 90 天',h3d:'达到 RM100k 交易额，否则 Elite 结束。',h4s:'每年',h4d:'RM300k 即可保留 Elite。Elite 1–3 将在第二阶段开放。',
+  wb:'如果 Elite 结束',ws:'你将回到原来的等级，失去 Elite 奖励、奖励池份额和免费 SVIP。免费 SVIP 不会再次赠送。',
+  mh1:'与 YouApp 一起成长，<em>以令吉收款。</em>',mlede:'登记你的店铺，接受 YouApp 付款，并为实名顾客提供回扣。',mt:'商家表格即将推出',ms:'此表格将沿用 Elite 申请的版式，使用 V2 的商家字段。',terms:'条款',priv:'隐私',
+  eName:'请输入全名。',eMail:'请输入正确的邮箱。',ePhone:'请输入马来西亚手机号码，例如 12-345 6789。',eCity:'请选择城市。',eWhy:'请说明你将如何扩展人脉（至少 20 个字符）。',eAgree:'请先同意 Elite 条款。',eAll:'请检查标红的栏位。'},
+ ms:{banner:'Selamat datang, bakal Elite!',tabE:'Jadi Elite',tabM:'Peniaga',h1:'Bawa rangkaian anda. <em>Dapat untung setiap bayaran.</em>',lede:'Jadi Elite dan dapat lebih daripada setiap bayaran oleh rujukan dan peniaga anda. Tiada minimum rujukan atau jumlah untuk memohon.',
+  p1:'SVIP percuma, sekali',p2:'Bonus Elite 0.1%',p3:'25% pulangan tunai peniaga',p4:'Kumpulan skim',sec:'selamat',t1:'Permohonan Elite',s1:'Ceritakan sedikit tentang anda. Pihak pengurusan menyemak setiap permohonan dalam 48 jam.',
+  lName:'Nama penuh',lAcc:'Akaun YouApp',locked:'Dikunci',lMail:'E-mel',lPhone:'Telefon (WhatsApp)',lCity:'Bandar',cityPick:'Pilih bandar anda',cityOther:'Lain-lain',lWhy:'Bagaimana anda akan kembangkan rangkaian anda?',phWhy:'Contoh: Saya kendalikan kelab larian 200 orang di PJ dan kenal 15 pemilik kafe berdekatan.',
+  agree:'Saya bersetuju dengan <a href="https://youapp.ai/en-us/terms-of-service">terma Elite</a> dan <a href="https://youapp.ai/en-us/privacy-policy">Dasar Privasi</a>.',b1:'Hantar Permohonan',
+  t2:'Permohonan dihantar',s2:'Kami akan menyemaknya dalam 48 jam dan maklumkan anda dalam app dan melalui e-mel.',refL:'Nombor rujukan',copy:'Salin',copied:'Disalin',sName:'Nama',sAcc:'Akaun',sMail:'E-mel',sPhone:'WhatsApp',sCity:'Bandar',
+  n1:'Pihak pengurusan menyemak permohonan anda dalam 48 jam.',n2:'Selepas diluluskan, Elite bermula serta-merta dan SVIP percuma ditambah.',n3:'Capai jumlah RM100k dalam 90 hari pertama untuk kekal Elite.',b2:'Kembali ke YouApp',
+  h1s:'Isi borang ringkas',h1d:'Tiada minimum rujukan atau jumlah.',h2s:'Pengurusan menyemak',h2d:'Dalam 48 jam.',h3s:'90 hari pertama',h3d:'Jumlah RM100k, atau Elite tamat.',h4s:'Setiap tahun',h4d:'RM300k untuk kekal Elite. Elite 1–3 dibuka dalam Fasa 2.',
+  wb:'Jika Elite tamat',ws:'Anda kembali ke tahap asal dan kehilangan bonus Elite, bahagian kumpulan dan SVIP percuma. SVIP percuma kali kedua tidak diberi.',
+  mh1:'Berkembang bersama YouApp. <em>Terima bayaran dalam ringgit.</em>',mlede:'Daftar kedai anda untuk terima bayaran YouApp dan tawarkan pulangan tunai kepada pelanggan yang disahkan.',mt:'Borang peniaga akan datang',ms:'Borang ini akan guna susun atur yang sama dengan permohonan Elite, dengan medan Peniaga daripada V2.',terms:'Terma',priv:'Privasi',
+  eName:'Masukkan nama penuh anda.',eMail:'Masukkan e-mel yang sah.',ePhone:'Masukkan nombor telefon bimbit Malaysia, contoh 12-345 6789.',eCity:'Pilih bandar anda.',eWhy:'Ceritakan cara anda akan kembangkan rangkaian (sekurang-kurangnya 20 aksara).',eAgree:'Sila setuju dengan terma Elite dahulu.',eAll:'Sila semak medan yang ditanda.'}};
+let L='en',curTab='elite';
+const shown={}; /* which field errors are currently shown, re-translated on language switch */
+function apply(){const t=T[L];document.documentElement.lang=L==='zh'?'zh':L;
+  document.querySelectorAll('[data-t]').forEach(e=>{const k=e.dataset.t;if(t[k]===undefined)return;if(/<a |<em>/.test(t[k]))e.innerHTML=t[k];else e.textContent=t[k];});
+  document.querySelectorAll('[data-ph]').forEach(e=>e.placeholder=t[e.dataset.ph]);
+  Object.keys(shown).forEach(k=>{if(shown[k])$(k.replace('f','er')).textContent=t[shown[k]];});
+  if($('erAll').textContent)$('erAll').textContent=t.eAll;
+  if(!$('e2').classList.contains('hide'))summary();
+  if(window.__mApply)window.__mApply();
+  window.__scene.setBanner(curTab==='merchant'?t.bannerM:t.banner);}
+$('lang').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;L=b.dataset.l;[...$('lang').children].forEach(x=>x.classList.toggle('on',x===b));apply();});
+
+/* tabs */
+$('tabs').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;[...$('tabs').children].forEach(x=>{x.classList.toggle('on',x===b);x.setAttribute('aria-selected',x===b);});
+  const f=b.dataset.f;curTab=f;window.__scene.setBanner(f==='merchant'?T[L].bannerM:T[L].banner);$('v-elite').classList.toggle('hide',f!=='elite');$('v-merchant').classList.toggle('hide',f!=='merchant');
+  /* the illustration lives in the Elite view */
+  if(f==='merchant'){const m=document.querySelector('#v-merchant .story');m.insertBefore($('art'),m.querySelector('.perks'));}
+  else{const s=document.querySelector('#v-elite .story');s.insertBefore($('art'),s.querySelector('.perks'));}});
+
+/* counter */
+function count(){const n=$('eWhy').value.length;$('cnt').textContent=n+' / 300';$('cnt').classList.toggle('over',n>=300);}
+$('eWhy').addEventListener('input',count);count();
+
+/* validation */
+const rules={
+ fName:()=>$('eName').value.trim().length>=2?0:'eName',
+ fMail:()=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test($('eMail').value.trim())?0:'eMail',
+ fPhone:()=>{const d=$('ePhone').value.replace(/\D/g,'').replace(/^0/,'');return /^1\d{8,9}$/.test(d)?0:'ePhone';},
+ fCity:()=>$('eCity').value?0:'eCity',
+ fWhy:()=>$('eWhy').value.trim().length>=20?0:'eWhy'};
+function check(id){const r=rules[id]();shown[id]=r;$(id).classList.toggle('bad',!!r);$(id.replace('f','er')).textContent=r?T[L][r]:'';return !r;}
+Object.keys(rules).forEach(id=>{const el=$(id).querySelector('input,select,textarea');
+  el.addEventListener('blur',()=>{if(el.value)check(id);});
+  el.addEventListener('input',()=>{if(shown[id])check(id);});
+  el.addEventListener('change',()=>{if(shown[id])check(id);});});
+$('eAgree').addEventListener('change',()=>{$('fAgree').classList.remove('bad');if($('erAll').textContent===T[L].eAgree)$('erAll').textContent='';});
+
+function summary(){const t=T[L];const c=$('eCity');const city=c.value==='other'?t.cityOther:c.options[c.selectedIndex].text;
+  const rows=[[t.sName,$('eName').value.trim()],[t.sAcc,$('eAcc').value],[t.sMail,$('eMail').value.trim()],[t.sPhone,'+60 '+$('ePhone').value.trim()],[t.sCity,city]];
+  $('sum').innerHTML='';rows.forEach(([k,v])=>{const d=document.createElement('div');const a=document.createElement('span');a.textContent=k;const b=document.createElement('b');b.textContent=v;d.append(a,b);$('sum').appendChild(d);});}
+
+let busy=false;
+$('e1').addEventListener('submit',e=>{e.preventDefault();if(busy)return;
+  const ok=Object.keys(rules).map(check);const bad=ok.indexOf(false);
+  if(bad>-1){$('erAll').textContent=T[L].eAll;$(Object.keys(rules)[bad]).querySelector('input,select,textarea').focus();return;}
+  if(!$('eAgree').checked){$('fAgree').classList.add('bad');$('erAll').textContent=T[L].eAgree;$('eAgree').focus();return;}
+  $('erAll').textContent='';busy=true;$('eBtn').classList.add('loading');$('eBtn').disabled=true;
+  setTimeout(()=>{busy=false;$('eBtn').classList.remove('loading');$('eBtn').disabled=false;
+    const d=new Date();$('refNo').textContent='EL-'+String(d.getFullYear()).slice(2)+String(d.getMonth()+1).padStart(2,'0')+'-'+String(Math.floor(Math.random()*9000)+1000);
+    summary();$('e1').classList.add('hide');$('e2').classList.remove('hide');window.__scene.celebrate();
+    $('e2').querySelector('h2').setAttribute('tabindex','-1');$('e2').querySelector('h2').focus();},900);});
+
+$('copyRef').addEventListener('click',()=>{const txt=$('refNo').textContent;const done=()=>{$('copyRef').textContent=T[L].copied;setTimeout(()=>$('copyRef').textContent=T[L].copy,1500);};
+  try{navigator.clipboard.writeText(txt).then(done,()=>{});}catch(err){}});
+/* ================= MERCHANT ================= */
+Object.assign(T.en,{bannerM:'New merchant on board!',tabM:'Merchant',mh1:'Grow with YouApp. <em>Get paid in ringgit.</em>',mlede:'Accept YouApp payments from verified customers, offer cashback that brings them back, and get paid in ringgit.',mledeE:"Bring a shop you know onto YouApp. You're its signing Elite and earn 25% of its cashback.",
+ mp1:'Paid in ringgit',mp2:'Verified customers',mp3:'Cashback that brings them back',mp4:'Reviewed in 48 hours',modeSelf:'My business',modeElite:'Add a merchant (Elite)',
+ mt1:'Merchant application',ms1:'Fill in a short form about your business. We review every request within 48 hours.',mt1E:'Add a merchant',ms1E:"Tell us about the shop you're bringing in. You're its signing Elite and earn 25% of its cashback.",
+ gBiz:'The business',lBiz:'Business name',lCat:'Category',pick:'Choose one',cat1:'Food & drinks',cat2:'Retail & shops',cat3:'Beauty & wellness',cat4:'Activities & tours',cat5:'Services',lAddr:'Business address',opt:'Optional',lSsm:'SSM number',hSsm:'12-digit registration number from your SSM certificate.',
+ lQr:'DuitNow QR',upB:'Upload a photo of your DuitNow QR',upS:'JPG or PNG, up to 5 MB',remove:'Remove',lCb:'Cashback to offer',hCb:'Minimum 5%. We confirm the final rate when we approve.',lSales:'Monthly sales',range:'Choose a range',r1:'Below RM10k',r2:'RM10k – RM50k',r3:'RM50k – RM200k',r4:'Above RM200k',
+ gContact:'Contact',lYour:'Your name',lRef:'Elite who referred you',hRef:'They become your signing Elite.',mAgree:'I agree to the <a href="https://youapp.ai/en-us/terms-of-service">Merchant terms</a> and the <a href="https://youapp.ai/en-us/privacy-policy">Privacy Policy</a>.',
+ gOwner:'Shop owner',lOName:'Owner name',lOPhone:'Owner phone (WhatsApp)',lOMail:'Owner email',lOAcc:"Owner's YouApp account",lSign:'Signing Elite',you:'you',hSign:"You earn 25% of this shop's cashback.",oAgree:'The owner agreed to join YouApp as a merchant.',
+ mn1:'We review the request within 48 hours.',mn2:'Once approved, you confirm the cashback rate.',mn3:'Fund your cashback float and start taking payments.',mn2E:'Once approved, we contact the owner to confirm the cashback rate.',mn3E:'The shop shows as In review in Registered Merchant until then.',
+ mh1d:'About the business and how to reach you.',mh2s:'We review',mh3s:'Confirm cashback',mh3d:'The owner confirms the final cashback rate.',mh4s:'Fund and go live',mh4d:'Top up the cashback float and accept payments.',
+ sBiz:'Business',sCat:'Category',sAddr:'Address',sCb:'Cashback',sQr:'DuitNow QR',sOwner:'Owner',sSign:'Signing Elite',sRef:'Referred by',none:'None',
+ xBiz:'Enter the business name.',xCat:'Choose a category.',xAddr:'Enter the business address.',xCity:'Choose the city.',xSsm:'Enter the 12-digit SSM number, or leave it empty.',xQr:'Use a JPG or PNG under 5 MB.',xCb:'Cashback must be at least 5%.',xCb2:'Enter a number between 5 and 100.',xHandle:'Enter a YouApp handle, like @kopiahseng.',xOName:'Enter the owner name.',xOPhone:'Enter the owner mobile number, like 13-888 1234.',xOAgree:'Please confirm the owner agreed to join.',xMAgree:'Please agree to the Merchant terms first.'});
+Object.assign(T.zh,{bannerM:'新商家加入啦！',tabM:'商家',mh1:'与 YouApp 一起成长，<em>以令吉收款。</em>',mlede:'接受实名顾客的 YouApp 付款，提供回扣吸引回头客，并以令吉收款。',mledeE:'把你认识的店铺带上 YouApp。你将成为签约 Elite，获得其回扣的 25%。',
+ mp1:'以令吉收款',mp2:'实名顾客',mp3:'回扣带来回头客',mp4:'48 小时内审核',modeSelf:'我的店铺',modeElite:'添加商家（Elite）',
+ mt1:'商家申请',ms1:'填写一份关于你店铺的简短表格。我们会在 48 小时内审核每个申请。',mt1E:'添加商家',ms1E:'介绍一下你带来的店铺。你将成为签约 Elite，获得其回扣的 25%。',
+ gBiz:'店铺信息',lBiz:'店铺名称',lCat:'类别',pick:'请选择',cat1:'餐饮',cat2:'零售',cat3:'美容与养生',cat4:'活动与导览',cat5:'服务',lAddr:'店铺地址',opt:'选填',lSsm:'SSM 注册号',hSsm:'SSM 证书上的 12 位注册号。',
+ lQr:'DuitNow 二维码',upB:'上传 DuitNow 二维码照片',upS:'JPG 或 PNG，最大 5 MB',remove:'移除',lCb:'提供的回扣',hCb:'最低 5%。最终比例在审核通过时确认。',lSales:'月销售额',range:'选择范围',r1:'低于 RM10k',r2:'RM10k – RM50k',r3:'RM50k – RM200k',r4:'高于 RM200k',
+ gContact:'联系方式',lYour:'你的姓名',lRef:'推荐你的 Elite',hRef:'对方将成为你的签约 Elite。',mAgree:'我同意<a href="https://youapp.ai/en-us/terms-of-service">商家条款</a>和<a href="https://youapp.ai/en-us/privacy-policy">隐私政策</a>。',
+ gOwner:'店主信息',lOName:'店主姓名',lOPhone:'店主电话（WhatsApp）',lOMail:'店主邮箱',lOAcc:'店主的 YouApp 账户',lSign:'签约 Elite',you:'你',hSign:'你将获得这家店回扣的 25%。',oAgree:'店主已同意以商家身份加入 YouApp。',
+ mn1:'我们会在 48 小时内审核申请。',mn2:'通过后，你需确认回扣比例。',mn3:'为回扣账户充值后即可开始收款。',mn2E:'通过后，我们会联系店主确认回扣比例。',mn3E:'在此之前，该店铺在"已注册商家"中显示为审核中。',
+ mh1d:'填写店铺信息和联系方式。',mh2s:'我们审核',mh3s:'确认回扣',mh3d:'店主确认最终回扣比例。',mh4s:'充值并上线',mh4d:'为回扣账户充值，开始收款。',
+ sBiz:'店铺',sCat:'类别',sAddr:'地址',sCb:'回扣',sQr:'DuitNow 二维码',sOwner:'店主',sSign:'签约 Elite',sRef:'推荐人',none:'无',
+ xBiz:'请输入店铺名称。',xCat:'请选择类别。',xAddr:'请输入店铺地址。',xCity:'请选择城市。',xSsm:'请输入 12 位 SSM 注册号，或留空。',xQr:'请使用 5 MB 以下的 JPG 或 PNG。',xCb:'回扣至少为 5%。',xCb2:'请输入 5 到 100 之间的数字。',xHandle:'请输入 YouApp 用户名，例如 @kopiahseng。',xOName:'请输入店主姓名。',xOPhone:'请输入店主手机号码，例如 13-888 1234。',xOAgree:'请确认店主已同意加入。',xMAgree:'请先同意商家条款。'});
+Object.assign(T.ms,{bannerM:'Peniaga baharu tiba!',tabM:'Peniaga',mh1:'Berkembang bersama YouApp. <em>Terima bayaran dalam ringgit.</em>',mlede:'Terima bayaran YouApp daripada pelanggan yang disahkan, tawarkan pulangan tunai supaya mereka datang semula, dan terima bayaran dalam ringgit.',mledeE:'Bawa kedai yang anda kenal ke YouApp. Anda jadi Elite penandatangannya dan dapat 25% daripada pulangan tunainya.',
+ mp1:'Dibayar dalam ringgit',mp2:'Pelanggan disahkan',mp3:'Pulangan tunai menarik pelanggan',mp4:'Disemak dalam 48 jam',modeSelf:'Perniagaan saya',modeElite:'Tambah peniaga (Elite)',
+ mt1:'Permohonan peniaga',ms1:'Isi borang ringkas tentang perniagaan anda. Kami menyemak setiap permohonan dalam 48 jam.',mt1E:'Tambah peniaga',ms1E:'Ceritakan tentang kedai yang anda bawa. Anda jadi Elite penandatangannya dan dapat 25% daripada pulangan tunainya.',
+ gBiz:'Perniagaan',lBiz:'Nama perniagaan',lCat:'Kategori',pick:'Pilih satu',cat1:'Makanan & minuman',cat2:'Runcit & kedai',cat3:'Kecantikan & kesihatan',cat4:'Aktiviti & lawatan',cat5:'Perkhidmatan',lAddr:'Alamat perniagaan',opt:'Pilihan',lSsm:'Nombor SSM',hSsm:'Nombor pendaftaran 12 digit daripada sijil SSM anda.',
+ lQr:'QR DuitNow',upB:'Muat naik foto QR DuitNow anda',upS:'JPG atau PNG, sehingga 5 MB',remove:'Buang',lCb:'Pulangan tunai ditawarkan',hCb:'Minimum 5%. Kadar akhir disahkan semasa kelulusan.',lSales:'Jualan bulanan',range:'Pilih julat',r1:'Bawah RM10k',r2:'RM10k – RM50k',r3:'RM50k – RM200k',r4:'Atas RM200k',
+ gContact:'Hubungan',lYour:'Nama anda',lRef:'Elite yang merujuk anda',hRef:'Mereka jadi Elite penandatangan anda.',mAgree:'Saya bersetuju dengan <a href="https://youapp.ai/en-us/terms-of-service">terma Peniaga</a> dan <a href="https://youapp.ai/en-us/privacy-policy">Dasar Privasi</a>.',
+ gOwner:'Pemilik kedai',lOName:'Nama pemilik',lOPhone:'Telefon pemilik (WhatsApp)',lOMail:'E-mel pemilik',lOAcc:'Akaun YouApp pemilik',lSign:'Elite penandatangan',you:'anda',hSign:'Anda dapat 25% daripada pulangan tunai kedai ini.',oAgree:'Pemilik bersetuju untuk menyertai YouApp sebagai peniaga.',
+ mn1:'Kami menyemak permohonan dalam 48 jam.',mn2:'Selepas diluluskan, anda sahkan kadar pulangan tunai.',mn3:'Tambah nilai dana pulangan tunai dan mula terima bayaran.',mn2E:'Selepas diluluskan, kami hubungi pemilik untuk sahkan kadar pulangan tunai.',mn3E:'Kedai dipaparkan sebagai Dalam semakan dalam Peniaga Berdaftar sehingga itu.',
+ mh1d:'Tentang perniagaan dan cara menghubungi anda.',mh2s:'Kami menyemak',mh3s:'Sahkan pulangan tunai',mh3d:'Pemilik mengesahkan kadar pulangan tunai akhir.',mh4s:'Tambah nilai dan mula',mh4d:'Tambah nilai dana pulangan tunai dan terima bayaran.',
+ sBiz:'Perniagaan',sCat:'Kategori',sAddr:'Alamat',sCb:'Pulangan tunai',sQr:'QR DuitNow',sOwner:'Pemilik',sSign:'Elite penandatangan',sRef:'Dirujuk oleh',none:'Tiada',
+ xBiz:'Masukkan nama perniagaan.',xCat:'Pilih kategori.',xAddr:'Masukkan alamat perniagaan.',xCity:'Pilih bandar.',xSsm:'Masukkan nombor SSM 12 digit, atau biarkan kosong.',xQr:'Guna JPG atau PNG bawah 5 MB.',xCb:'Pulangan tunai mesti sekurang-kurangnya 5%.',xCb2:'Masukkan nombor antara 5 hingga 100.',xHandle:'Masukkan nama pengguna YouApp, contoh @kopiahseng.',xOName:'Masukkan nama pemilik.',xOPhone:'Masukkan nombor telefon bimbit pemilik, contoh 13-888 1234.',xOAgree:'Sila sahkan pemilik bersetuju untuk menyertai.',xMAgree:'Sila setuju dengan terma Peniaga dahulu.'});
+
+let mMode='self';
+const mShown={};
+const myPhone=v=>/^1\d{8,9}$/.test(v.replace(/\D/g,'').replace(/^0/,''));
+const handleOk=v=>!v.trim()||/^@?[a-z0-9._]{3,30}$/i.test(v.trim());
+const emailOk=v=>/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim());
+let qrFile=null,qrBad=false;
+const mRules={
+ gName:()=>$('mName').value.trim().length>=2?0:'xBiz',
+ gCat:()=>$('mCat').value?0:'xCat',
+ gAddr:()=>$('mAddr').value.trim().length>=5?0:'xAddr',
+ gCity:()=>$('mCity').value?0:'xCity',
+ gSsm:()=>{const v=$('mSsm').value.replace(/\s/g,'');return !v||/^\d{12}$/.test(v)?0:'xSsm';},
+ gQr:()=>qrBad?'xQr':0,
+ gCb:()=>{const v=$('mCb').value.replace(',','.').trim();const n=parseFloat(v);if(!v||isNaN(n)||!/^\d+(\.\d{1,2})?$/.test(v))return 'xCb2';if(n<5)return 'xCb';if(n>100)return 'xCb2';return 0;},
+ gCName:()=>mMode!=='self'||$('cName').value.trim().length>=2?0:'eName',
+ gCMail:()=>mMode!=='self'||emailOk($('cMail').value)?0:'eMail',
+ gCPhone:()=>mMode!=='self'||myPhone($('cPhone').value)?0:'ePhone',
+ gCRef:()=>mMode!=='self'||handleOk($('cRef').value)?0:'xHandle',
+ gOName:()=>mMode!=='elite'||$('oName').value.trim().length>=2?0:'xOName',
+ gOPhone:()=>mMode!=='elite'||myPhone($('oPhone').value)?0:'xOPhone',
+ gOMail:()=>mMode!=='elite'||!$('oMail').value.trim()||emailOk($('oMail').value)?0:'eMail',
+ gOAcc:()=>mMode!=='elite'||handleOk($('oAcc').value)?0:'xHandle'};
+const xId=g=>'x'+g.slice(1);
+function mCheck(g){const r=mRules[g]();mShown[g]=r;$(g).classList.toggle('bad',!!r);$(xId(g)).textContent=r?T[L][r]:'';return !r;}
+Object.keys(mRules).forEach(g=>{const el=$(g).querySelector('input:not([type=file]),select');if(!el)return;
+  el.addEventListener('blur',()=>{if(el.value)mCheck(g);});
+  el.addEventListener('input',()=>{if(mShown[g])mCheck(g);});
+  el.addEventListener('change',()=>{if(mShown[g])mCheck(g);});});
+['cAgree','oAgree'].forEach(id=>$(id).addEventListener('change',()=>{$(id==='cAgree'?'gCAgree':'gOAgree').classList.remove('bad');$('xAll').textContent='';}));
+
+/* file */
+$('mQr').addEventListener('change',()=>{const f=$('mQr').files[0];if(!f)return;
+  qrBad=!(/^image\/(png|jpe?g)$/.test(f.type))||f.size>5*1024*1024;qrFile=qrBad?null:f;
+  if(!qrBad){$('fileName').textContent=f.name;$('fileChip').classList.remove('hide');$('upBox').classList.add('hide');}
+  mCheck('gQr');$('mQr').value='';});
+$('fileRm').addEventListener('click',()=>{qrFile=null;qrBad=false;$('fileChip').classList.add('hide');$('upBox').classList.remove('hide');mCheck('gQr');$('upBox').focus();});
+$('upBox').tabIndex=0;$('upBox').addEventListener('keydown',e=>{if(e.key==='Enter'||e.key===' '){e.preventDefault();$('mQr').click();}});
+
+/* mode */
+function mModeApply(){const t=T[L],E=mMode==='elite';
+  [...$('mMode').children].forEach(b=>{const on=b.dataset.m===mMode;b.classList.toggle('on',on);b.setAttribute('aria-checked',on);});
+  $('secSelf').classList.toggle('hide',E);$('secElite').classList.toggle('hide',!E);
+  $('mTitle').textContent=E?t.mt1E:t.mt1;$('mSub').textContent=E?t.ms1E:t.ms1;$('mLede').textContent=E?t.mledeE:t.mlede;
+  $('mn2').textContent=E?t.mn2E:t.mn2;$('mn3').textContent=E?t.mn3E:t.mn3;
+  $('oElite').value='@elsaa ('+t.you+')';
+  $('mRefNo').textContent;}
+$('mMode').addEventListener('click',e=>{const b=e.target.closest('button');if(!b)return;mMode=b.dataset.m;
+  Object.keys(mShown).forEach(g=>{if(mShown[g]){mShown[g]=0;$(g).classList.remove('bad');$(xId(g)).textContent='';}});$('xAll').textContent='';mModeApply();});
+
+function mSummary(){const t=T[L],E=mMode==='elite';const sel=id=>{const s=$(id);return s.value==='other'&&id!=='mCat'?t.cityOther:s.options[s.selectedIndex].text;};
+  const rows=[[t.sBiz,$('mName').value.trim()],[t.sCat,sel('mCat')],[t.sAddr,$('mAddr').value.trim()+', '+sel('mCity')],[t.sCb,$('mCb').value.trim()+'%'],[t.sQr,qrFile?qrFile.name:t.none]];
+  if(E)rows.push([t.sOwner,$('oName').value.trim()+' · +60 '+$('oPhone').value.trim()],[t.sSign,'@elsaa']);
+  else rows.push([t.sName,$('cName').value.trim()+' · @elsaa'],[t.sRef,$('cRef').value.trim()?'@'+$('cRef').value.trim().replace(/^@/,''):t.none]);
+  $('mSum').innerHTML='';rows.forEach(([k,v])=>{const d=document.createElement('div');const a=document.createElement('span');a.textContent=k;const b=document.createElement('b');b.textContent=v;d.append(a,b);$('mSum').appendChild(d);});}
+
+window.__mApply=()=>{const t=T[L];mModeApply();
+  Object.keys(mShown).forEach(g=>{if(mShown[g])$(xId(g)).textContent=t[mShown[g]];});
+  if($('xAll').dataset.k)$('xAll').textContent=t[$('xAll').dataset.k];
+  if(!$('m2').classList.contains('hide'))mSummary();};
+
+let mBusy=false;
+const mErr=k=>{$('xAll').dataset.k=k;$('xAll').textContent=k?T[L][k]:'';};
+$('m1').addEventListener('submit',e=>{e.preventDefault();if(mBusy)return;
+  const keys=Object.keys(mRules);const res=keys.map(mCheck);const bad=res.indexOf(false);
+  if(bad>-1){mErr('eAll');const el=$(keys[bad]).querySelector('input:not([type=file]),select');(el||$('upBox')).focus();return;}
+  const ag=mMode==='elite'?'oAgree':'cAgree';
+  if(!$(ag).checked){$(ag==='cAgree'?'gCAgree':'gOAgree').classList.add('bad');mErr(ag==='cAgree'?'xMAgree':'xOAgree');$(ag).focus();return;}
+  mErr('');mBusy=true;$('mBtn').classList.add('loading');$('mBtn').disabled=true;
+  setTimeout(()=>{mBusy=false;$('mBtn').classList.remove('loading');$('mBtn').disabled=false;
+    const d=new Date();$('mRefNo').textContent='MC-'+String(d.getFullYear()).slice(2)+String(d.getMonth()+1).padStart(2,'0')+'-'+String(Math.floor(Math.random()*9000)+1000);
+    mSummary();$('m1').classList.add('hide');$('m2').classList.remove('hide');window.__scene.celebrate();
+    const h=$('m2').querySelector('h2');h.setAttribute('tabindex','-1');h.focus();},900);});
+$('mCopy').addEventListener('click',()=>{const done=()=>{$('mCopy').textContent=T[L].copied;setTimeout(()=>$('mCopy').textContent=T[L].copy,1500);};
+  try{navigator.clipboard.writeText($('mRefNo').textContent).then(done,()=>{});}catch(err){}});
+
+apply();
+})();
+</script>
+
+<script>
+/* In-app webview mode: forms.html#elite | #merchant | #merchant-add inside the YouApp prototype */
+(function(){
+  var embedded = false; try { embedded = window.parent !== window && typeof window.parent.__yaFormClose === 'function'; } catch(e) {}
+  var h = (location.hash || '').slice(1);
+  if (!embedded) return;
+  document.documentElement.classList.add('wv');
+  var tab = document.querySelector('#tabs [data-f="' + (h.indexOf('merchant') === 0 ? 'merchant' : 'elite') + '"]'); if (tab) tab.click();
+  if (h === 'merchant-add') { var m = document.querySelector('#mMode [data-m="elite"]'); if (m) m.click(); }
+  var mode = document.getElementById('mMode'); if (mode) mode.style.display = 'none';
+  document.querySelectorAll('a.btn[href="https://youapp.ai"]').forEach(function(a){ a.addEventListener('click', function(e){ e.preventDefault(); try { window.parent.__yaFormClose(); } catch(_){} }); });
+  [['e2','elite'],['m2','merchant']].forEach(function(p){ var el = document.getElementById(p[0]); if (!el) return; var sent = false;
+    new MutationObserver(function(){ if (!sent && !el.classList.contains('hide')) { sent = true; try { window.parent.__yaFormSubmitted(p[1]); } catch(_){} } }).observe(el, {attributes:true, attributeFilter:['class']}); });
+})();
+</script>
+</body>
+</html>
