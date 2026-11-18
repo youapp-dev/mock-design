@@ -8554,35 +8554,26 @@ TXIC7.angpao = 'apGift'; TXIC7.angpaoRefund = 'refresh';
 A.openRcpt = (orig => el => { const t = W().txns.find(x => x.id === el.dataset.id);
   if (t && t.apTok) { S.apTok = t.apTok; S.apJust = false; S.apSim = null; go(t.apRecv ? 'aprecv' : 'apdet'); return; } orig(el); })(A.openRcpt);
 
-/* recipients board (ref: DANA Kaget winners): Luckiest / Fastest / Smallest / Slowest */
+/* Random packets highlight only the highest allocation. Opening speed is irrelevant. */
 const PDI = {
   luck:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M7 3h10v2h3v3a4 4 0 0 1-4 4h-.3A5 5 0 0 1 13 14.9V18h3v3H8v-3h3v-3.1A5 5 0 0 1 8.3 12H8a4 4 0 0 1-4-4V5h3zm-1 4v1a2 2 0 0 0 1.2 1.8A6 6 0 0 1 7 8.5V7zm12 0v1.5a6 6 0 0 1-.2 1.3A2 2 0 0 0 19 8V7z"/></svg>',
-  fast:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M13 2 4 14h6l-1 8 9-12h-6z"/></svg>',
-  small:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M8.5 16c2-1.8 5-1.8 7 0"/><circle cx="9" cy="10" r=".8" fill="currentColor"/><circle cx="15" cy="10" r=".8" fill="currentColor"/></svg>',
-  slow:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 18h13a5 5 0 0 0 5-5V9"/><circle cx="12" cy="12" r="4.5"/><path d="M12 12c0-1.5 1.5-1.5 1.5 0S11 14 10 12.5M21 9l-1-3M21 9l1.5-2.5"/></svg>',
 };
-const PDL = {luck:'Luckiest', fast:'Fastest', small:'Smallest', slow:'Slowest'};
-const CROWN = '<svg class="pd-crown" viewBox="0 0 24 16" aria-hidden="true"><path d="M2 14 1 3l6 5 5-7 5 7 6-5-1 11z" fill="#f7b928" stroke="#c98a0b" stroke-width="1"/></svg>';
+const PDL = {luck:'Luckiest'};
 function apTitles(a){ const got = a.slots.filter(s => s.by).sort((x, y) => (x.ord||0) - (y.ord||0)); const t = {};
   if (!got.length) return {t, got};
-  const done = a.status !== 'ACTIVE' || got.length === a.count;
-  t.fast = got[0];
-  if (got.length > 1 && done) t.slow = got[got.length - 1];
-  if (a.type === 'random') { t.luck = got.reduce((m, x) => x.amt > m.amt ? x : m);
-    if (got.length > 1) { const mn = got.reduce((m, x) => x.amt < m.amt ? x : m); if (mn !== t.luck) t.small = mn; } }
+  if (a.type === 'random') t.luck = got.reduce((m, x) => x.amt > m.amt ? x : m);
   return {t, got}; }
 const claimList = (a, opt={}) => { const {t, got} = apTitles(a);
-  const order = a.type === 'random' ? ['small','luck','fast','slow'] : ['fast','slow'];
+  const order = a.type === 'random' ? ['luck'] : [];
   const left = a.slots.filter(x => !x.by).reduce((x, y) => x + y.amt, 0); const pct = a.total ? Math.round(left / a.total * 100) : 0;
-  const pod = `<div class="appod ${a.type==='random'?'':'eq'}"><div class="appod-row">${order.map(k => { const x = t[k]; const p = x && who(x.by);
-      return `<div class="pd pd-${k}"><span class="pd-av">${x ? img(p.av, p.n) : '<i>?</i>'}${k==='luck' && x ? CROWN : ''}</span>${x ? `<b>${esc(p.n)}</b>` : '<b>&nbsp;</b>'}<em>${PDL[k]}</em><span class="pd-blk">${PDI[k]}</span></div>`; }).join('')}</div></div>
+  const stats = `
     <div class="apstat"><div><span class="apstat-i">${ic('chat')}</span><span><small>Total opened</small><b>${got.length}/${a.count}</b></span></div><div><span class="apstat-i g">${ic('apGift')}</span><span><small>Left</small><b>${MY_(left)} <em>(${pct}%)</em></b></span></div></div>`;
   const rows = got.length ? got.map((x, i) => { const p = who(x.by); const tags = order.filter(k => t[k] === x);
       return `<div class="apw ${tags.includes('luck')?'top':''} ${x.by==='me'?'me':''}">${tags.length?`<span class="apw-tag">${tags.map(k=>PDI[k]).join('')}${tags.map(k=>PDL[k]).join(' & ')}</span>`:''}<span class="apw-n">${i+1}</span>${img(p.av, p.n, 'apw-av')}<span class="apw-t"><b>${esc(p.n)}</b><small>Today · ${x.at}</small></span><b class="apw-a">${MY_(x.amt)}</b></div>`; }).join('')
     : `<p class="apnote" style="text-align:left; margin:12px 0 0">No one has opened it yet.</p>`;
   const exp = a.status==='ACTIVE' ? (a.expiresAt ? `Runs until ${new Date(a.expiresAt).toLocaleString('en-MY',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}` : 'Never expires')
     : a.status==='FULLY_CLAIMED' ? 'All packets opened' : a.status==='EXPIRED' ? 'Expired' : 'Cancelled by the sender';
-  return `<div class="apboard">${pod}<div class="apw-list">${rows}</div><p class="apw-exp">${exp}</p></div>`; };
+  return `<div class="apboard">${stats}<div class="apw-list">${rows}</div><p class="apw-exp">${exp}</p></div>`; };
 V.aprecv = () => { const a = apGet(S.apTok); const st = apState(a);
   if (st === 'guest' || st === 'kyc') return gateHTML('Red Packet', 'open this angpao', 'aprecv');
   const top = `<div class="topbar"><button class="iconbtn" data-act="back" aria-label="Back">${ic('back')}</button><span class="t-headline" style="flex:1; text-align:center">Red Packet</span>${a?`<button class="iconbtn" data-act="apReport" aria-label="Report angpao">${ic('apFlag')}</button>`:'<span style="width:32px"></span>'}</div>`;
