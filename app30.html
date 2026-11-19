@@ -7911,6 +7911,10 @@ restart();
     const sc = document.querySelector('#phone .scroll'); if (sc) sc.scrollTop = 0;
   };
   window.__state = () => ({gList:scen.gList==='has' ? (scen.gRole||'owner') : 'empty', screen:S.screen, kyc:scen.kyc, wallet:scen.wallet, host:scen.host, session:S.session, hostSt: scen.host==='yes' ? 'yes' : (D.h && D.h.svc==='review' && D.h.vh==='pending') ? 'pending' : 'no'});
+  window.__walletProfile = () => {
+    const {name, uname, passions} = C6().prof;
+    return {name, handle:`@${uname}`, interests:[...(passions || [])]};
+  };
   window.__panel = () => { const p = document.getElementById('panel'); if (p) p.classList.add('open'); };
   window.__refresh = () => render();
   window.__lang = () => { const l = langOf(S.lang); return {name:l.short, svg:SVG[l.flag]}; };

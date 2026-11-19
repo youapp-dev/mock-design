@@ -98,19 +98,28 @@
   const dateOf = tx => tx.paidAt.toLocaleString('en-MY', {dateStyle:'medium', timeStyle:'short'});
   const archive = () => TXS.map(tx => ({id:tx.id, merchant:tx.t, status:tx.st, date:tx.d, value:tx.v, wallet:'ya', kind:tx.kind}));
   const transactions = () => [
-    ...walletScanHistory().map(tx => ({id:tx.id, merchant:tx.t, status:tx.st, date:tx.d,
-      value:tx.v, wallet:S.scanPayments?.find(payment => payment.id === tx.id)?.funding?.wallet || 'ya', kind:tx.kind})),
+    ...walletScanHistory().map(tx => {
+      const funding = S.scanPayments?.find(payment => payment.id === tx.id)?.funding;
+      return {id:tx.id, merchant:tx.t, status:tx.st, date:tx.d, value:tx.v,
+        wallet:funding?.wallet || 'ya', currency:funding?.key, kind:tx.kind};
+    }),
     ...archive(),
   ];
 
   function transactionRow(template, tx, showStatus = false) {
     const row = template.cloneNode(true);
     set(row, ':scope > div:not(.rt) b', tx.merchant);
-    set(row, ':scope > div:not(.rt) small', `${tx.date} · ${W_ALL[tx.wallet]?.name || 'Ringgit'}`);
+    const source = tx.kind === 'pay' && tx.wallet === 'ya' ? currencyInfo(tx.currency || 'MYR')[0] : W_ALL[tx.wallet]?.name || 'Ringgit';
+    const date = tx.date.replace(/\s+(AM|PM)$/i, '\u00a0$1');
+    set(row, ':scope > div:not(.rt) small', `${date} · ${source}`);
     set(row, '.rt b', S.balHide ? '••••' : (tx.value < 0 ? '−' : '+') + RM(Math.abs(tx.value)));
     $(row, '.rt b')?.classList.add('wr-debit');
     const status = tx.status === 'Completed' && tx.kind === 'pay' ? 'Paid' : tx.status;
-    if (showStatus) set(row, '.rt small', status);
+    const statusLine = $(row, '.rt small');
+    if (showStatus && statusLine && status !== 'Paid') {
+      statusLine.classList.remove('ok');
+      statusLine.textContent = status;
+    }
     bind(row, 'walletReferenceTx', {id:tx.id}, `${tx.merchant}, ${status}`);
     return row;
   }
@@ -143,6 +152,26 @@
       set(row, 'div small', `SVIP: ${TIERS.svip.ref}% instead of ${T().ref}%`);
     }
     click(row, 'a', 'walletReferencePlan', {key:'svip'});
+  }
+
+  function walletProfile() {
+    try {
+      const app = window.parent.document.getElementById('a30')?.contentWindow;
+      const profile = app?.__walletProfile?.();
+      if (profile) return profile;
+    } catch (error) { /* Use the demo account when opened outside the full flow. */ }
+    return RF_ME;
+  }
+
+  function renderProfile(card, profile) {
+    $(card, 'img').src = FG.elsa;
+    const name = document.createElement('span');
+    name.className = 'wr-profile-name';
+    name.textContent = profile.name;
+    $(card, 'b').firstChild.replaceWith(name);
+    const verified = kycOk();
+    if (!verified) $(card, 'b svg')?.remove();
+    set(card, 'small', `${profile.handle} · ${verified ? 'ID\u00a0verified' : 'Verify your ID'}`);
   }
 
   V.home = () => {
@@ -204,13 +233,11 @@
     click(frame, '.sec a', 'walletScanHistory');
     const tx = transactions().find(row => row.kind === 'pay');
     $(frame, '.tx').replaceWith(transactionRow($(frame, '.tx'), tx, true));
-    $(frame, '.prof img').src = FG.elsa;
-    const profileName = $(frame, '.prof b');
-    profileName.firstChild.textContent = `${RF_ME.name} `;
-    set(frame, '.prof small', `${RF_ME.handle} · ID verified`);
+    const profile = walletProfile();
+    renderProfile($(frame, '.prof'), profile);
     click(frame, '.prof a', 'editProfile');
-    $(frame, '.pas').remove();
-    frame.insertAdjacentHTML('beforeend', `<div class="wr-tools">${naturalButton('Booking Balance', 'walletBooking', 'cal')}${naturalButton('My Activities', 'actMineW', 'cal')}${naturalButton('Send', 'xsOpen', 'xsUp')}${naturalButton('Receive', 'xsRecv', 'xsDown')}${naturalButton('Pay Bills', 'bills', 'bill')}</div>`);
+    if (profile.interests) setHTML(frame, '.pas', profile.interests.map(interest => `<span>${esc(interest)}</span>`).join(''));
+    if (!$(frame, '.pas').children.length) $(frame, '.pas').remove();
     return screen(frame);
   };
 
@@ -1009,9 +1036,7 @@
   V.settings = () => {
     const frame = reference('settingslong');
     backButton(frame);
-    $(frame, '.spf img').src = FG.elsa;
-    $(frame, '.spf b').firstChild.textContent = `${RF_ME.name} `;
-    set(frame, '.spf small', `${RF_ME.handle} · ${kycOk() ? 'ID verified' : 'Verify your ID'}`);
+    renderProfile($(frame, '.spf'), walletProfile());
     const plan = $(frame, '.spf .pl');
     plan.lastChild.textContent = ` ${T().name} plan`;
     click(frame, '.spf', 'editProfile');

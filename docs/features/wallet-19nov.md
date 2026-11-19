@@ -9,7 +9,7 @@ Prototype menggunakan layout, ilustrasi, warna, logo, dan ikon dari `Design_upda
 
 | Poin | Layar yang diperbarui | Yang bisa dicoba |
 | --- | --- | --- |
-| 0 | You Page | YouWallet Balance, swipe ke Booking Balance, sembunyikan saldo, referral, profil dan transaksi terakhir. |
+| 0 | You Page | YouWallet Balance, swipe ke Booking Balance, sembunyikan saldo, referral, transaksi terakhir, lalu profil dengan chip minat. |
 | 1 dan 1b | Scan to Pay, Pay, Pay with, approval, Paid, Receipt, dan Connect a wallet | QR nominal bebas atau tetap, pilih sumber dana, konfirmasi wallet eksternal, quote kedaluwarsa, pending, gagal, retry, dan buka ulang receipt dari History. |
 | 2 sampai 2c | Top up, kartu, stablecoin, My money dan Connect a wallet | Pilih mata uang dan metode, cek fee, konfirmasi top up demo, lihat saldo per mata uang dan filter per wallet. Versi tanpa wallet eksternal punya ajakan Connect a wallet. |
 | 3 | Choose your plan | Bandingkan Free, VIP, dan SVIP. Periode VIP membuka checkout. SVIP mengikuti alur pengajuan yang sudah ada. |
@@ -18,9 +18,13 @@ Prototype menggunakan layout, ilustrasi, warna, logo, dan ikon dari `Design_upda
 
 Nama profil, transaksi, mata uang, saldo, dan statistik referral mengikuti akun serta skenario prototype. Harga VIP tahunan tetap RM120 sesuai checkout yang sudah ada. Ringgit YouApp Wallet memakai aturan PIN yang sudah ada. Booking Balance tampil sebagai kartu terpisah dan tidak dihitung dalam My money.
 
+**Your profile** mengikuti urutan dan jarak dari HTML referensi. Nama, username, dan minat mengikuti Edit Profile. **Send**, **Receive**, dan **Pay Bills** ada di detail YouApp Wallet melalui My money. **My Activities** ada di Discover → Activities → Manage Activity.
+
 Wallet provider, quote, top up, dan pembayaran berjalan dengan data demo. QR stablecoin diberi label demo. Withdraw to bank dan Back up wallet membuka informasi flow. Preferensi yang diubah berlaku di sesi prototype. Penanganan izin native dan koneksi gateway perlu QA di iOS dan Android.
 
 **QA Chrome** mencakup entry point YouPage, hide balance, Booking Balance, satu dan beberapa wallet, koneksi MetaMask dan OKX, QR bebas dan tetap, debit internal dan eksternal, refresh quote, pending dan retry, top up kartu, pilihan stablecoin, receipt dari Settings, VIP checkout, filter Rewards dan referral, serta perubahan preferensi dan waitlist. QA viewport 375 px memeriksa akses QR referral, My money, serta pemilihan mata uang dan keypad top up. Kontrol prototype berada di luar layar Wallet pada viewport mobile.
+
+Perbandingan Chrome pada tier Free memeriksa ukuran avatar, radius kartu, jarak chip, dan urutan profil terhadap HTML referensi. QA juga memeriksa banner di Free dan SVIP, perubahan nama setelah Save Changes, akses aksi wallet, dan teks verifikasi pada viewport 320 px.
 
 ## Batch 1
 

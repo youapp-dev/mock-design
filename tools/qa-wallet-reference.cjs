@@ -110,6 +110,20 @@ let ws;
   assert.match(await wallet(`document.getElementById('phone').innerText`), /YouWallet Balance/);
   assert.equal(await wallet(`getComputedStyle(document.querySelector('.wr-currency-stack')).flexDirection`), 'row');
   assert.equal(await wallet(`getComputedStyle(document.querySelector('.ist b')).color`), 'rgb(30, 16, 80)');
+  const profileLayout = await wallet(`(() => {
+    const card = document.querySelector('.prof');
+    const interests = card.nextElementSibling;
+    return {
+      belowCard: interests?.matches('.pas') && !interests.nextElementSibling,
+      interests: [...interests?.querySelectorAll('span') || []].map(chip => chip.textContent),
+      source: window.parent.document.getElementById('a30').contentWindow.__walletProfile().interests,
+      hasBadge: !!card.querySelector('.wr-profile-name + svg'),
+      hasPaidCheck: !!document.querySelector('.tx .rt small svg'),
+    };
+  })()`);
+  assert.ok(profileLayout.belowCard && profileLayout.hasBadge && profileLayout.hasPaidCheck);
+  assert.ok(profileLayout.interests.length);
+  assert.deepEqual(profileLayout.interests, profileLayout.source);
   await screenshot('you-page.png');
   await act('balEye');
   assert.equal(await wallet(`document.querySelector('.bal .amt b').textContent`), '••••');
@@ -121,6 +135,18 @@ let ws;
   await frame('allone');
   await act('walletCurrencyOpen', '[data-key="USD"]');
   await state('walletCurrency');
+  await act('wOpen', '[data-id="ya"]');
+  await state('wDetail');
+  await act('xsOpen', '[data-from-wallet="ya"]');
+  await state('xsTo');
+  await act('back');
+  await act('wRecvOf');
+  await state('xsRecv');
+  await act('back');
+  await act('bills');
+  await state('bills');
+  await act('back');
+  await act('back');
   await act('back');
   await act('nav', '[data-to="walletConnect"]');
   await frame('connect');
