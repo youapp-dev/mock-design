@@ -244,11 +244,12 @@
     setHTML(frame, '.tot2 > div:first-of-type', `<span>RM</span>${amount(total)}`);
     $(frame, '.bar').hidden = S.balHide || !total;
     setHTML(frame, '.bar', groups.map(group => `<i style="width:${group.rm / total * 100}%;background:${currencyInfo(group.key)[2]}"></i>`).join(''));
-    if (single) nav(frame, '.cwal .cb', 'walletConnect');
+    if (single) $(frame, '.cwal')?.remove();
     else {
       nav(frame, '.wsec a', 'walletConnect');
       nav(frame, '.conn', 'walletConnect');
       chips(frame, '.wcs', wallets, selected?.id || 'all', 'walletMoneyFilter', true);
+      $(frame, '.wsec a')?.remove();
     }
     const list = $(frame, '.lst');
     list.innerHTML = `<div class="grp">${single ? 'In YouApp Wallet' : 'Currencies'} · ${groups.length}</div>${groups.map(currencyRow).join('') || note('No balance in this wallet yet.', 'wr-empty')}`;
@@ -470,8 +471,6 @@
     const walletList = $$(frame, '.wcs').at(-1);
     walletList.classList.add('wr-picker-wallets');
     chips(sheet, '.wcs', wList(), wallet.id, 'walletPaymentWallet', false);
-    walletList.insertAdjacentHTML('beforeend', `<div class="wc add"><span class="wt" style="background:#e9e0fb;width:24px;height:24px">${ic('plus')}</span><span><b>Connect</b>a wallet</span></div>`);
-    nav(sheet, '.wc.add', 'walletConnect');
     set(sheet, '.grp', `In ${wallet.id === 'ya' ? 'YouApp Wallet' : wallet.name}`);
     for (const row of $$(sheet, '.cr, .grp:not(:first-of-type)')) row.remove();
     let groupLabel = $(sheet, '.grp');
