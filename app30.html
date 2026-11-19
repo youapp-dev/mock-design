@@ -448,6 +448,41 @@
 .aphist-empty h2{margin:0; font-size:20px; line-height:1.2; letter-spacing:-.02em}
 .aphist-empty p{max-width:26ch; margin:0; font-size:14px; line-height:1.45; color:#765b61}
 .aphist-empty .btn{width:min(100%,248px); margin-top:7px}
+.apdetail .scroll{background:#fffaf7}
+.apdetail-hero{min-height:142px; gap:5px}
+.apdetail-hero .apst{justify-self:start; padding:4px 8px; background:#fff0df; color:#8f2637}
+.apdetail-hero h1{margin:1px 0 0;font-size:clamp(16px,4.6vw,21px);line-height:1.25;overflow-wrap:anywhere}
+.apdetail-hero .apdetail-total{font-size:clamp(20px,6.4vw,29px)}
+.apdetail-refund,.apdetail-section{border:1px solid #f0e3dc; border-radius:18px; background:#fff}
+.apdetail-refund{display:grid;grid-template-columns:38px minmax(0,1fr);gap:9px;align-items:center;padding:13px;color:#185446;background:#edf9f2;border-color:#cfe9da}
+.apdetail-refund-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#d9f0e2;color:#16634d}
+.apdetail-refund-icon .ico{width:20px;height:20px}
+.apdetail-refund h2,.apdetail-section > h2,.apdetail-activity > h2{margin:0;font-size:15px;line-height:1.3}
+.apdetail-refund p{margin:4px 0 0;font-size:12.5px;line-height:1.4;color:#356354}
+.apdetail-refund strong{font-variant-numeric:tabular-nums}
+.apdetail-section{padding:13px 14px}
+.apdetail-section dl{margin:5px 0 0}
+.apdetail-section dl > div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:12px;padding:10px 0;color:#69545d;font-size:13px}
+.apdetail-section dl > div + div{border-top:1px solid #f3e8e3}
+.apdetail-section dd{margin:0;text-align:right;color:#342431;font-weight:700;overflow-wrap:anywhere}
+.apdetail .apdetail-activity{margin:0;padding:13px 12px;background:#fff;border:1px solid #f0e3dc;border-radius:18px}
+.apdetail-activity > h2{margin:0 1px 10px}
+.apdetail .apstat{margin:0;grid-template-columns:minmax(0,.87fr) minmax(0,1.13fr);transform:none;box-shadow:none;padding:10px 8px;gap:9px;background:#fdf3ed;border-radius:12px}
+.apdetail .apstat > div{gap:7px;min-width:0}
+.apdetail .apstat-i{width:29px;height:29px;flex:none;background:#f7e3eb;color:#9e2b48}
+.apdetail .apstat-i.g{background:#ffe9c9;color:#97531a}
+.apdetail .apstat-i .ico{width:16px;height:16px}
+.apdetail .apstat small{color:#755a62}
+.apdetail .apstat b{font-size:13px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.apdetail-meter{height:6px;margin-top:10px;overflow:hidden;background:#fae8de;border-radius:999px}
+.apdetail-meter > span{display:block;height:100%;background:linear-gradient(90deg,#e49d53,#bb2943);border-radius:inherit}
+.apdetail .apw-list{gap:10px;padding:12px 0 0}
+.apdetail .apw{gap:7px;padding:11px 8px}
+.apdetail .apw-av{width:32px;height:32px}
+.apdetail .apw-a{font-size:13px;text-align:right}
+.apdetail-no-openers{margin:0;padding:9px 8px;color:#785f68;font-size:13px;text-align:center}
+.apdetail .apcancel{width:100%;color:#a92a45}
+.apdetail .apdetail-share .apshare{margin:0}
 .aphist :is(button,[role="tab"]):focus-visible{outline:2px solid #963046; outline-offset:2px}
 @media(max-width:340px){.aphist-row{grid-template-columns:36px minmax(0,1fr) minmax(0,auto) 12px; gap:7px; padding-inline:9px}.aphist-row-icon{width:36px;height:36px}.aphist-row-value .apst{padding-inline:5px}}
 .apbest{font-style:normal; font-size:11px; font-weight:700; color:#b54708; background:#fef0c7; border-radius:999px; padding:1px 8px}
@@ -8829,14 +8864,24 @@ function apTitles(a){ const got = a.slots.filter(s => s.by).sort((x, y) => (x.or
   if (a.type !== 'equal') t.luck = got.reduce((m, x) => x.amt > (m?.amt || 0) ? x : m, null);
   return {t, got}; }
 const claimList = (a, opt={}) => { const {t, got} = apTitles(a);
-  const left = a.status === 'ACTIVE' ? apAmountLeft(a) : 0;
+  const active = a.status === 'ACTIVE';
+  const left = active ? apAmountLeft(a) : 0;
   const pct = a.total ? Math.round(left / a.total * 100) : 0;
+  const closedSender = opt.sender && !active;
+  const balance = closedSender ? a.total - apAmountLeft(a) : left;
+  const balanceLabel = closedSender ? 'Claimed' : opt.sender ? 'Available' : 'Left';
   const stats = `
-    <div class="apstat"><div><span class="apstat-i">${ic('chat')}</span><span><small>Total opened</small><b>${got.length}${isLucky(a) ? '' : `/${a.count}`}</b></span></div><div><span class="apstat-i g">${ic('apGift')}</span><span><small>Left</small><b>${MY_(left)} <em>(${pct}%)</em></b></span></div></div>`;
+    <div class="apstat"><div><span class="apstat-i">${ic('chat')}</span><span><small>Total opened</small><b>${got.length}${isLucky(a) ? '' : `/${a.count}`}</b></span></div><div><span class="apstat-i g">${ic('apGift')}</span><span><small>${balanceLabel}</small><b>${MY_(balance)}${opt.sender ? '' : ` <em>(${pct}%)</em>`}</b></span></div></div>`;
   const rows = got.length ? got.map((x, i) => { const p = who(x.by); const tags = t.luck === x ? ['luck'] : [];
       return `<div class="apw ${tags.includes('luck')?'top':''} ${x.by==='me'?'me':''}">${tags.length?`<span class="apw-tag">${tags.map(k=>PDI[k]).join('')}${tags.map(k=>PDL[k]).join(' & ')}</span>`:''}<span class="apw-n">${i+1}</span>${img(p.av, p.n, 'apw-av')}<span class="apw-t"><b>${esc(p.n)}</b><small>Today · ${x.at}</small></span><b class="apw-a">${MY_(x.amt)}</b></div>`; }).join('')
-    : `<p class="apnote" style="text-align:left; margin:12px 0 0">No one has opened it yet.</p>`;
-  const exp = a.status==='ACTIVE' ? (a.expiresAt ? `Runs until ${new Date(a.expiresAt).toLocaleString('en-MY',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}` : opt.sender ? 'Never expires' : '')
+    : opt.sender ? `<p class="apdetail-no-openers">${active ? 'No one has opened it yet.' : 'No one opened this packet.'}</p>`
+    : '<p class="apnote" style="text-align:left; margin:12px 0 0">No one has opened it yet.</p>';
+  if (opt.sender) {
+    const progress = isLucky(a) ? 100 - pct : Math.round(got.length / a.count * 100);
+    const meter = active ? `<div class="apdetail-meter" aria-hidden="true"><span style="width:${progress}%"></span></div>` : '';
+    return `<section class="apboard apdetail-activity"><h2>Recipients</h2>${stats}${meter}<div class="apw-list">${rows}</div></section>`;
+  }
+  const exp = active ? (a.expiresAt ? `Runs until ${new Date(a.expiresAt).toLocaleString('en-MY',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}` : '')
     : a.status==='FULLY_CLAIMED' ? (isLucky(a) ? 'All available prizes drawn' : 'All packets opened') : a.status==='EXPIRED' ? 'Expired' : 'Cancelled by the sender';
   return `<div class="apboard">${stats}<div class="apw-list">${rows}</div>${exp ? `<p class="apw-exp">${exp}</p>` : ''}</div>`; };
 const apBurst = [
@@ -8892,19 +8937,32 @@ V.aprecv = () => { const a = apGet(S.apTok); const st = apState(a);
 
 /* ---- section 7: sender detail ---- */
 const STL = {ACTIVE:['Active','ok'], FULLY_CLAIMED:['Fully claimed','done'], EXPIRED:['Expired','off'], CANCELLED:['Cancelled','off']};
-V.apdet = () => { const a = apGet(S.apTok); apTick(a); const s = STL[a.status]; const left = apLeft(a); const leftAmt = apAmountLeft(a);
-  const rows = [['Status', `<span class="apst ${s[1]}">${s[0]}</span>`], ['Type', AP_TYPES[a.type]], [isLucky(a) ? 'Budget' : 'Total', MY_(a.total)],
-    ['Validity', a.expiresAt ? `${a.expLbl} · ${a.status==='ACTIVE'?'until':'ended'} ${new Date(a.expiresAt).toLocaleString('en-MY',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}` : 'Never expires'], ...(a.msg?[['Message', esc(a.msg)]]:[]), ...(a.refunded?[['Refunded', MY_(a.refunded)]]:[])];
-  return `<div class="screen">${statusBar()}${topBar('Red Packet details')}<div class="scroll"><div class="pad16">
-    <div class="aplist">${claimList(a, {sender:true})}${leftAmt && a.status==='ACTIVE' ? `<p class="apleft">${isLucky(a) ? 'No people limit. Each amount is drawn when opened.' : `${left} packet${left===1?'':'s'} left · amounts stay hidden until opened`}</p>` : ''}
-      ${a.refunded ? `<p class="apleft">${MY_(a.refunded)} ${isLucky(a) ? 'in unused budget' : `from ${left} unclaimed packet${left===1?'':'s'}`} went back to your wallet.</p>` : ''}</div>
-    ${a.status==='ACTIVE' ? shareBtns(a) : ''}
-    <h2 class="apsec">Red Packet details</h2>
-    <div class="boxcard apkv">${rows.map(([k,v])=>`<div class="kv">${k}<b>${v}</b></div>`).join('')}</div>
-    ${a.status==='ACTIVE' && leftAmt ? `<button class="btn btn-tertiary btn-block apcancel" data-act="apCancelAsk">Cancel remaining red packet</button>` : ''}</div></div></div>`; };
+const apHistoryArt = () => `<div class="aphist-art" aria-hidden="true"><i class="apreceive-spark a"></i><i class="apreceive-spark b"></i><i class="apreceive-spark c"></i>${apEnvelopeMarkup()}</div>`;
+V.apdet = () => {
+  const a = apGet(S.apTok);
+  if (!a) return V.aprecv();
+  apTick(a);
+  const [status, tone] = STL[a.status];
+  const active = a.status === 'ACTIVE';
+  const lucky = isLucky(a);
+  const unclaimed = apLeft(a);
+  const rows = [['Type', AP_TYPES[a.type]], ['Recipients', lucky ? 'No people limit' : apPeople(a.count)]];
+  if (a.type === 'equal') rows.push(['Per person', MY_(a.per)]);
+  if (a.expiresAt) rows.push(['Scheduled expiry', new Date(a.expiresAt).toLocaleString('en-MY', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'})]);
+  if (a.fee) rows.push(['Fee', MY_(a.fee)]);
+  const refundNote = lucky ? 'Unused budget returned to your wallet.'
+    : `Returned to your wallet from ${unclaimed} unclaimed ${unclaimed === 1 ? 'packet' : 'packets'}.`;
+  return `<div class="screen apdetail">${statusBar()}${topBar('Red Packet details')}<div class="scroll"><div class="aphist-content">
+    <section class="aphist-hero apdetail-hero"><span class="apst ${tone}">${status}</span><h1>${esc(a.msg || 'Best wishes!')}</h1>
+      <small>${lucky ? 'Packet budget' : 'Packet total'}</small><strong class="apdetail-total">${MY_(a.total)}</strong>${apHistoryArt()}</section>
+    ${a.refunded ? `<section class="apdetail-refund"><span class="apdetail-refund-icon">${ic('check')}</span><div><h2><strong>${MY_(a.refunded)}</strong> refunded</h2><p>${refundNote}</p></div></section>` : ''}
+    ${active ? `<div class="apdetail-share">${shareBtns(a)}</div>` : ''}
+    ${claimList(a, {sender:true})}
+    <section class="apdetail-section"><h2>Packet info</h2><dl>${rows.map(([label, value]) => `<div><dt>${label}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl></section>
+    ${active && apAmountLeft(a) ? `<button type="button" class="btn btn-tertiary apcancel" data-act="apCancelAsk">Cancel remaining red packet</button>` : ''}</div></div></div>`;
+};
 
 /* ---- my red packet (sent / received) ---- */
-const apHistoryArt = () => `<div class="aphist-art" aria-hidden="true"><i class="apreceive-spark a"></i><i class="apreceive-spark b"></i><i class="apreceive-spark c"></i>${apEnvelopeMarkup()}</div>`;
 V.aplist = () => {
   apSeed();
   const tab = S.apTab || 'sent';
