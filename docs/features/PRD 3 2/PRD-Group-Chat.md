@@ -2,36 +2,39 @@
 
 ## 1. Overview
 
-This PRD defines Group Chat in the YouApp mobile app: creating a group, chatting in a group, managing members and roles, group permissions, inviting people through a link, and leaving, removing, or disbanding a group.
+This PRD describes the Group Chat behavior represented in the YouApp 3.0 browser prototype: creating a group, chatting in a group, managing members and roles, group permissions, inviting people through a link and QR code, and leaving, removing, or deleting a group.
+
+Prototype reference: `mock-design/app30.html`. This document records prototype behavior; native, server-side, push-notification, and web landing-page behavior is not implied unless stated below.
 
 Covered:
 
 - Chat list tabs (All, Host, Group) and the Group list.
 - Who can create a group, and the Create Group flow.
 - Group chat room (messages, system messages).
-- Group Info page for Owner, Admin, and Member (Members, Media, Files).
+- Group Info page for Owner, Admin, and Member (member list and Media & files).
 - Roles and capabilities: Owner, Admin, Member.
 - Group permissions, Edit Group, Add Members, Promote and Demote, Remove from Group.
-- Leave Group (with ownership transfer) and Disband Group.
-- Chat list states after leaving, being removed, or disbanding.
-- Invite link: Share, Join Group sheet in the app, and the invite landing page on the website.
+- Leave Group, remove members, and delete a group.
+- Chat list states after leaving, being removed, or a group being deleted.
+- Invite link and QR code, external link sharing, and the Join Group sheet in the app.
 
 Not covered (follow current system):
 
 - Friend list logic (who appears and how search works).
 - Direct message (DM) permission logic.
-- Voice note, pin, reply, and delete behavior. These are defined in the Voice Note in Chat and Pin Message in Chat PRDs and reused in groups.
-- Mute, search inside a group, mentions, invite link reset or revoke, and ban list. These are not part of this release.
+- Mentions, invite-link revocation, and ban list.
+- Native push delivery, server validation, and a separate web invite landing page. These are not represented in the browser prototype.
 
 Naming used in this PRD:
 
-- “Owner” is the group creator (shown as the Owner tag in Figma).
+- “Owner” is the group creator (shown as the Owner tag in the prototype).
 - “Group tab” is the new tab in the chat list.
 - Chat list tabs All | Host | Group replace Personal | Service | Experience.
+- “Delete group” is the Owner action labeled “Delete group” in the Group Info menu; the prototype’s confirmation and toast still use “Disband”.
 
 Related PRDs: Locals Chat Additions, Voice Note in Chat, Pin Message in Chat, Other Profile, Guest Mode, Onboarding Profile Picture Crop (reused for the group photo).
 
-Figma: Group chat flow (Create Group, Chat Group, Group as Owner, Group as Admin, Group as Member, Share Group Chat, Join Group Web, No Profile Picture, Exit Member). Visual details and states follow Figma.
+Figma: Group chat flow (Create Group, Chat Group, Group as Owner, Group as Admin, Group as Member, Share Group Chat, No Profile Picture, Exit Member). The browser prototype is the behavior reference for this revision.
 
 ## 2. Problem Statement
 
@@ -44,52 +47,54 @@ Figma: Group chat flow (Create Group, Chat Group, Group as Owner, Group as Admin
 
 | Goal | Metric |
 |---|---|
-| Let Hosts and Elites create group conversations | No baseline data available, to be measured after release |
+| Let eligible users create group conversations | No baseline data available, to be measured after release |
 | Let people join a group easily through an invite link | No baseline data available, to be measured after release |
 | Give group owners and admins tools to manage members | No baseline data available, to be measured after release |
 
 ## 4. User Stories
 
-- As an active Host or Elite, I want to create a group chat, so that I can talk to many people in one place.
+- As a user with approved KYC, I want to create a group chat, so that I can talk to many people in one place.
 - As a group Owner, I want to promote members to Admin and set group permissions, so that I can share the work of managing the group.
 - As an Owner or Admin, I want to add or remove members, so that I can keep the group relevant.
 - As a group member, I want to share the invite link (when allowed), so that my friends can join.
-- As a user with an invite link, I want to join in one tap without approval, so that I can start chatting right away.
-- As a user without the app, I want the link to take me to the app store, so that I can install the app and still join the group.
+- As a user with an invite link and approved KYC, I want to join without approval, so that I can start chatting right away.
+- As a group member, I want to share a group link or QR code outside the app, so that people can open the invite in YouApp.
 - As a member, I want to leave a group when I no longer need it.
-- As an Owner, I want to disband the group, so that it is removed for everyone.
+- As an Owner, I want to delete the group, so that it is removed from my chat list.
 
 ## 5. App Flow
 
-**A. Create a group (active Host or Elite)**
+**A. Create a group (KYC approved)**
 
 - Locals (Chat) > Group tab > tap the create group button.
-- If the user has a friend list: select members (optional), tap Continue. If not: go straight to the form.
-- Fill Group Name (required), Bio (optional), photo (optional), tap Create.
-- The group chat room opens with the message “You Joined Group”.
+- If the user has a friend list: select members (optional), then Continue. If not: the empty state offers Continue to the form.
+- The user must have approved KYC to continue. Otherwise, the KYC gate opens.
+- Fill Group Name (required), Description (optional), photo (optional), and optional group permissions, then tap Create.
+- The group chat room opens with a “Group created” welcome card. The chat history shows “You created the group” and a “{Name} joined group” message for each selected person.
 
 **B. Chat in a group**
 
 - Locals (Chat) > Group tab (or All tab) > tap the group row.
-- Send messages, media, and voice notes according to the group permissions.
+- Send messages, media, voice notes, and Red Packets. Group voice and video call controls are also present in the prototype.
 
 **C. Manage the group**
 
 - Chat room header > Group Info.
-- Owner: Edit Group, Group Permissions, Disband Group (from the “...” menu). Admin: Edit Group (from the edit icon).
-- Members tab: Add Members, and the member menu (Send message, View profile, Promote, Demote, Remove).
+- Group Info shows the group identity, Invite (when allowed), Red packet, Search, Mute, Media & files, and the member list.
+- Owner: Edit group, Group permissions, and Delete group (from the “...” menu). Admin: Edit group. Owner and Admin can add members.
+- A member’s action menu can include Send message, View profile, Promote, Demote, or Remove, depending on roles.
 
 **D. Invite and join**
 
-- Group Info > Share > pick a recipient in “Send to” > an invite card is sent in chat.
-- The recipient taps View Group (or the link) > Join Group sheet > Join Group > the group chat room opens.
-- Without the app: web page > Open App or Download it now > after install, the Join Group sheet opens.
+- Group Info > Invite link > copy the link, save the QR code, or share the link externally.
+- Opening an invite in the app shows the Join Group sheet. Tapping Join Group opens the group chat.
+- The prototype does not represent a separate web invite page or app-store handoff.
 
-**E. Leave, removal, and disband**
+**E. Leave, removal, and deletion**
 
-- Leave: Group Info > Leave > confirm.
-- Remove: Members tab > member menu > Remove from group > confirm.
-- Disband: Owner “...” menu > Disband Group > confirm.
+- Leave: Group Info > Exit group > confirm.
+- Remove: Group Info member list > member menu > Remove from group > confirm.
+- Delete: Owner Group Info menu > Delete group > confirm. The prototype removes the group from the Owner’s list and offers Undo.
 
 ## 6. Functional Requirements & Acceptance Criteria
 
@@ -98,224 +103,212 @@ Figma: Group chat flow (Create Group, Chat Group, Group as Owner, Group as Admin
 - The chat list tabs are All, Host, and Group. They replace Personal, Service, and Experience.
 - All shows every chat, including group chats. Host shows chats with hosts (as a buyer) and chats as a host with users. Group shows group chats only.
 - The search field searches by name inside the selected tab.
-- A group row shows: avatar (photo or initials), group name, last message preview (for example “You: Voice message (0:09)”), date, and unread badge. Rows are sorted by latest activity.
-- The Group tab shows a create group floating button only to users who can create groups (6.2).
-- Empty state: “You have no group chat yet”. Users who can create groups also see the button “Create new group chat”. Other users see the text only.
+- A group row shows: avatar (photo or initials), group name, last message preview, date, and unread badge. The prototype does not sort group rows by latest activity.
+- The Group tab shows a create-group floating button when the list is non-empty. The button is not gated by Host or Elite status.
+- Empty state: “You have no group chat yet” and “Create new group chat”.
 - The Locals tab Badge Verification reminder works as in the Locals Chat Additions PRD.
 
 ### 6.2 Who Can Create a Group
 
-- A user can create a group if they are an active Host or an active Elite (one of them is enough).
-- Users whose Host status is pending, rejected, suspended, or banned, and users whose Elite status is revoked, cannot create groups. They are treated as normal users.
-- Existing groups are not affected when the user loses the Host or Elite role. The user stays the Owner.
-- The server validates eligibility when the group is created.
+- A user must have approved KYC to enter the Create Group flow. If KYC is not approved, the prototype opens the KYC gate.
+- The prototype does not check Host or Elite status when showing the create-group entry point or creating a group.
+- Server-side eligibility validation is not represented in the prototype.
 
 ### 6.3 Create Group Flow
 
 - Entry: the floating button on the Group tab, or the “Create new group chat” button in the empty state.
 - User with a friend list:
-  - Screen “Create group”: search field “Search for someone to add” and a list of friends with checkboxes.
-  - Selected friends appear as avatars at the top and can be removed.
-  - Continue is always enabled. Selecting nobody is allowed (adding members is not mandatory).
-- User without a friend list: the member selection screen is skipped. The form opens directly.
+  - The member picker has search, Recent chats, and YouApp Friends sections.
+  - Selected friends appear as avatars and can be removed.
+  - Continue is available when nobody is selected; adding members is optional.
+- User without a friend list: an empty state is shown and Continue opens the form with only the creator.
 - Form “Create group”:
   - Group photo (placeholder icon with a pencil). Tap to pick a photo, then crop (as in Onboarding Profile Picture Crop).
-  - Group Name * (required, maximum 50 characters).
-  - Bio (optional, maximum 200 characters).
+  - Group name (required, maximum 40 characters).
+  - Description (optional, maximum 300 characters).
   - Group Members with Add Members: the creator is shown with the Owner tag. Selected members have a remove (trash) icon.
-  - Create button.
-- Add Members on the form opens the friend selection with the current selection kept. For a user without a friend list it opens the empty state “You have no friend list yet”.
+  - Settings > Group permissions is available before creating the group.
+  - The Create group action is a floating button on the form.
+  - Add on the form opens the friend picker with the current selection kept.
 - Tapping Create with an empty Group Name shows the error “Enter the group name”.
-- A group can have a maximum of 100 members including the Owner. Selecting more shows a toast.
-- Back from the form after the user entered data shows the modal “Discard Changes?” (Keep Editing, Discard).
-- After Create, the group chat room opens. The Owner sees “You Joined Group”. Selected members receive a push notification, see the group in their list, and see “You Joined Group”.
-- A group without a photo shows an initials avatar: 1 letter for a one-word name, 2 letters (first letter of the first two words) for a longer name. The color is picked from a fixed palette per group. The Group Info header shows a gradient with large initials.
+- The prototype does not enforce a maximum group size.
+- Back from Edit group after changes shows “Discard Changes?” (Keep Editing, Discard). A discard confirmation is not shown for the new-group form.
+- After Create, the group chat opens with a “Group created” welcome card. The chat history says “You created the group” and “{Name} joined group” for selected people. Push delivery is not represented.
+- A group without a photo shows initials: one letter for a one-word name, or the first letters of up to two words. A generated color palette is not represented.
 
 ### 6.4 Group Chat Room
 
 - Header: back, group avatar, group name, “{n} Members”. Tap the header to open Group Info.
-- Members can send text, photo, video, document, GIF, and voice note according to the group permissions (6.7). The Owner and Admins can always send everything.
+- Members can send text, photo, video, document, GIF, and voice note. The Owner and Admins can always send everything.
 - Own messages appear on the right (purple). Messages from others appear on the left with the sender display name and avatar. Consecutive messages from the same sender are grouped.
-- Reply, voice note (record, slide to cancel, lock, pause, resume), pin, and shared media viewing follow the existing chat PRDs. Document and GIF size limits follow the current app.
-- Delete message: the modal “Delete Message” with “This message will be deleted for everyone”. A member can delete their own messages. The Owner and Admins can delete any message.
-- Pin message: only the Owner and Admins can pin messages. A system message “{Name} pinned a message” is shown (own pin: “You pinned a voice message” style, per message type).
+- Reply, voice note (record, slide to cancel, lock, pause, resume), reactions, forwarding, and message deletion use the shared chat controls. Voice and video call controls and Red Packet are also present in the group chat.
+- A user can delete their own message for everyone or for themselves. Deleting another user’s message is available only for the current user.
+- Pin and unpin controls are available to all roles in the prototype. No pin system message is added.
 - If Send messages is OFF, the composer of a member is replaced with “Only admins can send messages in this group.”
-- If a media type is OFF, that type is hidden from the attachment options. If all media types are OFF, the attachment and voice buttons are hidden.
-- A member whose permission changed while typing or recording and who sends a disabled type sees the toast “You don’t have permission to send this.”
+- If all media types are OFF, the attachment button is hidden. Individual disabled media types are not hidden from the attachment options, and the voice button remains visible.
+- The prototype does not show a permission-revocation toast when a member sends a type that has just been disabled.
 - Group chats do not show the Experience card, Accept or Reject buttons, the verification system message, or the Host label that appear in 1:1 host chats.
 - System messages (centered) are listed in 6.18.
-- Unread badges and push notifications follow the current chat system.
+- Unread badges are shown. Push notification delivery is not represented.
 
 ### 6.5 Group Info Page
 
 - Entry: tap the header in the group chat room.
-- Header: group photo as a full cover (or gradient with initials), back arrow, group name, “{n} members”.
-- Top-right: Owner sees the “...” menu (Edit Group, Group Permissions, Disband Group). Admin sees the edit icon (Edit Group). Member sees nothing.
-- Action buttons: Chat (returns to the chat room), Share (see 6.15), Leave.
-- Bio is shown under the buttons, truncated with See more and Show less.
-- Tapping the group photo opens the Group Profile viewer (full photo). Owner and Admin see “...” there with Change Photo and Delete Photo. Members see no menu.
-- Tabs: Members, Media, Files.
+- Group Info opens from the group chat header and shows a centered group photo or initials, group name, member count, and optional description.
+- Quick actions include Invite (when allowed), Red packet, Search, and Mute. Mute toggles the group notification state; Search is a placeholder that shows a toast. The “...” menu contains role-dependent options: Edit group for Owner/Admin, Group permissions and Delete group for Owner, and Invite link when sharing is allowed. Clear history is also available.
+- The member list shows the current user first, then Owner/Admin and other members. The prototype shows up to eight members initially, with See all for longer lists. Add member appears when allowed.
+- The group photo opens the Group Profile viewer. Owner and Admin can open the photo options and change the photo. A Delete Photo action is not represented in the photo options.
+- Media & files opens a separate screen with Media and Files tabs. Voice messages do not have a separate tab.
 
-**Members tab:**
+**Member actions:**
 
-- Title “Group Members” and the Add Members link. Owner and Admin always see it. A Member sees it only when Add other members is ON.
-- The list shows the current user first, then the others by join date (earliest first). Owner and Admin have tags. Verified and host badges follow the current system.
-- Every row except the current user has a “...” menu with these options:
+- Owner and Admin can always add members. A Member sees Add member only when Add other members is ON.
+- Owner and Admin have role labels. The prototype does not order other members by join date.
+- Other member rows open a menu with these options:
 
 | Viewer | Target | Options |
 |---|---|---|
 | Owner | Member | Send message, View profile, Promote to admin, Remove from group |
-| Owner | Admin | Send message, View profile, Demote to member, Remove from group |
+| Owner | Admin | View profile, Demote to member, Remove from group |
 | Admin | Member | Send message, View profile, Remove from group |
 | Admin | Admin or Owner | Send message, View profile |
 | Member | Anyone | Send message, View profile |
 
-- Send message is always shown. It opens the 1:1 chat. Whether the DM is allowed follows the current chat logic (if not allowed, the current message is shown: “Direct messages aren’t available. You can only chat with hosts you’ve booked.”).
-- View profile opens the Other Profile.
+- Send message opens an existing 1:1 chat when available; otherwise the prototype shows a toast that the chat would open.
+- View profile shows a prototype toast.
 
-**Media tab:** grid of photos, videos, and GIFs shared in the group (newest first). Tap to open the media viewer. Empty state: “No media shared”.
+**Media tab:** the prototype shows seeded photos for sample groups and an empty state for other groups. It does not represent a media viewer or newest-first sorting.
 
-**Files tab:** list of documents (name, size, date and time, download icon). Empty state: “No document shared”.
+**Files tab:** the prototype shows seeded documents for sample groups and an empty state for other groups. The download control displays a toast.
 
-Voice messages do not have their own tab.
+The prototype does not show separate Members, Media, and Files tabs on Group Info; it shows the member list on Group Info and Media & files as a separate screen.
 
 ### 6.6 Roles and Capabilities
 
 | Capability | Owner | Admin | Member |
 |---|---|---|---|
 | Send text | Always | Always | If Send messages is ON |
-| Send media | Always | Always | Only the allowed media types |
-| Pin messages | Yes | Yes | No |
+| Send media | Always | Always | Permission toggles are shown, but individual types are not enforced in the composer |
+| Pin messages | Yes | Yes | Yes |
 | Delete own messages | Yes | Yes | Yes |
-| Delete other people’s messages | Yes | Yes | No |
+| Delete other people’s messages for everyone | No | No | No |
 | Add members | Yes | Yes | If Add other members is ON |
 | Share invite link | Yes | Yes | If Invite via link is ON |
 | Edit group info (name, bio, photo) | Yes | Yes | No |
 | Manage group permissions | Yes | No | No |
 | Promote and Demote | Yes | No | No |
 | Remove members | Members and Admins | Members only | No |
-| Disband group | Yes | No | No |
+| Delete group | Yes | No | No |
 | Leave group | Yes | Yes | Yes |
 
 ### 6.7 Group Permissions
 
 - Only the Owner can open Group Permissions (from the “...” menu).
-- Screen “Group permissions”, title “Members can:”, with four toggles:
+- Screen “Group permissions”, title “Members can:”, with these controls:
   - Add other members: “Members can add people from their contact”.
   - Send messages: “Members can post in the group”.
   - Send media: “Choose which media types members can send”. It expands to a list: Photo, Video, Document, GIF, Voice, with a counter (for example 4/5).
   - Invite via link: “Members can share the group invite link”.
-- Defaults for a new group: all toggles ON and all 5 media types selected.
-- At least 1 media type must stay selected. Unchecking the last type turns Send media OFF. Turning Send media ON again restores the previous selection.
-- Save Changes is disabled until something changes. After saving, the toast “Group permissions updated” is shown.
-- Back with unsaved changes shows the modal “Discard Changes?”. Back without changes leaves directly.
+- Defaults for a new group: Add other members OFF; Send messages ON; Send media ON with all 5 media types selected; Invite via link ON.
+- The prototype allows all media types to be unchecked. Turning Send media ON after all types are off selects all 5 types.
+- Save Changes is available regardless of whether a setting changed. After saving, the toast “Group permissions updated” is shown.
+- Back leaves the screen without an unsaved-changes confirmation.
 - Permissions apply to Members only and take effect immediately for everyone in the group. Existing messages are not affected.
 
 ### 6.8 Edit Group
 
 - Entry: Owner “Edit Group” in the “...” menu, Admin edit icon.
-- Screen “Edit group”: photo with a pencil (tap to pick a new photo and crop, or delete it), Group Name * , Bio, Save Changes. Validation is the same as Create Group (6.3).
-- Deleting the photo shows the initials avatar.
-- Save Changes is disabled when nothing changed. Tapping it opens the modal “Save Group Changes?” (Save, Cancel). After Save, the toast “Group info updated” is shown and the user returns to Group Info.
+- Screen “Edit group”: photo, Group name (maximum 40 characters), Description (maximum 300 characters), Save Changes. The photo control opens photo selection.
+- Save Changes is available even when nothing changed. Tapping it opens the modal “Save Group Changes?” (Save, Cancel). After Save, the toast “Group info updated” is shown and the user returns to Group Info.
 - Back after changes shows “Discard Changes?” (Keep Editing, Discard). Back without changes leaves directly.
-- The changes are visible to everyone immediately. No system message is shown.
+- Renaming the group adds the system message “You changed the group name to ‘{Group Name}’”. Photo and description changes do not add a system message.
 
 ### 6.9 Add Members
 
 - Owner and Admin can always add members. A Member can add members only when Add other members is ON.
 - Add Members opens the friend selection (same logic as Create Group). Existing members are not shown.
 - Added users join immediately. There is no approval or waiting list.
-- The group member count updates. A system message “{Name} added {Name}” is shown. Added users receive a push notification and see the group in their list.
-- The 100-member limit applies. A user without a friend list sees “You have no friend list yet”.
+- The group member count updates. A system message “You added {Name}” is shown. Push delivery is not represented.
+- The prototype does not enforce a member limit.
 
 ### 6.10 Promote and Demote
 
 - Only the Owner can promote a Member to Admin or demote an Admin to Member.
-- Promote to admin opens the modal “Promote to Admin” (Yes, Promote / Cancel). After confirming, the toast “{Name} promoted to admin” is shown.
-- Demote to member opens the modal “Demote to Member” (Yes, Demote / Cancel). After confirming, the toast “{Name} demoted to member” is shown.
-- A system message “{Name} is now Admin” or “{Name} is now Member” is shown to everyone. There is no limit on the number of Admins.
+- Promote to admin opens the modal “Promote to Admin” (Yes, Promote / Cancel). After confirming, the toast “{Name} promoted to admin” and the system message “You made {Name} a group admin” are shown.
+- Demote to member opens the modal “Demote to Member” (Yes, Demote / Cancel). After confirming, the toast “{Name} demoted to member” is shown. No system message is added.
+- The prototype does not enforce a limit on the number of Admins.
 
 ### 6.11 Remove from Group
 
 - The Owner can remove Members and Admins. An Admin can remove Members only. Nobody can remove the Owner.
 - Remove from group opens the modal “Remove from Group?” (Remove / Cancel). After confirming, the toast “{Name} removed from group” is shown.
-- The remaining members see the system message “{Name} removed from group”. The member count updates.
-- The removed user immediately loses access. The chat list behavior is in 6.14.
-- A removed user can rejoin through the invite link (there is no ban list in this release).
+- The remaining group history gets the system message “{Name} removed from group”. The member count updates.
+- The removed-user state is simulated by a chat-list status row. The prototype does not model server-side access revocation.
+- Rejoining after removal is not represented. If the existing group is still present in prototype state, opening its invite routes to that group as an existing member.
 
-### 6.12 Leave Group and Ownership Transfer
+### 6.12 Leave Group
 
-- Every role can leave a group from Group Info > Leave, which opens the modal “Leave Group?” (Leave / Cancel).
+- Every role can leave a group from Group Info > Exit group, which opens the modal “Leave Group?” (Leave / Cancel).
 - After leaving, the user returns to the Group tab. The group row stays in the list with the status “You left the group” (see 6.14).
-- The remaining members see the system message “{Name} left the group”. The member count updates.
-- When the Owner leaves, ownership is transferred automatically:
-  - If there are Admins, the Admin who was promoted earliest becomes the Owner.
-  - If there are no Admins, the member who joined earliest becomes the Owner.
-  - If there are no other members, the group is deleted.
-  - The system message “{Name} is now the owner” is shown and the new Owner receives a push notification.
-- A user who left cannot send messages. The composer is replaced with “You left this group”. The history stays readable, and Group Info is not accessible.
-- The user can delete the row manually (swipe or long press > Delete, with a confirmation). This removes the group and its history from the user’s list.
-- A user who rejoins through the invite link reactivates the same row. Messages sent while the user was away are not visible.
+- The local group history gets the status message “You left the group”.
+- In a regular group, the prototype does not transfer ownership when the Owner leaves.
+- During a linked activity, the prototype can lock the Owner’s leave action until the activity ends. After it ends, the Owner leave flow can assign another member the group-admin role; it does not use the regular group’s Owner-transfer rules.
+- A user who left sees a read-only chat state and cannot open Group Info from the chat header. The history remains readable.
+- A manual delete-row action and a rejoin-to-reactivate flow are not represented.
 
-### 6.13 Disband Group
+### 6.13 Delete Group
 
-- Only the Owner can disband, from the “...” menu > Disband Group, which opens the modal “Disband Group” (Disband / Cancel).
-- After confirming, the group is deleted for everyone together with its entire history. All members are removed and the invite link stops working.
-- The Owner returns to the Group tab and the row is removed immediately. The toast “Group already disbanded” is shown (no Undo).
-- Other members see the row according to 6.14.
+- Only the Owner can delete the group, from Group Info > “...” menu > Delete group. The confirmation modal is titled “Disband Group” and has Disband / Cancel actions.
+- After confirming, the group is removed from the current Owner’s chat list. The prototype does not delete the group or its history for other members.
+- The Owner returns to the Group tab and sees the toast “Group already disbanded” with an Undo action.
+- Other-member status is represented by the Group event scenario and follows 6.14.
 
 ### 6.14 Chat List States After Leave, Removal, and Disband
 
 | Event | Who sees it | Group row | History |
 |---|---|---|---|
-| Member leaves (6.12) | The user who left | Stays with the status “You left the group” until the user deletes it manually | Stays readable |
-| Member is removed (6.11) | The removed user | Appears once with the status “You were removed from this group”, then disappears. No access | Removed |
-| Group is disbanded (6.13) | Every member except the Owner | Appears once with the status “This group has been disbanded by the owner”, then disappears. No access | Removed |
+| Member leaves (6.12) | The user who left | Stays with the status “You left the group” | Stays readable |
+| Member is removed (6.11) | Simulated removed user | Shows “{Owner name} removed you” | Stays in the local prototype state |
+| Group is deleted (6.13) | Simulated other member | Shows “This group has been disbanded by the owner” | Stays in the local prototype state |
 
-- “Appears once” means the row stays until the user taps it (the row disappears and a toast shows the same status) or until the chat list is loaded again after an app restart or pull to refresh.
-- The removed user is not told who removed them.
-- If a user is inside the group chat room when they are removed or the group is disbanded, they are taken back to the Group tab and the status is shown.
+- These status rows remain in the prototype when opened; one-time display and removal on refresh are not represented.
+- The removal status identifies the Owner by name.
+- The Group event scenario applies the removed or deleted state when the chat list is opened. Immediate navigation from an active chat is not represented.
 
 ### 6.15 Invite Link and Share
 
-- Every group has one invite link youapp.ai/group/{linkgroup}, created with the group. It stays the same while the group exists. There is no reset or revoke in this release. It stops working when the group is disbanded or deleted.
-- The Share button on Group Info is shown to the Owner and Admins always, and to Members only when Invite via link is ON. When it is OFF, the button is hidden for Members. Links that were already shared still work.
-- Share opens the “Send to” bottom sheet: search field and friends (same friend list logic). There is no sharing to external apps.
-- Selecting a recipient sends an invite card in the 1:1 chat: group name, “{username} invites you to join this group on youapp”, View Group button, and the link below. Delivery follows the current chat permission logic.
+- The prototype creates a link in the form `youapp.ai/g/{slug}-{token}` and displays a QR code.
+- Invite is available to Owner and Admin, and to Members when Invite via link is ON. The invite screen supports copying the link, saving the QR code, and external sharing.
+- Owner and Admin can reset the link. Resetting changes the token and shows “New link created. The old one no longer works.”
+- The prototype does not represent a “Send to” recipient sheet or group invitation card as the primary invite flow.
 
 ### 6.16 Join Group (in app)
 
-- Tapping View Group or opening the link in the app opens the Join Group bottom sheet: group avatar, group name, “{n} members”, bio (See more and See less), up to 5 member avatars with display names and “+N Others”, and the Join Group button.
-- Join Group adds the user immediately. There is no approval or waiting list. The group chat room opens. The user sees “You Joined Group” and the others see “{Name} Joined Group”.
-- KYC is not required to join or chat.
+- Opening a supported invite in the app opens the Join Group bottom sheet: initials avatar, group name, member count, bio (See more and See less), up to 4 member avatars with display names and “+N Others”, and the Join Group button.
+- Join Group adds the user immediately in the prototype and opens the group chat. The joiner sees “You joined group”.
+- KYC approval is required by the prototype before joining.
 - A user who is already a member goes directly to the group chat room.
-- A Guest (Guest Mode) sees the login sheet. The action is not resumed automatically after login (see Guest Mode PRD).
-- A group that already has 100 members shows the toast “This group is full.” A disbanded or invalid link shows “This group is no longer available.”
-- Users who left or were removed can join again.
+- Guest-specific handling, the full-group state, invalid-link state, and rejoin behavior are not represented.
 
 ### 6.17 Web Invite Page
 
-- URL: youapp.ai/group/{linkgroup} on the YouApp website (all current header, banner, and footer elements stay).
-- Card: initials avatar, {Group Name}, “Group chat invite”, Open App button, “Don’t have the app? Download it now”, and Follow Us icons.
-- The web page shows only the group name and initials. It does not show the group photo, member count, or bio.
-- Open App opens the app (deep link) on the Join Group sheet. If the app is not installed, the user goes to the App Store, Google Play, or AppGallery. After install and first open, the Join Group sheet opens (the link code is kept, as for referral links).
-- A disbanded or invalid link shows “This group is no longer available.”
+- A separate web invite page, deep link, and app-store handoff are not represented in the browser prototype.
 
 ### 6.18 System Messages and Notifications
 
 | Event | System message in chat | Push notification |
 |---|---|---|
-| Creator opens a new group | You Joined Group | No |
-| User joins (link) | You Joined Group / {Name} Joined Group | No |
-| Added by Owner, Admin, or Member | {Name} added {Name} | To the added user: “You were added to {Group Name}” |
-| Member leaves | {Name} left the group | No |
-| Member removed | {Name} removed from group | No |
-| Promoted | {Name} is now Admin | No |
-| Demoted | {Name} is now Member | No |
-| Ownership transferred | {Name} is now the owner | To the new Owner: “You are now the owner of {Group Name}” |
-| Message pinned | {Name} pinned a message | No |
-| Group disbanded | Not applicable | To members: “{Group Name} has been disbanded” |
-| New group message | Not applicable | Title: group name. Body: “{Sender}: {message}” |
+| Creator opens a new group | You created the group | Not represented |
+| User joins (link) | You joined group | Not represented |
+| Added by Owner, Admin, or Member | You added {Name} | Not represented |
+| Member leaves | You left the group (local status message) | Not represented |
+| Member removed | {Name} removed from group (in the remaining group history) | Not represented |
+| Promoted | You made {Name} a group admin | Not represented |
+| Demoted | No system message; toast only | Not represented |
+| Ownership transferred | Not represented for regular groups; linked activity groups may show “{Name} is now the group admin” | Not represented |
+| Message pinned | No system message | Not represented |
+| Group deleted | No system message in the current Owner’s chat | Not represented |
+| New group message | Not represented | Not represented |
 
 ### 6.19 Wording
 
@@ -328,67 +321,46 @@ Voice messages do not have their own tab.
 | Modal | Disband Group | Are you sure you want to disband {Group Name} chat group? This will remove all members from this group also. | Disband / Cancel |
 | Modal | Save Group Changes? | Are you sure you want to save these changes to your group? | Save / Cancel |
 | Modal | Discard Changes? | Are you sure you want to go back? Your changes will not be saved. | Keep Editing / Discard |
-| Modal | Delete Message | This message will be deleted for everyone. Are you sure you want to delete this message? | Delete / Cancel |
-| Modal ⚠️ | Delete Chat? | This will remove the group and its history from your list. | Delete / Cancel |
+| Modal | Delete message? | Delete it for everyone in this chat, or only for you. | Delete for everyone / Delete for me / Cancel (own message); Delete for me / Cancel (another user’s message) |
+| Menu | Delete group | Not applicable | Owner-only Group Info menu item; opens the Disband Group modal |
 | Toast | Removed | {Name} removed from group | Success toast |
 | Toast | Promoted | {Name} promoted to admin | Success toast |
 | Toast | Demoted | {Name} demoted to member | Success toast |
 | Toast | Group info | Group info updated | Success toast |
 | Toast | Permissions | Group permissions updated | Success toast |
-| Toast | Disband | Group already disbanded | Success toast, no Undo |
+| Toast | Disband | Group already disbanded | Success toast with Undo |
 | Field error | Group Name | Enter the group name | Under the field |
-| Toast ⚠️ | Member limit | You can add up to 100 members. | Error toast |
-| Toast ⚠️ | Full group | This group is full. | Error toast |
-| Toast ⚠️ | Permission | You don’t have permission to send this. | Error toast |
-| Text ⚠️ | Composer, messages off | Only admins can send messages in this group. | Replaces the composer |
-| Text ⚠️ | Composer, left | You left this group | Replaces the composer |
-| Text ⚠️ | Invalid link | This group is no longer available. | Sheet, toast, and web page |
+| Text | Composer, messages off | Only admins can send messages in this group. | Replaces the composer |
+| Text | Former member | You’re no longer a member of this group. | Read-only chat composer |
 | Status | Left | You left the group | Group row |
-| Status ⚠️ | Removed | You were removed from this group | Group row |
+| Status | Removed | {Owner name} removed you | Group row |
 | Status | Disbanded | This group has been disbanded by the owner | Group row |
-| Empty | Group tab | You have no group chat yet | Button “Create new group chat” for eligible users |
-| Empty | Friend list | You have no friend list yet | Empty state |
-| Empty | Media | No media shared | Media tab |
-| Empty | Files | No document shared | Files tab |
+| Empty | Group tab | You have no group chat yet | Button “Create new group chat” |
+| Empty | Friend list | You have no friend list yet | Continue lets the user create a group with only themselves |
+| Empty | Media | No media shared yet | Media & files screen |
+| Empty | Files | No files shared yet | Media & files screen |
 
-Wording marked ⚠️ was written by Claude for review. Wording for other languages follows Google Translate until localization is final.
+Push-notification wording is not specified because push delivery is not represented in the prototype. Wording for other languages follows Google Translate until localization is final.
 
 ### 6.20 Behavior Retention and Platform Coverage
 
-- Voice note, pin, reply, delete, and the media viewer follow the existing chat PRDs.
-- DM permission logic, friend list logic, block rules, and the Locals tab Badge Verification reminder follow the current system.
-- Other Profile, Guest Mode, and the website header, banner, and footer do not change.
-- Platforms: iOS and Android (including Huawei builds).
+- Voice notes, reply, reactions, forwarding, message deletion, calls, and Red Packet controls reuse or extend the browser chat prototype.
+- Friend-list content and direct-message permission logic follow the current prototype system.
+- This artifact is a browser simulation. iOS, Android, Huawei, server, push, and web behavior require separate verification and are not established by this PRD revision.
 
-## 7. Edge Cases
+## 7. Prototype Edge Cases
 
 | # | Scenario | Expected Behavior |
 |---|---|---|
-| 1 | No internet during create, join, send, or any group action | Error toast, input is kept, the user can retry |
-| 2 | Force Update is active | Force Update flow takes priority |
-| 3 | Long group name, bio, or member names, and Chinese or other long text | Wrap or truncate as defined in Figma |
-| 4 | Keyboard covers the input or the Create button | The screen scrolls so the field and button stay visible |
-| 5 | Two groups with the same name | Allowed. Groups are identified by the link |
-| 6 | The group reaches 100 members | Add Members and Join Group are blocked with the full group message |
-| 7 | The Owner leaves and there are Admins | The Admin promoted earliest becomes the Owner |
-| 8 | The Owner leaves and there are no Admins | The member who joined earliest becomes the Owner |
-| 9 | The Owner leaves and nobody else is in the group | The group is deleted |
-| 10 | The Owner deletes their account | Treated as the Owner leaving, with ownership transfer. Old messages show “Deleted User” |
-| 11 | A member deletes their account | The member is removed from the group. Old messages show “Deleted User” |
-| 12 | Two members leave at the same time and one would become Owner | The server processes them in order and picks the next eligible member |
-| 13 | A member is removed while typing or recording | Sending fails and the user is taken back to the Group tab with the removed status |
-| 14 | The Owner turns off a permission while a member is using it | The member sees “You don’t have permission to send this.” on the next send |
-| 15 | The Owner disbands while members are in the chat room or Group Info | They are taken back to the Group tab and the disbanded status is shown |
-| 16 | A member opens the invite link of a group they are already in | The group chat room opens directly |
-| 17 | A user who left opens the invite link | The Join Group sheet opens. After joining, the old row is reactivated |
-| 18 | A removed user opens the invite link | The Join Group sheet opens and the user can join again |
-| 19 | The invite link of a disbanded group | “This group is no longer available.” on the app and web page |
-| 20 | Invite link opened by a Guest | The login sheet opens. The action is not resumed after login |
-| 21 | Invite link opened without the app installed | Store redirect. After install and first open, the Join Group sheet opens |
-| 22 | The Owner or Admin removes a user who is mid-action in the Members tab | The list refreshes and the toast is shown once |
-| 23 | An Admin tries to remove an Admin or the Owner (stale screen) | The server rejects the action and the list refreshes |
-| 24 | Group photo fails to load | Show the initials avatar |
-| 25 | A user loses the Host or Elite role after creating a group | The group and the Owner role stay unchanged |
-| 26 | Send message from the member menu is not allowed by the current DM logic | The current “Direct messages aren’t available...” message is shown |
-| 27 | Invite card sent to a recipient who cannot receive a DM | Delivery follows the current chat permission logic |
-| 28 | A user is in a very large number of groups | The Group tab loads with pagination and lazy loading |
+| 1 | KYC is not approved when the user starts Create Group or Join Group | The KYC gate opens |
+| 2 | The user has no friend list while creating a group | The empty state is shown; Continue opens the form with only the creator |
+| 3 | The user creates a group with an empty name | The field shows “Enter the group name” |
+| 4 | The user turns Send messages OFF | The member composer is replaced with “Only admins can send messages in this group.” |
+| 5 | The user turns all media types OFF | The attachment button is hidden; the voice button remains visible |
+| 6 | The Owner leaves a group | The Owner sees the “You left the group” row; ownership is not transferred |
+| 7 | A removal event is selected in the scenario panel | The removed-user row shows “{Owner name} removed you”; the local history remains |
+| 8 | The Owner deletes a group | The Owner’s row is removed and “Group already disbanded” is shown with Undo |
+| 9 | An existing member opens an invite to their group | The group chat opens directly |
+| 10 | The Owner or Admin resets the invite link | The token changes and the prototype shows “New link created. The old one no longer works.” |
+| 11 | A group has no shared media or files | Media & files shows the corresponding empty state |
+| 12 | A web invite, invalid link, full group, or push notification is needed | The behavior is not represented in the browser prototype |
