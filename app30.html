@@ -411,6 +411,45 @@
 .aprow b, .aplrow b{display:block; font-size:14px}
 .aprow small, .aplrow small{font-size:12px; color:#7a7680}
 .aprow-r{display:grid; justify-items:end; gap:3px; text-align:right}
+.aphist .scroll{background:#fffaf7}
+.aphist-tabs, .aphist-content{width:min(calc(100% - 32px), 600px); margin-inline:auto}
+.aphist-tabs{display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-block:4px 10px; padding:4px; border-radius:16px; background:#faeee7}
+.aphist-tabs button{min-height:44px; border:0; border-radius:12px; background:none; color:#78423e; font:700 14px Inter,sans-serif}
+.aphist-tabs button[aria-selected="true"]{background:#fff; color:#a31c36; box-shadow:0 2px 8px #75261912}
+.aphist-content{display:grid; gap:14px; padding:6px 0 30px}
+.aphist-hero{position:relative; isolation:isolate; overflow:hidden; display:grid; align-content:center; gap:5px; min-height:126px; padding:16px 112px 16px 18px; border-radius:22px; color:#fff; background:linear-gradient(125deg,#a21937,#c4283c); box-shadow:0 8px 19px #9a1e2e2b}
+.aphist-hero small{color:#ffe2cd; font-size:13px; font-weight:600}
+.aphist-hero strong{font-size:clamp(23px,7vw,32px); line-height:1.12; letter-spacing:-.025em; font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.aphist-hero p{margin:1px 0 0; color:#fff1e7; font-size:12.5px}
+.aphist-art{position:relative; display:grid; place-items:center; width:146px; height:126px; pointer-events:none}
+.aphist-art::before{content:''; position:absolute; inset:1% 0; border-radius:50%; background:radial-gradient(ellipse,#ffd98bba,#ffcf7928 62%,transparent 70%)}
+.aphist-art .ap-envelope-art{width:82px; height:85px; margin:0; transform:rotate(11deg)}
+.aphist-art .ap-envelope-base,.aphist-art .ap-envelope-front,.aphist-art .ap-envelope-flap{border-radius:11px}
+.aphist-art .ap-envelope-seal{border-width:1px; box-shadow:0 2px 0 #b86a18,0 4px 6px #68141b67}
+.aphist-art .ap-envelope-seal::before,.aphist-art .ap-envelope-front::after{display:none}
+.aphist-art .apreceive-spark{width:12px}
+.aphist-art .apreceive-spark.b{width:8px}
+.aphist-hero .aphist-art{position:absolute; width:121px; height:118px; right:0; bottom:4px}
+.aphist-hero .aphist-art::before{opacity:.55}
+.aphist-items{display:grid; gap:9px; margin:0; padding:0; list-style:none}
+.aphist-row{display:grid; grid-template-columns:40px minmax(0,1fr) minmax(0,auto) 14px; align-items:center; gap:10px; min-height:70px; width:100%; padding:11px 12px; border:1px solid #f2e6e1; border-radius:16px; background:#fff; color:#2c2030; font:inherit; text-align:left; cursor:pointer}
+.aphist-row:active{background:#fff2e9}
+.aphist-row-icon{display:grid; place-items:center; width:40px; height:40px; border-radius:13px; background:#fce6e5; color:#a72340}
+.aphist-row[data-side="sent"][data-state="ACTIVE"] .aphist-row-icon{background:#b9203c;color:#fff}
+.aphist-row-icon img{width:100%; height:100%; border-radius:inherit; object-fit:cover}
+.aphist-row-icon .ico{width:21px; height:21px}
+.aphist-row-copy,.aphist-row-value{display:grid; gap:3px; min-width:0; overflow-wrap:anywhere}
+.aphist-row-copy b,.aphist-row-value b{font-size:14px; line-height:1.24;font-weight:750}
+.aphist-row-copy small{font-size:12px; color:#756068; line-height:1.3}
+.aphist-row-value{justify-items:end; text-align:right; font-variant-numeric:tabular-nums}
+.aphist-row[data-side="got"] .aphist-row-value b{color:#087350}
+.aphist-row > .ico{width:14px; height:14px; color:#927984}
+.aphist-empty{display:grid; justify-items:center; gap:9px; padding:20px 16px 25px; background:linear-gradient(#fff4e8,#fff 85%); border:1px solid #f2e3d8; border-radius:22px; color:#40262d; text-align:center}
+.aphist-empty h2{margin:0; font-size:20px; line-height:1.2; letter-spacing:-.02em}
+.aphist-empty p{max-width:26ch; margin:0; font-size:14px; line-height:1.45; color:#765b61}
+.aphist-empty .btn{width:min(100%,248px); margin-top:7px}
+.aphist :is(button,[role="tab"]):focus-visible{outline:2px solid #963046; outline-offset:2px}
+@media(max-width:340px){.aphist-row{grid-template-columns:36px minmax(0,1fr) minmax(0,auto) 12px; gap:7px; padding-inline:9px}.aphist-row-icon{width:36px;height:36px}.aphist-row-value .apst{padding-inline:5px}}
 .apbest{font-style:normal; font-size:11px; font-weight:700; color:#b54708; background:#fef0c7; border-radius:999px; padding:1px 8px}
 .apl-ic{width:40px; height:40px; flex:none; border-radius:12px; display:grid; place-items:center; color:#fff; background:linear-gradient(135deg,#e5484d,#a1122b)}
 .apl-ic .ico{width:20px; height:20px}
@@ -8617,6 +8656,7 @@ function apLuckyDraw(a, stamp){
 /* sample red packet from other people (chat cards) */
 function apSeed(){
   if (AP.seeded) return; AP.seeded = true;
+  const first = AP.list.length;
   apMake({token:'apCatherine', creator:'catherine', type:'random', total:5000, count:5, msg:'Thanks for the photo walk!', claimed:['fionna','daniel']});
   apMake({token:'apSeraWelcome', creator:'maulguy', type:'equal', per:500, count:6, msg:'Welcome to Sera.cx', claimed:['maulaura','ismaul','maulbucin','maulana','kwang','juan']});
   const ex = apMake({token:'apSeraKopi', creator:'ismaul', type:'random', total:3000, count:6, msg:'Kopi money', claimed:['maulaura','maulana'], expiresAt:NOW()-3600e3, expLbl:'24 hours'}); apTick(ex);
@@ -8632,6 +8672,7 @@ function apSeed(){
   apMake({token:'apMineFull', creator:'me', type:'equal', per:500, count:3, msg:'Enjoy!', claimed:['lara','catherine','daniel']});
   const mineExpired = apMake({token:'apMineExpired', creator:'me', type:'random', total:2100, count:3, msg:'Yesterday’s treat', expiresAt:NOW()-3600e3, expLbl:'6 hours', historical:true}); apTick(mineExpired);
   const mineCancelled = apMake({token:'apMineCancelled', creator:'me', type:'random', total:1600, count:2, msg:'Cancelled packet', historical:true}); apEnd(mineCancelled, 'CANCELLED');
+  AP.historySamples = new Set(AP.list.slice(first).filter(a => a.creator === 'me' || a.slots.some(slot => slot.by === 'me')).map(a => a.token));
 }
 const _C6ap = C6;
 C6 = function(){ const c = _C6ap(); apSeed();
@@ -8809,17 +8850,18 @@ const apBurst = [
   ['note', -117, -59, -32, 440, .96], ['note', 116, -69, 36, 553, .98],
   ['star', 120, -23, 20, 548, 1], ['ribbon', -129, -18, 49, 565, 1],
 ];
+const apEnvelopeMarkup = (contents = '') => `<div class="ap-envelope-art"><span class="ap-envelope-base"></span><span class="ap-envelope-open-lid"></span>
+  <span class="ap-envelope-light"></span><span class="ap-envelope-rays"></span>${contents}
+  <span class="ap-envelope-front"></span><span class="ap-envelope-rim"></span><span class="ap-envelope-flap"></span><span class="ap-envelope-seal"></span></div>`;
 
 function apReceivePanel(a, claim) {
   const c = who(a.creator);
   const opening = S.apOpening?.has(a.token);
   const celebrated = claim?.amt > 0 && S.apJust;
+  const burst = celebrated ? apBurst.map(([type, x, y, turn, delay, size]) => `<span class="ap-burst-piece ap-burst-${type}" style="--x:${x}px;--y:${y}px;--turn:${turn}deg;--delay:${delay}ms;--size:${size}"></span>`).join('') : '';
   const art = `<div class="apreceive-art${claim ? ' is-open' : opening ? ' is-opening' : ''}${celebrated ? ' is-celebrating' : ''}" aria-hidden="true">
     <i class="apreceive-spark a"></i><i class="apreceive-spark b"></i><i class="apreceive-spark c"></i><i class="apreceive-spark d"></i>
-    <div class="ap-envelope-art"><span class="ap-envelope-base"></span><span class="ap-envelope-open-lid"></span>
-      <span class="ap-envelope-light"></span><span class="ap-envelope-rays"></span>
-      ${celebrated ? apBurst.map(([type, x, y, turn, delay, size]) => `<span class="ap-burst-piece ap-burst-${type}" style="--x:${x}px;--y:${y}px;--turn:${turn}deg;--delay:${delay}ms;--size:${size}"></span>`).join('') : ''}
-      <span class="ap-envelope-front"></span><span class="ap-envelope-rim"></span><span class="ap-envelope-flap"></span><span class="ap-envelope-seal"></span></div>
+    ${apEnvelopeMarkup(burst)}
   </div>`;
   const expires = a.expiresAt ? new Date(a.expiresAt) : null;
   return `<section class="apreceive-panel">
@@ -8862,13 +8904,36 @@ V.apdet = () => { const a = apGet(S.apTok); apTick(a); const s = STL[a.status]; 
     ${a.status==='ACTIVE' && leftAmt ? `<button class="btn btn-tertiary btn-block apcancel" data-act="apCancelAsk">Cancel remaining red packet</button>` : ''}</div></div></div>`; };
 
 /* ---- my red packet (sent / received) ---- */
-V.aplist = () => { const tab = S.apTab || 'sent'; apSeed();
-  const sent = apMine().slice().reverse(), got = AP.list.filter(a => a.slots.some(s => s.by === 'me'));
-  const list = tab === 'sent' ? sent : got;
-  const row = a => { apTick(a); const s = STL[a.status]; const mine = a.slots.find(x => x.by === 'me'); const c = who(a.creator);
-    return `<button class="aplrow" data-act="${tab==='sent'?'apDetail':'apOpenTok'}" data-tok="${a.token}"><span class="apl-ic">${ic('apGift')}</span><span><b>${esc(a.msg || 'Best wishes!')}</b><small>${tab==='sent' ? apOpenedLabel(a) : 'From '+esc(c.n)}</small></span><span class="aprow-r"><b>${tab==='sent' ? '−'+C(a.total+a.fee) : (mine.amt ? '+' : '')+C(mine.amt)}</b>${tab==='sent'?`<i class="apst ${s[1]}">${s[0]}</i>`:''}</span></button>`; };
-  return `<div class="screen">${statusBar()}${topBar('My angpao')}<div class="apseg aptabs" role="tablist">${[['sent','Sent'],['got','Received']].map(([v,t])=>`<button role="tab" aria-selected="${tab===v}" aria-pressed="${tab===v}" data-act="apTab" data-v="${v}">${t}</button>`).join('')}</div>
-    <div class="scroll"><div class="pad16">${list.length ? list.map(row).join('') : `<div class="apstate"><span class="apgate-ic dim">${ic('apGift')}</span><h2>${tab==='sent'?'No red packet sent yet':'No red packet received yet'}</h2><p>${tab==='sent'?'Red Packet you create show up here.':'Red Packet you open show up here.'}</p></div>`}</div></div></div>`; };
+const apHistoryArt = () => `<div class="aphist-art" aria-hidden="true"><i class="apreceive-spark a"></i><i class="apreceive-spark b"></i><i class="apreceive-spark c"></i>${apEnvelopeMarkup()}</div>`;
+V.aplist = () => {
+  apSeed();
+  const tab = S.apTab || 'sent';
+  const sent = tab === 'sent';
+  const isVisible = a => !S.apHideHistorySamples || !AP.historySamples.has(a.token);
+  const history = sent ? apMine().filter(isVisible).reverse().map(a => ({a}))
+    : AP.list.filter(isVisible).map(a => ({a, claim:a.slots.find(slot => slot.by === 'me')})).filter(item => item.claim)
+      .sort((a, b) => (b.claim.ord || 0) - (a.claim.ord || 0));
+  const tabs = `<div class="aphist-tabs" role="tablist" aria-label="Red packet history">${[['sent','Sent'],['got','Received']].map(([value, label]) => `<button type="button" id="aphist-tab-${value}" role="tab" aria-selected="${tab === value}" aria-controls="aphist-panel" data-act="apTab" data-v="${value}">${label}</button>`).join('')}</div>`;
+  history.forEach(({a}) => apTick(a));
+  const rows = history.map(({a, claim}) => {
+    const [status, tone] = STL[a.status];
+    const sender = who(a.creator);
+    return `<li><button type="button" class="aphist-row" data-side="${tab}" data-state="${a.status}" data-act="${sent ? 'apDetail' : 'apOpenTok'}" data-tok="${esc(a.token)}">
+      <span class="aphist-row-icon" aria-hidden="true">${sent ? ic('apGift') : img(sender.av)}</span>
+      <span class="aphist-row-copy"><b>${esc(a.msg || 'Best wishes!')}</b><small>${sent ? apOpenedLabel(a) : `From ${esc(sender.n)}`}</small></span>
+      <span class="aphist-row-value"><b>${sent ? `−${MY_(a.total + a.fee)}` : `${claim.amt ? '+' : ''}${MY_(claim.amt)}`}</b>${sent ? `<span class="apst ${tone}">${status}</span>` : ''}</span>${ic('chev')}</button></li>`;
+  }).join('');
+  const count = history.length;
+  const summary = sent ? `${history.filter(({a}) => a.status === 'ACTIVE').length} active` : `${count} ${count === 1 ? 'packet' : 'packets'} opened`;
+  const total = sent ? count : MY_(history.reduce((sum, {claim}) => sum + claim.amt, 0));
+  const content = count ? `<section class="aphist-hero"><small>${sent ? 'Packets sent' : 'Total received'}</small><strong>${total}</strong><p>${summary}</p>${apHistoryArt()}</section><ul class="aphist-items">${rows}</ul>`
+    : `<section class="aphist-empty">${apHistoryArt()}<h2>${sent ? 'No red packets sent yet' : 'No red packets received yet'}</h2>
+      <p>${sent ? 'Send a red packet to a friend or group.' : 'Open a red packet from a chat and it’ll appear here.'}</p>
+      ${btn(sent ? 'Create red packet' : 'Open chats', sent ? 'apNew' : 'apHistoryChats')}</section>`;
+  const create = sent && count ? `<button class="iconbtn" type="button" data-act="apNew" aria-label="Create red packet">${ic('plus')}</button>` : '<span style="width:32px"></span>';
+  return `<div class="screen aphist">${statusBar()}<div class="topbar"><button class="iconbtn" type="button" data-act="back" aria-label="Back">${ic('back')}</button><span class="t-headline" style="flex:1;text-align:center">My Red Packet</span>${create}</div>
+    ${tabs}<div class="scroll" role="tabpanel" id="aphist-panel" aria-labelledby="aphist-tab-${tab}"><div class="aphist-content">${content}</div></div></div>`;
+};
 
 /* ---- chat card ---- */
 const _msgHTMLap = msgHTML;
@@ -8959,7 +9024,13 @@ Object.assign(A, {
   apCopy: () => { const a = apGet(S.apTok); try { navigator.clipboard.writeText('https://' + link(a)).catch(()=>{}); } catch(e) {} toast('Red Packet link copied.'); },
   apDetail: el => { if (el && el.dataset && el.dataset.tok) S.apTok = el.dataset.tok; go('apdet'); },
   apList: () => { S.apTab = 'sent'; go('aplist'); },
-  apTab: el => { S.apTab = el.dataset.v; render(); },
+  apTab: el => {
+    const focused = document.activeElement === el;
+    S.apTab = el.dataset.v;
+    render();
+    if (focused) document.getElementById(`aphist-tab-${S.apTab}`)?.focus({preventScroll:true});
+  },
+  apHistoryChats: () => { S.ctab = 'message'; S.cq = ''; go('chats'); },
   apOpenTok: el => { S.apTok = el.dataset.tok; S.apJust = false; go('aprecv'); },
   apTap: el => { const a = apGet(el.dataset.tok); S.apTok = el.dataset.tok; S.apJust = false; S.apSim = null;
     if (a && a.creator === 'me') { go('apdet'); return; } go('aprecv'); },
@@ -9039,6 +9110,7 @@ const _openAp = window.__open;
 if (_openAp) window.__open = function(screen, c){
   const s = String(screen || '');
   if (s === 'apNew') { S.apf = apfNew(); S.apCtx = null; S.apSim = null; return _openAp('apform', c); }
+  if (s === 'apHistory' || s === 'apHistory:empty') { S.apHideHistorySamples = s.endsWith(':empty'); S.apTab = 'sent'; return _openAp('aplist', c); }
   if (s === 'apChat') { S.conv = 'c-lara'; _openAp('chat', c); setTimeout(scrollChat, 30); return; }
   if (s.indexOf('apRecv') === 0) { const t = apDemo(s.split(':')[1] || 'ready'); return _openAp(t, c); }
   return _openAp(screen, c); };
@@ -9051,7 +9123,7 @@ Object.assign(META, {
   apdone:{name:'Red Packet · Ready to share', group:'V2 · Red Packet', rules:['Card with QR','Send to chat / Send to group / Copy link, any number of times, same token (no new transaction)','View details for the sender']},
   aprecv:{name:'Red Packet · Receive', group:'V2 · Red Packet', rules:['Checks in order: not logged in → login; KYC/wallet → onboarding; token not found; expired/cancelled → ended; sender → View details only; already claimed → your result; all slots taken → fully claimed; else Open','Open: one free slot taken with a lock, unique (red packet, user), credited without fee or PIN','Amounts are fixed at create and never sent to the app before opening','Random shows a Luckiest label on the top amount']},
   apdet:{name:'Red Packet · Details (sender)', group:'V2 · Red Packet', rules:['Status, total, fee, validity, who opened and how much','Packets left shown; their amounts stay hidden','Cancel remaining while ACTIVE: unclaimed slots back to the sender, fee not refunded','Expired: a job refunds unclaimed slots and notifies. Never-expiring red packet only refund on cancel']},
-  aplist:{name:'Red Packet · My angpao', group:'V2 · Red Packet', rules:['Sent and Received lists. Sent rows open the details, received rows open your result']},
+  aplist:{name:'My Red Packet', group:'V2 · Red Packet', rules:['Sent and Received lists. Sent rows open the details, received rows open your result']},
 });
 const _rpAp = renderPanel;
 renderPanel = function(){ _rpAp(); const p = document.getElementById('panel'); if (!p) return;
