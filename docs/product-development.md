@@ -49,17 +49,7 @@ Gunakan skill sesuai kebutuhan per tahap. Temuan skill menjadi masukan untuk rev
 
 ### Setup skill untuk checkout baru
 
-Jalankan dari root repo. Contoh PowerShell ini memakai Python, helper Skill Installer bawaan Codex, dan uv. Skill terpasang di `.agents/skills/` dan versi berikut menjadi acuan tim.
-
-```powershell
-$youappInstaller = Join-Path $env:USERPROFILE '.codex/skills/.system/skill-installer/scripts/install-skill-from-github.py'
-python $youappInstaller --repo Leonxlnx/taste-skill --ref f6b76575f949707b4e3c37cd86cb44b0b98643e8 --path skills/taste-skill --dest .agents/skills
-python $youappInstaller --repo JuliusBrussee/caveman --ref a192894723a8f47e7f504c7b5041967ff1f18e55 --path skills/caveman --dest .agents/skills
-python $youappInstaller --repo nextlevelbuilder/ui-ux-pro-max-skill --ref 2de1134dc4d1cfe112934611ae5803ae17a1bd7e --path .claude/skills/ui-ux-pro-max --dest .agents/skills
-uvx --from graphifyy==0.9.112 graphify install --platform agents --project
-```
-
-Buka sesi Codex baru setelah instalasi. Untuk menjalankan CLI Graphify gunakan `uvx --from graphifyy==0.9.112 graphify` diikuti subcommand. Untuk pencarian UI/UX Pro Max, gunakan `python .agents/skills/ui-ux-pro-max/scripts/search.py` dari root repo.
+Ikuti [panduan instalasi skill](../SKILLS.md) untuk versi yang dipin, langkah instalasi, dan cara verifikasi dari root repo.
 
 ## Satu konteks untuk tim dan agent
 
