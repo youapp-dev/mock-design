@@ -88,11 +88,32 @@ button{font:inherit; color:inherit; cursor:pointer}
 </style>
 </head>
 <body>
+<script>
+/* Claude artifact QVfDBhiCej2mLPa8gDyXYE is the frozen import benchmark.
+   This migration runs once per benchmark revision so stale prototype state cannot
+   make localhost open with different screens or scenario selections. */
+(function(){
+  const version = 'claude-QVfDBhiCej2mLPa8gDyXYE-2026-11-19';
+  const key = 'youapp-artifact-benchmark';
+  if (localStorage.getItem(key) === version) return;
+  localStorage.setItem('ya-proto-scen', JSON.stringify({
+    account:'new', platform:'ios', network:'online', force:'off',
+    kyc:'approved', wallet:'active', country:'MY', content:'normal', host:'yes'
+  }));
+  localStorage.setItem('w2scen', JSON.stringify({
+    payRes:'ok', phase:'4', tier:'svip', kyc:'passed', bal:'enough',
+    ref:'scarlette', sh:'none', criteria:'partial', svip:'none', biz:'off',
+    float:'ok', merch:'has', pz:'won', xsRes:'ok', meHost:'yes', paid:'yes',
+    svipP:'early', mdata:'has', fph:'2', lvl:'0', elChk:'first90', vipEnd:'soon'
+  }));
+  localStorage.setItem(key, version);
+})();
+</script>
 <div class="stage">
   <div class="device"><div class="screenbox">
     <div class="loading" id="loading">Loading YouApp…</div>
-    <iframe id="a30" src="app30.html" title="YouApp 3.0 screens"></iframe>
-    <iframe id="w2" class="on" src="wallet2.html" title="Wallet 2.0 screens"></iframe>
+    <iframe id="a30" class="on" src="app30.html" title="YouApp 3.0 screens"></iframe>
+    <iframe id="w2" src="wallet2.html" title="Wallet 2.0 screens"></iframe>
     <div class="wv-ov" id="wvOv" role="dialog" aria-modal="true" aria-labelledby="wvTitle">
       <div class="wv-bar"><button class="wv-x" id="wvX" type="button" aria-label="Close"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
         <div class="wv-t"><b id="wvTitle">Elite application</b></div></div>
@@ -103,7 +124,7 @@ button{font:inherit; color:inherit; cursor:pointer}
   <aside class="panel" id="panel" aria-label="Prototype controls">
     <h1>YouApp full flow</h1>
     <p class="sub">One app: Wallet 2.0 screens where they changed, 3.0 screens everywhere else.</p>
-    <div class="now" aria-live="polite"><span class="tag w2" id="nowTag">Wallet 2.0</span><b id="nowName">YouPage · You</b></div>
+    <div class="now" aria-live="polite"><span class="tag" id="nowTag">3.0</span><b id="nowName">Welcome</b></div>
 
     <div class="grp"><h2>Jump to</h2>
       <div class="jumps">
@@ -118,6 +139,7 @@ button{font:inherit; color:inherit; cursor:pointer}
         <button data-j="host">Host tab<small>Dashboard</small></button>
         <button data-j="topup">Top Up<small>Stablecoin, FPX</small></button>
         <button data-j="locals">Locals chat<small>Chats</small></button>
+        <button data-j="products">YouApp Products<small>Group chat showcase</small></button>
         <button data-j="settings">Settings<small>PIN, profile</small></button>
       </div>
     </div>
@@ -158,7 +180,7 @@ button{font:inherit; color:inherit; cursor:pointer}
 <script>
 (function(){
   const F = {a30: document.getElementById('a30'), w2: document.getElementById('w2')};
-  let active = 'w2'; let loaded = 0;
+  let active = 'a30'; let loaded = 0;
   const win = k => F[k].contentWindow;
   const ready = k => { try { return !!win(k).__open; } catch(e){ return false; } };
   function show(k){ active = k; F.a30.classList.toggle('on', k==='a30'); F.w2.classList.toggle('on', k==='w2'); status(); }
@@ -198,7 +220,7 @@ button{font:inherit; color:inherit; cursor:pointer}
     status();
   }));
   document.getElementById('openScen').addEventListener('click', () => { closeP(); try { win(active).__panel(); } catch(e){} });
-  document.getElementById('resetAll').addEventListener('click', () => { try { localStorage.removeItem('w2scen'); localStorage.removeItem('ya-proto-scen'); } catch(e){} location.reload(); });
+  document.getElementById('resetAll').addEventListener('click', () => { try { localStorage.removeItem('w2scen'); localStorage.removeItem('ya-proto-scen'); localStorage.removeItem('youapp-artifact-benchmark'); } catch(e){} location.reload(); });
   const panel = document.getElementById('panel'), scrim = document.getElementById('scrim');
   const closeP = () => { panel.classList.remove('open'); scrim.classList.remove('open'); };
   document.getElementById('fab').addEventListener('click', () => { panel.classList.add('open'); scrim.classList.add('open'); });
@@ -208,7 +230,7 @@ button{font:inherit; color:inherit; cursor:pointer}
     home:'YouPage · You', business:'YouPage · Host', scan:'Scan to Pay', confirm:'Confirm payment', done:'Payment done', subscribe:'Choose your plan', checkout:'Checkout', ckResult:'Upgrade result',
     bills:'Pay Bill', mreload:'Mobile Reload', billInput:'Bill number', billConfirm:'Bill payment', billDone:'Bill paid', invite:'Refer a Friend', rewards:'Rewards', signup:'Get Started', otp:'OTP', obName:'Onboarding · Name', obDob:'Onboarding · Birthday', obGender:'Onboarding · Gender', obRef:'Onboarding · Referral',
     hosttab:'Host tab (become a host)', settings:'Settings', topup:'Top Up', whist:'Transactions', chats:'Locals chat', chat:'Chatroom', limits:'Limits', profedit:'Edit profile', cexp:'Create experience',
-    apform:'Red Packet · Create', apconf:'Red Packet · Confirm', apdone:'Red Packet · Share', aprecv:'Red Packet · Receive', apdet:'Red Packet · Details', aplist:'Red Packet · My red packets', actmine:'My Activities', actd:'My activity', actappl:'Activity applicants', ginvite:'Group · Invite link', gpick:'Create group · Members', gform:'Create group · Details'};
+    apform:'Red Packet · Create', apconf:'Red Packet · Confirm', apdone:'Red Packet · Share', aprecv:'Red Packet · Receive', apdet:'Red Packet · Details', aplist:'Red Packet · My red packets', actmine:'My Activities', actd:'My activity', actappl:'Activity applicants', products:'YouApp Products', ginvite:'Group · Invite link', gpick:'Create group · Members', gform:'Create group · Details'};
   function status(){
     const st = ctxOf(active);
     document.getElementById('nowTag').textContent = active==='a30' ? '3.0' : 'Wallet 2.0';
