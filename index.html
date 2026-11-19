@@ -180,10 +180,13 @@ button{font:inherit; color:inherit; cursor:pointer}
 <script>
 (function(){
   const F = {a30: document.getElementById('a30'), w2: document.getElementById('w2')};
+  const launchApp30 = new URLSearchParams(location.search).get('app') === 'app30';
+  const launchJump = launchApp30 ? new URLSearchParams(location.search).get('jump') : null;
   let active = 'a30'; let loaded = 0;
   const win = k => F[k].contentWindow;
   const ready = k => { try { return !!win(k).__open; } catch(e){ return false; } };
   function show(k){ active = k; F.a30.classList.toggle('on', k==='a30'); F.w2.classList.toggle('on', k==='w2'); status(); }
+  if (launchApp30) { F.a30.classList.add('on'); F.w2.classList.remove('on'); }
   window.__bridge = function(from, screen, ctx){
     const to = from==='a30' ? 'w2' : 'a30';
     show(to);
@@ -230,7 +233,7 @@ button{font:inherit; color:inherit; cursor:pointer}
     home:'YouPage · You', business:'YouPage · Host', scan:'Scan to Pay', confirm:'Confirm payment', done:'Payment done', subscribe:'Choose your plan', checkout:'Checkout', ckResult:'Upgrade result',
     bills:'Pay Bill', mreload:'Mobile Reload', billInput:'Bill number', billConfirm:'Bill payment', billDone:'Bill paid', invite:'Refer a Friend', rewards:'Rewards', signup:'Get Started', otp:'OTP', obName:'Onboarding · Name', obDob:'Onboarding · Birthday', obGender:'Onboarding · Gender', obRef:'Onboarding · Referral',
     hosttab:'Host tab (become a host)', settings:'Settings', topup:'Top Up', whist:'Transactions', chats:'Locals chat', chat:'Chatroom', limits:'Limits', profedit:'Edit profile', cexp:'Create experience',
-    apform:'Red Packet · Create', apconf:'Red Packet · Confirm', apdone:'Red Packet · Share', aprecv:'Red Packet · Receive', apdet:'Red Packet · Details', aplist:'Red Packet · My red packets', actmine:'My Activities', actd:'My activity', actappl:'Activity applicants', products:'YouApp Products', ginvite:'Group · Invite link', gpick:'Create group · Members', gform:'Create group · Details'};
+    apform:'Red Packet · Create', apconf:'Red Packet · Confirm', apdone:'Red Packet · Share', aprecv:'Red Packet · Receive', apdet:'Red Packet · Details', aplist:'Red Packet · My red packets', actmine:'My Activities', actd:'My activity', actedit:'Edit activity', actappl:'Activity applicants', products:'YouApp Products', ginvite:'Group · Invite link', gpick:'Create group · Members', gform:'Create group · Details'};
   function status(){
     const st = ctxOf(active);
     document.getElementById('nowTag').textContent = active==='a30' ? '3.0' : 'Wallet 2.0';
@@ -291,7 +294,7 @@ button{font:inherit; color:inherit; cursor:pointer}
   }
   Object.keys(F).forEach(k => F[k].addEventListener('load', () => hookFrame(k)));
   setInterval(() => { hookFrame('a30'); hookFrame('w2'); }, 800);
-  Object.values(F).forEach(f => f.addEventListener('load', () => { loaded++; if (loaded>=2) { document.getElementById('loading').remove(); status(); } }));
+  Object.values(F).forEach(f => f.addEventListener('load', () => { loaded++; if (loaded>=2) { document.getElementById('loading').remove(); status(); if (launchApp30 && launchJump) jump(launchJump); } }));
   setInterval(status, 600);
 })();
 </script>

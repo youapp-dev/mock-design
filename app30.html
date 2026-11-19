@@ -5396,7 +5396,7 @@ const FEE = 0.30;
 const HCATS = {Sport:['Pickleball','Personal Training','Tennis','Running'], Culinary:['Coffee & Dessert','Cooking & Dining','Tasting & Tours'], 'Local Travel':['City Walks','Cultural Tours','Photography Walks']};
 const PLACES = [['Barka Studio','Jl. Lilin Emas Blok B4, Kota Batu, Jawa Timur 65233'],['KLCC Park','Jalan Ampang, Kuala Lumpur City Centre, 50088 Kuala Lumpur'],['Petaling Street','Jalan Petaling, City Centre, 50000 Kuala Lumpur'],['Monumen Sentra Gudeg','Kraton, Daerah Istimewa Yogyakarta 23463'],['Bangsar Studio Loft','Jalan Telawi 3, Bangsar Baru, 59100 Kuala Lumpur']];
 const DAYS7 = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
-const hh = h => { const x = ((h+11)%12)+1; return `${String(x).padStart(2,'0')}:00 ${h<12||h===24?'AM':'PM'}`; };
+const hh = h => { const whole = Math.floor(h); const minutes = Math.round((h-whole)*60); const x = ((whole+11)%12)+1; return `${String(x).padStart(2,'0')}:${String(minutes).padStart(2,'0')} ${whole<12||whole===24?'AM':'PM'}`; };
 const earn = p => Math.round(p*(1-FEE)*100)/100;
 
 function H(){
@@ -9065,6 +9065,27 @@ V.actd = () => { const a = cur(); if (!a) return V.actmine(); const s = stOf(a);
     <p class="gx-sl">Details</p><div class="gx-sg act-kv"><div><span>Category</span><b>${esc(a.cat)} · ${esc(a.sub)}</b></div><div><span>Meeting point</span><b>${esc(a.loc[0])}</b></div><div><span>Participants</span><b>Min ${a.min}${a.maxOn?' · max '+a.max:' · no max'}</b></div><div><span>Join approval</span><b>${a.auto?'Not needed':'Required'}</b></div></div>
   </div></div>`; };
 
+V.actedit = () => { const a = cur(), c = S.cx; if (!a || !c || !c.editId) return V.actd();
+  const section = (title, detail, stage) => `<div class="boxcard" style="margin-top:10px; gap:8px"><div class="row-between" style="align-items:flex-start"><span><b>${title}</b><small style="display:block; margin-top:4px">${detail}</small></span><button class="link" data-act="actEditSection" data-stage="${stage}">Change</button></div></div>`;
+  const photos = c.photos.length ? `<div class="kgrid" style="grid-template-columns:repeat(3,1fr); margin-top:10px">${c.photos.map(p=>`<span class="kslot" style="aspect-ratio:1/1">${img(p,'Activity photo')}</span>`).join('')}</div>` : '<p class="t-caption subtle">No photos added.</p>';
+  const activities = c.acts.length ? c.acts.map(x=>esc(x.t)).join(', ') : 'No activities added.';
+  const loc = c.loc || a.loc || ['',''];
+  const sessions = Object.entries(c.sched).flatMap(([key, slots]) => {
+    const [y,m,d] = key.split('-').map(Number); const date = new Date(y,m-1,d);
+    return slots.map(([start,end]) => `${date.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})} · ${hh(start)} - ${hh(end)}`);
+  });
+  const schedule = sessions.length ? sessions.join('<br>') : 'No sessions added.';
+  return `<div class="screen">${statusBar()}${topBar('Edit activity')}<div class="scroll" style="padding:4px 16px 24px">
+    <div class="act-banner"><span><b>Changes require admin review</b>Resubmitting this activity sends it back for review.</span></div>
+    <div class="boxcard" style="margin-top:12px; gap:8px"><div class="row-between"><b>Photos</b><button class="link" data-act="actEditSection" data-stage="3">Change</button></div>${photos}</div>
+    ${section('Category', `${esc(c.cat)} · ${esc(c.sub)}`, 1)}
+    ${section('Title and description', `${esc(c.title)}<br>${esc(c.desc)}`, 2)}
+    ${section('Activities', activities, 4)}
+    ${section('Location', `${esc(loc[0])}${loc[1]?` · ${esc(loc[1])}`:''}`, 5)}
+    ${section('Schedule', schedule, 6)}
+    ${section('Participants', `Min ${c.min} · ${c.maxOn?'Max '+c.max:'No maximum'}<br>${c.auto?'Instant join':'Approval required'}`, 7)}
+  </div><div class="cta">${btn('Save & resubmit','actSubmit')}</div></div>`; };
+
 V.actappl = () => { const a = cur(); const t = S.actAt || 'new';
   const list = a.appl.filter(x => x.st === t);
   const sessT = id => (a.sess.find(s=>s[0]===id)||a.sess[0])[1];
@@ -9078,18 +9099,49 @@ V.actappl = () => { const a = cur(); const t = S.actAt || 'new';
     </div></div>`; };
 
 /* ---------- Create Activity: reuse the experience form, 7 steps, no price ---------- */
+const CX_ACT_EDIT_ORDER = [3,1,2,4,5,6,7];
 const _cexp = V.cexp;
-V.cexp = () => { const c = S.cx; if (!c || !c.act) return _cexp(); const n = c.step;
+V.cexp = () => { const c = S.cx; if (!c || !c.act) return _cexp();
+  const displayStep = c.step; const n = c.editId ? CX_ACT_EDIT_ORDER[displayStep-1] : displayStep;
+  c.step = n;
   let h = _cexp();
-  h = h.replace(/<div class="hprog">[\s\S]*?<\/div>/, `<div class="hprog">${[1,2,3,4,5,6,7].map(i=>`<i class="${i<=n?'on':''}"></i>`).join('')}</div>`);
-  h = h.replace(`>${n}/8<`, `>${n}/7<`).replace(/experience/g, 'activity').replace(/Experience/g, 'Activity');
+  c.step = displayStep;
+  h = h.replace(/<div class="hprog">[\s\S]*?<\/div>/, `<div class="hprog">${[1,2,3,4,5,6,7].map(i=>`<i class="${i<=displayStep?'on':''}"></i>`).join('')}</div>`);
+  h = h.replace(`>${n}/8<`, `>${displayStep}/7<`).replace(/experience/g, 'activity').replace(/Experience/g, 'Activity');
+  if (c.editId) {
+    h = h.replace(/<div class="hprog">[\s\S]*?<\/div>/, '');
+    h = h.replace(/<button\b(?=[^>]*data-act="cxLeave")[^>]*>[\s\S]*?<\/button>/, '');
+    const titles = {1:'Change Category',2:'Change Title',3:'Edit Photos',4:'Change Activity',5:'Change Location',6:'Change Schedule',7:'Participants'};
+    h = h.replace(/<span class="t-headline" style="flex:1; text-align:center">\d+\/7<\/span>/, '<span class="t-headline" style="flex:1; text-align:center">Edit activity</span>');
+    h = h.replace(/<h1 class="t-headline" style="margin:4px 0 4px">[\s\S]*?<\/h1>/, `<h1 class="t-headline" style="margin:4px 0 4px">${titles[n]}</h1>`);
+    const descriptions = {
+      1:'Choose the category and subcategory for this activity.',
+      2:'Update the activity title and description.',
+      3:'Update the photos for this activity.',
+      4:'Update the activities guests will take part in.',
+      5:'Update the meeting point for this activity.',
+      6:'Update dates and session times.',
+    };
+    if (descriptions[n]) h = h.replace(/<p class="t-body muted" style="margin:0 0 (?:10|12)px">[\s\S]*?<\/p>/, `<p class="t-body muted" style="margin:0 0 12px">${descriptions[n]}</p>`);
+  }
+  if (c.editSection) h = h.replace(/data-act="cx(?:Back|Leave)"/g, 'data-act="actEditSectionBack"');
   if (n === 7) {
     const card = `<div class="act-auto"><span class="gx-si">${ic('person')}</span><span><b>Let people join without approval</b><small>${c.auto ? 'Anyone who requests joins right away and is added to the group chat.' : 'You review each request before people join.'}</small></span><button class="switch ${c.auto?'on':''}" role="switch" aria-checked="${!!c.auto}" data-act="actAutoTog" aria-label="Let people join without approval"><i></i></button></div>`;
     const k = h.lastIndexOf('</div>\n  <div class="cta">'); if (k > 0) h = h.slice(0, k) + card + h.slice(k);
+  }
+  if (c.editSection) {
+    h = h.replace(/<div class="cta">[\s\S]*$/, `<div class="cta">${btn('Save changes','cxNext',{disabled:!cxValid(n)})}</div></div>`);
+  } else if (displayStep === 7) {
     h = h.replace(/<div class="cta">[\s\S]*$/, `<div class="cta">${btn(c.editId?'Save & resubmit':'Create Activity','actSubmit',{disabled:!cxValid(7)})}</div></div>`);
   }
   return h; };
-A.cxNext = (orig => el => { const c = S.cx; if (c && c.act && c.step === 7) { A.actSubmit(); return; } orig(el); })(A.cxNext);
+A.cxNext = (orig => el => { const c = S.cx; if (c && c.act) {
+  const stage = c.editId ? CX_ACT_EDIT_ORDER[c.step-1] : c.step;
+  if (!cxValid(stage)) { toast({1:'Pick a category and a subcategory.',2:'Add a title and a description.',3:'Add at least 3 photos.',4:'Each activity needs a title and a description.',5:'Select a location.',6:'Add at least one session.'}[stage]||'Check the activity details.','err'); return; }
+  if (c.editSection) { c.editSection = false; back(); return; }
+  if (c.step === 7) { A.actSubmit(); return; }
+  c.step++; render(); return;
+} orig(el); })(A.cxNext);
 
 /* ---------- Request to Join (other people's activities) ---------- */
 const _vexpA = V.exp;
@@ -9156,8 +9208,8 @@ Object.assign(A, {
     if (scen.network==='offline') { toast('No internet connection. Your answers are kept, try again.','err'); render(); return; }
     const sess = []; Object.entries(c.sched).forEach(([k, arr]) => { const [y,m,d] = k.split('-').map(Number); const dt = new Date(y, m-1, d); arr.forEach(([s,e2], i) => sess.push([k+'-'+i, dt.toLocaleDateString('en-GB',{weekday:'short', day:'numeric', month:'short', year:'numeric'}), `${hh(s)} - ${hh(e2)}`])); });
     let a;
-    if (c.editId) { a = mineById(c.editId); Object.assign(a, {title:c.title, desc:c.desc, img:c.photos[0]||a.img, photos:c.photos, cat:c.cat, sub:c.sub, loc:c.loc||a.loc, min:c.min, maxOn:c.maxOn, max:c.max, auto:c.auto, sess:sess.length?sess:a.sess, status:'review', note:null}); }
-    else { a = {id:'a'+(++AV.seq), title:c.title, img:c.photos[0]||'act1', photos:c.photos, cat:c.cat, sub:c.sub, desc:c.desc, loc:c.loc||['Meeting point',''], min:c.min, maxOn:c.maxOn, max:c.max, auto:!!c.auto, status:'review', ended:false, listed:true, sess:sess.length?sess:[['s1','Sat, 31 Oct 2026','09:00 AM - 11:00 AM']], appl:[]}; AV.mine.unshift(a); }
+    if (c.editId) { a = mineById(c.editId); Object.assign(a, {title:c.title, desc:c.desc, img:c.photos[0]||a.img, photos:c.photos, cat:c.cat, sub:c.sub, loc:c.loc||a.loc, min:c.min, maxOn:c.maxOn, max:c.max, auto:c.auto, acts:c.acts.map(x=>({...x})), sess:sess.length?sess:a.sess, status:'review', note:null}); }
+    else { a = {id:'a'+(++AV.seq), title:c.title, img:c.photos[0]||'act1', photos:c.photos, cat:c.cat, sub:c.sub, desc:c.desc, acts:c.acts.map(x=>({...x})), loc:c.loc||['Meeting point',''], min:c.min, maxOn:c.maxOn, max:c.max, auto:!!c.auto, status:'review', ended:false, listed:true, sess:sess.length?sess:[['s1','Sat, 31 Oct 2026','09:00 AM - 11:00 AM']], appl:[]}; AV.mine.unshift(a); }
     S.actId = a.id; S.actDoneName = a.title; S.actDoneEdit = !!c.editId; S.cx = null;
     const i = S.hist.lastIndexOf('actmine'); if (i >= 0) S.hist = S.hist.slice(0, i); else S.hist = S.hist.filter(x => x !== 'cexp' && x !== 'actd');
     S.actTab = 'created'; go('actmine', {replace:true}); S.dialog = 'actDone'; render(); },
@@ -9169,8 +9221,25 @@ Object.assign(A, {
     else toast(`${p.n}’s request was rejected.`);
     render(); },
   actGroup: () => { const a = cur(); if (!a.gid) return; S.conv = a.gid; S.gid = a.gid; go('chat'); setTimeout(scrollChat, 20); },
+  actEditSection: el => { const stage = +el.dataset.stage; const step = CX_ACT_EDIT_ORDER.indexOf(stage)+1;
+    if (!step) { toast('This edit section is unavailable.','err'); return; }
+    S.cx.step = step; S.cx.editSection = true; go('cexp'); },
+  actEditSectionBack: () => { S.cx.editSection = false; back(); },
   actEdit: () => { const a = cur(); if (isActive(a) && accPax(a) > 0) { lock('edit'); return; }
-    const sched = {}; S.cx = {step:1, act:true, editId:a.id, auto:a.auto, cat:a.cat, sub:a.sub, title:a.title, desc:a.desc, photos:[...a.photos], acts:[{img:'', t:'Meet and greet', d:'We meet at the meeting point and say hi.'}], loc:a.loc, sched:{'2026-10-31':[[9,11]]}, min:a.min, maxOn:a.maxOn, max:a.max, price:'0', priceErr:false}; S.cxMon=9; S.cxDate=null; go('cexp'); },
+    const sched = {};
+    for (const [, dateLabel, timeRange] of a.sess) {
+      const date = new Date(dateLabel); const times = timeRange.split(/\s+-\s+/);
+      const hour = value => { const m = value.match(/^(\d{1,2}):(\d{2})\s*(AM|PM)$/i); if (!m || Number(m[1])<1 || Number(m[1])>12 || Number(m[2])>59) return null; return Number(m[1])%12 + (m[3].toUpperCase()==='PM'?12:0) + Number(m[2])/60; };
+      const hours = times.map(hour);
+      if (Number.isNaN(date.getTime()) || times.length!==2 || hours.some(h=>h===null)) { toast('Activity sessions could not be loaded for editing.','err'); return; }
+      const key = `${date.getFullYear()}-${date.getMonth()+1}-${date.getDate()}`;
+      if (!sched[key]) sched[key] = [];
+      sched[key].push(hours);
+    }
+    const acts = a.acts && a.acts.length ? a.acts.map(x=>({...x})) : [{img:'', t:a.title, d:a.desc||''}];
+    S.cx = {step:1, act:true, editId:a.id, auto:a.auto, cat:a.cat, sub:a.sub, title:a.title, desc:a.desc, photos:[...a.photos], acts, loc:a.loc, sched, min:a.min, maxOn:a.maxOn, max:a.max, price:'0', priceErr:false};
+    const firstDate = Object.keys(sched).sort()[0] || null;
+    S.cxMon = firstDate ? Number(firstDate.split('-')[1])-1 : 9; S.cxDate=firstDate; go('actedit'); },
   actUnlist: () => { const a = cur(); if (isActive(a)) { lock('unlist'); return; } a.listed = !a.listed; render(); toast(a.listed ? 'Activity is listed again.' : 'Activity unlisted. The group chat stays active.'); },
   actDelete: () => { const a = cur(); if (isActive(a)) { lock('delete'); return; } S.dialog = 'actDel'; render(); },
   actDelOk: el => { const a = cur(); const g = a.gid && findGroup(a.gid); const mode = el.dataset.g; S.dialog = null;
@@ -9220,8 +9289,8 @@ render = function(){ _rgAct(); const ph = document.getElementById('phone'); if (
   if (S.screen === 'chats') ph.querySelectorAll('.topbar .t-headline, .g7top .t-headline').forEach(t => { if (t.textContent.trim()==='Locals') t.textContent = 'Hosts'; });
   if (S.screen === 'chats') ph.querySelectorAll('.kicker3').forEach(k => { if (k.textContent.trim()==='Locals' || k.textContent.trim()==='Hosts') k.remove(); });
   if (S.screen === 'discover') ph.querySelectorAll('[data-act="openSearch"]').forEach(b => { if (S.seg==='locals' || !S.seg) b.innerHTML = b.innerHTML.replace('Search locals','Search hosts'); if (S.seg==='merchants') b.innerHTML = b.innerHTML.replace('Search merchants','Search cashback merchants'); });
-  ph.classList.toggle('gxs', ph.classList.contains('gxs') || ['actmine','actd','actappl','cexp'].includes(S.screen));
-  if (['actmine','actd','actappl','cexp'].includes(S.screen)) { ph.classList.add('gx-' + S.screen); ph.querySelectorAll('[data-act="back"] .ico, [data-act="cxBack"] .ico').forEach(e => { e.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>'; }); }
+  ph.classList.toggle('gxs', ph.classList.contains('gxs') || ['actmine','actd','actedit','actappl','cexp'].includes(S.screen));
+  if (['actmine','actd','actedit','actappl','cexp'].includes(S.screen)) { ph.classList.add('gx-' + S.screen); ph.querySelectorAll('[data-act="back"] .ico, [data-act="cxBack"] .ico, [data-act="actEditSectionBack"] .ico').forEach(e => { e.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>'; }); }
 };
 
 /* Host dashboard: Create Activity becomes Create Service */
@@ -9256,6 +9325,7 @@ if (_openAct) window.__open = function(screen, c){ const s = String(screen||'');
 Object.assign(META, {
   actmine:{name:'My Activities', group:'V2 · Activity', rules:['Entry: You page › My Activities. Create Activity: guest → login, KYC not approved → Verify sheet, approved → form','Created: In review, Live, Ended, Unlisted, Rejected','Applied: requests you sent with Request to Join. Pending requests never expire; withdraw anytime']},
   actd:{name:'My activity (owner)', group:'V2 · Activity', rules:['Active = approved until the last session ends','While active: Delete and Unlist are locked; Edit is locked once someone joined. Locked rows are dimmed and explain why','Delete with a group: delete both, keep the group (it becomes a regular group), or cancel']},
+  actedit:{name:'Edit activity', group:'V2 · Activity', figma:'https://www.figma.com/design/EahbSzrwt1lVMNFG4gHLbG/YouApp-3.0?node-id=1982-9978', rules:['Edit opens an overview of the existing activity before any section editor','Change opens the matching editor; Save changes returns to this overview','Save & resubmit uses the existing review confirmation flow']},
   actappl:{name:'Applicants', group:'V2 · Activity', rules:['New Request, Accepted, Rejected. Pending requests count toward the max','Accept adds the person to the group chat; accepted people can’t be removed','Free: rejecting has no refund']},
 });
 const _rpAct = renderPanel;
@@ -9349,7 +9419,7 @@ chatHTML = function(c, o){ let h = _chatCx(c, o);
       h = h.slice(0, a) + bar + h.slice(b); } }
   else { const a = h.indexOf('<div class="topbar" style="border-bottom:1px solid var(--a-line)">');
     if (a >= 0) { const end = h.indexOf('</div>', a);
-      const calls = `<span class="cx-calls"><button class="iconbtn" data-act="cxCall" data-k="voice" aria-label="Voice call">${ic('cxPhone')}</button><button class="iconbtn" data-act="cxCall" data-k="video" aria-label="Video call">${ic('cxVideo')}</button></span>`;
+      const calls = c.group && c.gone ? '' : `<span class="cx-calls"><button class="iconbtn" data-act="cxCall" data-k="voice" aria-label="Voice call">${ic('cxPhone')}</button><button class="iconbtn" data-act="cxCall" data-k="video" aria-label="Video call">${ic('cxVideo')}</button></span>`;
       const dots = h.indexOf('data-act="chatMenu"', a);
       const at = dots > 0 && dots < end ? h.lastIndexOf('<button', dots) : end;
       h = h.slice(0, at) + calls + h.slice(at); } }
@@ -9414,7 +9484,7 @@ Object.assign(A, {
     if (el.dataset.k === 'all') { m.del = true; delete m.rx; } else m.hidden = true;
     if (c.pin === m.id) c.pin = undefined; S.cs = null; S.dialog = null; render(); toast(el.dataset.k === 'all' ? 'Deleted for everyone.' : 'Deleted for you.'); },
   mReply: (orig => el => { const id = S.cs; orig(el); if (S.creply) S.creply.id = id; })(A.mReply),
-  cxCall: el => { const c = curChat(); const kind = el.dataset.k;
+  cxCall: el => { const c = curChat(); if (c.group && c.gone) { toast('You’re no longer a member of this group.'); return; } const kind = el.dataset.k;
     if (c.group) { const mem = c.mem.filter(m => m.k !== 'me').map(m => GP(m.k) || {n:m.k, av:'avatar'}); S.call = {kind, name:c.name, av:(c.photo||'avatar'), group:true, mem, st:'ring', mute:false, spk:false, cam:true}; }
     else S.call = {kind, name:c.name, av:c.av||'avatar', group:false, st:'ring', mute:false, spk:false, cam:true};
     S.call.conv = c; render();
@@ -9426,7 +9496,7 @@ Object.assign(A, {
     k.conv.msgs.push({id:newId(), t:'call', kind:k.kind, dur:fmtDur(sec), missed:!sec, me:true, at:nowHM()});
     S.call = null; render(); scrollChat(); toast(sec ? `Call ended · ${fmtDur(sec)}` : 'Call cancelled.'); },
 });
-Object.assign(META.chat || {}, {rules:[...((META.chat||{}).rules||[]), 'Tap a message: quick reactions (👍 ❤️ 😂 😮 😢 🙏, + for more), Reply, Forward, Pin, Copy, Delete', 'Delete: your messages → Delete for everyone (no time limit) or Delete for me; others’ messages → Delete for me', '📎 Camera, Photo & Video, Document, Red Packet. 😊 opens the emoji panel; emoji-only messages show large', 'Voice and video call from the header in personal, group and host chats (simulated); the chat shows a call line after']});
+Object.assign(META.chat || {}, {rules:[...((META.chat||{}).rules||[]), 'Tap a message: quick reactions (👍 ❤️ 😂 😮 😢 🙏, + for more), Reply, Forward, Pin, Copy, Delete', 'Delete: your messages → Delete for everyone (no time limit) or Delete for me; others’ messages → Delete for me', '📎 Camera, Photo & Video, Document, Red Packet. 😊 opens the emoji panel; emoji-only messages show large', 'Voice and video calls are available in active chats; call controls are hidden for former group members, while past call messages remain in chat history']});
 try { render(); } catch(e) {}
 })();
 
@@ -9450,7 +9520,7 @@ try { render(); } catch(e) {}
     if (S.sheet === 'cxMenu') { const c = curChat(); const bl = C6().blocked.some(b => b.name === c.name); const first = esc(c.name.split(' ')[0]);
       const row = (act, i, t, extra='', cls='') => `<button class="cm-row ${cls}" data-act="${act}" ${extra}>${ic(i)}<span>${t}</span></button>`;
       const items = c.group
-        ? `${row('cmVideo', 'cxVideo', 'Video Call')}${row('gInfo', 'group', 'Group info')}${row('cmClear', 'cmBroom', 'Clear History')}${row('openReport', 'flag', 'Report a problem')}`
+        ? `${c.gone ? '' : row('cmVideo', 'cxVideo', 'Video Call')}${row('gInfo', 'group', 'Group info')}${row('cmClear', 'cmBroom', 'Clear History')}${row('openReport', 'flag', 'Report a problem')}`
         : `${row('cmMute', c.muted ? 'cmMuted' : 'cmMute', c.muted ? 'Unmute' : 'Mute', '', 'chev')}<i class="cm-sep"></i>${row('cmVideo', 'cxVideo', 'Video Call')}${row('cmSearch', 'search', 'Search')}${S.screen==='bchat' && c.bk ? row('openTxn', 'receipt', 'Transaction detail', `data-id="${c.bk.id}"`) : ''}${row('cmClear', 'cmBroom', 'Clear History')}${row(bl ? 'cUnblock' : 'cBlock', 'ublock', bl ? `Unblock ${first}` : `Block ${first}`)}${row('openReport', 'flag', 'Report a problem')}${S.screen==='chat' ? row('cmDelete', 'trash', 'Delete Chat', '', 'dng') : ''}`;
       h += `<div class="cm-scrim" data-act="cmClose"></div><div class="cm-pop ${S.sheetAnim?'anim':''}" role="menu" aria-label="Chat options">
         ${items}</div>`; }
@@ -9631,8 +9701,7 @@ A.gPickTog = (orig => el => { const fromList = el && !el.classList.contains('gpk
       return me ? `<div class="gi2-mem">${inner}</div>` : `<button class="gi2-mem" data-act="gMemMenu" data-k="${m.k}" aria-label="${esc(p.n)}, options">${inner}</button>`; };
     const danger = `<div class="gi2-sec">
         <button class="gi2-row dng" data-act="gLeave">${ic('logout')}<span>Exit group</span></button>
-        <button class="gi2-row dng" data-act="giReport">${ic('flag')}<span>Report group</span></button>
-        ${r === 'owner' ? `<button class="gi2-row dng" data-act="gDisband">${ic('trash')}<span>Delete group</span></button>` : ''}</div>`;
+        <button class="gi2-row dng" data-act="giReport">${ic('flag')}<span>Report group</span></button></div>`;
     return `<div class="screen gi2">${statusBar()}
       <div class="gi2-top"><button class="gi2-ib" data-act="back" aria-label="Back">${ic('back')}</button><b>Group info</b><button class="gi2-ib" data-act="giMenu" aria-label="Group options" aria-haspopup="menu">${ic('dots')}</button></div>
       <div class="scroll gi2-scroll">
@@ -9656,7 +9725,7 @@ A.gPickTog = (orig => el => { const fromList = el && !el.classList.contains('gpk
     return `<div class="screen">${statusBar()}${topBar("Media & files")}<div class="scroll" style="padding:4px 16px 24px"><div class="gtabs n2" role="tablist">${tabs.map(([k, t]) => `<button role="tab" aria-selected="${tab === k}" data-act="giMTab" data-k="${k}">${t}</button>`).join('')}</div>${body}</div></div>`; };
 
   if (typeof META === 'object') { META.gimedia = {name:"Media & files", group:'V2 · Group chat', rules:['Opened from Group info › Media & files','Media and Files tabs, empty states when nothing is shared']};
-    if (META.ginfo) META.ginfo.rules = ['Centred identity: photo or initial, name, member count, description','Quick actions: Invite (if allowed), Red packet, Search, Mute','⋮ menu uses the personal chat popover: Edit group, Invite link, Mute, Search, Group permissions (owner), Clear history','Members: you first, then owner/admins; Add member on top; tap a member for Message / Make admin / Remove; See all after 8','Exit / Report / Delete group (owner) at the bottom; Exit is locked while a linked activity is running']; }
+    if (META.ginfo) META.ginfo.rules = ['Centred identity: photo or initial, name, member count, description','Quick actions: Invite (if allowed), Red packet, Search, Mute','⋮ menu uses the personal chat popover: Edit group, Invite link, Mute, Search, Group permissions (owner), Clear history, Delete group (owner)','Members: you first, then owner/admins; Add member on top; tap a member for Message / Make admin / Remove; See all after 8','Exit and Report stay at the bottom; Exit is locked while a linked activity is running']; }
 
   const toConv = () => { const g = grp(); if (g) S.conv = g.id; return g; };
   Object.assign(A, {
@@ -9686,7 +9755,8 @@ A.gPickTog = (orig => el => { const fromList = el && !el.classList.contains('gpk
         ${canShare(g) ? row('giInvite', 'link', 'Invite link') : ''}
         ${row('giSearch', 'search', 'Search')}
         ${r === 'owner' ? row('giPerm', 'shield', 'Group permissions') : ''}
-        ${row('giClear', 'cmBroom', 'Clear history')}</div>`; }
+        ${row('giClear', 'cmBroom', 'Clear history')}
+        ${r === 'owner' ? `<i class="cm-sep"></i>${row('gDisband', 'trash', 'Delete group')}` : ''}</div>`; }
     return h; };
 
   /* new groups remember when they were made */
