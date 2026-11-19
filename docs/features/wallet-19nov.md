@@ -26,6 +26,8 @@ Nama profil, transaksi, mata uang, saldo, dan statistik referral mengikuti akun 
 
 **Detail mata uang** menampilkan saldo dalam mata uang yang dipilih, estimasi RM, dan subtotal per wallet. Daftar menawarkan ikon token dan membedakan kuantitas token dari estimasi RM. Ketuk token untuk membuka wallet pemiliknya.
 
+**Wallet eksternal** menampilkan saldo, token terverifikasi, dan pengaturan koneksi. Switch **Set as main** memilih wallet default untuk Scan to Pay. Saat dimatikan, YouApp Wallet mengambil alih jika tersedia, lalu wallet lain yang terhubung. **Disconnect wallet** meminta konfirmasi. Jika hanya ada satu wallet, buat YouApp Wallet sebelum melepasnya.
+
 **Choose your plan** mempertahankan ilustrasi, tab, dan urutan manfaat dari referensi. Kartu menyesuaikan lebar layar agar empat manfaat, syarat, dan tombol tetap bisa dibaca. Label **Current** mengikuti tier akun. VIP tahunan ditampilkan sebagai RM120 sesuai checkout prototype.
 
 Wallet provider, quote, top up, dan pembayaran berjalan dengan data demo. QR stablecoin diberi label demo. Withdraw to bank dan Back up wallet membuka informasi flow. Preferensi yang diubah berlaku di sesi prototype. Penanganan izin native dan koneksi gateway perlu QA di iOS dan Android.
