@@ -97,6 +97,40 @@ let ws;
     const {data} = await cdp('Page.captureScreenshot', {format:'png'});
     fs.writeFileSync(path.join(temp, file), Buffer.from(data, 'base64'));
   };
+  const checkTopUpLayout = async () => {
+    const layout = await wallet(`(() => {
+      const choices = document.querySelector('.wr-topup-options');
+      const footer = document.querySelector('.wallet-reference > .wr-topup-footer');
+      const scroll = document.querySelector('.wallet-reference > .scroll');
+      const chips = [...choices.querySelectorAll('button')];
+      return {
+        title: choices.previousElementSibling.textContent.trim(),
+        options: chips.length,
+        oneRow: chips.every(chip => chip.offsetTop === chips[0].offsetTop),
+        canScroll: choices.scrollWidth > choices.clientWidth && getComputedStyle(choices).overflowX === 'auto',
+        hidesScrollbar: getComputedStyle(choices).scrollbarWidth === 'none',
+        footerBelowScroll: scroll.getBoundingClientRect().bottom <= footer.getBoundingClientRect().top,
+      };
+    })()`);
+    assert.deepEqual(layout, {title:'Which money?', options:5, oneRow:true, canScroll:true, hidesScrollbar:true, footerBelowScroll:true});
+  };
+  const checkPlanCard = async tier => {
+    const layout = await wallet(`(() => {
+      const card = document.querySelector('.wr-plan-car .main');
+      const benefits = [...card.querySelectorAll('li')];
+      const requirement = card.querySelector('.pq').getBoundingClientRect();
+      const cta = card.querySelector('.pb').getBoundingClientRect();
+      const bounds = card.getBoundingClientRect();
+      return {
+        title: card.querySelector('.pn b').textContent,
+        benefits: benefits.length,
+        benefitsFit: benefits.every(row => row.getBoundingClientRect().bottom <= requirement.top),
+        ctaFits: requirement.bottom <= cta.top && cta.bottom <= bounds.bottom,
+        priceNoteFits: card.querySelector('.pm').offsetHeight <= 36,
+      };
+    })()`);
+    assert.deepEqual(layout, {title:tier, benefits:4, benefitsFit:true, ctaFits:true, priceNoteFits:true});
+  };
 
   await cdp('Runtime.enable');
   await cdp('Page.enable');
@@ -135,6 +169,10 @@ let ws;
   await frame('allone');
   await act('walletCurrencyOpen', '[data-key="USD"]');
   await state('walletCurrency');
+  await frame('currency');
+  assert.equal(await wallet(`document.querySelector('.wr-asset-total').textContent`), 'US$82.00');
+  assert.equal(await wallet(`document.querySelector('.wr-asset-wallet h2').textContent`), 'YouApp Wallet');
+  assert.equal(await wallet(`document.querySelector('.wr-asset-row[data-token="USDT"] .wr-asset-value b').textContent`), '57.00 USDT');
   await act('wOpen', '[data-id="ya"]');
   await state('wDetail');
   await act('xsOpen', '[data-from-wallet="ya"]');
@@ -161,7 +199,18 @@ let ws;
   await frame('connect');
   await act('back');
   await frame('all');
+  assert.deepEqual(await wallet(`(() => {
+    const rail = document.querySelector('.wx');
+    const topUp = document.querySelector('.tx[data-id="t1"]');
+    return {
+      scrolls: getComputedStyle(rail).overflowX === 'auto',
+      hidesScrollbar: getComputedStyle(rail).scrollbarWidth === 'none',
+      topUpIcon: !!topUp.querySelector('.wr-transaction-icon svg'),
+      topUpCredit: topUp.querySelector('.rt b').classList.contains('pos'),
+    };
+  })()`), {scrolls:true, hidesScrollbar:true, topUpIcon:true, topUpCredit:true});
   await act('walletMoneyFilter', '[data-id="mm"]');
+  assert.equal(await wallet(`document.querySelector('.tot2 small').textContent`), 'MetaMask balance');
   assert.match(await wallet(`document.querySelector('.lst').textContent`), /US dollar/);
   await screenshot('my-money.png');
   await act('back');
@@ -208,6 +257,7 @@ let ws;
   await act('walletScanClose', '[aria-label="Back"]');
   await act('walletReferenceTopUp');
   await frame('topup');
+  await checkTopUpLayout();
   await act('walletTopUpMethod', '[data-method="stable"]');
   await frame('add');
   await act('walletTopUpToken', '[data-key="USDT"]');
@@ -225,8 +275,13 @@ let ws;
   await frame('youlong');
   await act('walletReferencePlan', '[data-key="svip"]');
   await frame('plans');
-  await act('walletPlanSelect', '[data-key="vip"]');
+  await checkPlanCard('SVIP');
+  await click('.seg2 [data-key="free"]');
+  await frame('plansfree');
+  await checkPlanCard('Free');
+  await click('.wr-plan-dots [data-key="vip"]');
   await frame('plansvip');
+  await checkPlanCard('VIP');
   await act('sheet', '[data-s="walletVipPeriod"]');
   await act('walletVipPeriod', '[data-period="y"]');
   await state('checkout');
@@ -312,7 +367,28 @@ let ws;
   await frame('all');
   await act('walletReferenceTopUp');
   await frame('topup');
+  await checkTopUpLayout();
+  await screenshot('mobile-top-up.png');
+  const {x, y, distance} = await evaluate(`(() => {
+    const iframe = document.querySelector('#w2');
+    const row = iframe.contentDocument.querySelector('.wr-topup-options');
+    const bounds = row.getBoundingClientRect();
+    const host = iframe.getBoundingClientRect();
+    return {x:host.left + bounds.right - 18, y:host.top + bounds.top + bounds.height / 2, distance:bounds.width - 40};
+  })()`);
+  await cdp('Input.dispatchTouchEvent', {type:'touchStart', touchPoints:[{x,y}]});
+  for (let step = 1; step <= 6; step++) {
+    await cdp('Input.dispatchTouchEvent', {type:'touchMove', touchPoints:[{x:x - distance * step / 6,y}]});
+    await pause(20);
+  }
+  await cdp('Input.dispatchTouchEvent', {type:'touchEnd', touchPoints:[]});
+  await until(() => wallet(`(() => {
+    const row = document.querySelector('.wr-topup-options');
+    const pound = row.querySelector('[data-key="GBP"]');
+    return row.scrollLeft > 0 && pound.getBoundingClientRect().right <= row.getBoundingClientRect().right;
+  })()`), 'swipe to British pound');
   await act('walletTopUpCurrency', '[data-key="GBP"]');
+  assert.ok(await wallet(`document.querySelector('.wr-topup-options').scrollLeft > 0`), 'currency selection keeps swipe position');
   await act('walletTopUpMethod', '[data-method="card"]');
   await frame('topcard');
   await act('walletTopUpKey', '[data-k="5"]');

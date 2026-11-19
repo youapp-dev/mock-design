@@ -18,8 +18,8 @@
     return templates.get(name).cloneNode(true);
   }
 
-  function screen(frame) {
-    return `<div class="screen wallet-reference">${walletReferenceSymbols}<div class="scroll">${frame.outerHTML}</div></div>`;
+  function screen(frame, footer = '') {
+    return `<div class="screen wallet-reference">${walletReferenceSymbols}<div class="scroll">${frame.outerHTML}</div>${footer}</div>`;
   }
 
   function bind(el, act, data = {}, label = '') {
@@ -95,13 +95,14 @@
   }
 
   const allBalance = () => wList().reduce((total, wallet) => total + wRM(wallet), 0);
+  const moneyWalletName = wallet => wallet.id === 'ya' ? 'YouApp Wallet' : wallet.name;
   const dateOf = tx => tx.paidAt.toLocaleString('en-MY', {dateStyle:'medium', timeStyle:'short'});
-  const archive = () => TXS.map(tx => ({id:tx.id, merchant:tx.t, status:tx.st, date:tx.d, value:tx.v, wallet:'ya', kind:tx.kind}));
+  const archive = () => TXS.map(tx => ({id:tx.id, merchant:tx.t, status:tx.st, date:tx.d, value:tx.v, wallet:'ya', kind:tx.kind, icon:tx.ic}));
   const transactions = () => [
     ...walletScanHistory().map(tx => {
       const funding = S.scanPayments?.find(payment => payment.id === tx.id)?.funding;
       return {id:tx.id, merchant:tx.t, status:tx.st, date:tx.d, value:tx.v,
-        wallet:funding?.wallet || 'ya', currency:funding?.key, kind:tx.kind};
+        wallet:funding?.wallet || 'ya', currency:funding?.key, kind:tx.kind, icon:tx.ic};
     }),
     ...archive(),
   ];
@@ -109,16 +110,29 @@
   function transactionRow(template, tx, showStatus = false) {
     const row = template.cloneNode(true);
     set(row, ':scope > div:not(.rt) b', tx.merchant);
-    const source = tx.kind === 'pay' && tx.wallet === 'ya' ? currencyInfo(tx.currency || 'MYR')[0] : W_ALL[tx.wallet]?.name || 'Ringgit';
+    const wallet = W_ALL[tx.wallet];
+    const source = tx.kind === 'pay' && tx.wallet === 'ya' ? currencyInfo(tx.currency || 'MYR')[0] : wallet ? moneyWalletName(wallet) : 'Ringgit';
     const date = tx.date.replace(/\s+(AM|PM)$/i, '\u00a0$1');
     set(row, ':scope > div:not(.rt) small', `${date} · ${source}`);
     set(row, '.rt b', S.balHide ? '••••' : (tx.value < 0 ? '−' : '+') + RM(Math.abs(tx.value)));
-    $(row, '.rt b')?.classList.add('wr-debit');
+    const value = $(row, '.rt b');
+    value.classList.add('wr-debit');
+    value.classList.toggle('pos', tx.value > 0 && !S.balHide);
+    if (tx.icon && tx.icon !== 'store') {
+      const icon = $(row, '.sq');
+      icon.classList.add('l', 'wr-transaction-icon');
+      icon.innerHTML = ic(tx.icon);
+    }
     const status = tx.status === 'Completed' && tx.kind === 'pay' ? 'Paid' : tx.status;
     const statusLine = $(row, '.rt small');
     if (showStatus && statusLine && status !== 'Paid') {
       statusLine.classList.remove('ok');
       statusLine.textContent = status;
+    }
+    if (!showStatus && tx.status !== 'Completed') {
+      const detail = document.createElement('small');
+      detail.textContent = tx.status;
+      $(row, '.rt').append(detail);
     }
     bind(row, 'walletReferenceTx', {id:tx.id}, `${tx.merchant}, ${status}`);
     return row;
@@ -144,9 +158,8 @@
     if (!row) return;
     if (T().key === 'svip') { row.remove(); return; }
     if (context === 'payment') {
-      const savings = (T().fee - TIERS.svip.fee).toFixed(2).replace(/0$/, '');
-      set(row, 'div b', `Pay ${savings}% less with SVIP`);
-      set(row, 'div small', `${TIERS.svip.fee.toFixed(2)}% instead of ${T().fee.toFixed(2)}%`);
+      set(row, 'div b', 'Lower fees with SVIP');
+      set(row, 'div small', `${TIERS.svip.fee.toFixed(2)}% vs ${T().fee.toFixed(2)}%`);
     } else {
       set(row, 'div b', T().key === 'free' ? 'Earn 2x on referrals' : 'Earn more on referrals');
       set(row, 'div small', `SVIP: ${TIERS.svip.ref}% instead of ${T().ref}%`);
@@ -172,6 +185,23 @@
     const verified = kycOk();
     if (!verified) $(card, 'b svg')?.remove();
     set(card, 'small', `${profile.handle} · ${verified ? 'ID\u00a0verified' : 'Verify your ID'}`);
+  }
+
+  function renderHomeActions(frame) {
+    const row = $(frame, '.acts');
+    const [topUpIcon, rewardsIcon] = $$(row, 'i').map(icon => icon.innerHTML);
+    const rewardsBalance = ringgit(rfBal());
+    const rewardsLabel = S.balHide ? 'Rewards balance hidden' : `Rewards balance ${rewardsBalance}`;
+    row.className = 'wr-quick-actions';
+    row.innerHTML = `
+      <button type="button" class="wr-quick-action" data-act="walletReferenceTopUp">
+        <span class="wr-quick-icon" aria-hidden="true">${topUpIcon}</span>
+        <span class="wr-quick-copy"><b>Top up</b></span>
+      </button>
+      <button type="button" class="wr-quick-action" data-act="rewards" aria-label="${esc(rewardsLabel)}">
+        <span class="wr-quick-icon" aria-hidden="true">${rewardsIcon}</span>
+        <span class="wr-quick-copy"><b>Rewards</b><small class="wr-quick-value">${esc(rewardsBalance)}</small></span>
+      </button>`;
   }
 
   V.home = () => {
@@ -211,13 +241,14 @@
     balance.before(carousel);
     carousel.append(balance, booking);
     nav(frame, '.scanbtn', 'scan');
-    click(frame, '.acts > div:first-child', 'walletReferenceTopUp');
-    click(frame, '.acts > div:last-child', 'rewards');
+    renderHomeActions(frame);
     const refs = referralState();
-    set(frame, '.acts em', ringgit(rfBal()));
+    $(frame, '.invc').classList.add('wr-home-referral');
     set(frame, '.ih b', `Invite friends, earn ${T().ref}%`);
+    set(frame, '.ih small', 'Earn when friends pay. They pay nothing extra.');
     nav(frame, '.ih', 'invite');
     $$(frame, '.ist b').forEach((el, index) => { el.textContent = [refs.friends.length, refs.verified, ringgit(refs.earned)][index]; });
+    set(frame, '.ist > div:last-child small', 'Referral earnings');
     const tip = $(frame, '.itip');
     const waiting = refs.verified - refs.paying;
     if (waiting) {
@@ -227,6 +258,8 @@
       tip.lastChild.textContent = ` ${refs.paying} ${refs.paying === 1 ? 'friend earns' : 'friends earn'} you rewards. View friends.`;
       nav(frame, '.itip', 'invite');
     } else tip.remove();
+    $(frame, '.invc .b2').lastChild.textContent = ' Referral QR';
+    $(frame, '.invc .b1 svg').setAttribute('stroke', 'currentColor');
     click(frame, '.invc .b2', 'walletReferenceReferralQr');
     click(frame, '.invc .b1', 'walletReferenceShare', {value:assetLink, title:'Invite friends to YouApp'});
     upsell($(frame, '.adrow'), 'referral');
@@ -243,7 +276,7 @@
 
   function chips(frame, container, wallets, selected, action, includeAll) {
     setHTML(frame, container, `${includeAll ? `<div class="wc all"><span><b>All</b>${ringgit(allBalance())}</span></div>` : ''}${wallets.map(wallet =>
-      `<div class="wc">${walletBadge(wallet)}<span><b>${wallet.id === 'ya' ? 'YouApp Wallet' : esc(wallet.name)}</b>${ringgit(wRM(wallet))}</span></div>`).join('')}`);
+      `<div class="wc">${walletBadge(wallet)}<span><b>${esc(moneyWalletName(wallet))}</b>${ringgit(wRM(wallet))}</span></div>`).join('')}`);
     const ids = [...(includeAll ? ['all'] : []), ...wallets.map(wallet => wallet.id)];
     $$(frame, `${container} .wc`).forEach((el, index) => {
       const id = ids[index];
@@ -266,15 +299,22 @@
     const groups = currencies(active);
     const total = active.reduce((sum, wallet) => sum + wRM(wallet), 0);
     const frame = reference(single ? 'allone' : 'all');
+    frame.classList.add('wr-money');
     backButton(frame);
     click(frame, '.hbtn', 'walletScanHistory', {}, 'Transactions');
+    if (selected) set(frame, '.tot2 small', `${moneyWalletName(selected)} balance`);
     setHTML(frame, '.tot2 > div:first-of-type', `<span>RM</span>${amount(total)}`);
-    $(frame, '.bar').hidden = S.balHide || !total;
-    setHTML(frame, '.bar', groups.map(group => `<i style="width:${group.rm / total * 100}%;background:${currencyInfo(group.key)[2]}"></i>`).join(''));
+    const bar = $(frame, '.bar');
+    bar.setAttribute('aria-hidden', 'true');
+    bar.hidden = S.balHide || !total;
+    bar.innerHTML = bar.hidden ? '' : groups.map(group => `<i style="width:${group.rm / total * 100}%;background:${currencyInfo(group.key)[2]}"></i>`).join('');
     if (single) nav(frame, '.cwal .cb', 'walletConnect');
     else {
       nav(frame, '.wsec a', 'walletConnect');
       nav(frame, '.conn', 'walletConnect');
+      const rail = $(frame, '.wx');
+      rail.setAttribute('role', 'group');
+      rail.setAttribute('aria-label', 'Filter by wallet');
       chips(frame, '.wcs', wallets, selected?.id || 'all', 'walletMoneyFilter', true);
     }
     const list = $(frame, '.lst');
@@ -292,16 +332,63 @@
     if (!recent.length) ad.before(Object.assign(document.createElement('p'), {className:'wr-empty', textContent:'No transactions in this wallet yet.'}));
     upsell(ad, 'payment');
     set(frame, '.disc span', 'Your money stays in your own wallets. Totals in RM are estimates.');
-    click(frame, '.fix .b1', 'walletReferenceTopUp');
+    const topUpButton = $(frame, '.fix .b1');
+    if (selected?.ext) topUpButton.lastChild.textContent = ' Top up YouApp Wallet';
+    bind(topUpButton, 'walletReferenceTopUp');
     return screen(frame);
   };
 
   V.walletCurrency = () => {
     const selected = wList().find(wallet => wallet.id === S.moneyWallet);
-    const group = currencies(selected ? [selected] : wList()).find(entry => entry.key === S.moneyCurrency);
-    if (!group) return `<div class="screen">${statusBar()}${topBar('Currency')}<div class="scroll pad16">No balance in this currency yet.</div></div>`;
-    return `<div class="screen">${statusBar()}${topBar(currencyInfo(group.key)[0])}<div class="scroll pad16"><div class="mw-tot"><small>Estimated value</small><b>${ringgit(group.rm)}</b></div><div class="mw-list">${group.holdings.map(({wallet, token, value}) =>
-      `<button class="mw-row" data-act="wOpen" data-id="${wallet.id}">${walletBadge(wallet)}<span class="m"><b>${esc(token)}</b><small>${esc(wallet.name)}</small></span><b>${S.balHide ? '••••' : format(value)}</b>${ic('chev')}</button>`).join('')}</div></div></div>`;
+    const key = S.moneyCurrency;
+    const title = key ? currencyInfo(key)[0] : 'Currency';
+    const group = currencies(selected ? [selected] : wList()).find(entry => entry.key === key);
+    const frame = reference('all');
+    frame.className = 'wr-frame wr-currency-detail';
+    frame.dataset.reference = 'currency';
+    frame.replaceChildren($(frame, '.sb'), $(frame, '.top'));
+    $(frame, '.hbtn').remove();
+    backButton(frame);
+    set(frame, '.ttl', title);
+    if (!group) {
+      frame.insertAdjacentHTML('beforeend', note('No balance in this currency yet.', 'wr-empty'));
+      return screen(frame);
+    }
+
+    const holdingsByWallet = new Map();
+    for (const holding of group.holdings) {
+      const id = holding.wallet.id;
+      if (!holdingsByWallet.has(id)) holdingsByWallet.set(id, []);
+      holdingsByWallet.get(id).push(holding);
+    }
+    const currencyBalance = units => S.balHide ? '••••' : moneyIn(key, units);
+    const walletCount = holdingsByWallet.size;
+    const balanceLabel = selected ? 'Wallet balance' : 'Total balance';
+    const estimate = key === 'MYR' || S.balHide ? '' : `<span class="wr-asset-estimate">≈ ${ringgit(group.rm)} <span>estimated</span></span>`;
+    frame.insertAdjacentHTML('beforeend', `<section class="wr-asset-summary" aria-label="${balanceLabel}">
+      <div class="wr-asset-summary-top"><small>${balanceLabel}</small><span>${walletCount} ${walletCount === 1 ? 'wallet' : 'wallets'}</span></div>
+      <strong class="wr-asset-total">${esc(currencyBalance(group.units))}</strong>${estimate}
+    </section>
+    <div class="wr-asset-holdings">${[...holdingsByWallet.values()].map(holdings => {
+      const {wallet} = holdings[0];
+      const walletName = moneyWalletName(wallet);
+      const subtotal = holdings.reduce((sum, holding) => sum + holding.value, 0);
+      return `<section class="wr-asset-wallet" aria-labelledby="wr-asset-wallet-${wallet.id}">
+        <header><span aria-hidden="true">${walletBadge(wallet, 28)}</span><h2 id="wr-asset-wallet-${wallet.id}">${esc(walletName)}</h2><strong>${esc(currencyBalance(subtotal))}</strong></header>
+        <ul>${holdings.map(({token, value}) => {
+          const logo = window.XS_TOKW?.[token];
+          const tokenName = TOKN[token] || token;
+          const quantity = value.toLocaleString('en-MY', {minimumFractionDigits:2, maximumFractionDigits:value < 1 ? 6 : 2});
+          return `<li><button type="button" class="wr-asset-row" data-act="wOpen" data-id="${wallet.id}" data-token="${esc(token)}">
+            <span class="wr-asset-icon" aria-hidden="true">${logo ? `<img src="${logo}" alt="">` : esc(token)}</span>
+            <span class="wr-asset-name"><b>${esc(token)}</b>${tokenName !== token ? `<small>${esc(tokenName)}</small>` : ''}</span>
+            <span class="wr-asset-value"><b>${S.balHide ? '••••' : `${quantity} ${esc(token)}`}</b>${S.balHide ? '' : `<small>≈ ${ringgit(value * RATE[token])}</small>`}</span>
+            ${ic('chev')}
+          </button></li>`;
+        }).join('')}</ul>
+      </section>`;
+    }).join('')}</div>`);
+    return screen(frame);
   };
 
   V.walletConnect = () => {
@@ -345,7 +432,13 @@
       const carousel = document.querySelector('.wr-balance-carousel');
       if (carousel) carousel.scrollLeft = carousel.scrollWidth;
     },
-    walletMoneyFilter: el => { S.moneyWallet = el.dataset.id; retainScroll(); },
+    walletMoneyFilter: el => {
+      const {id} = el.dataset;
+      const restoreFocus = document.activeElement === el;
+      S.moneyWallet = id;
+      retainScroll();
+      if (restoreFocus) document.querySelector(`.wx [data-id="${id}"]`)?.focus({preventScroll:true});
+    },
     walletCurrencyOpen: el => { S.moneyCurrency = el.dataset.key; go('walletCurrency'); },
     walletReferenceTx: el => {
       S.txId = el.dataset.id;
@@ -373,15 +466,15 @@
     },
   });
 
-  function retainScroll() {
+  function retainScroll(chipsSelector = '.wx') {
     const scroll = document.querySelector('.wallet-reference > .scroll');
-    const chips = scroll?.querySelector('.wx');
+    const chips = scroll?.querySelector(chipsSelector);
     const top = scroll?.scrollTop || 0;
     const left = chips?.scrollLeft || 0;
     render();
     const next = document.querySelector('.wallet-reference > .scroll');
     if (next) next.scrollTop = top;
-    const nextChips = next?.querySelector('.wx');
+    const nextChips = next?.querySelector(chipsSelector);
     if (nextChips) nextChips.scrollLeft = left;
   }
 
@@ -686,25 +779,53 @@
   ];
   const topUp = () => S.walletTopUp ||= {currency:'MYR', method:'card', token:'MYRT', amount:'', card:'4242'};
 
+  function topUpOptions(frame, choices, selected, action, label) {
+    const group = $(frame, '.ccs');
+    group.classList.add('wr-topup-options');
+    group.setAttribute('role', 'group');
+    group.setAttribute('aria-label', label);
+    $$(group, '.cc').forEach((chip, index) => {
+      const key = choices[index];
+      const button = document.createElement('button');
+      button.type = 'button';
+      button.className = key === selected ? 'cc on' : 'cc';
+      Object.assign(button.dataset, {act:action, key});
+      button.setAttribute('aria-pressed', key === selected);
+      button.append(...chip.childNodes);
+      $(button, 'svg')?.setAttribute('aria-hidden', 'true');
+      chip.replaceWith(button);
+    });
+  }
+
+  function selectTopUpOption(button, field) {
+    const {act, key} = button.dataset;
+    const restoreFocus = document.activeElement === button;
+    topUp()[field] = key;
+    retainScroll('.wr-topup-options');
+    if (restoreFocus) document.querySelector(`[data-act="${act}"][data-key="${key}"]`)?.focus({preventScroll:true});
+  }
+
   V.walletTopUp = () => {
     if (!kycOk()) return `<div class="screen">${statusBar()}${topBar('Top up')}<div class="scroll">${stateBlock('lock', 'Activate your wallet', 'Top up opens when your YouApp Wallet is active.', btn('Continue', 'kycStart', {cls:'btn-sm'}))}</div></div>`;
     const frame = reference('topup');
     backButton(frame);
     const t = topUp();
-    Object.keys(topUpAssets).forEach((key, index) => {
-      const chip = $$(frame, '.cc')[index];
-      chip.classList.toggle('on', t.currency === key);
-      chip.setAttribute('aria-pressed', t.currency === key);
-      bind(chip, 'walletTopUpCurrency', {key});
-    });
+    const currencyTitle = $(frame, '.tq').textContent.trim();
+    topUpOptions(frame, Object.keys(topUpAssets), t.currency, 'walletTopUpCurrency', currencyTitle);
     $$(frame, '.mr').forEach((row, index) => {
       const method = methods[index][0];
       if (t.currency !== 'MYR' && !['card', 'stable'].includes(method)) row.remove();
       else bind(row, 'walletTopUpMethod', {method});
     });
-    set(frame, '.disc span', `It goes into your YouApp Wallet as ${currencyInfo(t.currency)[0].toLowerCase()}.`);
-    if (!wHasYa()) $(frame, '.mlist').replaceWith(Object.assign(document.createElement('div'), {className:'wr-tools', innerHTML:naturalButton('Create YouApp Wallet', 'wCreateYa', 'plus')}));
-    return screen(frame);
+    const notice = $(frame, '.disc');
+    notice.classList.replace('bt2', 'wr-topup-footer');
+    if (wHasYa()) set(notice, 'span', `Funds go into your YouApp Wallet in ${t.currency}.`);
+    else {
+      set(notice, 'span', 'Create a YouApp Wallet to receive your top up.');
+      $(frame, '.mlist').replaceWith(Object.assign(document.createElement('div'), {className:'wr-tools', innerHTML:naturalButton('Create YouApp Wallet', 'wCreateYa', 'plus')}));
+    }
+    notice.remove();
+    return screen(frame, notice.outerHTML);
   };
 
   const topUpQuote = () => {
@@ -747,12 +868,7 @@
     const t = topUp();
     const frame = reference('add');
     backButton(frame);
-    $$(frame, '.cc').forEach((chip, index) => {
-      const key = tokens[index];
-      chip.classList.toggle('on', t.token === key);
-      chip.setAttribute('aria-pressed', t.token === key);
-      bind(chip, 'walletTopUpToken', {key});
-    });
+    topUpOptions(frame, tokens, t.token, 'walletTopUpToken', 'Stablecoin to deposit');
     const address = W_ALL.ya.addr;
     set(frame, '.qrc small', `Demo deposit · ${t.token} (${currencyInfo(topUpCurrency(t.token))[0]})`);
     set(frame, '.qrc .ad', address.replace(/(.{6})/g, '$1 '));
@@ -777,7 +893,7 @@
 
   Object.assign(A, {
     walletReferenceTopUp: () => { S.walletTopUp = null; go('walletTopUp'); },
-    walletTopUpCurrency: el => { topUp().currency = el.dataset.key; retainScroll(); },
+    walletTopUpCurrency: el => selectTopUpOption(el, 'currency'),
     walletTopUpMethod: el => {
       const t = topUp();
       t.method = el.dataset.method;
@@ -785,7 +901,7 @@
       t.token = topUpAssets[t.currency];
       go(t.method === 'stable' ? 'walletTopUpStable' : 'walletTopUpAmount');
     },
-    walletTopUpToken: el => { topUp().token = el.dataset.key; retainScroll(); },
+    walletTopUpToken: el => selectTopUpOption(el, 'token'),
     walletTopUpCard: el => { topUp().card = el.dataset.card; S.sheet = null; render(); },
     walletTopUpKey: el => {
       const t = topUp();
@@ -810,8 +926,9 @@
   });
 
   const planFrames = {free:'plansfree', vip:'plansvip', svip:'plans'};
+  const selectedPlan = () => S.sub.sel || (T().key === 'free' ? 'vip' : T().key);
   V.subscribe = () => {
-    const key = S.sub.sel || (T().key === 'free' ? 'vip' : T().key);
+    const key = selectedPlan();
     const frame = reference(planFrames[key]);
     backButton(frame);
     const current = T().key;
@@ -829,9 +946,14 @@
       if (!tier) return;
       const cta = $(card, '.pb');
       if (!cta) return;
+      const badge = $(card, '.pn .tg');
+      if (k === current) {
+        badge.className = 'tg cur';
+        badge.textContent = 'Current';
+      } else if (k === 'free') badge.remove();
       const benefits = $$(card, 'li > span');
       const limit = benefits.find(el => /up to rm|higher limits/i.test(el.textContent));
-      if (limit && k !== 'svip') limit.textContent = `Up to ${RM(tier.per)} a payment`;
+      if (limit && k !== 'svip') limit.textContent = `Up to ${RM(tier.per, 0)} a payment`;
       if (k === 'vip') set(card, '.pm', 'or RM120 a year');
       if (k === 'svip') {
         set(card, '.pp b', SVIP_RM());
@@ -846,13 +968,20 @@
         bind(cta, 'sheet', {s:'walletVipPeriod'});
       } else if (PLAN_ORDER.indexOf(k) <= PLAN_ORDER.indexOf(current)) {
         cta.textContent = k === current ? 'Your current plan' : `Included in ${T().name}`;
+        cta.classList.add('off');
         cta.setAttribute('aria-disabled', 'true');
       } else if (k === 'vip' || k === 'svip') {
         cta.textContent = k === 'vip' ? 'Get VIP' : `Get SVIP · ${SVIP_RM()}`;
         bind(cta, k === 'vip' ? 'sheet' : 'svipStart', k === 'vip' ? {s:'walletVipPeriod'} : {});
       }
     });
-    $$(frame, '.dots > i').forEach((dot, index) => bind(dot, 'walletPlanSelect', {key:PLAN_ORDER[index]}, `Compare ${TIERS[PLAN_ORDER[index]].name}`));
+    const dots = $(frame, '.dots');
+    dots.classList.add('wr-plan-dots');
+    $$(dots, 'i').forEach((dot, index) => {
+      const k = PLAN_ORDER[index];
+      bind(dot, 'walletPlanSelect', {key:k}, `Compare ${TIERS[k].name}`);
+      dot.setAttribute('aria-pressed', k === key);
+    });
     if (!kycOk()) frame.insertAdjacentHTML('beforeend', note('Verify your identity before choosing a plan.'));
     return screen(frame);
   };
@@ -864,7 +993,14 @@
       S.sub.sel = el.dataset.key || 'svip';
       go('subscribe');
     },
-    walletPlanSelect: el => { S.sub.sel = el.dataset.key; retainScroll(); },
+    walletPlanSelect: el => {
+      const {key} = el.dataset;
+      if (key === selectedPlan()) return;
+      const focusGroup = document.activeElement === el && (el.closest('.wr-plan-dots') ? '.wr-plan-dots' : '.seg2');
+      S.sub.sel = key;
+      retainScroll();
+      if (focusGroup) document.querySelector(`${focusGroup} [data-key="${key}"]`)?.focus({preventScroll:true});
+    },
     walletVipPeriod: el => {
       S.sub.plan = el.dataset.period;
       if (!kycOk()) { S.sheet = null; A.kycStart(); }
@@ -873,19 +1009,22 @@
     },
   });
 
-  let startX;
-  let startY;
+  let planSwipe;
   document.addEventListener('pointerdown', event => {
-    if (event.target.closest('.wr-plan-car')) { startX = event.clientX; startY = event.clientY; }
-    else startX = undefined;
+    if (!event.isPrimary || event.button !== 0 || !event.target.closest('.wr-plan-car')) return;
+    planSwipe = {pointerId:event.pointerId, x:event.clientX, y:event.clientY};
+  });
+  document.addEventListener('pointercancel', event => {
+    if (planSwipe?.pointerId === event.pointerId) planSwipe = null;
   });
   document.addEventListener('pointerup', event => {
-    if (startX === undefined || S.screen !== 'subscribe') return;
-    const dx = event.clientX - startX;
-    const dy = event.clientY - startY;
-    startX = undefined;
+    if (planSwipe?.pointerId !== event.pointerId) return;
+    const dx = event.clientX - planSwipe.x;
+    const dy = event.clientY - planSwipe.y;
+    planSwipe = null;
+    if (S.screen !== 'subscribe') return;
     if (Math.abs(dx) < 35 || Math.abs(dx) < Math.abs(dy)) return;
-    const index = PLAN_ORDER.indexOf(S.sub.sel || 'vip');
+    const index = PLAN_ORDER.indexOf(selectedPlan());
     const key = PLAN_ORDER[index + (dx < 0 ? 1 : -1)];
     if (key) A.walletPlanSelect({dataset:{key}});
   });

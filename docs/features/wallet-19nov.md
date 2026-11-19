@@ -20,6 +20,14 @@ Nama profil, transaksi, mata uang, saldo, dan statistik referral mengikuti akun 
 
 **Your profile** mengikuti urutan dan jarak dari HTML referensi. Nama, username, dan minat mengikuti Edit Profile. **Send**, **Receive**, dan **Pay Bills** ada di detail YouApp Wallet melalui My money. **My Activities** ada di Discover → Activities → Manage Activity.
 
+**Top up** memakai judul dan urutan dari referensi. Pilihan mata uang tampil satu baris dan bisa digeser tanpa scrollbar yang terlihat. Catatan tujuan dana berada di bawah area scroll dan menampilkan mata uang yang dipilih. Fee tetap terlihat di setiap metode.
+
+**My money** mempertahankan urutan saldo, wallet, mata uang, dan transaksi dari referensi. Filter wallet bisa digeser dalam satu baris tanpa scrollbar terlihat. Saat wallet dipilih, judul saldo menyebut nama wallet. Grafik ikut tersembunyi saat saldo disembunyikan. Recent menampilkan ikon transaksi dan status yang sesuai.
+
+**Detail mata uang** menampilkan saldo dalam mata uang yang dipilih, estimasi RM, dan subtotal per wallet. Daftar menawarkan ikon token dan membedakan kuantitas token dari estimasi RM. Ketuk token untuk membuka wallet pemiliknya.
+
+**Choose your plan** mempertahankan ilustrasi, tab, dan urutan manfaat dari referensi. Kartu menyesuaikan lebar layar agar empat manfaat, syarat, dan tombol tetap bisa dibaca. Label **Current** mengikuti tier akun. VIP tahunan ditampilkan sebagai RM120 sesuai checkout prototype.
+
 Wallet provider, quote, top up, dan pembayaran berjalan dengan data demo. QR stablecoin diberi label demo. Withdraw to bank dan Back up wallet membuka informasi flow. Preferensi yang diubah berlaku di sesi prototype. Penanganan izin native dan koneksi gateway perlu QA di iOS dan Android.
 
 **QA Chrome** mencakup entry point YouPage, hide balance, Booking Balance, satu dan beberapa wallet, koneksi MetaMask dan OKX, QR bebas dan tetap, debit internal dan eksternal, refresh quote, pending dan retry, top up kartu, pilihan stablecoin, receipt dari Settings, VIP checkout, filter Rewards dan referral, serta perubahan preferensi dan waitlist. QA viewport 375 px memeriksa akses QR referral, My money, serta pemilihan mata uang dan keypad top up. Kontrol prototype berada di luar layar Wallet pada viewport mobile.
