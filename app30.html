@@ -8039,10 +8039,31 @@ const gSeed = () => ({id:'g-sera', group:true, name:'Sera.cx', letter:'S', logo:
     {id:'gm3', t:'text', me:true, text:'Thanks for adding me. Happy to be here!', at:'09:15', st:'sent'},
     {id:'gm4', t:'text', who:'maulbucin', text:'Anyone free for kopi this Saturday?', at:'15:00'},
     {id:'gs3', gsys:'<b>Maulana</b> joined group', at:'15:02'}]});
-function gStore(){ const c = C6(); if (!c.gInit) { c.gInit = true; c.convs.unshift(gSeed()); c.gInvite = true; } return c; }
+const productSeed = () => ({id:'g-products', group:true, name:'YouApp Products', letter:'YP', logo:false, photo:null, myRole:'admin', unread:0, at:'Today',
+  bio:'Group-chat feature showcase: messages, media, files, calls, reactions, admin tools and Red Packet. You are a Group Admin.',
+  mem:[{k:'me', role:'admin'}, {k:'maulguy', role:'owner'}, {k:'catherine', role:'admin'}, {k:'lara', role:'member'}],
+  perm:{add:true, send:true, media:{photo:true, video:true, document:true, gif:true, voice:true}, link:true}, msgs:[
+    {id:'yp-sys1', gsys:'<b>Maulguy</b> created the group', at:'09:00'},
+    {id:'yp-sys2', gsys:'<b>You</b> were made a Group Admin', at:'09:01'},
+    {id:'yp-text', t:'text', who:'maulguy', text:'Welcome! This group demonstrates every chat feature in one place 👋', at:'09:02', rx:{'👍':['me','lara'],'❤️':['catherine']}},
+    {id:'yp-reply', t:'text', who:'catherine', text:'Perfect — reply, reactions and pinning are working.', reply:{id:'yp-text',who:'Maulguy',prev:'Welcome! This group demonstrates every chat feature…'}, at:'09:03'},
+    {id:'yp-photo', t:'img', who:'lara', img:'gal1', cap:'Photo message with a caption', at:'09:04'},
+    {id:'yp-video', t:'video', me:true, img:'act3', cap:'Short product walkthrough', at:'09:05', st:'sent'},
+    {id:'yp-voice', t:'voice', who:'maulguy', dur:18, at:'09:06'},
+    {id:'yp-file', t:'file', who:'catherine', name:'YouApp_Group_Features.pdf', size:'1.8 MB', at:'09:07'},
+    {id:'yp-fwd', t:'text', me:true, text:'Tomorrow’s product review starts at 10:00 AM.', fwd:true, at:'09:08', st:'sent'},
+    {id:'yp-del', t:'text', me:true, text:'', del:true, at:'09:09'},
+    {id:'yp-call1', t:'call', kind:'voice', dur:'08:42', at:'Yesterday'},
+    {id:'yp-call2', t:'call', kind:'video', dur:'24:16', at:'Yesterday'},
+    {id:'yp-call3', t:'call', kind:'video', missed:true, at:'Today'},
+    {id:'yp-invite', t:'ginvite', who:'maulguy', whoName:'Maulguy', av:'ca1', inv:{name:'Sera.cx',by:'Maulguy',gid:'g-sera',slug:'seracx'}, at:'09:10'},
+    {id:'yp-red', t:'angpao', tok:'apSeraFriday', who:'lara', at:'09:11'},
+    {id:'yp-last', t:'text', who:'maulguy', text:'Try the phone and video buttons above, or attach a photo, video, document, voice note or Red Packet below.', at:'09:12'}
+  ], pin:'yp-text'});
+function gStore(){ const c = C6(); if (!c.gInit) { c.gInit = true; c.convs.unshift(productSeed(), gSeed()); c.gInvite = true; } return c; }
 const groups = () => gStore().convs.filter(x=>x.group);
 const grp = () => groups().find(g=>g.id===S.gid) || groups()[0];
-const myRole = g => g.mine ? 'owner' : g.roleFix ? 'member' : (scen.gRole||'owner');
+const myRole = g => g.myRole || (g.mine ? 'owner' : g.roleFix ? 'member' : (scen.gRole||'owner'));
 const roleOf = (g, m) => { if (m.k==='me') return myRole(g); if (m.role==='owner' && myRole(g)==='owner') return 'admin'; return m.role; };
 const person = m => m.k==='me' ? {k:'me', n:'You', u:'@elsaa', av:'avatar', c:'Malaysia'} : GP(m.k);
 const gIni = n => { const w = (n||'G').trim().split(/\s+/).filter(x => /^[\p{L}\p{N}]/u.test(x)); return (w.length ? w : ['G']).slice(0,2).map(x => [...x][0]).join('').toUpperCase(); };
@@ -8112,6 +8133,11 @@ V.chat = () => { const c = conv(); if (!c.group) return _chatV(); c.unread = 0; 
   else if (r==='member' && !Object.values(c.perm.media).some(Boolean)) h = h.replace(/<button class="iconbtn" style="margin:0" data-act="cAttach"[\s\S]*?<\/button>/, '');
   return h; };
 A.chatMenu = (orig => () => { if (S.screen==='chat' && conv().group) { A.gInfo(); return; } orig(); })(A.chatMenu);
+const _openProducts = window.__open;
+if (_openProducts) window.__open = function(screen,c){
+  if (screen==='products') { scen.gList='has'; saveScen(); C6(); S.gid='g-products'; S.conv='g-products'; S.ctab='group'; _openProducts('chat',c||{}); setTimeout(scrollChat,30); return; }
+  return _openProducts(screen,c);
+};
 
 /* group info */
 V.ginfo = () => { const g = grp(); if (!g) return V.chats(); const r = myRole(g); const tab = S.gtab||'members';
@@ -9600,7 +9626,7 @@ A.gPickTog = (orig => el => { const fromList = el && !el.classList.contains('gpk
     let link = '';
     const L = window.__actLinkOf && window.__actLinkOf(g);
     if (L) link = `<button class="act-link gi2-act" data-act="${L.act}" data-id="${L.id}">${img(L.img, L.title, 'act-th')}<span><small>Linked activity</small><b>${esc(L.title)}</b><em>${L.run ? 'Running · leave locked until it ends' : 'All sessions ended'}</em></span>${ic('chev')}</button>`;
-    const nMedia = g.id === 'g-sera' ? 9 : 0;
+    const nMedia = g.id === 'g-sera' ? 9 : g.id === 'g-products' ? 3 : 0;
     const order = {owner:0, admin:1, member:2};
     const mems = [...g.mem].sort((a, b) => (a.k === 'me' ? -1 : b.k === 'me' ? 1 : order[roleOf(g, a)] - order[roleOf(g, b)]));
     const LIM = 8; const shown = S.giAll ? mems : mems.slice(0, LIM);
@@ -9629,8 +9655,8 @@ A.gPickTog = (orig => el => { const fromList = el && !el.classList.contains('gpk
   V.gimedia = () => { const g = grp(); if (!g) return V.chats(); const tab = S.gmtab || 'media';
     const tabs = [['media','Media'],['files','Files']];
     const body = tab === 'media'
-      ? (g.id === 'g-sera' ? `<div class="gmedia">${['gal1','gal2','act3','act4','exp2'].map(k => `<span>${img(k, 'Shared photo')}</span>`).join('')}</div>` : `<div class="gtabempty">${ic('image')}<span>No media shared yet</span></div>`)
-      : (g.id === 'g-sera' ? `<div class="gfiles">${[0,1,2,3].map(() => `<div class="gfile"><span class="gfic">${ic('file')}</span><span class="cm"><b>Document.docx</b><small>9.2MB, 04 Dec 2026 at 10:12</small></span><button class="iconbtn" data-act="toast" data-msg="Downloads Document.docx to your phone." aria-label="Download Document.docx">${ic('download')}</button></div>`).join('')}</div>` : `<div class="gtabempty">${ic('file')}<span>No files shared yet</span></div>`);
+      ? (g.id === 'g-sera' ? `<div class="gmedia">${['gal1','gal2','act3','act4','exp2'].map(k => `<span>${img(k, 'Shared photo')}</span>`).join('')}</div>` : g.id === 'g-products' ? `<div class="gmedia">${['gal1','act3'].map(k => `<span>${img(k, 'Shared media')}</span>`).join('')}</div>` : `<div class="gtabempty">${ic('image')}<span>No media shared yet</span></div>`)
+      : (g.id === 'g-sera' ? `<div class="gfiles">${[0,1,2,3].map(() => `<div class="gfile"><span class="gfic">${ic('file')}</span><span class="cm"><b>Document.docx</b><small>9.2MB, 04 Dec 2026 at 10:12</small></span><button class="iconbtn" data-act="toast" data-msg="Downloads Document.docx to your phone." aria-label="Download Document.docx">${ic('download')}</button></div>`).join('')}</div>` : g.id === 'g-products' ? `<div class="gfiles"><div class="gfile"><span class="gfic">${ic('file')}</span><span class="cm"><b>YouApp_Group_Features.pdf</b><small>1.8 MB · Today at 09:07</small></span><button class="iconbtn" data-act="toast" data-msg="Downloading YouApp_Group_Features.pdf…" aria-label="Download YouApp Group Features PDF">${ic('download')}</button></div></div>` : `<div class="gtabempty">${ic('file')}<span>No files shared yet</span></div>`);
     return `<div class="screen">${statusBar()}${topBar("Media & files")}<div class="scroll" style="padding:4px 16px 24px"><div class="gtabs n2" role="tablist">${tabs.map(([k, t]) => `<button role="tab" aria-selected="${tab === k}" data-act="giMTab" data-k="${k}">${t}</button>`).join('')}</div>${body}</div></div>`; };
 
   if (typeof META === 'object') { META.gimedia = {name:"Media & files", group:'V2 · Group chat', rules:['Opened from Group info › Media & files','Media and Files tabs, empty states when nothing is shared']};
@@ -9670,6 +9696,23 @@ A.gPickTog = (orig => el => { const fromList = el && !el.classList.contains('gpk
   /* new groups remember when they were made */
   const _gcGi = A.gCreate; A.gCreate = el => { const before = S.screen; _gcGi(el); const g = grp(); if (before === 'gform' && S.screen !== 'gform' && g && !g.created) g.created = 'today'; };
   try { render(); } catch(e) {}
+})();
+
+/* Chat is a real scroll surface: state-only re-renders must never jump it to the top. */
+(function(){
+  const _renderKeepChatScroll = render;
+  render = function(){
+    const old = document.getElementById('chatScroll');
+    const sameChat = old && (S.screen === 'chat' || S.screen === 'bchat');
+    const top = sameChat ? old.scrollTop : null;
+    const fromBottom = sameChat ? old.scrollHeight - old.clientHeight - old.scrollTop : null;
+    const wasAtBottom = fromBottom !== null && fromBottom < 28;
+    _renderKeepChatScroll.apply(this, arguments);
+    if (top === null) return;
+    const next = document.getElementById('chatScroll');
+    if (!next) return;
+    next.scrollTop = wasAtBottom ? next.scrollHeight : Math.min(top, Math.max(0, next.scrollHeight - next.clientHeight));
+  };
 })();
 
 </script>

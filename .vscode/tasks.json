@@ -1,0 +1,30 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "Start mock-design preview server",
+            "type": "process",
+            "command": "py",
+            "args": [
+                "-u",
+                "-c",
+                "import http.server; print('Starting mock-design preview server', flush=True); http.server.test(HandlerClass=http.server.SimpleHTTPRequestHandler, port=8080, bind='127.0.0.1')"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}"
+            },
+            "isBackground": true,
+            "problemMatcher": {
+                "owner": "custom",
+                "pattern": {
+                    "regexp": "^$"
+                },
+                "background": {
+                    "activeOnStart": false,
+                    "beginsPattern": "^Starting mock-design preview server$",
+                    "endsPattern": "^Serving HTTP on 127\\.0\\.0\\.1 port 8080"
+                }
+            }
+        }
+    ]
+}
