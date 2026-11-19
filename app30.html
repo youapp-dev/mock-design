@@ -8074,13 +8074,14 @@ V.chats = () => { const c = gStore();
   const tabs = `<div class="ctabs" role="tablist">${[['all','msg','All'],['host','person','Host'],['group','group','Group']].map(([k,i,t])=>`<button role="tab" aria-selected="${tab===k}" data-act="ctab" data-k="${k}">${ic(i)}${t}</button>`).join('')}</div>`;
   h = h.replace(/<div class="ctabs" role="tablist">[\s\S]*?<\/div><\/div>/, tabs + '</div>');
   const gl = hide ? groups().filter(x=>x.id!=='g-sera') : groups();
+  if (tab==='all') h = h.replace(/<span class="hb" aria-label="Host">H<\/span>/g, '');
   if (tab==='all') gl.forEach(g => { const i = h.indexOf(`data-act="openConv" data-id="${g.id}"`); if (i<0) return; const a = h.lastIndexOf('<button', i); const b = h.indexOf('</button>', i) + 9; h = h.slice(0,a) + gRow(g) + h.slice(b); });
   if (tab==='host') { const q = (S.cq||'').trim().toLowerCase(); const bks = D.bookings.filter(b=>!q || HOSTS[b.host].name.toLowerCase().includes(q) || b.title.toLowerCase().includes(q));
     const body = `<div class="pad16">${bks.map(b=>{ const ho = HOSTS[b.host]; const last = b.msgs[b.msgs.length-1]; return `<button class="clrow" data-act="openBkChat2" data-id="${b.id}">${img(ho.av,ho.name,'av44')}<span class="cm"><b>${esc(ho.name)} ${vbadge()}${hbadge()}</b><small><span class="ichip sm">${esc(b.title)}</span> ${preview(last)}</small></span><span class="cr"><span class="stchip ${STATUS[b.status][1]}">${STATUS[b.status][0]}</span></span></button>`; }).join('')}${!bks.length ? stateBlock('emptycal','No host chats yet','Chats about services and experiences you book show up here.') : ''}</div>`;
     h = h.replace(/<div class="scroll" style="padding-bottom:96px">[\s\S]*<\/div>\s*<button class="cfab"/, `<div class="scroll" style="padding-bottom:96px">${body}</div>\n  <button class="cfab"`); }
   if (tab==='group') { const q = (S.cq||'').trim().toLowerCase(); const list = gl.filter(g=>!q || g.name.toLowerCase().includes(q));
     const body = !gl.length ? `<div class="gempty">${GEMPTY_ART}<p class="t-body">You have no group chat yet</p><button class="gnewbtn" data-act="gNew">${ic('plus')}Create new group chat</button></div>`
-      : `<div class="pad16"><p class="kicker3">Group list</p>${list.map(gRow).join('')}${!list.length?stateBlock('search','No groups found',`No groups match “${esc(S.cq)}”.`):''}</div>`;
+      : `<div class="pad16">${list.map(gRow).join('')}${!list.length?stateBlock('search','No groups found',`No groups match “${esc(S.cq)}”.`):''}</div>`;
     h = h.replace(/<div class="scroll" style="padding-bottom:96px">[\s\S]*<\/div>\s*<button class="cfab"/, `<div class="scroll" style="padding-bottom:96px">${body}</div>\n  <button class="cfab"`); }
   if (tab==='group') h = h.replace(/<button class="cfab" data-act="addPeople" aria-label="Add people">[\s\S]*?<\/button>/, gl.length ? `<button class="cfab" data-act="gNew" aria-label="Create group">${ic('userplus')}</button>` : '');
   return h; };
@@ -8106,7 +8107,7 @@ V.chat = () => { const c = conv(); if (!c.group) return _chatV(); c.unread = 0; 
   let h = chatHTML(c, {inId:'chatIn', sendAct:'cSend', profAct:'gInfo', top:`<p class="sysline">Today</p>`});
   const a = h.indexOf('<button class="hostedby"'); if (a>=0) { const b = h.indexOf('</button>', a) + 9;
     h = h.slice(0,a) + `<button class="hostedby" data-act="gInfo">${gAv(c,'av36g')}<span style="text-align:left"><b style="font-size:16px">${esc(c.name)}</b><span class="cstatus">${c.mem.length} ${c.mem.length === 1 ? "member" : "members"}</span></span></button>` + h.slice(b); }
-  h = h.replace(/<button class="iconbtn" style="margin:0 -8px 0 0" data-act="chatMenu" aria-label="More options">[\s\S]*?<\/button>/, '');
+  h = h.replace(/<button class="iconbtn" data-act="cxCall" data-k="video" aria-label="Video call">[\s\S]*?<\/button>/, '');
   const r = myRole(c);
   if (r==='member' && !c.perm.send) h = h.replace(/<div class="cbar2[\s\S]*?<\/div>(?=<\/div><\/div>$)/, `<div class="gnosend">${ic('lock')}Only admins can send messages in this group.</div>`);
   else if (r==='member' && !Object.values(c.perm.media).some(Boolean)) h = h.replace(/<button class="iconbtn" style="margin:0" data-act="cAttach"[\s\S]*?<\/button>/, '');
@@ -9191,7 +9192,7 @@ const _rgAct = render;
 render = function(){ _rgAct(); const ph = document.getElementById('phone'); if (!ph) return;
   ph.querySelectorAll('.seg [data-act="seg"]').forEach(b => { if (b.dataset.k==='locals') b.textContent = 'Hosts'; if (b.dataset.k==='merchants') b.textContent = 'Cashback'; });
   if (S.screen === 'chats') ph.querySelectorAll('.topbar .t-headline, .g7top .t-headline').forEach(t => { if (t.textContent.trim()==='Locals') t.textContent = 'Hosts'; });
-  if (S.screen === 'chats') ph.querySelectorAll('.kicker3').forEach(k => { if (k.textContent.trim()==='Locals') k.textContent = 'Hosts'; });
+  if (S.screen === 'chats') ph.querySelectorAll('.kicker3').forEach(k => { if (k.textContent.trim()==='Locals' || k.textContent.trim()==='Hosts') k.remove(); });
   if (S.screen === 'discover') ph.querySelectorAll('[data-act="openSearch"]').forEach(b => { if (S.seg==='locals' || !S.seg) b.innerHTML = b.innerHTML.replace('Search locals','Search hosts'); if (S.seg==='merchants') b.innerHTML = b.innerHTML.replace('Search merchants','Search cashback merchants'); });
   ph.classList.toggle('gxs', ph.classList.contains('gxs') || ['actmine','actd','actappl','cexp'].includes(S.screen));
   if (['actmine','actd','actappl','cexp'].includes(S.screen)) { ph.classList.add('gx-' + S.screen); ph.querySelectorAll('[data-act="back"] .ico, [data-act="cxBack"] .ico').forEach(e => { e.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>'; }); }
@@ -9422,16 +9423,11 @@ try { render(); } catch(e) {}
   overlayHTML = () => { let h = _ovCm();
     if (S.sheet === 'cxMenu') { const c = curChat(); const bl = C6().blocked.some(b => b.name === c.name); const first = esc(c.name.split(' ')[0]);
       const row = (act, i, t, extra='', cls='') => `<button class="cm-row ${cls}" data-act="${act}" ${extra}>${ic(i)}<span>${t}</span></button>`;
+      const items = c.group
+        ? `${row('cmVideo', 'cxVideo', 'Video Call')}${row('gInfo', 'group', 'Group info')}${row('cmClear', 'cmBroom', 'Clear History')}${row('openReport', 'flag', 'Report a problem')}`
+        : `${row('cmMute', c.muted ? 'cmMuted' : 'cmMute', c.muted ? 'Unmute' : 'Mute', '', 'chev')}<i class="cm-sep"></i>${row('cmVideo', 'cxVideo', 'Video Call')}${row('cmSearch', 'search', 'Search')}${S.screen==='bchat' && c.bk ? row('openTxn', 'receipt', 'Transaction detail', `data-id="${c.bk.id}"`) : ''}${row('cmClear', 'cmBroom', 'Clear History')}${row(bl ? 'cUnblock' : 'cBlock', 'ublock', bl ? `Unblock ${first}` : `Block ${first}`)}${row('openReport', 'flag', 'Report a problem')}${S.screen==='chat' ? row('cmDelete', 'trash', 'Delete Chat', '', 'dng') : ''}`;
       h += `<div class="cm-scrim" data-act="cmClose"></div><div class="cm-pop ${S.sheetAnim?'anim':''}" role="menu" aria-label="Chat options">
-        ${row('cmMute', c.muted ? 'cmMuted' : 'cmMute', c.muted ? 'Unmute' : 'Mute', '', 'chev')}
-        <i class="cm-sep"></i>
-        ${row('cmVideo', 'cxVideo', 'Video Call')}
-        ${row('cmSearch', 'search', 'Search')}
-        ${S.screen==='bchat' && c.bk ? row('openTxn', 'receipt', 'Transaction detail', `data-id="${c.bk.id}"`) : ''}
-        ${row('cmClear', 'cmBroom', 'Clear History')}
-        ${row(bl ? 'cUnblock' : 'cBlock', 'ublock', bl ? `Unblock ${first}` : `Block ${first}`)}
-        ${row('openReport', 'flag', 'Report a problem')}
-        ${S.screen==='chat' ? row('cmDelete', 'trash', 'Delete Chat', '', 'dng') : ''}</div>`; }
+        ${items}</div>`; }
     if (S.dialog === 'cmClear') h += gModal('trash', 'Clear history?', 'All messages in this chat are removed from your phone. The other person still has them.', ['Clear History','cmClearOk'], ['Cancel','closeDialog']);
     if (S.dialog === 'cmDelete') h += gModal('trash', 'Delete chat?', 'This chat and its messages are removed from your chat list.', ['Delete Chat','cmDeleteOk'], ['Cancel','closeDialog']);
     return h; };
