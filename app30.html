@@ -335,7 +335,11 @@
   border-radius:50%; border:2px solid #ffe59d; background:linear-gradient(145deg,#fff0a8,#f4b044); box-shadow:0 4px 0 #b86a18,0 8px 14px #68141b67;
 }
 .ap-envelope-seal::before { content:''; position:absolute; inset:10%; border:1px solid #c37b2d86; border-radius:50% }
-.ap-envelope-seal::after, .apreceive-spark, .ap-burst-star {
+.ap-envelope-seal::after {
+  content:''; width:62%; aspect-ratio:1; background:#9a481c;
+  mask:url('./design-system/assets/Logos/youapp-mark.svg') center / contain no-repeat;
+}
+.apreceive-spark, .ap-burst-star {
   content:''; width:46%; aspect-ratio:1; background:#db8d29; clip-path:polygon(50% 0,64% 36%,100% 50%,64% 64%,50% 100%,36% 64%,0 50%,36% 36%);
 }
 .apreceive-spark { position:absolute; width:19px; background:linear-gradient(#fff0ae,#e9a941) }
