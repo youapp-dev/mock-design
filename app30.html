@@ -1015,7 +1015,7 @@ button.am-card.am-tap{border:1.5px solid #ECE7F7}
 .gc-fab i{position:absolute; top:-6px; right:-6px; min-width:22px; height:22px; padding:0 6px; border-radius:999px; background:#fff; color:#5E35B8; border:2px solid #5E35B8; font:800 12px/18px Inter; font-style:normal}
 .gpk-list{padding-bottom:110px!important}
 
-/* Discover floating pills row (Experiences + Manage Activity) */
+/* Discover floating plan pills */
 .pillrow{position:absolute; left:0; right:0; bottom:120px; z-index:6; display:flex; justify-content:center; gap:8px; padding:0 12px; pointer-events:none}
 .pillrow .planpill{position:static; transform:none; pointer-events:auto; white-space:nowrap}
 .planpill:focus-visible{outline:3px solid #B79BF0; outline-offset:2px}
@@ -5074,7 +5074,7 @@ const _ov3 = overlayHTML; overlayHTML = () => _ov3() + ov4();
 function backTo(name, fallback='youpage'){ const i = S.hist.lastIndexOf(name); if (i>=0) { S.hist = S.hist.slice(0,i); go(name,{replace:true}); } else { S.hist = ['discover']; go(fallback,{replace:true}); } }
 Object.assign(A, {
   youpage: () => { if (isGuest()) { openSheet('loginGuest'); return; } go('youpage'); },
-  ypHost: () => stub('Host tab','Phase 5',['Become a host checklist (Not started, Pending, Reject, Done)','Host dashboard: earnings, Create Activity, Plans, Availability']),
+  ypHost: () => stub('Host tab','Phase 5',['Become a host checklist (Not started, Pending, Reject, Done)','Host dashboard: earnings, Create Service, Plans, Availability']),
   ypActivate: () => { if (kyc()!=='approved') { A.kycGate({dataset:{from:'wallet'}}); return; } S.actFrom='youpage'; go('activate'); },
   toggleHide: () => { W().hide = !W().hide; render(); },
   ypLocals: () => { S.hist=[]; S.htab='discover'; S.seg='locals'; go('discover',{replace:true}); },
@@ -5608,11 +5608,13 @@ V.cexp = () => { const c = S.cx; const n = c.step;
   if (n===5) body = `<h1 class="t-headline" style="margin:4px 0 4px">Can you drop the exact location on the map?</h1><p class="t-body muted" style="margin:0 0 12px">One meeting point per experience.</p>
     <div class="mapbox" style="height:200px">${img('map','Map')}</div>
     <button class="selrow" style="margin-top:10px" data-act="cxLoc"><span class="selv" style="margin-left:0">${ic('pin')}<span><b>${esc(c.loc?c.loc[0]:'Select Location')}</b>${c.loc?`<small>${esc(c.loc[1])}</small>`:''}</span></span>${ic('chev')}</button>`;
-  if (n===6) { const m = S.cxMon||9; const first = new Date(2026,m,1); const days = new Date(2026,m+1,0).getDate(); const pad = (first.getDay()+6)%7; const sel = S.cxDate;
-    const key = d => `2026-${m+1}-${d}`;
+  if (n===6) { const today = new Date(); const m = S.cxMon==null ? 9 : S.cxMon; const year = c.act ? (S.cxYear||today.getFullYear()) : 2026; const first = new Date(year,m,1); const days = new Date(year,m+1,0).getDate(); const pad = (first.getDay()+6)%7; const sel = S.cxDate;
+    const key = d => `${year}-${m+1}-${d}`;
+    const prevDisabled = c.act ? new Date(year,m,1) <= new Date(today.getFullYear(),today.getMonth(),1) : m<=9;
+    const nextDisabled = c.act ? new Date(year,m,1) >= new Date(today.getFullYear(),today.getMonth()+2,1) : m>=11;
     body = `<h1 class="t-headline" style="margin:4px 0 4px">Set Schedule</h1><p class="t-body muted" style="margin:0 0 12px">Pick a date, then add sessions. Guests choose one session.</p>
-      <div class="cal"><div class="row-between"><button class="iconbtn" style="margin:0" data-act="cxMon" data-d="-1" ${m<=9?'disabled':''} aria-label="Previous month">${ic('back')}</button><b>${MONTHS[m]} 2026</b><button class="iconbtn" style="margin:0" data-act="cxMon" data-d="1" ${m>=11?'disabled':''} aria-label="Next month">${ic('chev')}</button></div>
-        <div class="calgrid">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<small>${d}</small>`).join('')}${Array.from({length:pad},()=>'<span></span>').join('')}${Array.from({length:days},(_,i)=>{ const d=i+1; const past = m===9 && d<15; const k = key(d); return `<button class="${sel===k?'on':''} ${(c.sched[k]||[]).length?'has':''}" ${past?'disabled':''} data-act="cxDate" data-k="${k}">${d}</button>`; }).join('')}</div></div>
+      <div class="cal"><div class="row-between"><button class="iconbtn" style="margin:0" data-act="cxMon" data-d="-1" ${prevDisabled?'disabled':''} aria-label="Previous month">${ic('back')}</button><b>${MONTHS[m]} ${year}</b><button class="iconbtn" style="margin:0" data-act="cxMon" data-d="1" ${nextDisabled?'disabled':''} aria-label="Next month">${ic('chev')}</button></div>
+        <div class="calgrid">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d=>`<small>${d}</small>`).join('')}${Array.from({length:pad},()=>'<span></span>').join('')}${Array.from({length:days},(_,i)=>{ const d=i+1; const date = new Date(year,m,d); const past = c.act ? date < new Date(today.getFullYear(),today.getMonth(),today.getDate()) : m===9 && d<15; const k = key(d); return `<button class="${sel===k?'on':''} ${(c.sched[k]||[]).length?'has':''}" ${past?'disabled':''} data-act="cxDate" data-k="${k}">${d}</button>`; }).join('')}</div></div>
       ${sel ? `<div class="row-between" style="margin-top:12px"><b>${(()=>{ const [y,mm,dd]=sel.split('-'); return `${dd} ${MONTHS[mm-1].slice(0,3)}`; })()}</b><button class="link" data-act="cxAddSess">+ Add Session</button></div>
         <div style="display:grid; gap:6px; margin-top:8px">${(c.sched[sel]||[]).map(([a,b],i)=>`<div class="kvrow" style="border:1px solid var(--a-line); border-radius:10px; padding:10px 12px"><span>${hh(a)} - ${hh(b)}</span><button class="iconbtn" style="width:28px;height:28px;margin:0; color:var(--a-error)" data-act="cxRmSess" data-i="${i}" aria-label="Delete session">${ic('trash')}</button></div>`).join('') || '<p class="t-caption subtle" style="margin:0">There are no available sessions on this date yet.</p>'}</div>`
       : '<p class="t-caption subtle" style="margin:10px 0 0">Select a date to add sessions.</p>'}
@@ -5940,11 +5942,16 @@ Object.assign(A, {
   cxRmActOk: () => { S.cx.acts.splice(S.delAct,1); S.dialog=null; render(); },
   cxActImg: el => { S.phMulti=false; S.phFor='act'; S.phIdx = +el.dataset.i; openSheet('photoSrc'); },
   cxLoc: () => { S.mq=''; S.mpick = S.cx.loc ? S.cx.loc[0] : null; S.mFor='cx'; go('hmap'); },
-  cxMon: el => { if (el.disabled) return; S.cxMon = Math.min(11, Math.max(9, (S.cxMon||9) + +el.dataset.d)); render(); },
+  cxMon: el => { if (el.disabled) return;
+    if (S.cx && S.cx.act) { const now = new Date(); const next = new Date(S.cxYear||now.getFullYear(), (S.cxMon==null?now.getMonth():S.cxMon) + +el.dataset.d, 1); S.cxYear = next.getFullYear(); S.cxMon = next.getMonth(); }
+    else S.cxMon = Math.min(11, Math.max(9, (S.cxMon||9) + +el.dataset.d));
+    render(); },
   cxDate: el => { if (el.disabled) return; S.cxDate = el.dataset.k; render(); },
   cxAddSess: () => { S.tp = {a:null, b:null, err:''}; openSheet('cxSess'); },
   cxSessSave: el => { if (el.getAttribute('aria-disabled')) return; const t = S.tp; const k = S.cxDate; const list = S.cx.sched[k] = S.cx.sched[k]||[];
-    if (k==='2026-10-15' && t.a <= 15) { t.err='This time has already passed. Please choose a later start time.'; render(); return; }
+    if (S.cx.act) { const [y,m,d] = k.split('-').map(Number); const date = new Date(y,m-1,d); const now = new Date(); const today = new Date(now.getFullYear(),now.getMonth(),now.getDate());
+      if (date < today || (date.getTime()===today.getTime() && t.a <= now.getHours()+now.getMinutes()/60)) { t.err='This time has already passed. Please choose a later start time.'; render(); return; } }
+    else if (k==='2026-10-15' && t.a <= 15) { t.err='This time has already passed. Please choose a later start time.'; render(); return; }
     if (overlapAny(list, t.a, t.b)) { t.err='Chosen time slot overlaps with existing time slot.'; render(); return; }
     list.push([t.a,t.b]); list.sort((x,y)=>x[0]-y[0]); S.sheet=null; render(); },
   cxRmSess: el => { S.cx.sched[S.cxDate].splice(+el.dataset.i,1); render(); },
@@ -6053,7 +6060,7 @@ P.jump = el => { const to = el.dataset.to; const P5 = ['hosttab','hstep','verify
   render(); };
 
 Object.assign(META, {
-  hosttab:{name:'YouPage · Host tab', group:'Host', figma:'Flow You Page › Before Host / Host', rules:['Not a host: checklist with independent statuses (Not started, Draft, Pending, Reject, Done)','Become a Host without KYC: “Verify your identity first” sheet','Approved: Host earnings (MYR), Create Activity, Plans, Availability, Upcoming, My Listing, Recent Review']},
+  hosttab:{name:'YouPage · Host tab', group:'Host', figma:'Flow You Page › Before Host / Host', rules:['Not a host: checklist with independent statuses (Not started, Draft, Pending, Reject, Done)','Become a Host without KYC: “Verify your identity first” sheet','Approved: Host earnings (MYR), Create Service, Plans, Availability, Upcoming, My Listing, Recent Review']},
   hstep:{name:'Create your first Service (7 steps)', group:'Host', figma:'Plly as host 2 › Stepper 2', rules:['Draft saved at every step; leaving shows “Saved as draft” and the Host tab shows Draft · step N of 7','Weekly hours: windows of at least 2 hours, no overlaps','Award and Certification: at least one each (Service Management PRD)','Ends in Listing Review, then Submit']},
   hsvcform:{name:'Create / Edit Service', group:'Host', figma:'Plly as host 2 › Create Service', rules:['Photo, title, description, duration, price per hour','You will earn = price minus the 30% YouApp fee','Rejected service shows admin notes and Resubmit']},
   hmap:{name:'Select Location', group:'Host', figma:'Plly as host 2 › Map Select', rules:['Search, pin, Save']},
@@ -8967,20 +8974,41 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
   try { render(); } catch(e) {}
 })();
 
-/* ===== V2 · Activity V3: free activities, Request to Join, owner approval (optional), auto group chat, lock rules ===== */
+/* ===== Activity V3: free activities, owner-approved requests, linked group chat and schedule locks ===== */
 (function(){
-const AV = window.AV = {mine:[], req:{}, seeded:false, seq:10};
+const AV = window.AV = {mine:[], req:{}, seeded:false, seq:10, joinSeq:2};
 GMI.check = '<circle cx="12" cy="12" r="10" fill="currentColor" stroke="none"/><path d="M7.5 12.5l3 3 6-6.5" stroke="#fff"/>';
-const ACT_SESS = {'e-batu':[['s1','Sat, 24 Oct 2026','04:00 PM - 09:00 PM',12],['s2','Sun, 25 Oct 2026','09:00 AM - 01:00 PM',8]]};
-const sessOf = id => (ACT_SESS[id] = ACT_SESS[id] || [['s1','Sat, 24 Oct 2026','04:00 PM - 09:00 PM',12],['s2','Sun, 25 Oct 2026','09:00 AM - 01:00 PM',8]]);
-const AUTO_EXP = {'e-batu':true};
+function sampleActivitySessions(){
+  const first = new Date(); first.setDate(first.getDate()+1); first.setHours(0,0,0,0);
+  const second = new Date(first); second.setDate(second.getDate()+1);
+  const label = date => date.toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short',year:'numeric'});
+  return [['s1',label(first),'04:00 PM - 09:00 PM',12],['s2',label(second),'09:00 AM - 01:00 PM',8]];
+}
+const ACT_SESS = {'e-batu':sampleActivitySessions()};
+const sessOf = id => (ACT_SESS[id] = ACT_SESS[id] || sampleActivitySessions());
 window.__actSess = id => sessOf(id);
 const pk = k => GP(k) ? k : 'maulguy';
 const who2 = k => k==='me' ? {n:'You', av:'avatar', u:'@elsaa'} : (GP(k) || {n:k, av:'avatar', u:''});
 const accPax = a => a.appl.filter(x=>x.st==='accepted').reduce((n,x)=>n+x.pax,0);
 const takenPax = a => a.appl.filter(x=>x.st!=='rejected').reduce((n,x)=>n+x.pax,0);
-const isActive = a => a.status==='live' && !a.ended;
-const stOf = a => a.status==='review' ? ['In review','pend'] : a.status==='rejected' ? ['Rejected','rej'] : a.ended ? (a.listed ? ['Ended','off'] : ['Unlisted','off']) : a.listed ? ['Live','ok'] : ['Unlisted','off'];
+function sessionsEnded(sessions){
+  if (!sessions || !sessions.length) return false;
+  const ends = sessions.map(([,dateLabel,timeRange]) => {
+    const date = String(dateLabel).match(/\b(\d{1,2})\s+([A-Za-z]{3})\s+(\d{4})\b/);
+    const times = String(timeRange).match(/\d{1,2}:\d{2}\s*(?:AM|PM)\s*-\s*(\d{1,2}):(\d{2})\s*(AM|PM)/i);
+    if (!date || !times) return null;
+    const months = {Jan:0,Feb:1,Mar:2,Apr:3,May:4,Jun:5,Jul:6,Aug:7,Sep:8,Oct:9,Nov:10,Dec:11};
+    const end = new Date(Number(date[3]), months[date[2]], Number(date[1]));
+    let hour = Number(times[1]) % 12 + (times[3].toUpperCase()==='PM' ? 12 : 0);
+    end.setHours(hour, Number(times[2]), 0, 0);
+    return Number.isNaN(end.getTime()) ? null : end.getTime();
+  }).filter(x => x !== null);
+  return ends.length === sessions.length && Math.max.apply(null, ends) <= Date.now();
+}
+const hasEnded = a => !!a.ended || (a.status==='live' && sessionsEnded(a.sess));
+window.__actEnded = hasEnded;
+const isActive = a => a.status==='live' && !hasEnded(a);
+const stOf = a => a.status==='review' ? ['In review','pend'] : a.status==='rejected' ? ['Rejected','rej'] : hasEnded(a) ? (a.listed ? ['Ended','off'] : ['Unlisted','off']) : a.listed ? ['Live','ok'] : ['Unlisted','off'];
 const findGroup = id => C6().convs.find(v => v.id === id);
 
 function mkGroup(c, a){
@@ -8988,17 +9016,17 @@ function mkGroup(c, a){
   const acc = a.appl.filter(x=>x.st==='accepted');
   c.convs.unshift({id, group:true, name:'Activity: ' + a.title, letter:a.title[0], logo:false, photo:a.img, unread:0, at:'Now',
     bio:`This group is linked to the activity “${a.title}”. Everyone who joins the activity is added here automatically.`,
-    mem:[{k:'me', role:'owner'}, ...acc.map(x=>({k:x.k, role:'member'}))], perm:GPERM0(), actId:a.id,
+    mem:[{k:'me', role:'owner', joinedAt:0}, ...acc.map((x,i)=>({k:x.k, role:'member', joinedAt:x.joinedAt||i+1}))], perm:GPERM0(), actId:a.id,
     msgs:[{id:'ga'+a.id+'1', gsys:'Group created for this activity. <b>You</b> are the admin', at:'09:00'}, ...acc.map((x,i)=>({id:'ga'+a.id+'j'+i, gsys:`<b>${esc(who2(x.k).n)}</b> joined group`, at:'09:0'+(i+1)}))]});
   a.gid = id;
 }
 function seed(c){
   if (AV.seeded) return; AV.seeded = true;
-  const a1 = {id:'a1', expId:'e-art', title:'Street Art Photo Walk in Kuala Lumpur', img:'act5', photos:['act5','act3','act4'], cat:'Local Travel', sub:'City Walks', desc:'Walk the murals of Kuala Lumpur with a photographer and learn to shoot street scenes.', loc:['Petaling Street','Kuala Lumpur'], min:2, maxOn:true, max:10, auto:false, status:'live', ended:false, listed:true,
+  const a1 = {id:'a1', expId:'e-art', title:'Street Art Photo Walk in Kuala Lumpur', img:'act5', photos:['act5','act3','act4'], cat:'Local Travel', sub:'City Walks', desc:'Walk the murals of Kuala Lumpur with a photographer and learn to shoot street scenes.', loc:['Petaling Street','Kuala Lumpur'], min:2, maxOn:true, max:10, status:'live', ended:false, listed:true,
     sess:[['s1','Sat, 24 Oct 2026','09:00 AM - 11:00 AM'],['s2','Sun, 25 Oct 2026','04:00 PM - 06:00 PM']],
     appl:[{id:'p1', k:'catherine', pax:2, sess:'s1', st:'new'}, {id:'p2', k:'daniel', pax:1, sess:'s1', st:'new'}, {id:'p3', k:'kwang', pax:1, sess:'s2', st:'accepted'}, {id:'p4', k:'fionna', pax:1, sess:'s2', st:'rejected'}]};
-  const a2 = {id:'a2', title:'Sunrise Hike at Bukit Tabur', img:'act3', photos:['act3','act4','act1'], cat:'Sport', sub:'Running', desc:'An early hike to watch the sunrise over the city.', loc:['Bukit Tabur','Selangor'], min:3, maxOn:true, max:12, auto:true, status:'review', ended:false, listed:true, sess:[['s1','Sat, 31 Oct 2026','05:30 AM - 08:30 AM']], appl:[]};
-  const a3 = {id:'a3', title:'Night Market Food Crawl', img:'act4', photos:['act4','act1','act3'], cat:'Culinary', sub:'Tasting & Tours', desc:'Taste the best stalls at the night market.', loc:['Jalan Alor','Kuala Lumpur'], min:2, maxOn:false, max:10, auto:false, status:'rejected', note:'The photos show other brands’ logos. Please use your own photos.', ended:false, listed:true, sess:[['s1','Fri, 30 Oct 2026','07:00 PM - 10:00 PM']], appl:[]};
+  const a2 = {id:'a2', title:'Sunrise Hike at Bukit Tabur', img:'act3', photos:['act3','act4','act1'], cat:'Sport', sub:'Running', desc:'An early hike to watch the sunrise over the city.', loc:['Bukit Tabur','Selangor'], min:3, maxOn:true, max:12, status:'review', ended:false, listed:true, sess:sampleActivitySessions().map((s,i)=>[s[0],s[1],i?'09:00 AM - 11:00 AM':'05:30 AM - 08:30 AM']), appl:[]};
+  const a3 = {id:'a3', title:'Night Market Food Crawl', img:'act4', photos:['act4','act1','act3'], cat:'Culinary', sub:'Tasting & Tours', desc:'Taste the best stalls at the night market.', loc:['Jalan Alor','Kuala Lumpur'], min:2, maxOn:false, max:10, status:'rejected', note:'The photos show other brands’ logos. Please use your own photos.', ended:false, listed:true, sess:[['s1','Fri, 30 Oct 2026','07:00 PM - 10:00 PM']], appl:[]};
   AV.mine.push(a1, a2, a3); mkGroup(c, a1);
 }
 const _C6act = C6;
@@ -9011,6 +9039,11 @@ function actGate(next){
   if (S.session !== 'user') { if (A.g7Login) A.g7Login(); else openSheet('login'); return; }
   if (kyc() !== 'approved') { openSheet('actKyc'); return; }
   next();
+}
+function activityMemberCannotBeRemoved(g, k){
+  if (!g || !(g.actId || g.expId)) return false;
+  if (g.actId) { const a = mineById(g.actId); return !!(a && a.appl.some(x=>x.k===k && x.st==='accepted')); }
+  return g.mem.some(m=>m.k===k && m.role!=='owner');
 }
 const lockMsg = {
   delete:'You can’t delete this activity while its schedule is active. You can delete it after the last session ends.',
@@ -9046,15 +9079,15 @@ V.actd = () => { const a = cur(); if (!a) return V.actmine(); const s = stOf(a);
   const row = (act, i, t, sub, locked, danger) => `<button class="gx-sr ${locked?'locked':''} ${danger?'dng':''}" data-act="${act}"><span class="gx-si">${ic(locked?'lock':i)}</span><span><b>${t}</b><small>${sub}</small></span>${ic('chev')}</button>`;
   const canEdit = !(isActive(a) && accPax(a) > 0);
   const rows = [row('actEdit','pen','Edit activity', a.status==='live' ? 'Saving sends it back to review' : 'Change details and resubmit', !canEdit)];
-  if (a.status === 'live') rows.push(row('actUnlist', a.listed?'eyeoff':'eye', a.listed?'Unlist activity':'List again', a.ended ? (a.listed?'Hide it from Discover. The group stays active':'Show it in Discover again') : 'Available after the last session ends', isActive(a)));
+  if (a.status === 'live') rows.push(row('actUnlist', a.listed?'eyeoff':'eye', a.listed?'Unlist activity':'List again', hasEnded(a) ? (a.listed?'Hide it from Discover. The group stays active':'Show it in Discover again') : 'Available after the last session ends', isActive(a)));
   rows.push(row('actDelete','trash','Delete activity', isActive(a) ? 'Available after the last session ends' : g ? 'Choose what happens to the group chat' : 'Removes it for good', isActive(a), !isActive(a)));
   const note = a.status==='review' ? `<div class="act-banner">${ic('clock')}<span><b>Waiting for review</b>An admin checks new activities, usually within 24 hours. The group chat is created once it’s approved.</span></div>`
     : a.status==='rejected' ? `<div class="act-banner rej">${ic('alert')}<span><b>Not approved</b>${esc(a.note||'Please check the details and resubmit.')}</span></div>`
-    : a.ended ? `<div class="act-banner off">${ic('check')}<span><b>All sessions ended</b>You can now unlist or delete it, and members can leave the group.</span></div>` : '';
+    : hasEnded(a) ? `<div class="act-banner off">${ic('check')}<span><b>All sessions ended</b>You can now unlist or delete it, and members can leave the group.</span></div>` : '';
   return `<div class="screen">${statusBar()}${topBar('My activity')}<div class="scroll" style="padding:4px 16px 24px">
     <div class="act-hero">${img(a.img, a.title)}<i class="act-st ${s[1]}">${s[0]}</i></div>
     <h1 class="act-t">${esc(a.title)}</h1>
-    <p class="act-price"><b>Free</b> · ${a.auto ? 'instant join, no approval' : 'you approve each request'}</p>
+    <p class="act-price"><b>Free</b> · you approve each request</p>
     ${note}
     ${a.status==='live' ? `<div class="act-tiles">
       <button data-act="actAppl"><i>${ic('person')}</i><b>${nw}</b><small>New requests</small></button>
@@ -9062,7 +9095,7 @@ V.actd = () => { const a = cur(); if (!a) return V.actmine(); const s = stOf(a);
       <button data-act="actGroup" ${g?'':'disabled'}><i>${ic('chat')}</i><b>Group</b><small>${g?'Open chat':'Not created'}</small></button></div>` : ''}
     <p class="gx-sl">Sessions</p><div class="gx-sg">${a.sess.map(([id,d,t]) => `<div class="act-sess"><span class="gx-si">${ic('cal')}</span><span><b>${d}</b><small>${t}</small></span><em>${a.appl.filter(x=>x.sess===id && x.st==='accepted').reduce((n,x)=>n+x.pax,0)} joined</em></div>`).join('')}</div>
     <p class="gx-sl">Manage</p><div class="gx-sg">${rows.join('')}</div>
-    <p class="gx-sl">Details</p><div class="gx-sg act-kv"><div><span>Category</span><b>${esc(a.cat)} · ${esc(a.sub)}</b></div><div><span>Meeting point</span><b>${esc(a.loc[0])}</b></div><div><span>Participants</span><b>Min ${a.min}${a.maxOn?' · max '+a.max:' · no max'}</b></div><div><span>Join approval</span><b>${a.auto?'Not needed':'Required'}</b></div></div>
+    <p class="gx-sl">Details</p><div class="gx-sg act-kv"><div><span>Category</span><b>${esc(a.cat)} · ${esc(a.sub)}</b></div><div><span>Meeting point</span><b>${esc(a.loc[0])}</b></div><div><span>Participants</span><b>Min ${a.min}${a.maxOn?' · max '+a.max:' · no max'}</b></div><div><span>Join approval</span><b>Required</b></div></div>
   </div></div>`; };
 
 V.actedit = () => { const a = cur(), c = S.cx; if (!a || !c || !c.editId) return V.actd();
@@ -9083,7 +9116,7 @@ V.actedit = () => { const a = cur(), c = S.cx; if (!a || !c || !c.editId) return
     ${section('Activities', activities, 4)}
     ${section('Location', `${esc(loc[0])}${loc[1]?` · ${esc(loc[1])}`:''}`, 5)}
     ${section('Schedule', schedule, 6)}
-    ${section('Participants', `Min ${c.min} · ${c.maxOn?'Max '+c.max:'No maximum'}<br>${c.auto?'Instant join':'Approval required'}`, 7)}
+    ${section('Participants', `Min ${c.min} · ${c.maxOn?'Max '+c.max:'No maximum'}<br>Owner approval required`, 7)}
   </div><div class="cta">${btn('Save & resubmit','actSubmit')}</div></div>`; };
 
 V.actappl = () => { const a = cur(); const t = S.actAt || 'new';
@@ -9125,10 +9158,6 @@ V.cexp = () => { const c = S.cx; if (!c || !c.act) return _cexp();
     if (descriptions[n]) h = h.replace(/<p class="t-body muted" style="margin:0 0 (?:10|12)px">[\s\S]*?<\/p>/, `<p class="t-body muted" style="margin:0 0 12px">${descriptions[n]}</p>`);
   }
   if (c.editSection) h = h.replace(/data-act="cx(?:Back|Leave)"/g, 'data-act="actEditSectionBack"');
-  if (n === 7) {
-    const card = `<div class="act-auto"><span class="gx-si">${ic('person')}</span><span><b>Let people join without approval</b><small>${c.auto ? 'Anyone who requests joins right away and is added to the group chat.' : 'You review each request before people join.'}</small></span><button class="switch ${c.auto?'on':''}" role="switch" aria-checked="${!!c.auto}" data-act="actAutoTog" aria-label="Let people join without approval"><i></i></button></div>`;
-    const k = h.lastIndexOf('</div>\n  <div class="cta">'); if (k > 0) h = h.slice(0, k) + card + h.slice(k);
-  }
   if (c.editSection) {
     h = h.replace(/<div class="cta">[\s\S]*$/, `<div class="cta">${btn('Save changes','cxNext',{disabled:!cxValid(n)})}</div></div>`);
   } else if (displayStep === 7) {
@@ -9147,11 +9176,12 @@ A.cxNext = (orig => el => { const c = S.cx; if (c && c.act) {
 const _vexpA = V.exp;
 V.exp = () => { let h = _vexpA(); const e = expById(S.exp) || EXPERIENCES[0]; C6();
   const i = h.lastIndexOf('<div class="cta'); if (i < 0) return h;
-  const r = AV.req[e.id]; const auto = !!AUTO_EXP[e.id]; const cross = e.country !== userCountry();
+  const r = AV.req[e.id]; const cross = e.country !== userCountry(); const available = sessOf(e.id).some(s=>s[3]>0);
   const own = e.host === 'elsa';
-  let label = auto ? 'Join' : 'Request to Join', act = 'actJoin', dis = false, left = `<b>Free</b><small>${auto ? 'instant join' : 'owner approves'}</small>`;
+  let label = 'Request to Join', act = 'actJoin', dis = false, left = `<b>Free</b><small>owner approves</small>`;
   if (own) { label = 'Manage activity'; act = 'actManageOwn'; left = `<b>Free</b><small>your activity</small>`; }
-  else if (e.full) { label = 'Fully Booked'; dis = true; }
+  else if (e.full || !available) { label = 'Fully Booked'; dis = true; }
+  else if (sessionsEnded(sessOf(e.id))) { label = 'Activity Ended'; dis = true; }
   else if (cross) { label = 'Not in your country'; dis = true; }
   else if (r && r.st === 'pending') { label = 'Request Sent'; dis = true; left = `<b>Pending</b><small><button class="link" data-act="actWithdraw" data-id="${e.id}">Withdraw request</button></small>`; }
   else if (r && r.st === 'accepted') { label = 'Open group chat'; act = 'actOpenExpGroup'; left = `<b class="act-okt">Joined</b><small>You’re in</small>`; }
@@ -9166,10 +9196,10 @@ function joinExpGroup(e){
   if (!g) { const host = pk(e.host);
     g = {id, group:true, name:'Activity: ' + e.title, letter:e.title[0], logo:false, photo:e.img, unread:1, at:'Now', expId:e.id,
       bio:`This group is linked to the activity “${e.title}”. Everyone who joins is added here automatically.`,
-      mem:[{k:host, role:'owner'}, {k:'maulaura', role:'member'}, {k:'maulana', role:'member'}], perm:GPERM0(),
+      mem:[{k:host, role:'owner', joinedAt:0}, {k:'maulaura', role:'member', joinedAt:1}, {k:'maulana', role:'member', joinedAt:2}], perm:GPERM0(),
       msgs:[{id:'ge'+e.id+'1', gsys:`Group created for this activity. <b>${esc(who2(host).n)}</b> is the admin`, at:'09:00'}, {id:'ge'+e.id+'2', t:'text', who:host, text:'Welcome! See you at the meeting point 👋', at:'09:05'}]};
     c.convs.unshift(g); }
-  if (!g.mem.some(m=>m.k==='me')) { g.mem.push({k:'me', role:'member'}); g.msgs.push({id:'ge'+Date.now(), gsys:'<b>You</b> joined group', at:'Now'}); }
+  if (!g.mem.some(m=>m.k==='me')) { const request = AV.req[e.id]; g.mem.push({k:'me', role:'member', joinedAt:request && request.joinedAt || ++AV.joinSeq}); g.msgs.push({id:'ge'+Date.now(), gsys:'<b>You</b> joined group', at:'Now'}); }
   return g;
 }
 
@@ -9177,12 +9207,12 @@ function joinExpGroup(e){
 const _ovAct = overlayHTML;
 overlayHTML = () => { let h = _ovAct();
   const sh = (inner, label) => `<div class="scrim ${S.sheetAnim?'anim':''}" data-act="actSheetX"></div><div class="sheet gx-sheet ${S.sheetAnim?'anim':''}" role="dialog" aria-label="${label}"><div class="grab" aria-hidden="true"></div>${inner}</div>`;
-  if (S.sheet === 'actKyc') h += sh(`<div class="act-kyc"><span class="apgate-ic">${ic('verify')}</span><p class="sh-t">Verify your identity first</p><p class="sh-s">Badge Verification is needed to create or join activities. It takes about 2 minutes.</p>${btn('Start Badge Verification','actKycGo')}<button class="act-later" data-act="actSheetX">Not now</button></div>`, 'Verify your identity');
-  if (S.sheet === 'actJoinS') { const e = expById(S.exp); const ss = sessOf(e.id); const sel = S.actSess || (ss.find(s=>s[3]>0)||ss[0])[0]; const s = ss.find(x=>x[0]===sel); const maxP = Math.min(s[3], 10); const pax = Math.min(S.actPax||1, maxP); const auto = !!AUTO_EXP[e.id];
-    h += sh(`<p class="sh-t">${auto?'Join activity':'Request to Join'}</p><p class="sh-s">${auto?'You join right away and enter the group chat.':'The owner reviews your request. It stays open until they answer.'}</p>
+  if (S.sheet === 'actKyc') h += sh(`<div class="act-kyc"><span class="apgate-ic">${ic('verify')}</span><p class="sh-t">Verify your identity first</p><p class="sh-s">Badge Verification is needed to create an activity. It takes about 2 minutes.</p>${btn('Start Badge Verification','actKycGo')}<button class="act-later" data-act="actSheetX">Not now</button></div>`, 'Verify your identity');
+  if (S.sheet === 'actJoinS') { const e = expById(S.exp); const ss = sessOf(e.id); const sel = S.actSess || (ss.find(s=>s[3]>0)||ss[0])[0]; const s = ss.find(x=>x[0]===sel); const maxP = Math.max(0,s[3]); const pax = Math.min(S.actPax||1, maxP);
+    h += sh(`<p class="sh-t">Request to Join</p><p class="sh-s">The owner reviews your request. It stays open until they answer.</p>
       <p class="gx-sl" style="margin-left:4px">Choose a session</p><div class="gx-sg">${ss.map(([id,d,t,left])=>`<button class="act-ss ${id===sel?'on':''}" data-act="actSess" data-id="${id}" ${left?'':'disabled'}><span><b>${d}</b><small>${t}</small></span><em>${left?left+' spots left':'Full'}</em><i class="act-rad"></i></button>`).join('')}</div>
       <p class="gx-sl" style="margin-left:4px">How many people</p><div class="act-pax"><span><b>${pax} ${pax>1?'people':'person'}</b><small>Up to ${maxP} for this session</small></span><span class="act-step"><button data-act="actPax" data-d="-1" ${pax<=1?'disabled':''} aria-label="Fewer">−</button><b>${pax}</b><button data-act="actPax" data-d="1" ${pax>=maxP?'disabled':''} aria-label="More">+</button></span></div>
-      <div style="margin-top:16px">${btn(auto?'Join now':'Send request','actJoinGo')}</div>`, 'Request to Join'); }
+      <div style="margin-top:16px">${btn('Send request','actJoinGo',{disabled:maxP===0})}</div>`, 'Request to Join'); }
   if (S.dialog === 'actLock') h += gModal('alert', 'Not available yet', esc(S.actLock||''), ['Okay','closeDialog']);
   if (S.dialog === 'actConfirm') h += gModal('edit', S.cx && S.cx.editId ? 'Resubmit activity?' : 'Create activity?', S.cx && S.cx.editId ? 'Your changes go to admin review. The activity is hidden until it’s approved again.' : 'Please check the details. Your activity goes to admin review before people can see it.', [S.cx && S.cx.editId ? 'Resubmit' : 'Create', 'actCreateOk'], ['Cancel','closeDialog']);
   if (S.dialog === 'actDone') h += gModal('check', S.actDoneEdit ? 'Changes submitted!' : 'Activity created!', `“${esc(S.actDoneName||'')}” is now in review. We’ll notify you once it’s approved, usually within 24 hours. The group chat is created after approval.`, ['View activity','actDoneView'], ['Back to My Activities','closeDialog']);
@@ -9193,23 +9223,31 @@ overlayHTML = () => { let h = _ovAct();
       : gModal('trash', 'Delete activity?', `“${esc(a.title)}” will be removed for good.`, ['Delete','actDelOk'], ['Cancel','closeDialog']); }
   if (S.dialog === 'actWd') h += gModal('alert', 'Withdraw request?', 'The owner won’t see your request anymore. You can send a new one later.', ['Withdraw','actWithdrawOk'], ['Keep request','closeDialog']);
   return h; };
+const _actGroupOverlay = overlayHTML;
+overlayHTML = () => {
+  let h = _actGroupOverlay();
+  if (S.sheet !== 'gMem') return h;
+  const g = grp();
+  if (g && activityMemberCannotBeRemoved(g,S.gmk))
+    h = h.replace(/<button\b(?=[^>]*data-act="gMemAct")(?=[^>]*data-a="remove")[^>]*>[\s\S]*?<\/button>/, '');
+  return h;
+};
 
 /* ---------- actions ---------- */
 Object.assign(A, {
   actMine: () => { S.actTab = S.actTab || 'created'; go('actmine'); },
   actTab: el => { S.actTab = el.dataset.k; render(); },
   actOpen: el => { S.actId = el.dataset.id; go('actd'); },
-  actCreate: () => actGate(() => { S.cx = {step:1, act:true, auto:false, cat:'', sub:'', title:'', desc:'', photos:[], acts:[{img:'', t:'', d:''}], loc:null, sched:{}, min:1, maxOn:true, max:10, price:'0', priceErr:false}; S.cxMon=9; S.cxDate=null; go('cexp'); }),
+  actCreate: () => actGate(() => { const now = new Date(); S.cx = {step:1, act:true, cat:'', sub:'', title:'', desc:'', photos:[], acts:[{img:'', t:'', d:''}], loc:null, sched:{}, min:1, maxOn:true, max:10, price:'0', priceErr:false}; S.cxMon=now.getMonth(); S.cxYear=now.getFullYear(); S.cxDate=null; go('cexp'); }),
   actKycGo: () => { S.sheet = null; A.kycGate({dataset:{from:'activity'}}); },
   actSheetX: () => { S.sheet = null; render(); },
-  actAutoTog: () => { S.cx.auto = !S.cx.auto; render(); },
   actSubmit: () => { if (!cxValid(7)) { toast('Check the participant numbers.','err'); return; } S.dialog = 'actConfirm'; render(); },
   actCreateOk: () => { const c = S.cx; S.dialog = null;
     if (scen.network==='offline') { toast('No internet connection. Your answers are kept, try again.','err'); render(); return; }
     const sess = []; Object.entries(c.sched).forEach(([k, arr]) => { const [y,m,d] = k.split('-').map(Number); const dt = new Date(y, m-1, d); arr.forEach(([s,e2], i) => sess.push([k+'-'+i, dt.toLocaleDateString('en-GB',{weekday:'short', day:'numeric', month:'short', year:'numeric'}), `${hh(s)} - ${hh(e2)}`])); });
     let a;
-    if (c.editId) { a = mineById(c.editId); Object.assign(a, {title:c.title, desc:c.desc, img:c.photos[0]||a.img, photos:c.photos, cat:c.cat, sub:c.sub, loc:c.loc||a.loc, min:c.min, maxOn:c.maxOn, max:c.max, auto:c.auto, acts:c.acts.map(x=>({...x})), sess:sess.length?sess:a.sess, status:'review', note:null}); }
-    else { a = {id:'a'+(++AV.seq), title:c.title, img:c.photos[0]||'act1', photos:c.photos, cat:c.cat, sub:c.sub, desc:c.desc, acts:c.acts.map(x=>({...x})), loc:c.loc||['Meeting point',''], min:c.min, maxOn:c.maxOn, max:c.max, auto:!!c.auto, status:'review', ended:false, listed:true, sess:sess.length?sess:[['s1','Sat, 31 Oct 2026','09:00 AM - 11:00 AM']], appl:[]}; AV.mine.unshift(a); }
+    if (c.editId) { a = mineById(c.editId); Object.assign(a, {title:c.title, desc:c.desc, img:c.photos[0]||a.img, photos:c.photos, cat:c.cat, sub:c.sub, loc:c.loc||a.loc, min:c.min, maxOn:c.maxOn, max:c.max, acts:c.acts.map(x=>({...x})), sess:sess.length?sess:a.sess, status:'review', ended:false, note:null}); }
+    else { a = {id:'a'+(++AV.seq), title:c.title, img:c.photos[0]||'act1', photos:c.photos, cat:c.cat, sub:c.sub, desc:c.desc, acts:c.acts.map(x=>({...x})), loc:c.loc||['Meeting point',''], min:c.min, maxOn:c.maxOn, max:c.max, status:'review', ended:false, listed:true, sess, appl:[]}; AV.mine.unshift(a); }
     S.actId = a.id; S.actDoneName = a.title; S.actDoneEdit = !!c.editId; S.cx = null;
     const i = S.hist.lastIndexOf('actmine'); if (i >= 0) S.hist = S.hist.slice(0, i); else S.hist = S.hist.filter(x => x !== 'cexp' && x !== 'actd');
     S.actTab = 'created'; go('actmine', {replace:true}); S.dialog = 'actDone'; render(); },
@@ -9217,7 +9255,7 @@ Object.assign(A, {
   actAppl: el => { S.actAt = (el && el.dataset && el.dataset.t) || 'new'; go('actappl'); },
   actAt: el => { S.actAt = el.dataset.k; render(); },
   actApplAct: el => { const a = cur(); const x = a.appl.find(y=>y.id===el.dataset.id); x.st = el.dataset.a; const p = who2(x.k);
-    if (x.st === 'accepted') { const g = a.gid && findGroup(a.gid); if (g && !g.mem.some(m=>m.k===x.k)) { g.mem.push({k:x.k, role:'member'}); gMsg(g, `<b>${esc(p.n)}</b> joined group`); } toast(`${p.n} accepted and added to the group chat.`); }
+    if (x.st === 'accepted') { x.joinedAt = ++AV.joinSeq; const g = a.gid && findGroup(a.gid); if (g && !g.mem.some(m=>m.k===x.k)) { g.mem.push({k:x.k, role:'member', joinedAt:x.joinedAt}); gMsg(g, `<b>${esc(p.n)}</b> joined group`); } toast(`${p.n} accepted and added to the group chat.`); }
     else toast(`${p.n}’s request was rejected.`);
     render(); },
   actGroup: () => { const a = cur(); if (!a.gid) return; S.conv = a.gid; S.gid = a.gid; go('chat'); setTimeout(scrollChat, 20); },
@@ -9237,9 +9275,9 @@ Object.assign(A, {
       sched[key].push(hours);
     }
     const acts = a.acts && a.acts.length ? a.acts.map(x=>({...x})) : [{img:'', t:a.title, d:a.desc||''}];
-    S.cx = {step:1, act:true, editId:a.id, auto:a.auto, cat:a.cat, sub:a.sub, title:a.title, desc:a.desc, photos:[...a.photos], acts, loc:a.loc, sched, min:a.min, maxOn:a.maxOn, max:a.max, price:'0', priceErr:false};
+    S.cx = {step:1, act:true, editId:a.id, cat:a.cat, sub:a.sub, title:a.title, desc:a.desc, photos:[...a.photos], acts, loc:a.loc, sched, min:a.min, maxOn:a.maxOn, max:a.max, price:'0', priceErr:false};
     const firstDate = Object.keys(sched).sort()[0] || null;
-    S.cxMon = firstDate ? Number(firstDate.split('-')[1])-1 : 9; S.cxDate=firstDate; go('actedit'); },
+    const now = new Date(); S.cxMon = firstDate ? Number(firstDate.split('-')[1])-1 : now.getMonth(); S.cxYear = firstDate ? Number(firstDate.split('-')[0]) : now.getFullYear(); S.cxDate=firstDate; go('actedit'); },
   actUnlist: () => { const a = cur(); if (isActive(a)) { lock('unlist'); return; } a.listed = !a.listed; render(); toast(a.listed ? 'Activity is listed again.' : 'Activity unlisted. The group chat stays active.'); },
   actDelete: () => { const a = cur(); if (isActive(a)) { lock('delete'); return; } S.dialog = 'actDel'; render(); },
   actDelOk: el => { const a = cur(); const g = a.gid && findGroup(a.gid); const mode = el.dataset.g; S.dialog = null;
@@ -9247,12 +9285,16 @@ Object.assign(A, {
     if (g && mode === 'keep') { g.name = g.name.replace(/^Activity:\s*/, ''); delete g.actId; g.bio = ''; gMsg(g, 'The activity was deleted. This is now a regular group.'); }
     AV.mine = AV.mine.filter(x => x !== a); back(); toast(g ? (mode==='del' ? 'Activity and group deleted.' : 'Activity deleted. The group is now a regular group.') : 'Activity deleted.'); },
   /* participant */
-  actJoin: el => actGate(() => { const e = expById(el.dataset.id); S.exp = e.id; S.actSess = null; S.actPax = 1; openSheet('actJoinS'); }),
+  actJoin: el => { if (S.session !== 'user') { if (A.g7Login) A.g7Login(); else openSheet('login'); return; }
+    const e = expById(el.dataset.id); const ss = sessOf(e.id);
+    if (e.full || AV.req[e.id] || !ss.some(s=>s[3]>0) || sessionsEnded(ss) || e.country!==userCountry()) return;
+    S.exp = e.id; S.actSess = null; S.actPax = 1; openSheet('actJoinS'); },
   actSess: el => { S.actSess = el.dataset.id; S.actPax = 1; S.sheetAnim = false; render(); },
   actPax: el => { S.actPax = Math.max(1, (S.actPax||1) + (+el.dataset.d)); S.sheetAnim = false; render(); },
-  actJoinGo: () => { const e = expById(S.exp); const ss = sessOf(e.id); const sel = S.actSess || (ss.find(s=>s[3]>0)||ss[0])[0]; const s = ss.find(x=>x[0]===sel); const pax = Math.min(S.actPax||1, s[3], 10);
-    const auto = !!AUTO_EXP[e.id]; AV.req[e.id] = {st: auto ? 'accepted' : 'pending', sess:sel, pax, at:'Now'}; s[3] -= pax; S.sheet = null;
-    if (auto) { joinExpGroup(e); render(); toast('You joined. Say hi in the group chat!'); } else { render(); toast('Request sent. The owner will review it.'); } },
+  actJoinGo: () => { const e = expById(S.exp); const ss = sessOf(e.id); const sel = S.actSess || (ss.find(s=>s[3]>0)||ss[0])[0]; const s = ss.find(x=>x[0]===sel);
+    if (!s || s[3] <= 0 || e.full || AV.req[e.id] || e.country!==userCountry() || sessionsEnded(ss)) { S.sheet=null; render(); toast('This session is no longer available.','err'); return; }
+    const pax = Math.min(S.actPax||1, s[3]); AV.req[e.id] = {st:'pending', sess:sel, pax, at:'Now'}; s[3] -= pax; S.sheet = null;
+    render(); toast('Request sent. The owner will review it.'); },
   actWithdraw: el => { S.actWdId = el.dataset.id; S.dialog = 'actWd'; render(); },
   actWithdrawOk: () => { const r = AV.req[S.actWdId]; if (r) { const s = sessOf(S.actWdId).find(x=>x[0]===r.sess); if (s) s[3] += r.pax; } delete AV.req[S.actWdId]; S.dialog = null; render(); toast('Request withdrawn.'); },
   actOpenExpGroup: el => { const e = expById(el.dataset.id); const g = joinExpGroup(e); S.conv = g.id; S.gid = g.id; go('chat'); setTimeout(scrollChat, 20); },
@@ -9262,13 +9304,14 @@ Object.assign(A, {
 });
 
 /* group: lock leave while the activity runs; owner hand-over after it ends */
-const groupAct = g => g && (g.actId ? mineById(g.actId) : null);
-const groupRunning = g => { if (!g) return false; if (g.actId) { const a = mineById(g.actId); return !!(a && isActive(a)); } if (g.expId) return !AV.expEnded; return false; };
+const groupRunning = g => { if (!g) return false; if (g.actId) { const a = mineById(g.actId); return !!(a && isActive(a)); } if (g.expId) return !AV.expEnded && !sessionsEnded(sessOf(g.expId)); return false; };
 A.gLeave = (orig => el => { const g = grp(); if (groupRunning(g)) { lock('leave'); return; } orig(el); })(A.gLeave);
-A.gDlgOk = (orig => el => { const g = grp(); if (S.gDlg === 'leave' && g && (g.actId || g.expId) && myRole(g) === 'owner') {
+A.gMemAct = (orig => el => { const g = grp(); if (el.dataset.a==='remove' && activityMemberCannotBeRemoved(g,S.gmk)) { S.sheet=null; toast('Accepted participants can’t be removed from an activity group.','err'); render(); return; } orig(el); })(A.gMemAct);
+A.gDlgOk = (orig => el => { const g = grp(); if (S.gDlg==='remove' && activityMemberCannotBeRemoved(g,S.gmk)) { S.dialog=null; toast('Accepted participants can’t be removed from an activity group.','err'); render(); return; }
+  if (S.gDlg === 'leave' && g && (g.actId || g.expId) && myRole(g) === 'owner') {
     const others = g.mem.filter(m => m.k !== 'me');
     if (!others.length) { S.dialog = null; const c = C6(); c.convs = c.convs.filter(v => v !== g); gHome(); toast('You were the last member, so the group was closed.'); return; }
-    const next = others[0]; next.role = 'owner'; gMsg(g, `<b>${esc(who2(next.k).n)}</b> is now the group admin`); orig(el); setTimeout(() => toast(`You left. ${who2(next.k).n} is now the group admin.`), 50); return; }
+    const next = others.reduce((old,m) => !old || (m.joinedAt!=null && (old.joinedAt==null || m.joinedAt<old.joinedAt)) ? m : old, null); next.role = 'owner'; gMsg(g, `<b>${esc(who2(next.k).n)}</b> is now the group admin`); orig(el); setTimeout(() => toast(`You left. ${who2(next.k).n} is now the group admin.`), 50); return; }
   orig(el); })(A.gDlgOk);
 
 /* group info: linked activity data for other modules */
@@ -9302,9 +9345,11 @@ function adminReview(ok){ C6(); const a = AV.mine.find(x => x.status === 'review
   if (ok) { a.status = 'live'; a.listed = true; a.ended = false; mkGroup(C6(), a); push('Activity approved', `“${a.title}” is live. Its group chat is ready.`); }
   else { a.status = 'rejected'; a.note = 'The photos are unclear. Please add brighter photos of the activity.'; push('Activity not approved', `“${a.title}” needs a few changes.`); }
   S.actId = a.id; return a; }
-function endSessions(){ C6(); const a = AV.mine.find(x => x.status === 'live' && !x.ended); if (!a) { toast('No running activity.'); return null; } a.ended = true; S.actId = a.id; toast(`All sessions of “${a.title}” ended.`); return a; }
-function ownerAnswers(ok){ const id = Object.keys(AV.req).find(k => AV.req[k].st === 'pending'); if (!id) { toast('No pending request to answer.'); return; } AV.req[id].st = ok ? 'accepted' : 'rejected'; const e = expById(id);
-  if (ok) { joinExpGroup(e); push('Request accepted', `You’re in “${e.title}”. You were added to the group chat.`); } else push('Request not accepted', `The owner of “${e.title}” didn’t accept this time.`); render(); }
+function endSessions(){ C6(); const a = AV.mine.find(isActive); if (!a) { toast('No running activity.'); return null; } a.ended = true; S.actId = a.id; toast(`All sessions of “${a.title}” ended.`); return a; }
+function ownerAnswers(ok){ const id = Object.keys(AV.req).find(k => AV.req[k].st === 'pending'); if (!id) { toast('No pending request to answer.'); return; } const r = AV.req[id]; r.st = ok ? 'accepted' : 'rejected'; const e = expById(id);
+  if (ok) { r.joinedAt = ++AV.joinSeq; joinExpGroup(e); push('Request accepted', `You’re in “${e.title}”. You were added to the group chat.`); }
+  else { const s = sessOf(id).find(x=>x[0]===r.sess); if (s) s[3] += r.pax; push('Request not accepted', `The owner of “${e.title}” didn’t accept this time.`); }
+  render(); }
 Object.assign(A, {
   actSimApprove: () => { if (adminReview(true)) { go('actd'); } },
   actSimReject: () => { if (adminReview(false)) { go('actd'); } },
@@ -9340,7 +9385,7 @@ try { render(); } catch(e) {}
 (function(){
   V.actmine = () => { C6(); const tab = (S.actTab === 'applied') ? 'applied' : 'event';
     const tabs = `<div class="gtabs n2 act-tabs" role="tablist">${[['applied','Applied'],['event','My Event']].map(([k,t])=>`<button role="tab" aria-selected="${tab===k}" data-act="actTab" data-k="${k}">${t}</button>`).join('')}</div>`;
-    const ST = a => a.status==='review' ? ['In review','pend'] : a.status==='rejected' ? ['Rejected','rej'] : a.ended ? (a.listed?['Ended','off']:['Unlisted','off']) : a.listed ? ['Live','ok'] : ['Unlisted','off'];
+    const ST = a => a.status==='review' ? ['In review','pend'] : a.status==='rejected' ? ['Rejected','rej'] : window.__actEnded(a) ? (a.listed?['Ended','off']:['Unlisted','off']) : a.listed ? ['Live','ok'] : ['Unlisted','off'];
     const acc = a => a.appl.filter(x=>x.st==='accepted').reduce((n,x)=>n+x.pax,0);
     let body;
     if (tab === 'event') {
@@ -9655,20 +9700,6 @@ try { render(); } catch(e) {}
     const fab = `<button class="gc-fab" data-act="${add ? 'gAddGo' : 'gPickNext'}" aria-label="${label}" ${dis ? 'aria-disabled="true"' : ''}>${add || f.mode === 'fadd' ? CHECK : ARROW}${n ? `<i>${n}</i>` : ''}</button>`;
     return h.replace(/<div class="cta">[\s\S]*?<\/div><\/div>\s*$/, `${fab}</div>`); };
   A.gAddGo = (orig => el => { if (!(S.gf && (S.gf.sel||[]).length)) { toast('Select at least one person to add.'); return; } orig(el); })(A.gAddGo);
-  try { render(); } catch(e) {}
-})();
-
-/* ===== V2 · Discover › Activities: floating Manage Activity pill (next to Experiences when it shows) ===== */
-(function(){
-  const _vdAct = V.discover;
-  V.discover = () => { let h = _vdAct();
-    if (S.htab === 'feed' || S.seg !== 'activities') return h;
-    const manage = `<button class="planpill" data-act="actMineFromDisc">${ic('cal')}Manage Activity</button>`;
-    const m = h.match(/<button class="planpill"[^>]*>[\s\S]*?<\/button>/);
-    if (m) return h.replace(m[0], `<div class="pillrow">${m[0]}${manage}</div>`);
-    const i = h.lastIndexOf('<nav class="bnav"'); return i < 0 ? h : h.slice(0, i) + `<div class="pillrow">${manage}</div>` + h.slice(i); };
-  A.actMineFromDisc = () => { S.actTab = 'event'; go('actmine'); };
-  if (META.actmine) META.actmine.rules = ['Entry points: Discover › Activities › Manage Activity (floating pill, next to Experiences when the user has a booking), and You page › Explore feature › Activities', 'My Event: Create Activity at the bottom. Gate: guest → login, KYC not approved → Verify sheet, approved → form. After submit: back here with the “Activity created” dialog; Back returns to where the user came from (Discover)', 'Applied: requests you sent with Request to Join. Pending requests never expire; withdraw anytime'];
   try { render(); } catch(e) {}
 })();
 
