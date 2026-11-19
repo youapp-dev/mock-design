@@ -197,7 +197,8 @@
   .wallet-reference .prof .pf { width: 48px; height: 48px; }
 }
 .wallet-reference .wr-flow-field { font: 700 14px Inter, sans-serif; border: 1px solid #e9e0fb; border-radius: 12px; min-height: 44px; padding: 10px 12px; width: 100%; }
-.wallet-reference .wr-sheet-screen { position: relative; min-height: 690px; }
+.wallet-reference [data-reference].wr-sheet-screen { position: relative; height: 100%; min-height: 100%; padding-bottom: 0; }
+.wallet-reference .wr-sheet-screen .dim { display: flex; flex-direction: column; padding-bottom: 20px; }
 .wallet-reference .wr-sheet-screen .sheet { max-height: 96%; overflow: auto; }
 .wallet-reference .wr-sheet-screen .sec { margin-bottom: 8px; }
 .wallet-reference .keys [role="button"] { touch-action: manipulation; user-select: none; }
@@ -208,7 +209,14 @@
 .wallet-reference [data-reference] .alt,
 .wallet-reference [data-reference] .xn.bt { position: relative; inset: auto; margin: 20px 16px 4px; }
 .wallet-reference [data-reference] .xn.bt { margin-top: auto; }
-.wallet-reference .wr-picker-wallets { overflow-x: auto; scrollbar-width: thin; padding-bottom: 4px; }
+.wallet-reference .wr-picker-wallets, .wallet-reference .fch {
+  overflow-x: auto;
+  overflow-y: hidden;
+  overscroll-behavior-x: contain;
+  scrollbar-width: none;
+}
+.wallet-reference .wr-picker-wallets::-webkit-scrollbar, .wallet-reference .fch::-webkit-scrollbar { display: none; }
+.wallet-reference [data-reference="settingslong"] .sv { max-width: 46%; white-space: normal; text-align: right; overflow-wrap: anywhere; }
 .wallet-reference .ccs.wr-topup-options {
   flex-wrap: nowrap;
   padding: 2px 8px 2px 2px;
@@ -287,7 +295,6 @@
 .wallet-reference .wr-plan-dots > i.on { width: 30px; background: transparent; }
 .wallet-reference .wr-plan-dots > i.on::before { width: 22px; background: var(--pu); }
 .wallet-reference .wr-plan-dots + .swp { margin-top: 0; color: var(--mut); }
-.wallet-reference .fch { overflow-x: auto; scrollbar-width: thin; }
 .wallet-reference .fch > span { white-space: nowrap; }
 
 @container (max-width: 369px) {

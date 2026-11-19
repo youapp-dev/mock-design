@@ -83,6 +83,9 @@
   const referenceCurrency = reference('all');
   const flags = Object.fromEntries(['USD', 'SGD', 'MYR'].map((key, i) =>
     [key, $($$(referenceCurrency, '.cr')[i], 'svg').outerHTML]));
+  const topUpFlags = $$(reference('topup'), '.cc svg');
+  flags.JPY = topUpFlags[3].outerHTML;
+  flags.GBP = topUpFlags[4].outerHTML;
   const flag = key => flags[key] || `<span class="wr-currency-icon">${esc(key)}</span>`;
   const walletLogo = $(reference('all'), '.wc:nth-child(2) .wt').innerHTML;
 
@@ -592,21 +595,30 @@
     chips(sheet, '.wcs', wList(), wallet.id, 'walletPaymentWallet', false);
     walletList.insertAdjacentHTML('beforeend', `<div class="wc add"><span class="wt" style="background:#e9e0fb;width:24px;height:24px">${ic('plus')}</span><span><b>Connect</b>a wallet</span></div>`);
     nav(sheet, '.wc.add', 'walletConnect');
-    set(sheet, '.grp', `In ${wallet.id === 'ya' ? 'YouApp Wallet' : wallet.name}`);
-    for (const row of $$(sheet, '.cr, .grp:not(:first-of-type)')) row.remove();
-    let groupLabel = $(sheet, '.grp');
-    if (!groupLabel) {
-      walletList.insertAdjacentHTML('afterend', `<div class="grp">In ${esc(wallet.name)}</div>`);
-      groupLabel = $(sheet, '.grp');
-    }
+    for (const row of $$(sheet, '.cr, .grp')) row.remove();
     const groups = currencies([wallet]);
     const display = !isExternal && !groups.some(group => group.key === 'MYR') ? [...groups, {key:'MYR', units:0, rm:0}] : groups;
-    groupLabel.insertAdjacentHTML('afterend', display.map(currencyRow).join('') || note('No eligible balance in this wallet.'));
+    const label = `<div class="grp">In ${esc(moneyWalletName(wallet))}</div>`;
+    walletList.insertAdjacentHTML('afterend', label + (display.map(currencyRow).join('') || note('No eligible balance in this wallet.')));
     $$(sheet, '.cr').forEach((el, index) => {
       const key = display[index].key;
       el.classList.toggle('on', sourceInfo().wallet.id === wallet.id && sourceInfo().key === key);
       bind(el, 'walletPaymentSelect', {id:wallet.id, key});
     });
+    if (!isExternal) {
+      const missing = Object.keys(topUpAssets).filter(key => !display.some(group => group.key === key));
+      if (missing.length) {
+        sheet.insertAdjacentHTML('beforeend', '<div class="grp">Top up to use</div>');
+        for (const key of missing) {
+          const [name] = currencyInfo(key);
+          const row = document.createElement('div');
+          row.className = 'cr z';
+          row.innerHTML = `${flag(key)}<div><b>${esc(name)}</b></div><div class="rt"><b>${S.balHide ? '••••' : moneyIn(key, 0)}</b></div><a>Top up</a>`;
+          bind(row, 'walletReferenceTopUp', {key}, `Top up ${name}`);
+          sheet.append(row);
+        }
+      }
+    }
     if (isExternal) {
       set(sheet, '.xn span', `You’ll approve the payment in ${wallet.app}.`);
       const cta = $(sheet, '.paybtn');
@@ -676,7 +688,7 @@
       return remaining ? null : {wallet:wallet.id, name:wallet.name, app:wallet.ext ? wallet.app : '', key:source.key, units, rate, parts};
     },
     walletPaymentPick: () => { S.moneyPayWallet = sourceInfo().wallet.id; go('walletPaymentSource'); },
-    walletPaymentWallet: el => { S.moneyPayWallet = el.dataset.id; retainScroll(); },
+    walletPaymentWallet: el => { S.moneyPayWallet = el.dataset.id; retainScroll('.wr-picker-wallets'); },
     walletPaymentSelect: el => {
       const {id, key} = el.dataset;
       S.pay.source = id === 'ya' && key === 'MYR' ? null : {wallet:id, key};
@@ -892,7 +904,12 @@
   };
 
   Object.assign(A, {
-    walletReferenceTopUp: () => { S.walletTopUp = null; go('walletTopUp'); },
+    walletReferenceTopUp: el => {
+      S.walletTopUp = null;
+      const key = el?.dataset.key;
+      if (Object.hasOwn(topUpAssets, key)) topUp().currency = key;
+      go('walletTopUp');
+    },
     walletTopUpCurrency: el => selectTopUpOption(el, 'currency'),
     walletTopUpMethod: el => {
       const t = topUp();
@@ -1080,7 +1097,7 @@
       const rows = $$(frame, '.tx');
       const items = [
         ...(filter === 'referrals' ? [] : cashback.map(tx => ({id:tx.id, name:`Cashback · ${tx.merchant}`, detail:dateOf(tx), value:tx.cashback, action:'walletReferenceTx'}))),
-        ...(filter === 'cashback' ? [] : referral.history.map(entry => ({id:entry.id, name:`Referral · ${entry.n}`, detail:entry.d, value:rfAmt(entry), action:'rwOpen'}))),
+        ...(filter === 'cashback' ? [] : referral.history.map(entry => ({id:entry.id, name:`Referral · ${Array.from(entry.n)[0]}•••`, detail:entry.d, value:rfAmt(entry), action:'rwOpen'}))),
         ...(filter === 'all' ? (S.rfWd || []).map(item => ({name:'Moved to YouApp Wallet', detail:item.d, value:-item.v})) : []),
       ];
       const anchor = rows[0];
@@ -1148,7 +1165,7 @@
 
   Object.assign(A, {
     walletRewardFilter: el => { S.walletRewardFilter = el.dataset.key; retainScroll(); },
-    walletReferralFilter: el => { S.walletReferralFilter = el.dataset.key; retainScroll(); },
+    walletReferralFilter: el => { S.walletReferralFilter = el.dataset.key; retainScroll('.fch'); },
     walletReferenceShare: el => share(el.dataset.value, el.dataset.title),
     walletReferenceReferralQr: () => {
       if (S.screen !== 'invite') go('invite');
@@ -1183,7 +1200,9 @@
     const group = index => $$(groups[index], '.sr');
     const [history, connection, address, withdraw, travel] = group(0);
     bind(history, 'walletScanHistory');
-    set(connection, '.sv', wList().filter(wallet => wallet.ext).map(wallet => wallet.name).join(', ') || 'None');
+    set(history, 'small', 'Payments, top ups and bookings');
+    const connected = wList().filter(wallet => wallet.ext);
+    set(connection, '.sv', connected.length > 2 ? `${connected.length} connected` : connected.map(wallet => wallet.name).join(', ') || 'None');
     bind(connection, 'nav', {to:'walletConnect'});
     set(address, 'small', wHasYa() ? `${xsShort(W_ALL.ya.addr)} · Ethereum` : 'Create a YouApp Wallet first');
     click(address, '.sc', wHasYa() ? 'copy' : 'wCreateYa', {v:W_ALL.ya.addr}, wHasYa() ? 'Copy wallet address' : 'Create YouApp Wallet');

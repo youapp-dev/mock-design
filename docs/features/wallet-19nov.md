@@ -34,6 +34,8 @@ Wallet provider, quote, top up, dan pembayaran berjalan dengan data demo. QR sta
 
 Perbandingan Chrome pada tier Free memeriksa ukuran avatar, radius kartu, jarak chip, dan urutan profil terhadap HTML referensi. QA juga memeriksa banner di Free dan SVIP, perubahan nama setelah Save Changes, akses aksi wallet, dan teks verifikasi pada viewport 320 px.
 
+Audit ulang HTML memperbaiki posisi bottom sheet **Pay with** dan memulihkan **Top up to use** dengan mata uang yang dipilih langsung terisi. Deretan wallet dan filter teman tetap pada posisi swipe saat pilihan berubah. Histori referral menampilkan inisial saja. Settings merangkum jumlah wallet saat lebih dari dua provider terhubung.
+
 ## Batch 1
 
 Batch pertama mempercepat akses ke Scan to Pay dan menyamakan nominal dari Pay sampai History. Catatan di bawah mencatat desain dan pengujian batch tersebut sebelum layar diganti oleh redesign HTML di atas.
