@@ -72,7 +72,7 @@ let ws;
     ws.send(JSON.stringify({id, method, params}));
   });
   const evaluate = async expression => {
-    const result = await cdp('Runtime.evaluate', {expression, returnByValue:true});
+    const result = await cdp('Runtime.evaluate', {expression, returnByValue:true, awaitPromise:true});
     if (result.exceptionDetails) throw new Error(result.exceptionDetails.exception?.description || expression);
     return result.result.value;
   };
@@ -103,6 +103,33 @@ let ws;
   const frame = name => until(() => evaluate(`!!${inWallet(`[data-reference="${name}"]`)}`), name);
   const state = name => until(() => wallet(`S.screen === ${JSON.stringify(name)}`), name);
   const appState = name => until(() => app(`window.__state?.().screen === ${JSON.stringify(name)}`), name);
+  const assetPageRows = () => wallet(`Array.from(document.querySelectorAll('.wr-wallet-detail .wr-asset-row'), row => row.dataset.token)`);
+  const checkWalletAssets = async id => {
+    assert.equal(await wallet('S.wSel'), id);
+    assert.ok(await wallet(`(() => {
+      const content = document.querySelector('.wr-wallet-detail .wr-asset-holdings');
+      return content.previousElementSibling.matches('.wr-wallet-summary') &&
+        content.firstElementChild.matches('.wr-wallet-settings') &&
+        Boolean(content.querySelector('[data-s="wDisc"]')) === ${id !== 'ya'} &&
+        !content.querySelector('[data-act="xsOpen"], [data-act="wRecvOf"], [data-act="bills"], [data-msg*="Rename"]') &&
+        content.lastElementChild.matches('.wr-asset-wallet') &&
+        !/Hidden tokens/i.test(content.textContent) &&
+        Array.from(content.querySelectorAll('.wr-asset-pages button'), button => button.offsetWidth >= 44 && button.offsetHeight >= 44).every(Boolean);
+    })()`), 'Wallet controls precede the asset list');
+    const held = await wallet(`wToks(W_ALL[${JSON.stringify(id)}]).slice(0, 4).map(([token]) => token)`);
+    const rows = await assetPageRows();
+    assert.equal(rows.length, 4);
+    assert.deepEqual(rows.slice(0, held.length), held);
+    assert.equal(await wallet(`document.querySelector('[aria-label="Previous asset page"]').disabled`), true);
+  };
+  const checkWalletAddress = async id => {
+    const address = await wallet(`W_ALL[${JSON.stringify(id)}].addr`);
+    const short = await wallet(`document.querySelector('.wr-wallet-address .wr-asset-estimate').textContent`);
+    assert.ok(short.length < address.length);
+    await click('[aria-label="Copy wallet address"]');
+    await until(() => wallet(`S.toast?.text === 'Address copied.'`), 'clipboard confirmation');
+    assert.equal(await wallet('navigator.clipboard.readText()'), address);
+  };
   const screenshot = async file => {
     await until(() => wallet(`!S.toast`), 'toast to clear');
     await pause(100);
@@ -146,6 +173,7 @@ let ws;
 
   await cdp('Runtime.enable');
   await cdp('Page.enable');
+  await cdp('Browser.grantPermissions', {origin:new URL(address).origin, permissions:['clipboardReadWrite', 'clipboardSanitizedWrite']});
   await cdp('Page.navigate', {url:address});
   const ready = () => until(() => evaluate(`!document.getElementById('loading') && !!document.getElementById('w2')?.contentWindow.__state`), 'prototype');
   await ready();
@@ -284,23 +312,57 @@ let ws;
   await appAct('apWalletDone', '.rp20-wallet-option');
   assert.equal(await app('S.sheet'), null);
   await wallet(`scen.wl = ${JSON.stringify(connectedWallets ?? 'ya')}`);
+  await click('#apAmt', 'app');
+  await cdp('Input.insertText', {text:'10'});
+  await appAct('apMessage', '[data-v="0"]');
+  const themeColors = new Set();
   for (const theme of ['raya', 'deepavali', 'birthday', 'youapp', 'red']) {
     await appAct('apTheme', `[data-v="${theme}"]`);
     await until(() => app(`document.querySelector('.rp20-preview .rp20-packet')?.naturalWidth > 0`), `${theme} envelope artwork`);
     assert.ok(await app(`document.querySelector('.rp20-preview .rp20-packet').src.endsWith('${theme}-packet.svg')`));
     assert.equal(await app(`document.querySelector('[data-act="apTheme"][aria-pressed="true"]').dataset.v`), theme);
+    const colors = await app(`(() => {
+      const style = selector => getComputedStyle(document.querySelector(selector));
+      return [style('.ap-modes [aria-pressed="true"]').backgroundImage,
+        style('.rp20-presets [aria-pressed="true"]').backgroundImage,
+        style('.rp20-presets [aria-pressed="false"]').backgroundColor,
+        style('.ap-modes').backgroundColor, style('[data-act="apNext"]').backgroundImage];
+    })()`);
+    assert.match(colors[0], /^linear-gradient/);
+    assert.equal(colors[0], colors[1]);
+    assert.equal(colors[0], colors[4]);
+    assert.equal(colors[2], colors[3]);
+    themeColors.add(colors[0]);
   }
+  assert.equal(themeColors.size, 5);
   for (const mode of ['random', 'equal', 'lucky']) {
     await appAct('apType', `[data-v="${mode}"]`);
     assert.equal(await app(`!!document.getElementById('apCount')`), mode !== 'lucky');
+    assert.equal(await app(`document.getElementById('apAmtCurrency').textContent`), 'RM');
   }
   await click('#apAmt', 'app');
   await cdp('Input.insertText', {text:'10'});
   await appAct('apEditMessage');
+  await app(`window.qaMessageField = document.getElementById('apMsg'); true`);
+  await app(`window.qaMessageField.select()`);
   await cdp('Input.insertText', {text:'See you on Friday!'});
-  assert.equal(await app(`document.getElementById('apMsg').value`), 'See you on Friday!');
+  await app(`window.qaMessageField.setSelectionRange(11, 11); true`);
+  await cdp('Input.insertText', {text:'a sunny '});
+  const draft = 'See you on a sunny Friday!';
+  assert.deepEqual(await app(`(() => {
+    const field = document.getElementById('apMsg');
+    return [field === window.qaMessageField, field === document.activeElement, field.selectionStart, field.value, document.getElementById('apMsgCount').textContent];
+  })()`), [true, true, 19, draft, draft.length + '/50']);
+  await appAct('apEditMessage');
+  assert.equal(await app(`document.querySelector('.rp20-message-draft').textContent`), draft);
+  await appAct('apEditMessage');
+  assert.equal(await app(`document.activeElement.value`), draft);
+  await cdp('Input.dispatchKeyEvent', {type:'keyDown', key:'Enter', code:'Enter', windowsVirtualKeyCode:13});
+  await cdp('Input.dispatchKeyEvent', {type:'keyUp', key:'Enter', code:'Enter', windowsVirtualKeyCode:13});
+  assert.equal(await app(`document.activeElement.textContent`), 'Edit message');
   await appAct('apMessage', '[data-v="1"]');
   assert.equal(await app(`document.getElementById('apMsg').value`), '恭喜发财');
+  assert.equal(await app(`document.querySelector('[data-act="apMessage"][data-v="1"]').getAttribute('aria-pressed')`), 'true');
   await appAct('apExpiryOptions');
   await appAct('apForever');
   await appAct('apDur', '[data-v="custom"]');
@@ -331,15 +393,29 @@ let ws;
   await appAct('apAttach');
   await appAct('apNewCtx');
   await appState('apform');
-  assert.match(await app(`document.querySelector('.rp20-title').innerText`), /To YouApp Products/);
+  assert.equal(await app(`document.querySelector('.rp20-title b').textContent`), 'Create packet');
+  assert.equal(await app(`document.querySelector('.rp20-recipient-name').textContent`), 'To YouApp Products');
+  assert.equal(await app(`document.querySelector('.rp20-recipient-count').textContent`), '3 recipients');
+  assert.equal(await app(`!!document.getElementById('apCount')`), false);
   await appAct('apTheme', '[data-v="raya"]');
+  await appAct('apType', '[data-v="random"]');
+  assert.equal(await app(`document.getElementById('apCount').value`), '3');
+  assert.equal(await app(`document.querySelector('[data-act="apStep"][data-d="1"]').getAttribute('aria-disabled')`), 'true');
+  await click('#apCount', 'app');
+  await app(`document.getElementById('apCount').select()`);
+  await cdp('Input.insertText', {text:'4'});
+  assert.match(await app(`document.getElementById('apCountError').innerText`), /3 people/);
+  await click('#apCount', 'app');
+  await app(`document.getElementById('apCount').select()`);
+  await cdp('Input.insertText', {text:'3'});
   await appAct('apType', '[data-v="equal"]');
-  await appAct('apStep', '[data-d="1"]');
-  await appAct('apStep', '[data-d="1"]');
+  await appAct('apStep', '[data-d="-1"]');
+  assert.equal(await app(`document.querySelector('.rp20-recipient-count').textContent`), '2 recipients');
   await click('#apAmt', 'app');
   await cdp('Input.insertText', {text:'4'});
   assert.match(await app(`document.querySelector('[data-act="apNext"]').innerText`), /8\.00 MYRT/);
   await appAct('apNext');
+  assert.match(await app(`document.querySelector('.ap2-pin').innerText`), /To YouApp Products[\s\S]*Equal split · 2 people/);
   for (const digit of '123456') await appAct('key2', `[data-k="${digit}"]`);
   await appAct('pin7Confirm');
   await appState('apsending');
@@ -413,19 +489,10 @@ let ws;
   assert.equal(await wallet(`document.querySelector('.wr-wallet-detail .ttl').textContent`), 'YouApp Wallet');
   assert.match(await wallet(`document.querySelector('.wr-wallet-summary .wr-asset-summary-top > span').textContent`), /Main/);
   assert.equal(await wallet(`document.querySelector('.wr-wallet-summary .wr-asset-total').textContent`), await wallet(`RM(wRM(W_ALL.ya))`));
-  assert.deepEqual(await wallet(`Array.from(document.querySelectorAll('.wr-wallet-detail .wr-asset-row'), row => row.dataset.token)`), await wallet(`wToks(W_ALL.ya).map(([token]) => token)`));
+  await checkWalletAssets('ya');
+  assert.equal(await wallet(`document.querySelector('.wr-wallet-main').getAttribute('aria-disabled')`), 'true');
+  await checkWalletAddress('ya');
   await screenshot('youapp-wallet-details.png');
-  await act('xsOpen', '[data-from-wallet="ya"]');
-  await state('xsTo');
-  assert.equal(await wallet('xsInit().from'), 'ya');
-  await act('back');
-  await act('wRecvOf');
-  await state('xsRecv');
-  assert.equal(await wallet('S.wRecv'), 'ya');
-  await act('back');
-  await act('bills');
-  await state('bills');
-  await act('back');
   await act('back');
   await act('back');
   await act('nav', '[data-to="walletConnect"]');
@@ -463,7 +530,24 @@ let ws;
   await frame('currency');
   await click('.wr-asset-wallet header button[data-id="mm"]');
   await frame('externalwallet');
+  await checkWalletAssets('mm');
+  await checkWalletAddress('mm');
   await screenshot('metamask-wallet-details.png');
+  const discoveredAssets = await assetPageRows();
+  const nextAssetPage = '[aria-label="Next asset page"]';
+  const previousAssetPage = '[aria-label="Previous asset page"]';
+  await until(async () => {
+    if (await wallet(`document.querySelector(${JSON.stringify(nextAssetPage)}).disabled`)) return true;
+    await click(nextAssetPage);
+    discoveredAssets.push(...await assetPageRows());
+    return false;
+  }, 'last wallet asset page');
+  const registry = await wallet('Object.keys(seraTokenCurrencies)');
+  assert.equal(registry.length, 40);
+  assert.deepEqual(discoveredAssets, [...new Set(['USDC', 'USDT', 'PYUSD', 'MYRT', ...registry])]);
+  assert.match(await wallet(`document.querySelector('#wr-asset-page').textContent`), /^Page (\d+) of \1$/);
+  await click(previousAssetPage);
+  assert.equal((await assetPageRows()).length, 4);
   assert.equal(await wallet(`document.querySelector('[data-reference="externalwallet"]').querySelector('[data-act="xsOpen"], [data-act="wRecvOf"]')`), null);
   await act('walletMainToggle');
   assert.equal(await wallet('wMain().id'), 'mm');
@@ -654,14 +738,15 @@ let ws;
   await screenshot('wallet-us-dollar.png');
   await click('.wr-asset-wallet header button[data-id="okx"]');
   await frame('externalwallet');
-  assert.equal(await wallet('S.wSel'), 'okx');
+  await checkWalletAssets('okx');
+  await checkWalletAddress('okx');
   await screenshot('okx-wallet-details.png');
   await act('walletMainToggle');
   await act('back');
   await frame('currency');
   await click('.wr-asset-wallet header button[data-id="ya"]');
   await frame('youappwallet');
-  await act('wSetMain');
+  await act('walletMainToggle');
   assert.equal(await wallet('wMain().id'), 'ya');
   await act('back');
   await frame('currency');
@@ -739,7 +824,7 @@ let ws;
   await frame('currency');
   await click('.wr-asset-wallet header button[data-id="ya"]');
   await frame('youappwallet');
-  await act('wSetMain');
+  await act('walletMainToggle');
   await act('back');
   await frame('currency');
   await act('back');
@@ -764,17 +849,20 @@ let ws;
   await frame('youappwallet');
   assert.ok(await wallet(`(() => {
     const screen = document.querySelector('.wr-wallet-detail');
-    const buttons = [...screen.querySelectorAll('.wr-wallet-actions button')];
+    const buttons = [...screen.querySelectorAll('.wr-wallet-settings button, .wr-wallet-address button')];
     const contentBottom = screen.parentElement.getBoundingClientRect().bottom;
-    return screen.scrollWidth <= screen.clientWidth && buttons.length === 4 &&
+    return screen.scrollWidth <= screen.clientWidth && buttons.length === 2 &&
       buttons.every(button => button.offsetHeight >= 44 && button.offsetWidth >= button.scrollWidth &&
         button.getBoundingClientRect().bottom <= contentBottom);
-  })()`), 'YouApp Wallet actions fit at 375px');
+  })()`), 'YouApp Wallet settings and address copy fit at 375px');
   await screenshot('youapp-wallet-details-375.png');
   await act('back');
   await frame('currency');
   await click('.wr-asset-wallet header button[data-id="mm"]');
   await frame('externalwallet');
+  await checkWalletAssets('mm');
+  await click(nextAssetPage);
+  assert.match(await wallet(`document.querySelector('#wr-asset-page').textContent`), /^Page 2 of /);
   await act('back');
   await frame('currency');
   await act('back');
@@ -849,6 +937,25 @@ let ws;
         && getComputedStyle(form.querySelector('.rp20-packet')).animationName === 'rp20Wobble';
     })()`), `Red Packet fits ${width}px`);
     await screenshot(`red-packet-create-${width}.png`);
+    await cdp('Emulation.setEmulatedMedia', {features:[{name:'prefers-color-scheme', value:'dark'}]});
+    await appAct('apEditMessage');
+    await cdp('Input.insertText', {text:'0123456789'.repeat(6)});
+    assert.ok(await app(`(() => {
+      const editor = document.getElementById('apMessageEditor');
+      const field = document.getElementById('apMsg');
+      const form = document.getElementById('apScroll');
+      const section = editor.closest('.rp20-message').getBoundingClientRect();
+      return section.bottom <= form.getBoundingClientRect().bottom + 1
+        && field.value.length === 50 && document.getElementById('apMsgCount').textContent === '50/50'
+        && getComputedStyle(editor).backgroundColor === 'rgb(255, 255, 255)'
+        && getComputedStyle(editor).colorScheme === 'light'
+        && getComputedStyle(editor).boxShadow !== 'none'
+        && getComputedStyle(field).backgroundColor === 'rgba(0, 0, 0, 0)'
+        && getComputedStyle(field).borderTopWidth === '0px'
+        && form.scrollWidth === form.clientWidth;
+    })()`), `Red Packet message editor fits ${width}px with dark appearance and a full message`);
+    await screenshot(`red-packet-message-${width}.png`);
+    await cdp('Emulation.setEmulatedMedia', {features:[]});
   }
   await cdp('Emulation.setDeviceMetricsOverride', {width:390, height:844, deviceScaleFactor:1, mobile:true});
   await cdp('Page.navigate', {url:address + '?app=app30&jump=apRecv:ready'});

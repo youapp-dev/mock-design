@@ -333,7 +333,14 @@ Object.assign(A, {
   xsDoneGo: () => { S.hist = S.hist.filter(s=>!/^xs/.test(s)); S.screen = 'home'; render(); },
   xsRetry: () => { const x = xsInit(); x.fail=false; S.xsPin=''; go('xsAmt',{replace:true}); },
   xsScanTx: () => toast('Opens the transaction on Etherscan.'),
-  xsCopy: el => { try { navigator.clipboard.writeText(el.dataset.v).catch(()=>{}); } catch(e){} toast('Address copied.'); },
+  xsCopy: async el => {
+    try {
+      await navigator.clipboard.writeText(el.dataset.v);
+      toast('Address copied.');
+    } catch {
+      toast('Couldn’t copy the wallet address. Try again.', 'err');
+    }
+  },
   xsShare: () => { const x = xsInit(); const p = xsTo(); const a = +x.amt; if (!window.SHR) return;
     SHR.open({title:'Sent', amount:xsMoney(a), sub: p.ext?'to an external wallet · Ethereum':`to ${p.n} · YouApp transfer`, ref:'YA-2710-2206', caption:"Sent MYRT to a friend in seconds, right on-chain ⚡ Try YouApp for the easiest way to move ringgit.",
       tx:[['Reference','YA-2710-2206'],['Tx Hash',xsShort(XS_HASH),'lnk'],['Transaction Type','MYRT transfer'],['Timestamp','27 Oct 2026, 11:04 PM']],

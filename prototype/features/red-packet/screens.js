@@ -8,6 +8,9 @@ const C = n => fmt2(n/100);                       /* cents → "12.34" */
 const MY_ = n => `${C(n)} MYRT`;
 const NOW = () => Date.now();
 const AP_TYPES = {lucky:'Lucky draw', random:'Random', equal:'Equal split'};
+const AP_CREATE_TITLE = 'Create packet';
+const AP_MESSAGES = ['Best wishes!', '恭喜发财', 'Selamat Hari Raya', 'Happy birthday!', 'Thank you!'];
+const AP_MESSAGE_LIMIT = 50;
 const apPeople = n => `${n} ${n === 1 ? 'person' : 'people'}`;
 const apTypeDetails = a => `${AP_TYPES[a.type]} · ${isLucky(a) ? 'No people limit' : apPeople(a.count)}`;
 const ME_AV = () => (HOSTS.elsa && HOSTS.elsa.av) || 'avatar';
@@ -119,15 +122,20 @@ const gateHTML = (title, why) => {
 
 /* ---- section 3: create form ---- */
 const DURS = [['1h','1 hour',1],['6h','6 hours',6],['24h','24 hours',24],['3d','3 days',72],['7d','7 days',168],['custom','Custom',0]];
-const apfNew = () => ({type:'lucky', amt:'', count:'', msg:'', theme:'red', expiryOpen:false, forever:true, dur:'24h', days:'', expUnit:'days', touched:{}});
-function apCalc(){
-  const f = S.apf, a = Math.round((parseFloat(f.amt) || 0) * 100), n = isLucky(f) ? 0 : parseInt(f.count, 10) || 0;
+const apfNew = () => ({type:'lucky', amt:'', count:null, msg:'', theme:'red', expiryOpen:false, forever:true, dur:'24h', days:'', expUnit:'days', touched:{}});
+function apCalc(chat = apConversation(S.apCtx)){
+  const f = S.apf;
+  const groupPeople = chat?.group ? chat.mem.filter(member => member.k !== 'me').length : null;
+  const maxPeople = Math.min(100, groupPeople ?? 100);
+  const count = f.count ?? (groupPeople === null ? '' : String(maxPeople));
+  const a = Math.round((parseFloat(f.amt) || 0) * 100), n = isLucky(f) ? 0 : parseInt(count, 10) || 0;
   const total = f.type === 'equal' ? a * n : a, fee = feeOf(total), ded = total + fee;
   const e = {};
   if (f.amt !== '' && a < 100) e.amt = f.type === 'equal' ? 'Minimum 1.00 MYRT per person.' : 'Enter at least 1.00 MYRT.';
-  if (!isLucky(f) && f.count !== '') {
-    if (n < 1) e.count = 'Enter at least 1 person.';
-    else if (n > 100) e.count = 'Maximum 100 people.';
+  if (!isLucky(f) && count !== '') {
+    if (maxPeople === 0) e.count = 'There’s no one else in this group yet.';
+    else if (n < 1) e.count = 'Enter at least 1 person.';
+    else if (n > maxPeople) e.count = maxPeople === 100 ? 'Maximum 100 people.' : `Choose up to ${apPeople(maxPeople)} for this group.`;
     else if (f.type === 'random' && a >= 100 && n > Math.floor(a / 100)) e.count = `With ${C(a)} MYRT, you can send to up to ${Math.floor(a / 100)} ${Math.floor(a/100)===1?'person':'people'} (min 1 MYRT each).`;
   }
   const customExp = parseInt(f.days, 10), expUnit = f.expUnit || 'days', expMax = expUnit === 'hours' ? 168 : 365;
@@ -137,7 +145,7 @@ function apCalc(){
   if (filled && !e.amt && !e.count && ded > bal) e.bal = true;
   if (filled && !e.amt && !e.count && (ded > lim.per || ded > monLeft())) e.lim = ded > lim.per ? `This is above your ${FEE[apTier()].name} limit of ${MY_(lim.per)} per transaction.` : `This is above what’s left of your monthly limit (${MY_(Math.max(0, monLeft()))}).`;
   const ok = filled && !Object.keys(e).length;
-  return {a, n, total, fee, ded, e, ok, bal};
+  return {a, n, count, groupPeople, maxPeople, total, fee, ded, e, ok, bal};
 }
 const expOf = () => { const f = S.apf; if (f.forever) return {at:null, lbl:'Never expires'};
   if (f.dur === 'custom') { const n = parseInt(f.days, 10), unit = f.expUnit || 'days', ms = unit === 'hours' ? 3600e3 : 864e5; return {at:NOW() + n*ms, lbl:`${n} ${unit === 'hours' ? 'hour' : 'day'}${n===1?'':'s'}`}; }
@@ -643,10 +651,28 @@ document.addEventListener('input', e => { const k = e.target.dataset && e.target
   let v = e.target.value;
   if (k === 'amt') { v = v.replace(/[^\d.]/g, '').replace(/(\..*)\./g, '$1'); const [i, d] = v.split('.'); v = d !== undefined ? `${i}.${d.slice(0,2)}` : i; }
   if (k === 'count' || k === 'days') v = v.replace(/\D/g, '').slice(0, k==='days'?3:3);
-  if (k === 'msg') v = v.slice(0, 50);
+  if (k === 'msg') {
+    S.apf.msg = v.replace(/\n/g, ' ').slice(0, AP_MESSAGE_LIMIT);
+    if (!e.isComposing && v !== S.apf.msg) {
+      const {selectionStart, selectionEnd} = e.target;
+      e.target.value = S.apf.msg;
+      e.target.setSelectionRange(selectionStart, selectionEnd);
+    }
+    document.getElementById('apMsgCount').textContent = `${S.apf.msg.length}/${AP_MESSAGE_LIMIT}`;
+    document.querySelectorAll('.rp20-presets button').forEach(button => {
+      button.setAttribute('aria-pressed', S.apf.msg === AP_MESSAGES[Number(button.dataset.v)]);
+    });
+    return;
+  }
   S.apf[k] = v; const id = e.target.id, pos = v.length; const sc = document.getElementById('apScroll'); const top = sc ? sc.scrollTop : 0;
   render(); const sc2 = document.getElementById('apScroll'); if (sc2) sc2.scrollTop = top;
   const n = document.getElementById(id); if (n) { n.focus({preventScroll:true}); try { n.setSelectionRange(pos, pos); } catch(x) {} } });
+
+document.addEventListener('keydown', e => {
+  if (e.target.id !== 'apMsg' || e.key !== 'Enter' || e.isComposing) return;
+  e.preventDefault();
+  A.apEditMessage();
+});
 
 /* demo entry points (shell Quick scenario / internal panel) */
 function apDemo(st){ apSeed(); S.apSim = null; S.apJust = false; S.apSource = null; S.apShowOpeners = false;
@@ -704,7 +730,6 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
 (function(){
   const MINUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 12h12"/></svg>';
   const PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 12h12M12 6v12"/></svg>';
-  const MESSAGES = ['Best wishes!', '恭喜发财', 'Selamat Hari Raya', 'Happy birthday!', 'Thank you!'];
 
   function updateCreationControl(selector, change) {
     const scrollTop = document.getElementById('apScroll')?.scrollTop || 0;
@@ -734,12 +759,15 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
   }
 
   V.apform = () => {
-    if (!apReady() || S.apSim) return gateHTML('Send Red Packet', 'send a red packet');
+    if (!apReady() || S.apSim) return gateHTML(AP_CREATE_TITLE, 'send a red packet');
     const f = S.apf ||= apfNew();
-    const r = apCalc();
-    const theme = redPacketTheme(f.theme);
+    const hasCustomMessage = Boolean(f.msg.trim()) && !AP_MESSAGES.includes(f.msg);
     const chat = apConversation(S.apCtx);
+    const r = apCalc(chat);
+    const theme = redPacketTheme(f.theme);
     const lucky = isLucky(f);
+    const recipients = lucky ? r.groupPeople : Math.min(r.n, r.maxPeople);
+    const groupCount = r.groupPeople === null ? '' : `<span class="rp20-recipient-count">${!lucky && r.n > r.maxPeople ? 'Up to ' : ''}${recipients} recipient${recipients === 1 ? '' : 's'}</span>`;
     const copy = lucky ? 'Each person gets one draw while funds last.'
       : f.type === 'random' ? 'Each person gets a random share of the total.'
       : r.n && r.a ? `Total ${MY_(r.total)} · ${MY_(r.a)} × ${apPeople(r.n)}` : 'Everyone receives the same amount.';
@@ -748,7 +776,7 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
     const canSend = r.ok && !S.apBusy;
     const action = r.total && !r.e.amt && !r.e.count && (lucky || r.n) ? `Send ${MY_(r.total)}` : 'Send';
     return `<div class="screen rp20-form" style="${redPacketThemeStyle(theme)}">${statusBar()}
-      <div class="topbar"><button type="button" class="iconbtn" data-act="back" aria-label="Back">${ic('back')}</button><span class="rp20-title t-headline"><b>Red packet</b>${chat ? `<small>To ${esc(chat.name)}</small>` : ''}</span>
+      <div class="topbar"><button type="button" class="iconbtn" data-act="back" aria-label="Back">${ic('back')}</button><span class="rp20-title t-headline"><b>${AP_CREATE_TITLE}</b>${chat ? `<small><span class="rp20-recipient-name">To ${esc(chat.name)}</span>${groupCount}</small>` : ''}</span>
         <button type="button" class="iconbtn" data-act="apList" aria-label="My red packets">${ic('apList')}</button></div>
       <div class="scroll" id="apScroll"><div class="rp20-fields">
         <div class="rp20-preview" aria-hidden="true">${redPacketArt(theme, previewArt, 'rp20-preview-background' + (previewArt === 'scene' ? ' rp20-preview-crop' : ''))}${redPacketArt(theme, 'packet', 'rp20-packet')}</div>
@@ -758,7 +786,7 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
         <div class="apseg ap-modes" role="group" aria-label="Red Packet type">${Object.entries(AP_TYPES).map(([v,t]) => `<button type="button" aria-pressed="${f.type===v}" data-act="apType" data-v="${v}">${t}</button>`).join('')}</div>
         <section class="rp20-box rp20-amount-box">
           <label for="apAmt">${f.type === 'equal' ? 'Each person gets' : 'Total'}</label>
-          <div class="rp20-amount-line"><span>MYRT</span><div class="rp20-amount-field"><input id="apAmt" data-apf="amt" value="${esc(f.amt)}" inputmode="decimal" placeholder="0.00" autocomplete="off" aria-invalid="${Boolean(amountHelp || r.e.bal)}" aria-describedby="apAmtH${r.e.bal ? ' apAmtBalance' : ''}">
+          <div class="rp20-amount-line"><span id="apAmtCurrency">RM</span><div class="rp20-amount-field"><input id="apAmt" data-apf="amt" value="${esc(f.amt)}" inputmode="decimal" placeholder="0.00" autocomplete="off" aria-invalid="${Boolean(amountHelp || r.e.bal)}" aria-describedby="apAmtCurrency apAmtH${r.e.bal ? ' apAmtBalance' : ''}">
             ${f.amt && Number.isFinite(r.a) ? `<span class="rp20-amount-display" aria-hidden="true">${C(r.a)}</span>` : ''}</div></div>
           ${amountHelp ? `<p class="rp20-error" id="apAmtH">${esc(amountHelp)} ${r.e.lim ? '<button class="link" type="button" data-act="apUpgrade">Upgrade</button>' : ''}</p>` : ''}
           <div class="rp20-wallet"><img class="rp20-wallet-flag" src="../features/red-packet/art/wallet-flag.svg" alt=""><span${amountHelp ? '' : ' id="apAmtH"'}>YouWallet · ${RM(r.bal / 100)}</span>
@@ -766,15 +794,23 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
           ${r.e.bal ? '<p class="rp20-error" id="apAmtBalance">Not enough MYRT in your wallet. <button class="link" type="button" data-act="apTopUp">Top up</button></p>' : ''}
         </section>
         ${lucky ? '' : `<div class="rp20-box rp20-people">${ic('group')}<div>
-          <label for="apCount">How many people${chat?.group && chat.mem ? ` · ${chat.mem.length} in group` : ''}</label><input id="apCount" data-apf="count" value="${esc(f.count)}" inputmode="numeric" placeholder="0" autocomplete="off" aria-invalid="${Boolean(r.e.count)}"></div>
+          <label for="apCount">How many people</label><input id="apCount" data-apf="count" value="${esc(r.count)}" inputmode="numeric" placeholder="0" autocomplete="off" aria-invalid="${Boolean(r.e.count)}"${r.e.count ? ' aria-describedby="apCountError"' : ''}></div>
           <div class="ap2-step" role="group" aria-label="Number of people">
             <button type="button" data-act="apStep" data-d="-1" aria-label="One person fewer" ${r.n <= 1 ? 'aria-disabled="true"' : ''}>${MINUS}</button>
-            <button type="button" data-act="apStep" data-d="1" aria-label="One more person" ${r.n >= 100 ? 'aria-disabled="true"' : ''}>${PLUS}</button>
-          </div>${r.e.count ? `<small class="rp20-error">${esc(r.e.count)}</small>` : ''}</div>`}
+            <button type="button" data-act="apStep" data-d="1" aria-label="One more person" ${r.n >= r.maxPeople ? 'aria-disabled="true"' : ''}>${PLUS}</button>
+          </div>${r.e.count ? `<small class="rp20-error" id="apCountError">${esc(r.e.count)}</small>` : ''}</div>`}
         <p class="rp20-help">${copy}</p>
-        <section class="rp20-message"><div><label for="apMsg">Message <span>(optional)</span></label><span class="rp20-message-actions">${f.messageOpen ? `<span>${f.msg.length}/50</span>` : ''}<button type="button" data-act="apEditMessage" aria-expanded="${Boolean(f.messageOpen)}" aria-controls="apMsg">${f.messageOpen ? 'Done' : f.msg && !MESSAGES.includes(f.msg) ? 'Edit message' : 'Write a message'}</button></span></div>
-          <div class="rp20-presets" role="group" aria-label="Message suggestions">${MESSAGES.map((msg, i) => `<button type="button" data-act="apMessage" data-v="${i}" aria-pressed="${f.msg === msg}">${esc(msg)}</button>`).join('')}</div>
-          <input id="apMsg" data-apf="msg" value="${esc(f.msg)}" placeholder="Write a message" maxlength="50" autocomplete="off"${f.messageOpen ? '' : ' hidden'}>
+        <section class="rp20-message">
+          <div class="rp20-message-header">
+            <label for="apMsg">Message <span>(optional)</span></label>
+            <button type="button" data-act="apEditMessage" aria-expanded="${Boolean(f.messageOpen)}" aria-controls="apMessageEditor">${f.messageOpen ? 'Done' : hasCustomMessage ? 'Edit message' : 'Write a message'}</button>
+          </div>
+          <div id="apMessageEditor" class="rp20-message-editor"${f.messageOpen ? '' : ' hidden'}>
+            <textarea id="apMsg" class="input" data-apf="msg" rows="2" placeholder="Add a note for the recipient" maxlength="${AP_MESSAGE_LIMIT}" autocomplete="off" enterkeyhint="done" aria-describedby="apMsgCount">${esc(f.msg)}</textarea>
+            <span id="apMsgCount" class="rp20-message-count">${f.msg.length}/${AP_MESSAGE_LIMIT}</span>
+          </div>
+          ${!f.messageOpen && hasCustomMessage ? `<p class="rp20-message-draft">${esc(f.msg)}</p>` : ''}
+          <div class="rp20-presets" role="group" aria-label="Message suggestions">${AP_MESSAGES.map((msg, i) => `<button type="button" data-act="apMessage" data-v="${i}" aria-pressed="${f.msg === msg}">${esc(msg)}</button>`).join('')}</div>
         </section>
         ${expiryFields(f, r)}
       </div></div>
@@ -800,10 +836,17 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
       updateCreationControl('[data-act="apChangeWallet"]', () => { S.sheet = null; });
       document.querySelector('[data-act="apChangeWallet"]')?.focus({preventScroll:true});
     },
-    apMessage: el => updateCreationControl(`[data-act="apMessage"][data-v="${el.dataset.v}"]`, () => { S.apf.msg = MESSAGES[Number(el.dataset.v)] || ''; S.apf.messageOpen = false; }),
+    apMessage: el => updateCreationControl(`[data-act="apMessage"][data-v="${el.dataset.v}"]`, () => { S.apf.msg = AP_MESSAGES[Number(el.dataset.v)] || ''; S.apf.messageOpen = false; }),
     apEditMessage: () => {
       updateCreationControl('[data-act="apEditMessage"]', () => { S.apf.messageOpen = !S.apf.messageOpen; });
-      if (S.apf.messageOpen) document.getElementById('apMsg')?.focus();
+      if (S.apf.messageOpen) {
+        const field = document.getElementById('apMsg');
+        field.closest('.rp20-message').scrollIntoView({block:'nearest', behavior:'instant'});
+        field.focus();
+        field.setSelectionRange(field.value.length, field.value.length);
+      } else {
+        document.querySelector('[data-act="apEditMessage"]')?.focus({preventScroll:true});
+      }
     },
     apExpiryOptions: () => updateCreationControl('[data-act="apExpiryOptions"]', () => { S.apf.expiryOpen = !S.apf.expiryOpen; }),
     apForever: () => updateCreationControl('[data-act="apForever"]', () => { S.apf.forever = !S.apf.forever; }),
@@ -811,10 +854,11 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
     apExpUnit: el => updateCreationControl(`[data-act="apExpUnit"][data-v="${el.dataset.v}"]`, () => { S.apf.expUnit = el.dataset.v; S.apf.days = ''; }),
     apStep: el => {
       if (el.getAttribute('aria-disabled') === 'true') return;
-      const f = S.apf, direction = el.dataset.d;
+      const {n, maxPeople} = apCalc();
+      const direction = el.dataset.d;
       const scrollTop = document.getElementById('apScroll')?.scrollTop || 0;
       const keyboardFocus = el.matches(':focus-visible');
-      f.count = String(Math.min(100, Math.max(1, (parseInt(f.count, 10) || 0) + Number(direction))));
+      S.apf.count = String(Math.min(maxPeople, Math.max(1, n + Number(direction))));
       render();
       const scroll = document.getElementById('apScroll');
       scroll.scrollTop = scrollTop;
@@ -826,9 +870,11 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
   /* the PIN step carries the summary the confirm screen used to show: amount big, type and people under it */
   const _ovApPin = overlayHTML;
   overlayHTML = () => { let h = _ovApPin(); if (S.sheet !== 'pin' || S.authReason !== S.apAuthSum || !S.apAuthSum || S.screen !== 'apform') return h;
-    const r = apCalc(); const sub = esc(S.apAuthSum);
+    const chat = apConversation(S.apCtx), r = apCalc(chat);
+    const sub = esc(S.apAuthSum);
     const hold = isLucky(S.apf) ? '<small>Set aside when you confirm</small>' : '';
-    return h.replace(sub, `<span class="ap2-pin"><span class="ap2-pin-e">${redPacketArt(S.apf.theme, 'packet')}</span><b>${MY_(r.total)}</b>${hold}<small>${apTypeDetails({type:S.apf.type, count:r.n})} · ${expOf().lbl}</small></span>`); };
+    const recipient = chat ? `<small>To ${esc(chat.name)}</small>` : '';
+    return h.replace(sub, `<span class="ap2-pin"><span class="ap2-pin-e">${redPacketArt(S.apf.theme, 'packet')}</span><b>${MY_(r.total)}</b>${recipient}${hold}<small>${apTypeDetails({type:S.apf.type, count:r.n})} · ${expOf().lbl}</small></span>`); };
   /* the PIN step carries the summary the confirm screen used to show */
   const _authAp = auth;
   auth = function(reason, ok, opts){ if (reason === 'Send angpao' && S.apAuthSum) reason = S.apAuthSum; return _authAp(reason, ok, opts); };

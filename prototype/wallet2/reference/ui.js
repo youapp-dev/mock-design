@@ -346,14 +346,15 @@
     return frame;
   }
 
-  function assetHoldingRow(token, value) {
+  function assetHoldingRow(token, value, name) {
     const logo = window.XS_TOKW?.[token];
-    const tokenName = TOKN[token] || token;
+    const tokenName = TOKN[token] || name || token;
+    const estimate = !S.balHide && value > 0 && Number.isFinite(RATE[token]) ? `<small>≈ ${ringgit(value * RATE[token])}</small>` : '';
     const quantity = value.toLocaleString('en-MY', {minimumFractionDigits:2, maximumFractionDigits:value < 1 ? 6 : 2});
     return `<li><div class="wr-asset-row" data-token="${esc(token)}">
       <span class="wr-asset-icon" aria-hidden="true">${logo ? `<img src="${logo}" alt="">` : esc(token)}</span>
       <span class="wr-asset-name"><b>${esc(token)}</b>${tokenName !== token ? `<small>${esc(tokenName)}</small>` : ''}</span>
-      <span class="wr-asset-value"><b>${S.balHide ? '••••' : `${quantity} ${esc(token)}`}</b>${S.balHide ? '' : `<small>≈ ${ringgit(value * RATE[token])}</small>`}</span>
+      <span class="wr-asset-value"><b>${S.balHide ? '••••' : `${quantity} ${esc(token)}`}</b>${estimate}</span>
     </div></li>`;
   }
 
@@ -407,43 +408,58 @@
     return alternatives.find(wallet => !wallet.ext) || alternatives[0];
   }
 
+  const walletAssetsPerPage = 4;
+  const assetCurrencyNames = new Intl.DisplayNames('en-MY', {type:'currency'});
+
+  function walletAssets(wallet) {
+    const holdings = wToks(wallet);
+    const heldTokens = new Set(holdings.map(([token]) => token.toUpperCase()));
+    const otherTokens = Object.entries(seraTokenCurrencies)
+      .filter(([token]) => !heldTokens.has(token))
+      .map(([token, currency]) => [token, 0, assetCurrencyNames.of(currency)]);
+    const assets = [...holdings, ...otherTokens];
+    const pageCount = Math.ceil(assets.length / walletAssetsPerPage);
+    const page = Math.min(S.walletAssetPage || 1, pageCount);
+    const start = (page - 1) * walletAssetsPerPage;
+    const rows = assets.slice(start, start + walletAssetsPerPage);
+    return `<section class="wr-asset-wallet" aria-labelledby="wr-wallet-assets">
+      <header><h2 id="wr-wallet-assets">Assets</h2><small>${assets.length} tokens</small></header>
+      <ul>${rows.map(([token, value, name]) => assetHoldingRow(token, value, name)).join('')}</ul>
+      ${pageCount > 1 ? `<nav class="wr-asset-pages" aria-label="Asset pages">
+        <button type="button" data-act="walletAssetPage" data-page="${page - 1}" aria-label="Previous asset page" aria-describedby="wr-asset-page"${page === 1 ? ' disabled' : ''}>${ic('chev')}</button>
+        <span id="wr-asset-page" role="status">Page ${page} of ${pageCount}</span>
+        <button type="button" data-act="walletAssetPage" data-page="${page + 1}" aria-label="Next asset page" aria-describedby="wr-asset-page"${page === pageCount ? ' disabled' : ''}>${ic('chev')}</button>
+      </nav>` : ''}
+    </section>`;
+  }
+
   V.wDetail = () => {
     const wallet = wList().find(entry => entry.id === S.wSel) || wMain();
     if (!wallet) return V.wallets();
     const frame = walletDetailFrame(wallet.ext ? 'externalwallet' : 'youappwallet', moneyWalletName(wallet));
     frame.classList.add('wr-wallet-detail');
-    const holdings = wToks(wallet);
     const isMain = wMain().id === wallet.id;
     const onlyWallet = isMain && !alternateMainWallet(wallet.id);
     frame.insertAdjacentHTML('beforeend', `<section class="wr-asset-summary wr-wallet-summary" aria-label="Estimated balance">
       <div class="wr-asset-summary-top"><div class="wr-wallet-identity"><span aria-hidden="true">${walletBadge(wallet, 32)}</span><small>Estimated balance</small></div><span>Ethereum${!wallet.ext && isMain ? ' · Main' : ''}</span></div>
       <strong class="wr-asset-total">${ringgit(wRM(wallet))}</strong>
-      <span class="wr-asset-estimate">${esc(xsShort(wallet.addr))}</span>
+      <div class="wr-wallet-address">
+        <span class="wr-asset-estimate">${esc(xsShort(wallet.addr))}</span>
+        <button type="button" data-act="xsCopy" data-v="${esc(wallet.addr)}" aria-label="Copy wallet address">${ic('copy')}</button>
+      </div>
     </section>
     <div class="wr-asset-holdings">
-      <section class="wr-asset-wallet" aria-labelledby="wr-wallet-assets">
-        <header><h2 id="wr-wallet-assets">Assets</h2><small>${holdings.length} ${holdings.length === 1 ? 'token' : 'tokens'}</small></header>
-        ${holdings.length ? `<ul>${holdings.map(([token, value]) => assetHoldingRow(token, value)).join('')}</ul>` : note('No verified tokens in this wallet yet.', 'wr-empty')}
-        ${wallet.hidden ? `<button type="button" class="wr-ext-hidden" data-act="walletDetailSheet" data-s="walletHiddenTokens">${ic('eye')}<span>Hidden tokens (${wallet.hidden})</span>${ic('chev')}</button>` : ''}
-      </section>
-      ${wallet.ext ? `<section class="wr-ext-management" aria-labelledby="wr-ext-settings">
-        <h2 id="wr-ext-settings">Wallet settings</h2>
-        <button type="button" class="wr-ext-switch" role="switch" aria-checked="${isMain}"${onlyWallet ? ' aria-disabled="true"' : ''} aria-labelledby="wr-ext-main-label" aria-describedby="wr-ext-main-help" data-act="walletMainToggle">
-          <span><b id="wr-ext-main-label">Set as main</b><small id="wr-ext-main-help">${onlyWallet ? 'Connect another wallet to change your main wallet.' : 'Default wallet for Scan to Pay.'}</small></span><span class="wr-ext-switch-track" aria-hidden="true"></span>
+      <section class="wr-wallet-settings" aria-labelledby="wr-wallet-settings">
+        <h2 id="wr-wallet-settings">Wallet settings</h2>
+        <button type="button" class="wr-wallet-main" role="switch" aria-checked="${isMain}"${onlyWallet ? ' aria-disabled="true"' : ''} aria-labelledby="wr-wallet-main-label" aria-describedby="wr-wallet-main-help" data-act="walletMainToggle">
+          <span><b id="wr-wallet-main-label">Set as main</b><small id="wr-wallet-main-help">${onlyWallet ? 'Connect another wallet to change your main wallet.' : 'Default wallet for Scan to Pay.'}</small></span><span class="wr-wallet-main-track" aria-hidden="true"></span>
         </button>
-        <button type="button" class="wr-ext-disconnect" data-act="walletDetailSheet" data-s="wDisc">Disconnect wallet</button>
-      </section>` : `<div class="wr-wallet-actions" role="group" aria-label="Wallet actions">
-        ${btn('Send', 'xsOpen', {kind:'btn-secondary', data:'data-from-wallet="ya"'})}
-        ${btn('Receive', 'wRecvOf', {kind:'btn-secondary'})}
-        ${btn('Pay Bills', 'bills', {kind:'btn-secondary'})}
-        ${btn('Rename', 'toast', {kind:'btn-secondary', data:'data-msg="Rename opens a short text field (demo)."'})}
-        ${isMain ? '' : btn('Set as Main', 'wSetMain', {kind:'btn-secondary', cls:'wr-wallet-main-action'})}
-      </div>`}
+        ${wallet.ext ? '<button type="button" class="wr-ext-disconnect" data-act="walletDetailSheet" data-s="wDisc">Disconnect wallet</button>' : ''}
+      </section>
+      ${walletAssets(wallet)}
     </div>`);
     return screen(frame);
   };
-
-  SHEETS.walletHiddenTokens = () => `<div class="grab"></div><div class="stack wr-ext-hidden-sheet"><h2 class="t-title">Hidden tokens</h2><p class="t-body">YouApp hides unverified tokens. Only verified assets are available for payments.</p>${btn('Close', 'walletSheetClose', {kind:'btn-tertiary'})}</div>`;
 
   SHEETS.wDisc = () => {
     const wallet = W_ALL[S.wSel];
@@ -459,8 +475,21 @@
 
   A.walletDetailSheet = el => openWalletSheet(el.dataset.s);
 
+  A.walletAssetPage = el => {
+    const previous = S.walletAssetPage || 1;
+    const page = Number(el.dataset.page);
+    const focused = document.activeElement === el;
+    S.walletAssetPage = page;
+    retainScroll();
+    if (focused) {
+      const nextPage = page + (page - previous);
+      const next = document.querySelector(`.wr-asset-pages [data-page="${nextPage}"]:enabled`);
+      (next || document.querySelector('.wr-asset-pages button:enabled'))?.focus({preventScroll:true});
+    }
+  };
+
   A.walletMainToggle = el => {
-    const wallet = wList().find(entry => entry.id === S.wSel && entry.ext);
+    const wallet = wList().find(entry => entry.id === S.wSel) || wMain();
     if (!wallet) return;
     const next = wMain().id === wallet.id ? alternateMainWallet(wallet.id) : wallet;
     if (!next) return;
@@ -468,7 +497,7 @@
     scen.mainW = next.id;
     saveScen();
     retainScroll();
-    if (focused) document.querySelector('.wr-ext-switch')?.focus({preventScroll:true});
+    if (focused) document.querySelector('.wr-wallet-main')?.focus({preventScroll:true});
     toast(`${moneyWalletName(next)} is now your main wallet.`);
   };
 

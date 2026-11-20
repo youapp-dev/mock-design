@@ -128,8 +128,8 @@ V.wDetail = () => { const w = W_ALL[S.wSel] || wMain(); const isMain = w.id===wM
   <div class="scroll"><div class="pad16 stack" style="gap:12px; padding-top:6px">
     <div class="mw-hd">${wBadge(w,'lg')}<span><small class="mono">${xsShort(w.addr)} · Ethereum</small><b>${RM(wRM(w))}</b></span>${isMain?wMainTag:''}</div>
     <div class="mw-list">${wToks(w).map(([k,v])=>`<div class="mw-row"><span class="mw-tk lg">${k[0]}</span><span class="m"><b>${k}</b><small>${TOKN[k]}</small></span><span class="r"><b>${tokAmt('',v).trim()}</b><small>${RM(v*RATE[k])}</small></span></div>`).join('')}</div>
-    ${w.hidden?`<button class="mw-row" data-act="toast" data-msg="Hidden tokens aren’t verified by YouApp. They can’t be sent or used to pay.">${ic('eye')}<span class="m"><b>Hidden tokens (${w.hidden})</b><small>Not verified by YouApp. Can’t be sent or used to pay.</small></span>${ic('chev')}</button>`:''}
-    <div class="mw-acts">${btn('Send','xsOpen',{kind:'btn-secondary', cls:'btn-sm',data:`data-from-wallet="${w.id}"`})}${btn('Receive','wRecvOf',{kind:'btn-secondary', cls:'btn-sm'})}${w.id==='ya'?btn('Pay Bills','bills',{kind:'btn-secondary', cls:'btn-sm'}):''}${isMain?'':btn('Set as Main','wSetMain',{kind:'btn-secondary', cls:'btn-sm'})}${btn('Rename','toast',{kind:'btn-secondary', cls:'btn-sm', data:'data-msg="Rename opens a short text field (demo)."'})}</div>
+    ${btn('Copy Address','xsCopy',{kind:'btn-secondary', cls:'btn-sm', data:`data-v="${esc(w.addr)}"`})}
+    ${isMain?'':btn('Set as Main','wSetMain',{kind:'btn-secondary', cls:'btn-sm'})}
     ${w.ext?`<button class="link mw-disc" data-act="sheet" data-s="wDisc">Disconnect wallet</button>`:'<p class="t-caption subtle" style="margin:0">The YouApp wallet can’t be removed.</p>'}</div></div></div>`; };
 SHEETS.wDisc = () => { const w = W_ALL[S.wSel]; const isMain = w.id===wMain().id; const alt = wList().find(x=>x.id!==w.id);
   return `<div class="grab"></div><div class="stack" style="gap:12px"><h2 class="t-title" style="margin:0">Disconnect ${esc(w.name)}?</h2><p class="t-body muted" style="margin:0">Your money stays in ${esc(w.app)}. You can connect it again anytime.</p>
@@ -243,7 +243,7 @@ Object.assign(A, {
       return; }
     let ids = wIds(); if (!ids.includes(id)) ids.push(id); else if (!ids.includes('cb')) { ids.push('cb'); } wSetWl(ids); if (S.wUseMain) { scen.mainW = id; saveScen(); }
     S.hist = S.hist.filter(k=>!/^(mw|w[A-Z])/.test(k)); go('wallets',{replace:true}); toast(`${W_ALL[id].name} added.`); },
-  wOpen: el => { S.wSel = el.dataset.id; go('wDetail'); },
+  wOpen: el => { S.wSel = el.dataset.id; S.walletAssetPage = 1; go('wDetail'); },
   wSetMain: () => { scen.mainW = S.wSel; saveScen(); render(); toast(`${W_ALL[S.wSel].name} is now your Main wallet.`); },
   wRecvOf: () => { S.wRecv = S.wSel; go('xsRecv'); },
   wRecvSet: el => { S.wRecv = el.dataset.id; S.sheet = null; render(); },
@@ -259,7 +259,7 @@ Object.assign(META, {
   wVerify:{name:'Verify wallet ownership', ph:1, rules:['Sign a free message in the wallet app to link it. Rejected or risky (AML) addresses aren’t linked.']},
   wConnected:{name:'Wallet connected', ph:1, rules:['Use as Main toggle (locked on for the first wallet).']},
   wallets:{name:'My wallets', ph:1, rules:['One YouApp wallet and up to 5 external wallets. Main tag on one. Total in RM.','Users without a YouApp wallet see a nudge to create one (needed for Top Up).']},
-  wDetail:{name:'Wallet detail', ph:1, rules:['Verified ERC-20 stablecoins with RM value; unverified tokens hidden.','Set as Main, Receive, Rename, Disconnect (external only; money stays in the wallet).']},
+  wDetail:{name:'Wallet detail', ph:1, rules:['The balance card shows a shortened address and copies the full address.','Each wallet has a Set as Main switch. Disconnect is available for connected wallets. Assets list current holdings first, then the Sera token registry, four per page.']},
   mwWait:{name:'Waiting for the wallet app', ph:1, rules:['External wallets confirm in their own app (deep link or WalletConnect). Open again or cancel.']},
   mwCancelled:{name:'Cancelled in the wallet app', ph:1, rules:['Nothing charged. Try again, or pay with the YouApp wallet.']},
   tuExt:{name:'Top up from a connected wallet', ph:1, rules:['From an external wallet into the YouApp wallet, same token, no conversion. Network fee in ETH paid in the external wallet.']},

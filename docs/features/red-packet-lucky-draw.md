@@ -15,17 +15,21 @@ Source **Cing, November 19, 2026**, relaying Florence's request
 ## November 20 design update
 
 - Creation, chat cards, and receiving screens use the Red, Raya, Deepavali, Birthday, and YouApp artwork from the supplied November 20 reference. The selected design travels with the packet. Older packets use Red.
+- **Create packet** uses the selected design’s colors for the mode tabs, message suggestions, and Send. The header shows the destination chat. In a group, Random and Equal split start with a slot for each other member, up to 100. The header updates as the sender edits the count. Lucky draw shows the other members in the group and allows one draw per person while funds last.
 - In a chat, open **Attachments → Red Packet** to create or share a packet. PIN confirmation posts a new packet to that conversation and plays the send animation. Wallet and History entry points offer chat, link, and QR sharing after confirmation.
 - Verified users who need wallet activation or reconnection enter the shared wallet screen. Completing it returns to the same Red Packet draft or incoming packet.
 - The opening sequence lifts the envelope flap and card, plays the existing bills and coins burst, and counts up to the recorded payout in the result sheet. Reduced motion shows the settled result directly.
 - **Say thanks** drafts a message in the originating chat when available. **Send one back** starts a new packet for an available conversation with the sender. Completed Random and Lucky draw packets use the winner recap, while Equal split uses a neutral summary.
-- The form shows the packet total in MYRT and the YouWallet balance in RM. **Change** opens the wallet picker. YouWallet funds Red Packets, and connected wallets appear as unavailable in the picker. Random distributes its configured total across the chosen slots. The compact leftover-money row opens the expiry controls and shows the applicable refund timing.
+- The form shows the amount input and the YouWallet balance in RM. **Change** opens the wallet picker. YouWallet funds Red Packets, and connected wallets appear as unavailable in the picker. Random distributes its configured total across the chosen slots. The compact leftover-money row opens the expiry controls and shows the applicable refund timing.
+- **Write a message** opens an optional editor with a live 50-character count. **Done** keeps the note visible in the form, and **Edit message** reopens it. Choosing a preset replaces the current note.
 
 ### November 20 browser verification
 
 Passed the Chrome prototype suite through `/mock-design/` on Windows at desktop widths and at 390, 375, and 320 px. The suite exercised all five themes, the three mode layouts, custom messaging, both expiry units, the PIN summary, delivery to a group chat, repeat-claim protection, a cancellation refund, and reduced-motion opening. It also checked the invalid, expired, and fully claimed receive screens. The 390 px Random creation and receive captures were compared with the supplied reference.
 
 The Leftover money summary fit at 390, 375, and 320 px. At 390 px, **Change → Top up YouWallet → Back** returned to the open chat draft, and the theme preview respected reduced motion.
+
+The custom message editor was exercised from Lara's chat in Chrome on Windows. In emulated dark appearance at 390, 375, and 320 px, the light field, focus ring, and 50-character limit held. Editing in the middle of the note kept the caret in place. Closing and reopening preserved the draft. Choosing a preset replaced it.
 
 Desktop Chrome verified Back to chat from activation, YouWallet OTP activation returning to the sender draft, and PIN reconnection returning to the same incoming packet. At 390 px, the simulated external-wallet activation also returned to the sender draft.
 

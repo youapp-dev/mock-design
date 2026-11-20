@@ -16,5 +16,6 @@ function redPacketArt(theme, part, className = '') {
 
 function redPacketThemeStyle(value) {
   const theme = redPacketThemes[redPacketTheme(value)];
-  return `--rp-preview:linear-gradient(160deg,${theme.preview});--rp-scene:linear-gradient(160deg,${theme.scene});--rp-sheet:linear-gradient(180deg,${theme.sheet});--rp-card:linear-gradient(135deg,${theme.card})`;
+  const [accentStart, accent] = theme.card.split(',');
+  return `--rp-preview:linear-gradient(160deg,${theme.preview});--rp-scene:linear-gradient(160deg,${theme.scene});--rp-sheet:linear-gradient(180deg,${theme.sheet});--rp-card:linear-gradient(135deg,${theme.card});--rp-accent-start:${accentStart};--rp-accent:${accent}`;
 }

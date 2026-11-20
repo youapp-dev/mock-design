@@ -18,7 +18,7 @@ The prototype uses the layout, illustrations, colors, logos, and icons from `Des
 
 The profile name, transactions, currencies, balances, and referral statistics reflect the prototype account and scenario. Annual VIP stays at RM120 to match the existing checkout. Ringgit payments from YouApp Wallet use the existing PIN rules. Booking Balance has its own card and is excluded from My money.
 
-**Your profile** follows the order and spacing of the reference HTML. The name, username, and interests reflect Edit Profile. **Send**, **Receive**, and **Pay Bills** are in the YouApp Wallet details, accessible from My money. **My Activities** is under **Discover → Activities → Manage Activity**.
+**Your profile** follows the order and spacing of the reference HTML. The name, username, and interests reflect Edit Profile. **My Activities** is under **Discover → Activities → Manage Activity**.
 
 **Top up** uses the headings and order from the reference. Currency options sit in a single swipeable row with a hidden scrollbar. The deposit note sits below the scroll area and shows the selected currency. Each payment method displays its fee.
 
@@ -26,9 +26,11 @@ The profile name, transactions, currencies, balances, and referral statistics re
 
 **Currency details** show the balance in the selected currency, an estimated value in RM, and subtotals by wallet. The list shows token icons and distinguishes token quantities from estimated RM values. Tap the subtotal or chevron in a wallet header to open that wallet. Token rows are read-only.
 
-**YouApp Wallet details** use the same balance card and asset list as connected wallets, with the YouApp Wallet logo and a Main indicator when selected. Send, Receive, and Pay Bills open their existing flows. Rename displays demo feedback.
+**Wallet details** place the wallet controls directly below the balance card. The asset list starts with the wallet's current holdings by estimated RM value, followed by the rest of the Sera token registry with zero balance. Each page shows up to four assets. The pager displays the current page and resets when the user reopens a wallet. The prototype uses the November 20, 2026 Ethereum mainnet registry snapshot and demo holdings. [Sera token registry documentation](https://docs.sera.cx/api-reference/)
 
-**External wallets** show balances, verified tokens, and connection settings. The **Set as main** switch picks the default wallet for Scan to Pay. Turning it off falls back to YouApp Wallet if available, then another connected wallet. **Disconnect wallet** requires confirmation. If only one wallet remains, create a YouApp Wallet before disconnecting it.
+**Wallet settings** contains **Set as main** on every wallet. It cannot be turned off while the wallet is the only connected wallet. Each balance card shows a shortened address beside a copy icon. The icon copies the full address and confirms when copying succeeds.
+
+**External wallets** offer **Disconnect wallet** with confirmation. Turning off **Set as main** switches to YouApp Wallet if available, then another connected wallet. If the last wallet is external, create a YouApp Wallet before disconnecting it.
 
 **Reconnect Wallet** is a separate scenario for an expired wallet session after identity approval. It uses the activation layout and shows the last Main wallet in a single read-only card. The button reconnects that wallet. YouApp Wallet uses the existing PIN prompt. An external Main wallet uses simulated approval in its wallet app, with Cancel and Try Again. Successful reconnection restores access and preserves the wallet list, balances, and Main setting. **Quick Scenario → Wallet → Reconnect** opens the preview. Actual session expiry and provider reauthorization require iOS and Android verification.
 
@@ -42,7 +44,7 @@ The Chrome comparison on the Free tier checked avatar size, card corner radius, 
 
 **Chrome QA passed** for the uninterrupted Recent list, **See all**, and the empty MetaMask transaction state. From **My money → US dollar**, QA opened YouApp Wallet, MetaMask, and OKX Wallet from their header buttons and confirmed that token rows had no chevrons. At 375 px, QA also opened MetaMask from its header and checked Back navigation.
 
-From the same currency screen, Chrome QA compared all three wallet detail layouts at a 390 px phone width. Send, Receive, Pay Bills, and Set as Main worked from YouApp Wallet. At 375 px, all four default action buttons fit above the prototype controls.
+Chrome QA on Windows verified that Wallet settings precede Assets for MetaMask, OKX, Coinbase, imToken, TP Wallet, and WalletConnect at 390 px. It also covered all MetaMask asset pages on desktop, keyboard pagination at 390 px, and pagination in a wallet with no holdings at 320 px.
 
 Chrome QA checked **Reconnect Wallet** from Quick Scenario and the expired YouPage banner. The desktop run set YouApp Wallet and OKX as Main in turn and verified that each appeared as the sole wallet card. It covered PIN dismissal and confirmation, OKX cancellation and retry, and preserved wallet IDs, Main setting, and balances. At 375 px, the reconnect button stayed visible and PIN confirmation restored access.
 
