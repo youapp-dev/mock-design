@@ -1406,11 +1406,52 @@ button:focus-visible,input:focus-visible,[tabindex]:focus-visible{outline:2px so
 .hostcta .t1{font-size:12px; line-height:16px; font-weight:600}
 .hostcta .t2{font-size:12px; line-height:16px; opacity:.85}
 .hostcta b{margin-left:auto; font-size:14px}
-.seg{margin:16px 16px 0; padding:4px; border-radius:999px; background:var(--a-indigo-100); display:grid; grid-template-columns:repeat(3,1fr)}
+.seg{margin:16px 16px 0; padding:4px; border-radius:999px; background:var(--a-indigo-100); display:grid; grid-template-columns:repeat(2,1fr)}
 .seg button{height:40px; border:0; border-radius:999px; background:none; font-weight:600; font-size:13px; color:var(--a-indigo)}
 .seg button[aria-selected="true"]{background:var(--a-grad); color:#fff}
 .search{margin:16px 16px 0; height:48px; border:1px solid var(--a-line); border-radius:999px; display:flex; align-items:center; gap:10px; padding:0 16px; color:var(--a-ink-2); background:#fff; width:calc(100% - 32px)}
 .search .ico{width:20px; height:20px}
+.gp-h{margin:18px 20px 0}
+.gp-h h2{margin:0; color:var(--a-ink); font-size:26px; font-weight:800; letter-spacing:-.5px; line-height:32px}
+.gp-h p{display:flex; align-items:center; gap:4px; margin:2px 0 0; color:var(--a-ink-2); font-size:13px}
+.gp-h .ico{width:15px; height:15px; color:var(--a-indigo)}
+.gp-cats{display:flex; gap:22px; overflow-x:auto; padding:18px 20px 0; border-bottom:1px solid var(--a-line); scrollbar-width:none}
+.gp-cats::-webkit-scrollbar{display:none}
+.gp-cat{display:grid; flex:none; justify-items:center; gap:4px; padding:0 2px 10px; border:0; border-bottom:2.5px solid transparent; background:none; color:var(--a-ink-2); font-size:12px; font-weight:600; opacity:.7; transition:opacity .2s}
+.gp-cat i{font-size:26px; font-style:normal; line-height:30px}
+.gp-cat[aria-pressed="true"]{border-bottom-color:var(--a-indigo); color:var(--a-ink); opacity:1}
+.gp-list{display:grid; gap:30px; padding:22px 16px 8px}
+.gp-card{animation:gpIn .45s cubic-bezier(.2,.7,.2,1) both; animation-delay:var(--d,0ms)}
+.gp-photo{position:relative; overflow:hidden; aspect-ratio:4/3; margin-bottom:8px; border-radius:22px; background:var(--a-gray-100); transition:transform .15s}
+.gp-photo-open{position:absolute; inset:0; display:block; width:100%; height:100%; overflow:hidden; padding:0; border:0; background:none; text-align:left}
+.gp-photo-open img{display:block; width:100%; height:100%; object-fit:cover}
+.gp-photo::after{position:absolute; inset:auto 0 0; height:45%; background:linear-gradient(180deg,rgba(0,0,0,0),rgba(0,0,0,.38)); content:""; pointer-events:none}
+.gp-open{position:absolute; top:12px; left:12px; z-index:2; padding:5px 11px; border-radius:999px; background:rgba(255,255,255,.96); color:#6b6874; font-size:11.5px; font-weight:700}
+.gp-open.on{color:#1e9e4a}
+.gp-heart{position:absolute; top:8px; right:10px; z-index:3; display:grid; width:40px; height:40px; place-items:center; padding:0; border:0; background:none}
+.gp-heart svg{width:26px; height:26px; fill:rgba(0,0,0,.35); stroke:#fff; stroke-width:2; stroke-linejoin:round; filter:drop-shadow(0 1px 3px rgba(0,0,0,.3))}
+.gp-heart[aria-pressed="true"] svg{fill:#ff385c; animation:gpPop .35s}
+.gp-cb{position:absolute; bottom:12px; left:12px; z-index:2; padding:6px 12px 7px; border-radius:14px; background:#1fc15b; color:#fff; line-height:1; box-shadow:0 6px 14px rgba(20,120,60,.35); pointer-events:none}
+.gp-cb b{font-size:20px; font-weight:800; letter-spacing:-.4px}
+.gp-cb span{display:block; margin-top:2px; font-size:10.5px; font-weight:700; opacity:.95}
+.gp-main{display:grid; width:100%; gap:3px; padding:0; border:0; background:none; text-align:left}
+.gp-row{display:flex; align-items:baseline; justify-content:space-between; gap:10px}
+.gp-name{color:var(--a-ink); font-size:16.5px; font-weight:700; line-height:22px}
+.gp-star{display:flex; align-items:center; gap:3px; color:var(--a-ink); font-size:14px; font-weight:700; white-space:nowrap}
+.gp-star .ico{width:14px; height:14px; color:var(--a-ink)}
+.gp-sub{display:flex; align-items:center; gap:5px; color:var(--a-ink-2); font-size:13.5px; line-height:19px}
+.gp-sub .ico{width:15px; height:15px; flex:none; color:var(--a-ink-3)}
+.gp-sub b{color:var(--a-ink); font-weight:600}
+.gp-rev{display:-webkit-box; overflow:hidden; margin:8px 0 0; padding:10px 12px; border-radius:14px; background:var(--a-indigo-100); color:var(--a-ink); font-size:13px; line-height:18px; -webkit-box-orient:vertical; -webkit-line-clamp:2}
+.gp-acts{display:grid; grid-template-columns:1.1fr 1fr 1.2fr; gap:8px; margin-top:10px}
+.gp-pay,.gp-t{display:flex; height:42px; align-items:center; justify-content:center; gap:6px; border:0; border-radius:999px; font-size:13.5px; font-weight:700; white-space:nowrap; transition:transform .12s}
+.gp-pay:active,.gp-t:active{transform:scale(.96)}
+.gp-pay{background:var(--a-grad); color:#fff; box-shadow:0 6px 14px rgba(56,22,142,.25)}
+.gp-t{background:var(--a-indigo-100); color:var(--a-indigo)}
+.gp-attr{margin:6px 16px 110px; color:var(--a-ink-3); font-size:11.5px; text-align:center}
+@keyframes gpIn{from{opacity:0; transform:translateY(14px)}}
+@keyframes gpPop{40%{transform:scale(1.35)}}
+@media (prefers-reduced-motion:reduce){.gp-card,.gp-heart svg{animation:none!important}}
 .sec-title{display:flex; align-items:center; gap:4px; font-weight:600; color:var(--a-indigo); font-size:16px; line-height:24px; padding:20px 16px 10px}
 .sec-title .ico{width:16px; height:16px}
 .skel-row{display:flex; gap:10px; padding:0 16px; overflow:hidden}
@@ -2886,7 +2927,7 @@ const META = {
   name:    {name:'What’s Your Name?', group:'Onboarding', figma:'Flow Onboarding › Name (default / 2 errors / filled)', rules:['Error if fewer than 4 characters on Continue','Error if the field was touched and left blank','Back with data typed asks "Start Over Later?"']},
   dob:     {name:'What’s Your Date of Birth?', group:'Onboarding', figma:'Flow Onboarding › Birthdate', rules:['Picker sheet: day, month, year','Error on Continue when empty','Must be 18 or older (login terms) — added rule, flagged in the flow map','Skip goes to Gender']},
   gender:  {name:'What’s Your Gender?', group:'Onboarding', figma:'Flow Onboarding › Birth Gender', rules:['Male, Female or Prefer not to say','Error on Continue when nothing is selected','Finish goes to Discover']},
-  discover:{name:'Discover (shell)', group:'Home', figma:'Flow Discover - Locals › Discover Locals', rules:['Top bar: YouPage avatar · Discover/Feed · three-dot menu (hidden for guests)','Bottom nav: Discover · Scan · Locals','Lists and detail pages arrive in Phase 2']},
+  discover:{name:'Discover', group:'Home', figma:'YouApp Merchants reference', rules:['Top tabs: Locals and Merchants; Feed remains available from More options','Merchant view: nearby location, category filters, ratings, check-ins, reviews and cashback actions','Locals keeps Hosts and Activities subtabs','Bottom nav: Discover · Scan · Locals; More options is hidden for guests']},
   guestlock:{name:'Guest lock page', group:'Home', figma:'Guest Mode › page guest mode', rules:['Scan and the Locals tab open a full login page for guests','Logging in lands on Discover; the blocked action is not resumed']},
   stub:    {name:'Later phase', group:'Home', figma:'—', rules:['Placeholder until its phase is built']}
 };
@@ -2902,7 +2943,7 @@ let S;
 function freshState(){
   return {screen:'splash', hist:[], lang:'en', langDraft:'en', session:null, email:'', emailErr:'', loading:'',
     otp:'', otpState:'', otpSec:25, name:'', nameErr:'', nameTouched:false, dob:null, dobErr:'', dobDraft:{d:10,m:5,y:2002},
-    gender:'', genderErr:'', seg:'locals', htab:'discover', sheet:null, sheetAnim:false, dialog:null, menu:false,
+    gender:'', genderErr:'', seg:'merchants', merCat:'Nightlife', htab:'discover', sheet:null, sheetAnim:false, dialog:null, menu:false,
     toast:null, stub:null, lockKind:'scan', decor:0};
 }
 S = freshState();
@@ -3146,6 +3187,7 @@ function overlayHTML(){
   }
   if (S.menu){
     h += `<div class="scrim" style="background:transparent" data-act="closeMenu"></div><div class="menu" role="menu">
+      <button role="menuitem" data-act="htab" data-t="feed">Feed</button>
       ${[scen.host==='yes'?['Host Settings','menuHostSet']:['Apply as Host','applyHost'],['Create Experience','menuCreateExp'],['Manage Experience','menuManageExp'],['Plans','menuPlans']].map(([t,a])=>`<button role="menuitem" data-act="${a}" data-t="${t}">${t}</button>`).join('')}</div>`;
   }
   return h;
@@ -3229,7 +3271,8 @@ const A = {
   pickGender: el => { S.gender = el.dataset.g; S.genderErr=''; render(); },
   genderNext: () => { if (!S.gender) { S.genderErr='Please select your gender.'; render(); return; } finishOnb(); },
   skipGender: () => finishOnb(),
-  htab: el => { S.htab = el.dataset.t; render(); },
+  htab: el => { S.htab = el.dataset.t; S.menu=false; render(); },
+  browseTab: el => { S.htab='discover'; S.seg=el.dataset.k; S.merCat=S.merCat||'Nightlife'; S.menu=false; render(); },
   seg: el => { S.seg = el.dataset.k; render(); },
   nav: el => { const to = el.dataset.to;
     if (to==='discover') { S.htab='discover'; if (S.screen!=='discover') go('discover'); else render(); return; }
@@ -3396,12 +3439,12 @@ const EXPERIENCES = [
   {id:'e-jkt', title:'Old Batavia Food Walk', host:'maulida', country:'ID', cat:'Cultural Tour', price:70, rating:4.7, pax:15, img:'exp3'},
 ];
 const MERCHANTS = [
-  {id:'m-pakdin', name:'Warung Pak Din', country:'MY', city:'Kuala Lumpur', cat:'Food & drink', addr:'Jalan Petaling, City Centre, 50000 Kuala Lumpur', img:'act4', rating:4.6, checkins:312, tags:['Food','Malay'], reviews:true, cb:8},
-  {id:'m-club9', name:'Club Nine', country:'MY', city:'Bukit Bintang', cat:'Nightlife', addr:'Jalan Bukit Bintang, 55100 Kuala Lumpur', img:'act6', rating:4.5, checkins:141, tags:['Bar','Music'], reviews:true, cb:6},
-  {id:'m-kopi', name:'Kopitiam Lee', country:'MY', city:'Petaling Jaya', cat:'Food & drink', addr:'Jalan SS 2/24, 47300 Petaling Jaya, Selangor', img:'act5', rating:4.7, checkins:205, tags:['Cafe','Breakfast'], reviews:true, cb:5, kopi:true},
-  {id:'m-vibes', name:'Vibees Music Instrument Store', country:'MY', city:'Sunway', cat:'Shopping', addr:'Jalan PJS 11/15, Bandar Sunway, 47500 Selangor', img:'mer1', rating:4.7, checkins:254, tags:['Music','Shop'], reviews:true, cb:3},
+  {id:'m-pakdin', name:'Warung Pak Din', country:'MY', city:'Kuala Lumpur', cat:'Food & drink', addr:'Jalan Petaling, City Centre, 50000 Kuala Lumpur', img:'act4', rating:4.6, checkins:312, ratingCount:428, distance:'2.1 km', openLabel:'Open · Closes 10 PM', reviewText:'A friendly local spot with generous portions and bold Malaysian flavours.', tags:['Food','Malay'], reviews:true, cb:8},
+  {id:'m-club9', name:'Club Nine', country:'MY', city:'Bukit Bintang', cat:'Nightlife', addr:'Jalan Bukit Bintang, 55100 Kuala Lumpur', img:'act6', rating:4.5, checkins:141, ratingCount:612, distance:'1.4 km', openLabel:'Open · Closes 2 AM', reviewText:'Great live music and a relaxed crowd. Come early for a good table.', tags:['Bar','Music'], reviews:true, cb:6},
+  {id:'m-kopi', name:'Kopitiam Lee', country:'MY', city:'Petaling Jaya', cat:'Food & drink', addr:'Jalan SS 2/24, 47300 Petaling Jaya, Selangor', img:'act5', rating:4.7, checkins:205, ratingCount:318, distance:'4.6 km', openLabel:'Open now', reviewText:'A cozy neighbourhood cafe for breakfast and a proper cup of coffee.', tags:['Cafe','Breakfast'], reviews:true, cb:5, kopi:true},
+  {id:'m-vibes', name:'Vibees Music Instrument Store', country:'MY', city:'Sunway', cat:'Shopping', addr:'Jalan PJS 11/15, Bandar Sunway, 47500 Selangor', img:'mer1', rating:4.7, checkins:254, ratingCount:289, distance:'3.8 km', openLabel:'Open now', reviewText:'Helpful staff and a great range for musicians at every level.', tags:['Music','Shop'], reviews:true, cb:3},
   {id:'m-tentrem', name:'Tentrem Hotel', country:'ID', city:'Yogyakarta', addr:'Jl. P. Mangkubumi No.72A, Yogyakarta 55233', img:'mer2', rating:4.8, checkins:188, tags:['Hotel','Stay'], reviews:true},
-  {id:'m-being', name:'Being Juice Dink Arena', country:'MY', city:'Subang Jaya', addr:'Jalan SS 15/4, Subang Jaya, 47500 Selangor', img:'mer3', rating:4.6, checkins:96, tags:['Sports','Pickleball'], reviews:false, cat:'Sports', cb:5},
+  {id:'m-being', name:'Being Juice Dink Arena', country:'MY', city:'Subang Jaya', addr:'Jalan SS 15/4, Subang Jaya, 47500 Selangor', img:'mer3', rating:4.6, checkins:96, ratingCount:96, distance:'4.2 km', openLabel:'Open now', tags:['Sports','Pickleball'], reviews:false, cat:'Sports', cb:5},
   {id:'m-uss', name:'Universal Studios Singapore', country:'SG', city:'Sentosa', addr:'8 Sentosa Gateway, Singapore 098269', img:'mer4', rating:4.7, checkins:0, tags:['Theme Park','Family'], reviews:true},
   {id:'m-lawang', name:'Lawang Sewu', country:'ID', city:'Semarang', addr:'Evergreen Avenue Block 12A, Unit #05-10 Tembalang 567890', img:'venhero', rating:4.8, checkins:254, tags:['Route','Museum','History'], reviews:true, hidden:true},
 ];
@@ -3410,7 +3453,7 @@ const CHECKERS = [
   {name:'Arif', age:27, img:'ck3', g:'m', id:'ismaul'},{name:'Mei Lin', age:22, img:'ck4', g:'f', id:'aisyah'}];
 
 function freshData(){
-  return {likes:{}, likeCounts:{p1:40, p2:12, p3:110}, checkedIn:{}, recent:{locals:['Maulana Yusuf','Maulida Sari','Maul Nguyen'], activities:['Borobudur','Night photography'], merchants:['Lawang Sewu']},
+  return {likes:{}, likeCounts:{p1:40, p2:12, p3:110}, checkedIn:{}, savedMerchants:{}, recent:{locals:['Maulana Yusuf','Maulida Sari','Maul Nguyen'], activities:['Borobudur','Night photography'], merchants:['Lawang Sewu']},
     posts:[
       {id:'p1', by:'lucas', loc:'', text:'Life has been moving so fast lately that I almost forgot to appreciate the little moments. Watching the waves, listening to music, and spending time with people who matter.', media:['fish','dog'], comments:80, time:'5h'},
       {id:'p2', by:'emma', loc:'Maple Grove Botanical Garden', text:'Spent the afternoon reading in the park instead of staying indoors. The weather couldn’t have been better.', media:['land'], comments:3, time:'5h', video:true},
@@ -3461,9 +3504,10 @@ const expCard = e => `<button class="card" data-act="openExp" data-id="${e.id}" 
 
 function discoverBody(){
   const c = content(); const seg = S.seg;
+  if (seg==='merchants') return merchantBody(c);
   const head = `<div class="banner"><img src="${IMG.banner}" alt="Don’t stop at Hi, say Nice to meet you. 100% real users, powered by A.I."></div>
     ${scen.host==='yes' ? '' : `<button class="hostcta" data-act="applyHost">${ic('verify')}<span><span class="t1" style="display:block">Become Host</span><span class="t2">Get paid to host activities</span></span><b>Apply as Host</b></button>`}
-    <div class="seg" role="tablist">${['locals','activities','merchants'].map(k=>`<button role="tab" aria-selected="${seg===k}" data-act="seg" data-k="${k}">${k==='merchants'?'Merchants':k[0].toUpperCase()+k.slice(1)}</button>`).join('')}</div>
+    <div class="seg" role="tablist">${['locals','activities'].map(k=>`<button role="tab" aria-selected="${seg===k}" data-act="seg" data-k="${k}">${k[0].toUpperCase()+k.slice(1)}</button>`).join('')}</div>
     <button class="search" data-act="openSearch" data-k="${seg}">${ic('search')}${SEG[seg].search}</button>`;
   if (c==='loading') return head + skeletonList();
   if (c==='error') return head + errorBlock();
@@ -3489,11 +3533,36 @@ function discoverBody(){
     return head + sel + `<div class="hscroll">${[['passion1','Pickleball'],['passion2','Personal Training']].map(([i,t])=>`<button class="ptile" data-act="toastCat" data-cat="${t}">${img(i,t)}</button>`).join('')}</div>`
       + cats.map(cat=>`<div class="sec-title" style="cursor:default">${esc(cat)}${ic('chev')}</div><div class="hscroll">${list.filter(e=>e.cat===cat).map(expCard).join('')}</div>`).join('') + '<div style="height:16px"></div>';
   }
-  const cbList = cbMerchants();
-  if (c==='empty' || !cbList.length) return head + stateBlock('emptycal','No cashback merchants nearby yet','Check back soon. New merchants join every week.');
-  return head + `<div class="sec-title" style="cursor:default">Where locals eat, play and unwind</div>
-    <div style="display:grid; gap:12px; padding:0 12px 20px">${cbList.map(m=>`<button class="mcard ov" data-act="openMer" data-id="${m.id}">${img(m.img,m.name)}<span class="mrate">${ic('star')}${m.rating}</span>
-      <span class="mtext"><b>${esc(m.name)}</b><span>${ic('pin')}${esc(m.city)}, Malaysia</span><span>${ic('group')}<b>${m.checkins + (D.checkedIn[m.id]?1:0)}</b>&nbsp;check-ins</span><em class="cb-tag">Cashback ${m.cb}%</em></span></button>`).join('')}</div>`;
+}
+function merchantBody(c){
+  const categories = [['All','✨'],['Food & drink','🍜'],['Nightlife','🍸'],['Shopping','🛍️'],['Sports','🏓']];
+  const category = S.merCat || 'Nightlife';
+  const merchants = cbMerchants().filter(m=>category==='All' || m.cat===category);
+  const head = `<button class="search" data-act="openSearch" data-k="merchants">${ic('search')}Search merchants</button>
+    <div class="gp-h"><h2>Nearby merchants</h2><p>${ic('pin')}Bukit Bintang, Kuala Lumpur · within 5 km</p></div>
+    <div class="gp-cats" role="tablist" aria-label="Merchant categories">${categories.map(([label,emoji])=>`<button class="gp-cat" role="tab" aria-pressed="${category===label}" data-act="merchantCategory" data-c="${esc(label)}"><i aria-hidden="true">${emoji}</i><span>${esc(label)}</span></button>`).join('')}</div>`;
+  if (c==='loading') return head + skeletonList();
+  if (c==='error') return head + errorBlock();
+  if (c==='empty' || !merchants.length) return head + stateBlock('emptycal','No merchants in this category','Try another category to see nearby cashback offers.');
+  return head + `<div class="gp-list">${merchants.map((m,i)=>`<article class="gp-card" style="--d:${i*60}ms">
+    <div class="gp-photo">
+      <button class="gp-photo-open" data-act="openMer" data-id="${m.id}" aria-label="View ${esc(m.name)}">${img(m.img,m.name)}
+        <span class="gp-open on">${esc(m.openLabel||'Open now')}</span></button>
+      <button class="gp-heart" data-act="saveMerchant" data-id="${m.id}" aria-label="${D.savedMerchants[m.id]?'Remove':'Save'} ${esc(m.name)}" aria-pressed="${!!D.savedMerchants[m.id]}">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg></button>
+      <div class="gp-cb"><b>${m.cb}%</b><span>CASHBACK</span></div>
+    </div>
+    <button class="gp-main" data-act="openMer" data-id="${m.id}" aria-label="View details for ${esc(m.name)}">
+      <span class="gp-row"><span class="gp-name">${esc(m.name)}</span><span class="gp-star">${ic('star')}${m.rating}</span></span>
+      <span class="gp-sub">${esc(m.cat||'Merchant')} · ${esc(m.distance||'Nearby')} · ${m.ratingCount||m.checkins} reviews</span>
+      <span class="gp-sub">${ic('pin')}${esc(m.addr)}</span>
+      <span class="gp-sub">${ic('group')}<b>${m.checkins + (D.checkedIn[m.id]?1:0)}</b> check-ins</span>
+      ${m.reviewText?`<span class="gp-rev">&ldquo;${esc(m.reviewText)}&rdquo;</span>`:''}
+    </button>
+    <div class="gp-acts"><button class="gp-pay" data-act="cbScan">Pay</button>
+      <button class="gp-t" data-act="merchantCheckIn" data-id="${m.id}">Check in</button>
+      <button class="gp-t" data-act="merchantDirections" data-id="${m.id}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>Directions</button></div>
+  </article>`).join('')}</div><p class="gp-attr">Place details and photos from Google Maps</p>`;
 }
 const cbPaused = m => { if (!m.kopi) return false; try { return (JSON.parse(localStorage.getItem('w2scen')||'{}').float) === 'empty'; } catch(e){ return false; } };
 const cbMerchants = () => MERCHANTS.filter(m => !m.hidden && m.cb && m.country==='MY' && !cbPaused(m)).sort((a,b) => b.cb - a.cb || b.rating - a.rating);
@@ -3532,7 +3601,7 @@ function postHTML(p, where){
 V.discover = () => { const guest = isGuest(); const feed = S.htab==='feed'; return `<div class="screen">${statusBar()}
   <div class="appbar">
     <button class="avatar" data-act="youpage" aria-label="${guest?'Log in to open YouPage':'Open YouPage'}"><img src="${IMG.avatar}" alt=""></button>
-    <div class="htabs" role="tablist"><button role="tab" aria-selected="${!feed}" data-act="htab" data-t="discover">Discover</button><button role="tab" aria-selected="${feed}" data-act="htab" data-t="feed">Feed</button></div>
+    <div class="htabs" role="tablist"><button role="tab" aria-selected="${!feed && S.seg!=='merchants'}" data-act="browseTab" data-k="locals">Locals</button><button role="tab" aria-selected="${!feed && S.seg==='merchants'}" data-act="browseTab" data-k="merchants">Merchants</button></div>
     ${guest?'<span style="width:32px"></span>':`<button class="iconbtn" style="margin:0 -6px 0 0; width:36px; height:36px" data-act="menu" aria-label="More options">${ic('dots')}</button>`}
   </div>
   <div class="scroll" id="mainScroll">${feed ? feedBody() : discoverBody()}</div>
@@ -3864,13 +3933,20 @@ Object.assign(A, {
   noop: () => {},
   toast: el => toast(el.dataset.msg),
   retry: () => { scen.content='normal'; saveScen(); render(); toast('Loaded.'); },
-  htab: el => { S.htab = el.dataset.t; render(); },
+  htab: el => { S.htab = el.dataset.t; S.menu=false; render(); },
   openSub: el => { S.cat = el.dataset.cat==='Featured Hosts' ? 'Pickleball' : el.dataset.cat; if (el.dataset.replace) { S.screen='sub'; render(); } else go('sub'); },
   toastCat: el => toast(`Shows ${el.dataset.cat} activities.`),
   openSvc: el => { S.svc = el.dataset.id; go('svc'); },
   openExp: el => { if (el.dataset.rec) pushRecent(S.sk||'activities', el.dataset.rec); S.exp = el.dataset.id; go('exp'); },
   cbScan: () => go('scan'),
   openMer: el => { if (el.dataset.rec) pushRecent('merchants', el.dataset.rec); S.mer = el.dataset.id; S.merTab='about'; S.merRev='reviews'; S.hoursOpen=false; go('mer'); },
+  merchantCategory: el => { S.merCat=el.dataset.c; render(); },
+  saveMerchant: el => { const m=merById(el.dataset.id); if (!m) return; D.savedMerchants[m.id]=!D.savedMerchants[m.id]; render(); },
+  merchantCheckIn: guard(el => { const m=merById(el.dataset.id); if (!m) return;
+    if (scen.network==='offline') { toast('No internet connection. Check your connection and try again.','err'); return; }
+    if (D.checkedIn[m.id]) { toast(`You've already checked in at ${m.name}.`,'err'); return; }
+    D.checkedIn[m.id]=true; S.mer=m.id; S.merTab='checkin'; S.merRev='reviews'; S.hoursOpen=false; go('mer'); toast(`You've checked in at ${m.name}.`); }),
+  merchantDirections: el => { const m=merById(el.dataset.id); if (m) toast('Directions are not connected in this prototype yet.'); },
   openHost: el => { if (el.dataset.rec) pushRecent(S.sk||'locals', el.dataset.rec); const h = el.dataset.h; const s = SERVICES.find(x=>x.host===h);
     if (s) { S.svc = s.id; go('svc'); } else { const virt = {id:'s-'+h, title:`${HOSTS[h].title} with ${HOSTS[h].name}`, host:h, cat:HOSTS[h].title, price:60, rating:4.8, img:HOSTS[h].av, gal:['svc1','svc2','svc3']}; if (!svcById(virt.id)) SERVICES.push(virt); S.svc = virt.id; go('svc'); } },
   openProfile: el => { const h = el.dataset.h; if (!h || !HOSTS[h]) return; S.prof = h; S.profTab='profil'; go('profile'); },
@@ -7671,12 +7747,12 @@ Object.assign(A, {
   g7LoginPage: () => A.g7Login(),
 });
 /* after logging in from guest mode: Discover, Locals tab */
-const _afterAuth7 = afterAuth; afterAuth = function(){ _afterAuth7(); if (S.session==='user' && S.screen==='discover') { S.htab='discover'; S.seg='locals'; render(); } };
+const _afterAuth7 = afterAuth; afterAuth = function(){ _afterAuth7(); if (S.session==='user' && S.screen==='discover') { S.htab='discover'; S.seg='merchants'; render(); } };
 Object.assign(META, {
   guestlock:{name:'Guest page (Scan / Locals)', group:'Guest Mode', figma:'Guest Mode › page guest mode', rules:['Scan and Locals tabs show this page for guests','Login opens the login page']},
   login7:{name:'Login page (guest)', group:'Guest Mode', figma:'Guest Mode › page guest mode (3709:24265)', rules:['Back returns to the guest page; after login the user lands on Discover › Locals']},
 });
-const _finishOnb7 = finishOnb; finishOnb = function(){ _finishOnb7(); S.htab='discover'; S.seg='locals'; render(); };
+const _finishOnb7 = finishOnb; finishOnb = function(){ _finishOnb7(); S.htab='discover'; S.seg='merchants'; render(); };
 
 /* ===== Icons from Figma: merchant (1930:67189), cashback (4232:11248), experience calendar (1860:103301) ===== */
 Object.assign(SVG, {
@@ -9836,7 +9912,7 @@ render = function(){ _rgAct(); const ph = document.getElementById('phone'); if (
   ph.querySelectorAll('.seg [data-act="seg"]').forEach(b => { if (b.dataset.k==='locals') b.textContent = 'Hosts'; if (b.dataset.k==='merchants') b.textContent = 'Cashback'; });
   if (S.screen === 'chats') ph.querySelectorAll('.topbar .t-headline, .g7top .t-headline').forEach(t => { if (t.textContent.trim()==='Locals') t.textContent = 'Hosts'; });
   if (S.screen === 'chats') ph.querySelectorAll('.kicker3').forEach(k => { if (k.textContent.trim()==='Locals' || k.textContent.trim()==='Hosts') k.remove(); });
-  if (S.screen === 'discover') ph.querySelectorAll('[data-act="openSearch"]').forEach(b => { if (S.seg==='locals' || !S.seg) b.innerHTML = b.innerHTML.replace('Search locals','Search hosts'); if (S.seg==='merchants') b.innerHTML = b.innerHTML.replace('Search merchants','Search cashback merchants'); });
+  if (S.screen === 'discover') ph.querySelectorAll('[data-act="openSearch"]').forEach(b => { if (S.seg==='locals' || !S.seg) b.innerHTML = b.innerHTML.replace('Search locals','Search hosts'); });
   ph.classList.toggle('gxs', ph.classList.contains('gxs') || ['actmine','actd','actedit','actappl','cexp'].includes(S.screen));
   if (['actmine','actd','actedit','actappl','cexp'].includes(S.screen)) { ph.classList.add('gx-' + S.screen); ph.querySelectorAll('[data-act="back"] .ico, [data-act="cxBack"] .ico, [data-act="actEditSectionBack"] .ico').forEach(e => { e.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg>'; }); }
 };
