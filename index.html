@@ -3,7 +3,24 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>YouApp Full Flow (V2)</title>
+<title>YouApp Design Prototype</title>
+<meta name="description" content="Explore YouApp's interactive mobile flows and product scenarios.">
+<link rel="canonical" href="https://youapp-dev.github.io/mock-design/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="YouApp">
+<meta property="og:title" content="YouApp Design Prototype">
+<meta property="og:description" content="Explore YouApp's interactive mobile flows and product scenarios.">
+<meta property="og:url" content="https://youapp-dev.github.io/mock-design/">
+<meta property="og:image" content="https://youapp-dev.github.io/mock-design/youapp-design-prototype-preview.png">
+<meta property="og:image:type" content="image/png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="YouApp Design Prototype on a purple background with a mobile YouWallet screen.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="YouApp Design Prototype">
+<meta name="twitter:description" content="Explore YouApp's interactive mobile flows and product scenarios.">
+<meta name="twitter:image" content="https://youapp-dev.github.io/mock-design/youapp-design-prototype-preview.png">
+<meta name="twitter:image:alt" content="YouApp Design Prototype on a purple background with a mobile YouWallet screen.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap">
 <style>
@@ -181,7 +198,7 @@ button{font:inherit; color:inherit; cursor:pointer}
       <div class="ctl"><span>Elite merchants</span><div class="seg" role="group" aria-label="Elite merchants" style="grid-template-columns:repeat(2,1fr)"><button data-s="merch" data-v="has">Has merchants</button><button data-s="merch" data-v="none">Empty</button></div></div>
       <div class="ctl"><span>Group chats (Locals › Group)</span><div class="seg" role="group" aria-label="Group chats" style="grid-template-columns:repeat(4,1fr)"><button data-s="gList" data-v="empty">No groups</button><button data-s="gList" data-v="owner">As owner</button><button data-s="gList" data-v="admin">As admin</button><button data-s="gList" data-v="member">As member</button></div></div>
       <div class="ctl"><span>Group creation</span><div class="seg" role="group" aria-label="Group creation" style="grid-template-columns:repeat(2,1fr)"><button data-j="locals">Locals › Group</button><button data-j="gInvite">Invite link</button></div></div>
-      <div class="ctl"><span>Red Packet</span><div class="jumps" role="group" aria-label="Red Packet"><button data-j="apNew">Create</button><button data-j="apChat">Chat card</button><button data-j="apRecv:ready">Receive</button><button data-j="apRecv:full">Fully claimed</button><button data-j="apRecv:lucky">Lucky draw from Lara</button></div></div>
+      <div class="ctl"><span>Red Packet</span><div class="jumps" role="group" aria-label="Red Packet"><button data-j="apNew">Create</button><button data-j="apChat">Chat card</button><button data-j="apRecv:ready">Receive</button><button data-j="apRecv:full">Fully claimed</button><button data-j="apRecv:lucky">Lucky draw from Lara</button><button data-j="apHistory">My Red Packet</button><button data-j="apHistory:empty">Empty history</button></div></div>
       <details class="lucky-rates" id="luckyRateAdmin">
         <summary>Lucky draw rates</summary>
         <form id="luckyRateForm" novalidate>
@@ -270,7 +287,7 @@ button{font:inherit; color:inherit; cursor:pointer}
     wallets:'My money', walletCurrency:'Currency details', walletConnect:'Connect a wallet', walletPaymentSource:'Pay with', walletApprove:'Approve in your wallet', walletTopUp:'Top up', walletTopUpAmount:'Top up amount', walletTopUpStable:'Stablecoin top up', walletTopUpDone:'Top up complete', walletTopUpReceipt:'Top up receipt',
     bills:'Pay Bill', mreload:'Mobile Reload', billInput:'Bill number', billConfirm:'Bill payment', billDone:'Bill paid', invite:'Refer a Friend', rewards:'Rewards', signup:'Get Started', otp:'OTP', obName:'Onboarding · Name', obDob:'Onboarding · Birthday', obGender:'Onboarding · Gender', obRef:'Onboarding · Referral',
     hosttab:'Host tab (become a host)', settings:'Settings', topup:'Top Up', whist:'Transactions', chats:'Locals chat', chat:'Chatroom', limits:'Limits', profedit:'Edit profile', cexp:'Create experience',
-    apform:'Red Packet · Create', apconf:'Red Packet · Confirm', apdone:'Red Packet · Share', aprecv:'Red Packet · Receive', apdet:'Red Packet · Details', aplist:'Red Packet · My red packets', actmine:'My Activities', actd:'My activity', actedit:'Edit activity', actappl:'Activity applicants', products:'YouApp Products', ginvite:'Group · Invite link', gpick:'Create group · Members', gform:'Create group · Details'};
+    apform:'Red Packet · Create', apconf:'Red Packet · Confirm', apdone:'Red Packet · Share', aprecv:'Red Packet · Receive', apdet:'Red Packet · Details', aplist:'My Red Packet', actmine:'My Activities', actd:'My activity', actappl:'Activity applicants', products:'YouApp Products', ginvite:'Group · Invite link', gpick:'Create group · Members', gform:'Create group · Details'};
   function status(){
     const st = ctxOf(active);
     document.querySelector('.stage').classList.toggle('has-preview-dock', active==='w2' || st.screen==='apform');
