@@ -3858,6 +3858,29 @@ div.sp-fr{cursor:pointer} .sp-fr .rf-chat{margin-left:auto}
 .dc-it b{font-size:13px} .dc-it small{font-size:12px; color:var(--a-ink-3); display:flex; align-items:center; gap:4px} .dc-it small .ico{width:12px; height:12px; color:#f2b01e}
 .ky-badge{width:120px; height:120px; border-radius:36%; background:var(--a-grad); color:#fff; display:grid; place-items:center; transform:rotate(12deg); box-shadow:0 0 0 26px #f2f1f4; margin:20px 0 14px} .ky-badge .ico{width:56px; height:56px; transform:rotate(-12deg)}
 .ky-h{margin:0; font-size:24px; color:var(--a-indigo)}
+.kyi-appbar{position:relative; justify-content:center}
+.kyi-appbar .kyi-page-title{font-size:17px; font-weight:700; color:#21144e}
+.kyi-avatar{position:absolute; left:24px; width:38px; height:38px; border:0; border-radius:50%; background:#bd52a6; color:#fff; font-size:14px; font-weight:700}
+.kyi-content{display:flex; flex-direction:column; padding:8px 16px 6px}
+.kyi-hero{display:block; width:100%; height:156px; flex:none}
+.kyi-title{margin:8px 0 2px; color:#21144e; font-size:24px; line-height:30px; text-align:center; font-weight:700}
+.kyi-subtitle{margin:0 0 8px; color:#716a7e; font-size:15px; line-height:20px; text-align:center}
+.kyi-table{overflow:hidden; border:1px solid #e6e3eb; border-radius:20px; background:#fff}
+.kyi-table-head,.kyi-table-row{display:grid; grid-template-columns:minmax(0,1fr) 64px 72px; align-items:center}
+.kyi-table-head{height:34px; background:#faf9fc; color:#858091; font-size:12px; font-weight:600; text-align:center}
+.kyi-table-head span:last-child{color:#4b91ee}
+.kyi-table-row{min-height:40px; border-top:1px solid #e9e7ed}
+.kyi-table-row:last-child{min-height:48px}
+.kyi-table-row>span:first-child{padding:0 6px 0 14px; color:#241d3f; font-size:13px; line-height:17px; font-weight:600}
+.kyi-status{width:24px; height:24px; justify-self:center; display:grid; place-items:center}
+.kyi-status .ico{width:15px; height:15px}
+.kyi-status.now{border-radius:50%; background:#e3f6ee; color:#23966a}
+.kyi-status.locked{color:#b7b3c0}
+.kyi-status.verified{border-radius:50%; background:#4b91ee; color:#fff}
+.kyi-status.verified .ico{width:16px; height:16px}
+.kyi-actions{display:flex; flex-direction:column; align-items:stretch; gap:0; padding-top:8px}
+.kyi-actions .btn{height:56px; font-size:16px}
+.kyi-later{height:32px; border:0; background:none; color:var(--a-indigo); font-size:14px; font-weight:600}
 .ky-cc{border:1px solid var(--a-line); border-radius:10px; padding:12px; font-size:15px} .ky-ph{flex:1; border:1px solid var(--a-line); border-radius:10px; padding:12px; font-size:15px} .ky-ph.ph{color:var(--a-ink-3)}
 .ky-ph0{height:400px; border-radius:18px; background:#e6e5e9; display:grid; place-items:center; color:#6a6570} .ky-ph0 .ico{width:160px; height:160px}
 .ky-grid{display:grid; grid-template-columns:1fr 1fr; gap:10px} .ky-grid span{aspect-ratio:3/4; border-radius:14px; overflow:hidden} .ky-grid img{width:100%; height:100%; object-fit:cover}
@@ -6696,12 +6719,54 @@ V.discover = () => { const tab = S.dTab||'locals';
   <button data-act="dTab" data-k="locals">${ic('group')}Locals</button></nav></div>`; };
 
 /* ===== KYC + wallet activation (Flow KYC n Wallet activation 1837:49946) ===== */
-V.kycIntro = () => `<div class="screen bz">${statusBar()}${topBar('Verify to continue')}
-  <div class="scroll"><div class="pad16 stack" style="gap:16px; padding-top:10px; align-items:center; text-align:center">
-    <div class="ky-badge">${ic('check')}</div><h2 class="ky-h">Verify to activate your wallet</h2>
-    <div class="hs-card" style="text-align:left; width:100%"><b>Right now you can</b><small class="subtle" style="display:block">Browse locals, activities and merchants · read the feed</small><hr class="pc3-hr" style="border-top-color:var(--a-line); margin:10px 0"><b>After verifying you get</b><small class="subtle" style="display:block">Self custodial wallet · pay to any DuitNow QR · top up using stablecoins · chat and meet verified locals · book activities</small></div>
-    ${btn('Verify me · takes 2 minutes','nav',{data:'data-to="kycPhone"'})}<button class="link" data-act="back">Maybe Later</button>
-  </div></div></div>`;
+V.kycIntro = () => {
+  const benefits = [
+    ['Browse locals and activities', true],
+    ['Blue tick on your profile', false],
+    ['Chat and meet verified locals', false],
+    ['Book hosts and activities', false],
+    ['Pay any QR', false],
+    ['Your own wallet, top up with stablecoins', false],
+  ];
+  return `<div class="screen bz">${statusBar()}
+    <div class="appbar kyi-appbar"><span class="kyi-avatar" aria-hidden="true">ML</span><span class="kyi-page-title">Get verified</span><span style="width:38px"></span></div>
+    <div class="scroll"><div class="kyi-content">
+      <svg class="kyi-hero" viewBox="0 0 540 240" role="img" aria-label="Verified identity card illustration">
+        <rect x="2" y="2" width="536" height="236" rx="32" fill="#faeffb"/>
+        <path d="M56 48l6 12 12 2-9 8 2 12-11-6-11 6 2-12-9-8 12-2zM469 39l7 13 13 2-10 9 2 13-12-7-11 7 3-13-10-9 13-2zM83 183l4 8 9 1-7 6 2 9-8-4-8 4 2-9-7-6 9-1zM440 174l5 9 10 1-7 7 2 10-10-5-9 5 2-10-8-7 10-1z" fill="#d4a0d4"/>
+        <circle cx="89" cy="118" r="20" fill="#f5bd32"/><text x="89" y="123" text-anchor="middle" fill="#9c6a12" font-size="12" font-weight="700">RM</text>
+        <circle cx="451" cy="128" r="20" fill="#44c79a"/><text x="451" y="133" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">RM</text>
+        <rect x="194" y="38" width="152" height="112" rx="16" fill="#fff" stroke="#d7c6ea" stroke-width="2"/>
+        <path d="M210 38h120a16 16 0 0 1 16 16v9H194v-9a16 16 0 0 1 16-16" fill="#5630a8"/>
+        <circle cx="230" cy="94" r="18" fill="#f1cbb4"/>
+        <path d="M213 91c0-14 8-21 18-21 11 0 19 8 19 20-10-2-22-8-25-15-2 7-6 12-12 16" fill="#302058"/>
+        <rect x="258" y="82" width="66" height="9" rx="4.5" fill="#d6c6ee"/>
+        <rect x="258" y="101" width="50" height="8" rx="4" fill="#e9e2f2"/>
+        <circle cx="358" cy="111" r="24" fill="#35b987"/>
+        <path d="m348 111 7 7 14-16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="128" y="166" width="284" height="54" rx="27" fill="#fff"/>
+        <circle cx="163" cy="193" r="15" fill="#4b91ee"/><path d="m156 193 5 5 9-11" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="188" y="199" fill="#21144e" font-size="17" font-weight="700">Mei Ling</text>
+        <text x="282" y="199" fill="#777184" font-size="15">Verified</text>
+      </svg>
+      <h1 class="kyi-title">Get your verified badge</h1>
+      <p class="kyi-subtitle">Your ID and a selfie. Takes about 2 minutes.</p>
+      <div class="kyi-table" role="table" aria-label="What you can do before and after verification">
+        <div class="kyi-table-head" role="row"><span role="columnheader" aria-label="Benefit"></span><span role="columnheader">Now</span><span role="columnheader">Verified</span></div>
+        ${benefits.map(([label, available]) => `<div class="kyi-table-row" role="row">
+          <span role="rowheader">${label}</span>
+          <span class="kyi-status ${available ? 'now' : 'locked'}" role="img" aria-label="${available ? 'Available now' : 'Available after verification'}">${available ? ic('check') : ic('lock')}</span>
+          <span class="kyi-status verified" role="img" aria-label="Available after verification">${ic('check')}</span>
+        </div>`).join('')}
+      </div>
+      <div class="kyi-actions">${btn('Verify me','nav',{data:'data-to="kycPhone"'})}<button class="kyi-later" data-act="back">Maybe later</button></div>
+    </div></div>
+    <nav class="bnav" aria-label="Main">
+      <button data-act="nav" data-to="discover">${ic('compass')}Discover</button>
+      <button class="scanbtn" data-act="nav" data-to="scan"><span class="fab">${ic('scan')}</span><span class="lbl">Scan</span></button>
+      <button aria-current="page" data-act="dTab" data-k="locals">${ic('group')}Locals</button>
+    </nav></div>`;
+};
 V.kycPhone = () => { const v = S.kyPh||''; const ok = v.length>=9;
   return `<div class="screen bz">${statusBar()}${topBar('Mobile Number')}
   <div class="scroll"><div class="pad16 stack" style="gap:8px; padding-top:8px"><b>Mobile Number</b>
@@ -6828,7 +6893,7 @@ Object.assign(META, {
   bookingDetail:{name:'Booking Detail', ph:1, rules:['From an Upcoming card. Transaction number, booking card, payment status, price, service fee and total earning.']},
   listingDetail:{name:'Listing Detail', ph:1, rules:['From a My Listing card. Status, title, rating, description, host, what we will do, availability, meeting point, price, View Schedule.']},
   discover:{name:'Discover · Locals', ph:1, rules:['Banner, Become Host, Locals / Activities / Merchants tabs, search, Explore by passion, Featured Hosts, category rows. Bottom nav Discover · Scan · Locals.']},
-  kycIntro:{name:'KYC · Verify to continue', ph:1, rules:['From the 3.0 KYC flow: intro → mobile number → upload 3 photos → verifying → identity confirmed (Privy wallet) → email OTP (demo 123456) → wallet active.','Panel “KYC result” = Reject sends the flow to the rejected state.']},
+  kycIntro:{name:'KYC · Get verified', ph:1, rules:['Shows the Now / Verified benefit comparison and verified-badge illustration.','Verify me continues to mobile number, photo verification, identity confirmation, email OTP (demo 123456) and wallet activation.','Maybe later returns to the previous screen. Panel “KYC result” = Reject sends the flow to the rejected state.']},
 });
 { const o = ORDER[0][1]; o.push('topUp','tuSend','tuProc','myQr','txHist','txReceipt','settings','pinCur','editProfile','kycIntro','kycPhone','kycPhotos','kycConfirmed','kycActive','discover');
   ['kycPhone','kycPhotos','kycVerifying','kycConfirmed','kycOtp','kycActive','pinNew','pinConf','pinOk','pinOtp','cxDone'].forEach(k=>{ if(!META[k]) META[k]={name:k.replace(/([A-Z])/g,' $1').replace(/^./,c=>c.toUpperCase()), ph:1, rules:['Part of the flow above.']}; });
