@@ -31,7 +31,7 @@ const META = {
   name:    {name:'What’s Your Name?', group:'Onboarding', figma:'Flow Onboarding › Name (default / 2 errors / filled)', rules:['Error if fewer than 4 characters on Continue','Error if the field was touched and left blank','Back with data typed asks "Start Over Later?"']},
   dob:     {name:'What’s Your Date of Birth?', group:'Onboarding', figma:'Flow Onboarding › Birthdate', rules:['Picker sheet: day, month, year','Error on Continue when empty','Must be 18 or older (login terms) — added rule, flagged in the flow map','Skip goes to Gender']},
   gender:  {name:'What’s Your Gender?', group:'Onboarding', figma:'Flow Onboarding › Birth Gender', rules:['Male, Female or Prefer not to say','Error on Continue when nothing is selected','Finish goes to Discover']},
-  discover:{name:'Discover (shell)', group:'Home', figma:'Flow Discover - Locals › Discover Locals', rules:['Top bar: YouPage avatar · Discover/Feed · three-dot menu (hidden for guests)','Bottom nav: Discover · Scan · Locals','Lists and detail pages arrive in Phase 2']},
+  discover:{name:'Discover', group:'Home', figma:'YouApp Merchants reference', rules:['Top tabs: Locals and Merchants; Feed remains available from More options','Merchant view: nearby location, category filters, ratings, check-ins, reviews and cashback actions','Locals keeps Hosts and Activities subtabs','Bottom nav: Discover · Scan · Locals; More options is hidden for guests']},
   guestlock:{name:'Guest lock page', group:'Home', figma:'Guest Mode › page guest mode', rules:['Scan and the Locals tab open a full login page for guests','Logging in lands on Discover; the blocked action is not resumed']},
   stub:    {name:'Later phase', group:'Home', figma:'—', rules:['Placeholder until its phase is built']}
 };
@@ -47,7 +47,7 @@ let S;
 function freshState(){
   return {screen:'splash', hist:[], lang:'en', langDraft:'en', session:null, email:'', emailErr:'', loading:'',
     otp:'', otpState:'', otpSec:25, name:'', nameErr:'', nameTouched:false, dob:null, dobErr:'', dobDraft:{d:10,m:5,y:2002},
-    gender:'', genderErr:'', seg:'locals', htab:'discover', sheet:null, sheetAnim:false, dialog:null, menu:false,
+    gender:'', genderErr:'', seg:'merchants', merCat:'Nightlife', htab:'discover', sheet:null, sheetAnim:false, dialog:null, menu:false,
     toast:null, stub:null, lockKind:'scan', decor:0};
 }
 S = freshState();
@@ -291,6 +291,7 @@ function overlayHTML(){
   }
   if (S.menu){
     h += `<div class="scrim" style="background:transparent" data-act="closeMenu"></div><div class="menu" role="menu">
+      <button role="menuitem" data-act="htab" data-t="feed">Feed</button>
       ${[scen.host==='yes'?['Host Settings','menuHostSet']:['Apply as Host','applyHost'],['Create Experience','menuCreateExp'],['Manage Experience','menuManageExp'],['Plans','menuPlans']].map(([t,a])=>`<button role="menuitem" data-act="${a}" data-t="${t}">${t}</button>`).join('')}</div>`;
   }
   return h;
@@ -374,7 +375,8 @@ const A = {
   pickGender: el => { S.gender = el.dataset.g; S.genderErr=''; render(); },
   genderNext: () => { if (!S.gender) { S.genderErr='Please select your gender.'; render(); return; } finishOnb(); },
   skipGender: () => finishOnb(),
-  htab: el => { S.htab = el.dataset.t; render(); },
+  htab: el => { S.htab = el.dataset.t; S.menu=false; render(); },
+  browseTab: el => { S.htab='discover'; S.seg=el.dataset.k; S.merCat=S.merCat||'Nightlife'; S.menu=false; render(); },
   seg: el => { S.seg = el.dataset.k; render(); },
   nav: el => { const to = el.dataset.to;
     if (to==='discover') { S.htab='discover'; if (S.screen!=='discover') go('discover'); else render(); return; }
@@ -541,12 +543,12 @@ const EXPERIENCES = [
   {id:'e-jkt', title:'Old Batavia Food Walk', host:'maulida', country:'ID', cat:'Cultural Tour', price:70, rating:4.7, pax:15, img:'exp3'},
 ];
 const MERCHANTS = [
-  {id:'m-pakdin', name:'Warung Pak Din', country:'MY', city:'Kuala Lumpur', cat:'Food & drink', addr:'Jalan Petaling, City Centre, 50000 Kuala Lumpur', img:'act4', rating:4.6, checkins:312, tags:['Food','Malay'], reviews:true, cb:8},
-  {id:'m-club9', name:'Club Nine', country:'MY', city:'Bukit Bintang', cat:'Nightlife', addr:'Jalan Bukit Bintang, 55100 Kuala Lumpur', img:'act6', rating:4.5, checkins:141, tags:['Bar','Music'], reviews:true, cb:6},
-  {id:'m-kopi', name:'Kopitiam Lee', country:'MY', city:'Petaling Jaya', cat:'Food & drink', addr:'Jalan SS 2/24, 47300 Petaling Jaya, Selangor', img:'act5', rating:4.7, checkins:205, tags:['Cafe','Breakfast'], reviews:true, cb:5, kopi:true},
-  {id:'m-vibes', name:'Vibees Music Instrument Store', country:'MY', city:'Sunway', cat:'Shopping', addr:'Jalan PJS 11/15, Bandar Sunway, 47500 Selangor', img:'mer1', rating:4.7, checkins:254, tags:['Music','Shop'], reviews:true, cb:3},
+  {id:'m-pakdin', name:'Warung Pak Din', country:'MY', city:'Kuala Lumpur', cat:'Food & drink', addr:'Jalan Petaling, City Centre, 50000 Kuala Lumpur', img:'act4', rating:4.6, checkins:312, ratingCount:428, distance:'2.1 km', openLabel:'Open · Closes 10 PM', reviewText:'A friendly local spot with generous portions and bold Malaysian flavours.', tags:['Food','Malay'], reviews:true, cb:8},
+  {id:'m-club9', name:'Club Nine', country:'MY', city:'Bukit Bintang', cat:'Nightlife', addr:'Jalan Bukit Bintang, 55100 Kuala Lumpur', img:'act6', rating:4.5, checkins:141, ratingCount:612, distance:'1.4 km', openLabel:'Open · Closes 2 AM', reviewText:'Great live music and a relaxed crowd. Come early for a good table.', tags:['Bar','Music'], reviews:true, cb:6},
+  {id:'m-kopi', name:'Kopitiam Lee', country:'MY', city:'Petaling Jaya', cat:'Food & drink', addr:'Jalan SS 2/24, 47300 Petaling Jaya, Selangor', img:'act5', rating:4.7, checkins:205, ratingCount:318, distance:'4.6 km', openLabel:'Open now', reviewText:'A cozy neighbourhood cafe for breakfast and a proper cup of coffee.', tags:['Cafe','Breakfast'], reviews:true, cb:5, kopi:true},
+  {id:'m-vibes', name:'Vibees Music Instrument Store', country:'MY', city:'Sunway', cat:'Shopping', addr:'Jalan PJS 11/15, Bandar Sunway, 47500 Selangor', img:'mer1', rating:4.7, checkins:254, ratingCount:289, distance:'3.8 km', openLabel:'Open now', reviewText:'Helpful staff and a great range for musicians at every level.', tags:['Music','Shop'], reviews:true, cb:3},
   {id:'m-tentrem', name:'Tentrem Hotel', country:'ID', city:'Yogyakarta', addr:'Jl. P. Mangkubumi No.72A, Yogyakarta 55233', img:'mer2', rating:4.8, checkins:188, tags:['Hotel','Stay'], reviews:true},
-  {id:'m-being', name:'Being Juice Dink Arena', country:'MY', city:'Subang Jaya', addr:'Jalan SS 15/4, Subang Jaya, 47500 Selangor', img:'mer3', rating:4.6, checkins:96, tags:['Sports','Pickleball'], reviews:false, cat:'Sports', cb:5},
+  {id:'m-being', name:'Being Juice Dink Arena', country:'MY', city:'Subang Jaya', addr:'Jalan SS 15/4, Subang Jaya, 47500 Selangor', img:'mer3', rating:4.6, checkins:96, ratingCount:96, distance:'4.2 km', openLabel:'Open now', tags:['Sports','Pickleball'], reviews:false, cat:'Sports', cb:5},
   {id:'m-uss', name:'Universal Studios Singapore', country:'SG', city:'Sentosa', addr:'8 Sentosa Gateway, Singapore 098269', img:'mer4', rating:4.7, checkins:0, tags:['Theme Park','Family'], reviews:true},
   {id:'m-lawang', name:'Lawang Sewu', country:'ID', city:'Semarang', addr:'Evergreen Avenue Block 12A, Unit #05-10 Tembalang 567890', img:'venhero', rating:4.8, checkins:254, tags:['Route','Museum','History'], reviews:true, hidden:true},
 ];
@@ -555,7 +557,7 @@ const CHECKERS = [
   {name:'Arif', age:27, img:'ck3', g:'m', id:'ismaul'},{name:'Mei Lin', age:22, img:'ck4', g:'f', id:'aisyah'}];
 
 function freshData(){
-  return {likes:{}, likeCounts:{p1:40, p2:12, p3:110}, checkedIn:{}, recent:{locals:['Maulana Yusuf','Maulida Sari','Maul Nguyen'], activities:['Borobudur','Night photography'], merchants:['Lawang Sewu']},
+  return {likes:{}, likeCounts:{p1:40, p2:12, p3:110}, checkedIn:{}, savedMerchants:{}, recent:{locals:['Maulana Yusuf','Maulida Sari','Maul Nguyen'], activities:['Borobudur','Night photography'], merchants:['Lawang Sewu']},
     posts:[
       {id:'p1', by:'lucas', loc:'', text:'Life has been moving so fast lately that I almost forgot to appreciate the little moments. Watching the waves, listening to music, and spending time with people who matter.', media:['fish','dog'], comments:80, time:'5h'},
       {id:'p2', by:'emma', loc:'Maple Grove Botanical Garden', text:'Spent the afternoon reading in the park instead of staying indoors. The weather couldn’t have been better.', media:['land'], comments:3, time:'5h', video:true},
@@ -606,9 +608,10 @@ const expCard = e => `<button class="card" data-act="openExp" data-id="${e.id}" 
 
 function discoverBody(){
   const c = content(); const seg = S.seg;
+  if (seg==='merchants') return merchantBody(c);
   const head = `<div class="banner"><img src="${IMG.banner}" alt="Don’t stop at Hi, say Nice to meet you. 100% real users, powered by A.I."></div>
     ${scen.host==='yes' ? '' : `<button class="hostcta" data-act="applyHost">${ic('verify')}<span><span class="t1" style="display:block">Become Host</span><span class="t2">Get paid to host activities</span></span><b>Apply as Host</b></button>`}
-    <div class="seg" role="tablist">${['locals','activities','merchants'].map(k=>`<button role="tab" aria-selected="${seg===k}" data-act="seg" data-k="${k}">${k==='merchants'?'Merchants':k[0].toUpperCase()+k.slice(1)}</button>`).join('')}</div>
+    <div class="seg" role="tablist">${['locals','activities'].map(k=>`<button role="tab" aria-selected="${seg===k}" data-act="seg" data-k="${k}">${k[0].toUpperCase()+k.slice(1)}</button>`).join('')}</div>
     <button class="search" data-act="openSearch" data-k="${seg}">${ic('search')}${SEG[seg].search}</button>`;
   if (c==='loading') return head + skeletonList();
   if (c==='error') return head + errorBlock();
@@ -634,11 +637,36 @@ function discoverBody(){
     return head + sel + `<div class="hscroll">${[['passion1','Pickleball'],['passion2','Personal Training']].map(([i,t])=>`<button class="ptile" data-act="toastCat" data-cat="${t}">${img(i,t)}</button>`).join('')}</div>`
       + cats.map(cat=>`<div class="sec-title" style="cursor:default">${esc(cat)}${ic('chev')}</div><div class="hscroll">${list.filter(e=>e.cat===cat).map(expCard).join('')}</div>`).join('') + '<div style="height:16px"></div>';
   }
-  const cbList = cbMerchants();
-  if (c==='empty' || !cbList.length) return head + stateBlock('emptycal','No cashback merchants nearby yet','Check back soon. New merchants join every week.');
-  return head + `<div class="sec-title" style="cursor:default">Where locals eat, play and unwind</div>
-    <div style="display:grid; gap:12px; padding:0 12px 20px">${cbList.map(m=>`<button class="mcard ov" data-act="openMer" data-id="${m.id}">${img(m.img,m.name)}<span class="mrate">${ic('star')}${m.rating}</span>
-      <span class="mtext"><b>${esc(m.name)}</b><span>${ic('pin')}${esc(m.city)}, Malaysia</span><span>${ic('group')}<b>${m.checkins + (D.checkedIn[m.id]?1:0)}</b>&nbsp;check-ins</span><em class="cb-tag">Cashback ${m.cb}%</em></span></button>`).join('')}</div>`;
+}
+function merchantBody(c){
+  const categories = [['All','✨'],['Food & drink','🍜'],['Nightlife','🍸'],['Shopping','🛍️'],['Sports','🏓']];
+  const category = S.merCat || 'Nightlife';
+  const merchants = cbMerchants().filter(m=>category==='All' || m.cat===category);
+  const head = `<button class="search" data-act="openSearch" data-k="merchants">${ic('search')}Search merchants</button>
+    <div class="gp-h"><h2>Nearby merchants</h2><p>${ic('pin')}Bukit Bintang, Kuala Lumpur · within 5 km</p></div>
+    <div class="gp-cats" role="tablist" aria-label="Merchant categories">${categories.map(([label,emoji])=>`<button class="gp-cat" role="tab" aria-pressed="${category===label}" data-act="merchantCategory" data-c="${esc(label)}"><i aria-hidden="true">${emoji}</i><span>${esc(label)}</span></button>`).join('')}</div>`;
+  if (c==='loading') return head + skeletonList();
+  if (c==='error') return head + errorBlock();
+  if (c==='empty' || !merchants.length) return head + stateBlock('emptycal','No merchants in this category','Try another category to see nearby cashback offers.');
+  return head + `<div class="gp-list">${merchants.map((m,i)=>`<article class="gp-card" style="--d:${i*60}ms">
+    <div class="gp-photo">
+      <button class="gp-photo-open" data-act="openMer" data-id="${m.id}" aria-label="View ${esc(m.name)}">${img(m.img,m.name)}
+        <span class="gp-open on">${esc(m.openLabel||'Open now')}</span></button>
+      <button class="gp-heart" data-act="saveMerchant" data-id="${m.id}" aria-label="${D.savedMerchants[m.id]?'Remove':'Save'} ${esc(m.name)}" aria-pressed="${!!D.savedMerchants[m.id]}">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20.8 4.6a5.5 5.5 0 0 0-7.8 0L12 5.7l-1.1-1.1a5.5 5.5 0 0 0-7.8 7.8l1.1 1.1L12 21l7.8-7.5 1.1-1.1a5.5 5.5 0 0 0-.1-7.8Z"/></svg></button>
+      <div class="gp-cb"><b>${m.cb}%</b><span>CASHBACK</span></div>
+    </div>
+    <button class="gp-main" data-act="openMer" data-id="${m.id}" aria-label="View details for ${esc(m.name)}">
+      <span class="gp-row"><span class="gp-name">${esc(m.name)}</span><span class="gp-star">${ic('star')}${m.rating}</span></span>
+      <span class="gp-sub">${esc(m.cat||'Merchant')} · ${esc(m.distance||'Nearby')} · ${m.ratingCount||m.checkins} reviews</span>
+      <span class="gp-sub">${ic('pin')}${esc(m.addr)}</span>
+      <span class="gp-sub">${ic('group')}<b>${m.checkins + (D.checkedIn[m.id]?1:0)}</b> check-ins</span>
+      ${m.reviewText?`<span class="gp-rev">&ldquo;${esc(m.reviewText)}&rdquo;</span>`:''}
+    </button>
+    <div class="gp-acts"><button class="gp-pay" data-act="cbScan">Pay</button>
+      <button class="gp-t" data-act="merchantCheckIn" data-id="${m.id}">Check in</button>
+      <button class="gp-t" data-act="merchantDirections" data-id="${m.id}"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 11l18-8-8 18-2-8-8-2z"/></svg>Directions</button></div>
+  </article>`).join('')}</div><p class="gp-attr">Place details and photos from Google Maps</p>`;
 }
 const cbPaused = m => { if (!m.kopi) return false; try { return (JSON.parse(localStorage.getItem('w2scen')||'{}').float) === 'empty'; } catch(e){ return false; } };
 const cbMerchants = () => MERCHANTS.filter(m => !m.hidden && m.cb && m.country==='MY' && !cbPaused(m)).sort((a,b) => b.cb - a.cb || b.rating - a.rating);
@@ -677,7 +705,7 @@ function postHTML(p, where){
 V.discover = () => { const guest = isGuest(); const feed = S.htab==='feed'; return `<div class="screen">${statusBar()}
   <div class="appbar">
     <button class="avatar" data-act="youpage" aria-label="${guest?'Log in to open YouPage':'Open YouPage'}"><img src="${IMG.avatar}" alt=""></button>
-    <div class="htabs" role="tablist"><button role="tab" aria-selected="${!feed}" data-act="htab" data-t="discover">Discover</button><button role="tab" aria-selected="${feed}" data-act="htab" data-t="feed">Feed</button></div>
+    <div class="htabs" role="tablist"><button role="tab" aria-selected="${!feed && S.seg!=='merchants'}" data-act="browseTab" data-k="locals">Locals</button><button role="tab" aria-selected="${!feed && S.seg==='merchants'}" data-act="browseTab" data-k="merchants">Merchants</button></div>
     ${guest?'<span style="width:32px"></span>':`<button class="iconbtn" style="margin:0 -6px 0 0; width:36px; height:36px" data-act="menu" aria-label="More options">${ic('dots')}</button>`}
   </div>
   <div class="scroll" id="mainScroll">${feed ? feedBody() : discoverBody()}</div>
@@ -1009,13 +1037,20 @@ Object.assign(A, {
   noop: () => {},
   toast: el => toast(el.dataset.msg),
   retry: () => { scen.content='normal'; saveScen(); render(); toast('Loaded.'); },
-  htab: el => { S.htab = el.dataset.t; render(); },
+  htab: el => { S.htab = el.dataset.t; S.menu=false; render(); },
   openSub: el => { S.cat = el.dataset.cat==='Featured Hosts' ? 'Pickleball' : el.dataset.cat; if (el.dataset.replace) { S.screen='sub'; render(); } else go('sub'); },
   toastCat: el => toast(`Shows ${el.dataset.cat} activities.`),
   openSvc: el => { S.svc = el.dataset.id; go('svc'); },
   openExp: el => { if (el.dataset.rec) pushRecent(S.sk||'activities', el.dataset.rec); S.exp = el.dataset.id; go('exp'); },
   cbScan: () => go('scan'),
   openMer: el => { if (el.dataset.rec) pushRecent('merchants', el.dataset.rec); S.mer = el.dataset.id; S.merTab='about'; S.merRev='reviews'; S.hoursOpen=false; go('mer'); },
+  merchantCategory: el => { S.merCat=el.dataset.c; render(); },
+  saveMerchant: el => { const m=merById(el.dataset.id); if (!m) return; D.savedMerchants[m.id]=!D.savedMerchants[m.id]; render(); },
+  merchantCheckIn: guard(el => { const m=merById(el.dataset.id); if (!m) return;
+    if (scen.network==='offline') { toast('No internet connection. Check your connection and try again.','err'); return; }
+    if (D.checkedIn[m.id]) { toast(`You've already checked in at ${m.name}.`,'err'); return; }
+    D.checkedIn[m.id]=true; S.mer=m.id; S.merTab='checkin'; S.merRev='reviews'; S.hoursOpen=false; go('mer'); toast(`You've checked in at ${m.name}.`); }),
+  merchantDirections: el => { const m=merById(el.dataset.id); if (m) toast('Directions are not connected in this prototype yet.'); },
   openHost: el => { if (el.dataset.rec) pushRecent(S.sk||'locals', el.dataset.rec); const h = el.dataset.h; const s = SERVICES.find(x=>x.host===h);
     if (s) { S.svc = s.id; go('svc'); } else { const virt = {id:'s-'+h, title:`${HOSTS[h].title} with ${HOSTS[h].name}`, host:h, cat:HOSTS[h].title, price:60, rating:4.8, img:HOSTS[h].av, gal:['svc1','svc2','svc3']}; if (!svcById(virt.id)) SERVICES.push(virt); S.svc = virt.id; go('svc'); } },
   openProfile: el => { const h = el.dataset.h; if (!h || !HOSTS[h]) return; S.prof = h; S.profTab='profil'; go('profile'); },
@@ -1125,7 +1160,7 @@ Object.assign(META, {
   post:{name:'Feed detail', group:'Feed', figma:'Flow Feed › Feed Detail', rules:['Unverified: comment box replaced by the restriction message','Post owner: comment menu with Block User / Delete Comment','Replies collapse under “View n replies”']},
   media:{name:'Media viewer', group:'Feed', figma:'Flow Feed › Preview', rules:['Page indicator, like and comment counts, Book Host for host posts']},
   compose:{name:'New Feed / Edit Feed', group:'Feed', figma:'Flow Feed › Create Feed, Flow Edit Feed', rules:['Post needs a caption and at least 1 photo','Offensive words disable Post (try “idiot”)','Caption max 256 characters','Edit: caption and location only (Figma) — PRD allows media edits, flagged']},
-  gate:{name:'Verify gate', group:'Feed', figma:'Flow Feed › Reservation / Scan (Verify to post)', rules:['No way to post or comment without Badge Verification','Rejected users see the rejection with Re-Submit']},
+  gate:{name:'Verify gate', group:'Feed', figma:'Flow Feed › Reservation / Scan (Verify to post)', rules:['Unverified Wallet, Post, Comment, Locals and Badge Verification gates share the Get verified benefit comparison.','Locals keeps its bottom navigation; Maybe later remains only on entries that already allow it.','Learn more about Terms and Conditions remains available.','No way to post or comment without Badge Verification','Rejected users see the rejection with Re-Submit']},
   profile:{name:'Other Profile', group:'Discover', figma:'Other Profile › Other profile', rules:['Guests: Chat, QR, Share, Like open the login sheet; Block and Report hidden','Block hides the user’s posts from your feed']},
 });
 JUMP.push('sub','svc','exp','mer','search','myfeed','post','compose','gate','profile');
@@ -1209,7 +1244,10 @@ const GATE = {
   group:  {title:'Badge Verification', head:'Verify to create a group', later:false},
 };
 V.gate = () => { const g = GATE[S.gateFrom] || GATE.post; const rej = kyc()==='rejected';
-  const top = g.tab
+  const verifyIntro = S.gateFrom!=='scan' && kyc()!=='approved' && !rej;
+  const top = verifyIntro
+    ? `<div class="appbar verify-intro-bar"><button class="iconbtn verify-intro-back" data-act="back" aria-label="Back">${ic('back')}</button><span class="wv-title">Get verified</span><span style="width:38px"></span></div>`
+    : g.tab
     ? `<div class="appbar"><button class="avatar" data-act="youpage" aria-label="Open YouPage"><img src="${IMG.avatar}" alt=""></button><span class="t-headline">${g.title}</span><span style="width:32px"></span></div>`
     : topBar(g.title);
   const scanArt = S.gateFrom==='scan' ? `<div class="scanart">${ic('scan')}<p class="t-body muted" style="margin:0">Scan any DuitNow QR code across Malaysia and receive cashback with participating merchants.</p></div>` : '';
@@ -1221,7 +1259,46 @@ V.gate = () => { const g = GATE[S.gateFrom] || GATE.post; const rej = kyc()==='r
     <div class="pad16"><div class="notesbox">${ic('info')}<div><b>Notes</b><span>${esc(D.rejectNote || 'Your ID card image is not valid with your personal data.')}</span></div></div>
     <div style="margin-top:20px">${btn('Re-Submit','kycStart')}</div>
     ${g.later?`<button class="link" style="display:block; margin:20px auto 0" data-act="gateLater">Maybe Later</button>`:''}</div>`;
-  else body = `<div class="gatehero"><img src="${IMG.kycBadge}" alt=""></div>
+  else if (verifyIntro) {
+    const benefits = [
+      ['Browse locals and activities', true],
+      ['Blue tick on your profile', false],
+      ['Chat and meet verified locals', false],
+      ['Book hosts and activities', false],
+      ['Pay any QR', false],
+      ['Your own wallet, top up with stablecoins', false],
+    ];
+    const check = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4.5 4.5L19 7"/></svg>';
+    const lock = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';
+    body = `<div class="verify-intro-content">
+      <svg class="wv-hero" viewBox="0 0 540 240" role="img" aria-label="Verified identity card illustration">
+        <rect x="2" y="2" width="536" height="236" rx="32" fill="#faeffb"/>
+        <path d="M56 48l6 12 12 2-9 8 2 12-11-6-11 6 2-12-9-8 12-2zM469 39l7 13 13 2-10 9 2 13-12-7-11 7 3-13-10-9 13-2zM83 183l4 8 9 1-7 6 2 9-8-4-8 4 2-9-7-6 9-1zM440 174l5 9 10 1-7 7 2 10-10-5-9 5 2-10-8-7 10-1z" fill="#d4a0d4"/>
+        <circle cx="89" cy="118" r="20" fill="#f5bd32"/><text x="89" y="123" text-anchor="middle" fill="#9c6a12" font-size="12" font-weight="700">RM</text>
+        <circle cx="451" cy="128" r="20" fill="#44c79a"/><text x="451" y="133" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">RM</text>
+        <rect x="194" y="38" width="152" height="112" rx="16" fill="#fff" stroke="#d7c6ea" stroke-width="2"/>
+        <path d="M210 38h120a16 16 0 0 1 16 16v9H194v-9a16 16 0 0 1 16-16" fill="#5630a8"/>
+        <circle cx="230" cy="94" r="18" fill="#f1cbb4"/>
+        <path d="M213 91c0-14 8-21 18-21 11 0 19 8 19 20-10-2-22-8-25-15-2 7-6 12-12 16" fill="#302058"/>
+        <rect x="258" y="82" width="66" height="9" rx="4.5" fill="#d6c6ee"/><rect x="258" y="101" width="50" height="8" rx="4" fill="#e9e2f2"/>
+        <circle cx="358" cy="111" r="24" fill="#35b987"/><path d="m348 111 7 7 14-16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="128" y="166" width="284" height="54" rx="27" fill="#fff"/>
+        <circle cx="163" cy="193" r="15" fill="#4b91ee"/><path d="m156 193 5 5 9-11" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="188" y="199" fill="#21144e" font-size="17" font-weight="700">Mei Ling</text><text x="282" y="199" fill="#777184" font-size="15">Verified</text>
+      </svg>
+      <h1 class="wv-heading">Get your verified badge</h1>
+      <p class="wv-subheading">Your ID and a selfie. Takes about 2 minutes.</p>
+      <div class="wv-table" role="table" aria-label="What you can do before and after verification">
+        <div class="wv-table-head" role="row"><span role="columnheader" aria-label="Benefit"></span><span role="columnheader">Now</span><span role="columnheader">Verified</span></div>
+        ${benefits.map(([label, available]) => `<div class="wv-table-row" role="row">
+          <span role="rowheader">${label}</span>
+          <span class="wv-status ${available?'now':'locked'}" role="img" aria-label="${available?'Available now':'Available after verification'}">${available?`<span class="wv-now-check" aria-hidden="true">${check}</span>`:lock}</span>
+          <span class="wv-status verified" role="img" aria-label="Available after verification">${check}</span>
+        </div>`).join('')}
+      </div>
+      <div class="wv-actions">${btn('Verify me','kycStart')}${g.later?'<button class="wv-later" data-act="gateLater">Maybe later</button>':''}<button class="wv-terms" data-act="toast" data-msg="Opens the Terms and Conditions.">Learn more about Terms and Conditions</button></div>
+    </div>`;
+  } else body = `<div class="gatehero"><img src="${IMG.kycBadge}" alt=""></div>
     <h1 class="gatehead">${g.head}</h1>
     ${S.gateFrom==='scan' ? `<div class="pad16">${btn('Verify me · takes 2 minutes','kycStart')}</div>` : `
     <div class="pad16"><div class="benefits"><div><b>Right now you can</b><span>Browse locals, activities and merchants · read the feed</span></div>
@@ -1229,7 +1306,8 @@ V.gate = () => { const g = GATE[S.gateFrom] || GATE.post; const rej = kyc()==='r
     <div style="margin-top:28px">${btn('Verify me · takes 2 minutes','kycStart')}</div>
     ${g.later?`<button class="link" style="display:block; margin:20px auto 0" data-act="gateLater">Maybe later</button>`:''}
     <button class="link subtle" style="display:block; margin:18px auto 0; font-weight:500; font-size:13px" data-act="toast" data-msg="Opens the Terms and Conditions.">Learn more about Terms and Conditions</button></div>`}`;
-  return `<div class="screen">${statusBar()}${top}<div class="scroll" style="padding-bottom:20px">${body}${scanArt}</div>${g.tab?bottomNav(g.tab):''}</div>`; };
+  const nav = g.tab ? bottomNav(g.tab) : S.gateFrom==='wallet' && verifyIntro ? bottomNav('locals') : '';
+  return `<div class="screen">${statusBar()}${top}<div class="scroll" style="padding-bottom:20px">${body}${scanArt}</div>${nav}</div>`; };
 
 /* ---------- Mobile number (only when missing) ---------- */
 V.phone = () => { const cc = COUNTRY_CODES.find(c=>c[0]===(S.cc||'MY')); const v = S.phoneNum||''; const ok = v.replace(/\D/g,'').length>=8;
@@ -4787,12 +4865,12 @@ Object.assign(A, {
   g7LoginPage: () => A.g7Login(),
 });
 /* after logging in from guest mode: Discover, Locals tab */
-const _afterAuth7 = afterAuth; afterAuth = function(){ _afterAuth7(); if (S.session==='user' && S.screen==='discover') { S.htab='discover'; S.seg='locals'; render(); } };
+const _afterAuth7 = afterAuth; afterAuth = function(){ _afterAuth7(); if (S.session==='user' && S.screen==='discover') { S.htab='discover'; S.seg='merchants'; render(); } };
 Object.assign(META, {
   guestlock:{name:'Guest page (Scan / Locals)', group:'Guest Mode', figma:'Guest Mode › page guest mode', rules:['Scan and Locals tabs show this page for guests','Login opens the login page']},
   login7:{name:'Login page (guest)', group:'Guest Mode', figma:'Guest Mode › page guest mode (3709:24265)', rules:['Back returns to the guest page; after login the user lands on Discover › Locals']},
 });
-const _finishOnb7 = finishOnb; finishOnb = function(){ _finishOnb7(); S.htab='discover'; S.seg='locals'; render(); };
+const _finishOnb7 = finishOnb; finishOnb = function(){ _finishOnb7(); S.htab='discover'; S.seg='merchants'; render(); };
 
 /* ===== Icons from Figma: merchant (1930:67189), cashback (4232:11248), experience calendar (1860:103301) ===== */
 Object.assign(SVG, {

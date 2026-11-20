@@ -33,6 +33,12 @@
       win('w2').__open(screen, {kyc, wallet, host});
       return;
     }
+    if (screen === 'gate') {
+      show('a30');
+      win('a30').__set('kyc', 'none');
+      win('a30').__open(screen, {});
+      return;
+    }
     if (screen !== 'restart') {
       const {kyc, wallet, host} = ctxOf('a30');
       win('w2').__open('home', {kyc, wallet, host});
