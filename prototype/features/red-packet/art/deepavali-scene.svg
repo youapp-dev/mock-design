@@ -1,0 +1,136 @@
+<svg width="390" height="844" viewBox="0 0 390 844" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Arial, sans-serif">
+  <circle cx="-10.0" cy="50.0" r="7" fill="#FFC233" />
+  <circle cx="-10.0" cy="50.0" r="2.5" fill="#E05A00" />
+  <circle cx="15.6" cy="59.4" r="7" fill="#FF8C1A" />
+  <circle cx="15.6" cy="59.4" r="2.5" fill="#E05A00" />
+  <circle cx="41.2" cy="67.5" r="7" fill="#FFC233" />
+  <circle cx="41.2" cy="67.5" r="2.5" fill="#E05A00" />
+  <path d="M41.2 73.5v22" stroke="#2E8B57" stroke-width="2" />
+  <circle cx="41.2" cy="97.5" r="5" fill="#FF8C1A" />
+  <circle cx="66.9" cy="74.4" r="7" fill="#FF8C1A" />
+  <circle cx="66.9" cy="74.4" r="2.5" fill="#E05A00" />
+  <circle cx="92.5" cy="80.0" r="7" fill="#FFC233" />
+  <circle cx="92.5" cy="80.0" r="2.5" fill="#E05A00" />
+  <circle cx="118.1" cy="84.4" r="7" fill="#FF8C1A" />
+  <circle cx="118.1" cy="84.4" r="2.5" fill="#E05A00" />
+  <circle cx="143.8" cy="87.5" r="7" fill="#FFC233" />
+  <circle cx="143.8" cy="87.5" r="2.5" fill="#E05A00" />
+  <path d="M143.8 93.5v22" stroke="#2E8B57" stroke-width="2" />
+  <circle cx="143.8" cy="117.5" r="5" fill="#FF8C1A" />
+  <circle cx="169.4" cy="89.4" r="7" fill="#FF8C1A" />
+  <circle cx="169.4" cy="89.4" r="2.5" fill="#E05A00" />
+  <circle cx="195.0" cy="90.0" r="7" fill="#FFC233" />
+  <circle cx="195.0" cy="90.0" r="2.5" fill="#E05A00" />
+  <circle cx="220.6" cy="89.4" r="7" fill="#FF8C1A" />
+  <circle cx="220.6" cy="89.4" r="2.5" fill="#E05A00" />
+  <circle cx="246.2" cy="87.5" r="7" fill="#FFC233" />
+  <circle cx="246.2" cy="87.5" r="2.5" fill="#E05A00" />
+  <path d="M246.2 93.5v22" stroke="#2E8B57" stroke-width="2" />
+  <circle cx="246.2" cy="117.5" r="5" fill="#FF8C1A" />
+  <circle cx="271.9" cy="84.4" r="7" fill="#FF8C1A" />
+  <circle cx="271.9" cy="84.4" r="2.5" fill="#E05A00" />
+  <circle cx="297.5" cy="80.0" r="7" fill="#FFC233" />
+  <circle cx="297.5" cy="80.0" r="2.5" fill="#E05A00" />
+  <circle cx="323.1" cy="74.4" r="7" fill="#FF8C1A" />
+  <circle cx="323.1" cy="74.4" r="2.5" fill="#E05A00" />
+  <circle cx="348.8" cy="67.5" r="7" fill="#FFC233" />
+  <circle cx="348.8" cy="67.5" r="2.5" fill="#E05A00" />
+  <path d="M348.8 73.5v22" stroke="#2E8B57" stroke-width="2" />
+  <circle cx="348.8" cy="97.5" r="5" fill="#FF8C1A" />
+  <circle cx="374.4" cy="59.4" r="7" fill="#FF8C1A" />
+  <circle cx="374.4" cy="59.4" r="2.5" fill="#E05A00" />
+  <circle cx="400.0" cy="50.0" r="7" fill="#FFC233" />
+  <circle cx="400.0" cy="50.0" r="2.5" fill="#E05A00" />
+  <g opacity=".9">
+    <g class="spin">
+      <ellipse cx="40" cy="675.3" rx="6.800000000000001" ry="14.28" fill="#FF5FA2" transform="rotate(0 40 694)" />
+      <ellipse cx="40" cy="675.3" rx="6.800000000000001" ry="14.28" fill="#FFB020" transform="rotate(45 40 694)" />
+      <ellipse cx="40" cy="675.3" rx="6.800000000000001" ry="14.28" fill="#8E5BE8" transform="rotate(90 40 694)" />
+      <ellipse cx="40" cy="675.3" rx="6.800000000000001" ry="14.28" fill="#2FBF94" transform="rotate(135 40 694)" />
+      <ellipse cx="40" cy="675.3" rx="6.800000000000001" ry="14.28" fill="#FF5FA2" transform="rotate(180 40 694)" />
+      <ellipse cx="40" cy="675.3" rx="6.800000000000001" ry="14.28" fill="#FFB020" transform="rotate(225 40 694)" />
+      <ellipse cx="40" cy="675.3" rx="6.800000000000001" ry="14.28" fill="#8E5BE8" transform="rotate(270 40 694)" />
+      <ellipse cx="40" cy="675.3" rx="6.800000000000001" ry="14.28" fill="#2FBF94" transform="rotate(315 40 694)" />
+      <circle cx="40" cy="658.3" r="2.72" fill="#FFD45C" transform="rotate(22.5 40 694)" />
+      <circle cx="40" cy="658.3" r="2.72" fill="#FFD45C" transform="rotate(67.5 40 694)" />
+      <circle cx="40" cy="658.3" r="2.72" fill="#FFD45C" transform="rotate(112.5 40 694)" />
+      <circle cx="40" cy="658.3" r="2.72" fill="#FFD45C" transform="rotate(157.5 40 694)" />
+      <circle cx="40" cy="658.3" r="2.72" fill="#FFD45C" transform="rotate(202.5 40 694)" />
+      <circle cx="40" cy="658.3" r="2.72" fill="#FFD45C" transform="rotate(247.5 40 694)" />
+      <circle cx="40" cy="658.3" r="2.72" fill="#FFD45C" transform="rotate(292.5 40 694)" />
+      <circle cx="40" cy="658.3" r="2.72" fill="#FFD45C" transform="rotate(337.5 40 694)" />
+      <circle cx="40" cy="694" r="9.520000000000001" fill="#FFD45C" />
+      <circle cx="40" cy="694" r="4.42" fill="#E8303F" />
+    </g>
+    <g class="spin">
+      <ellipse cx="350" cy="639.7" rx="5.2" ry="10.92" fill="#FF5FA2" transform="rotate(0 350 654)" />
+      <ellipse cx="350" cy="639.7" rx="5.2" ry="10.92" fill="#FFB020" transform="rotate(45 350 654)" />
+      <ellipse cx="350" cy="639.7" rx="5.2" ry="10.92" fill="#8E5BE8" transform="rotate(90 350 654)" />
+      <ellipse cx="350" cy="639.7" rx="5.2" ry="10.92" fill="#2FBF94" transform="rotate(135 350 654)" />
+      <ellipse cx="350" cy="639.7" rx="5.2" ry="10.92" fill="#FF5FA2" transform="rotate(180 350 654)" />
+      <ellipse cx="350" cy="639.7" rx="5.2" ry="10.92" fill="#FFB020" transform="rotate(225 350 654)" />
+      <ellipse cx="350" cy="639.7" rx="5.2" ry="10.92" fill="#8E5BE8" transform="rotate(270 350 654)" />
+      <ellipse cx="350" cy="639.7" rx="5.2" ry="10.92" fill="#2FBF94" transform="rotate(315 350 654)" />
+      <circle cx="350" cy="626.7" r="2.08" fill="#FFD45C" transform="rotate(22.5 350 654)" />
+      <circle cx="350" cy="626.7" r="2.08" fill="#FFD45C" transform="rotate(67.5 350 654)" />
+      <circle cx="350" cy="626.7" r="2.08" fill="#FFD45C" transform="rotate(112.5 350 654)" />
+      <circle cx="350" cy="626.7" r="2.08" fill="#FFD45C" transform="rotate(157.5 350 654)" />
+      <circle cx="350" cy="626.7" r="2.08" fill="#FFD45C" transform="rotate(202.5 350 654)" />
+      <circle cx="350" cy="626.7" r="2.08" fill="#FFD45C" transform="rotate(247.5 350 654)" />
+      <circle cx="350" cy="626.7" r="2.08" fill="#FFD45C" transform="rotate(292.5 350 654)" />
+      <circle cx="350" cy="626.7" r="2.08" fill="#FFD45C" transform="rotate(337.5 350 654)" />
+      <circle cx="350" cy="654" r="7.280000000000001" fill="#FFD45C" />
+      <circle cx="350" cy="654" r="3.38" fill="#E8303F" />
+    </g>
+  </g>
+  <g>
+    <circle cx="70" cy="767.2" r="21.599999999999998" fill="#FFB020" opacity=".2" />
+    <path d="M43.6 776.8Q70 803.2 96.4 776.8Q84.4 781.6 70 781.6Q55.6 781.6 43.6 776.8Z" fill="#C2541B" />
+    <path d="M43.6 776.8Q70 803.2 96.4 776.8" stroke="#F5B82E" stroke-width="2.4" fill="none" />
+    <circle cx="60.4" cy="786.4" r="1.92" fill="#F5B82E" />
+    <circle cx="70" cy="788.8" r="1.92" fill="#F5B82E" />
+    <circle cx="79.6" cy="786.4" r="1.92" fill="#F5B82E" />
+    <g class="flick">
+      <path d="M70 779.2q-8.4 -9.6 0 -26.4q8.4 16.8 0 26.4z" fill="#FFB020" />
+      <path d="M70 779.2q-4.2 -4.8 0 -13.2q4.2 8.4 0 13.2z" fill="#FFF1A8" />
+    </g>
+  </g>
+  <g>
+    <circle cx="150" cy="790" r="18" fill="#FFB020" opacity=".2" />
+    <path d="M128 798Q150 820 172 798Q162 802 150 802Q138 802 128 798Z" fill="#C2541B" />
+    <path d="M128 798Q150 820 172 798" stroke="#F5B82E" stroke-width="2" fill="none" />
+    <circle cx="142" cy="806" r="1.6" fill="#F5B82E" />
+    <circle cx="150" cy="808" r="1.6" fill="#F5B82E" />
+    <circle cx="158" cy="806" r="1.6" fill="#F5B82E" />
+    <g class="flick">
+      <path d="M150 800q-7 -8 0 -22q7 14 0 22z" fill="#FFB020" />
+      <path d="M150 800q-3.5 -4 0 -11q3.5 7 0 11z" fill="#FFF1A8" />
+    </g>
+  </g>
+  <g>
+    <circle cx="240" cy="790" r="18" fill="#FFB020" opacity=".2" />
+    <path d="M218 798Q240 820 262 798Q252 802 240 802Q228 802 218 798Z" fill="#C2541B" />
+    <path d="M218 798Q240 820 262 798" stroke="#F5B82E" stroke-width="2" fill="none" />
+    <circle cx="232" cy="806" r="1.6" fill="#F5B82E" />
+    <circle cx="240" cy="808" r="1.6" fill="#F5B82E" />
+    <circle cx="248" cy="806" r="1.6" fill="#F5B82E" />
+    <g class="flick">
+      <path d="M240 800q-7 -8 0 -22q7 14 0 22z" fill="#FFB020" />
+      <path d="M240 800q-3.5 -4 0 -11q3.5 7 0 11z" fill="#FFF1A8" />
+    </g>
+  </g>
+  <g>
+    <circle cx="320" cy="767.2" r="21.599999999999998" fill="#FFB020" opacity=".2" />
+    <path d="M293.6 776.8Q320 803.2 346.4 776.8Q334.4 781.6 320 781.6Q305.6 781.6 293.6 776.8Z" fill="#C2541B" />
+    <path d="M293.6 776.8Q320 803.2 346.4 776.8" stroke="#F5B82E" stroke-width="2.4" fill="none" />
+    <circle cx="310.4" cy="786.4" r="1.92" fill="#F5B82E" />
+    <circle cx="320" cy="788.8" r="1.92" fill="#F5B82E" />
+    <circle cx="329.6" cy="786.4" r="1.92" fill="#F5B82E" />
+    <g class="flick">
+      <path d="M320 779.2q-8.4 -9.6 0 -26.4q8.4 16.8 0 26.4z" fill="#FFB020" />
+      <path d="M320 779.2q-4.2 -4.8 0 -13.2q4.2 8.4 0 13.2z" fill="#FFF1A8" />
+    </g>
+  </g>
+  <path class="tw" d="M330 103Q331.26 108.74 337 110Q331.26 111.26 330 117Q328.74 111.26 323 110Q328.74 108.74 330 103Z" fill="#FFD45C" />
+  <path class="tw" d="M60 124Q61.08 128.92 66 130Q61.08 131.08 60 136Q58.92 131.08 54 130Q58.92 128.92 60 124Z" fill="#fff" />
+</svg>

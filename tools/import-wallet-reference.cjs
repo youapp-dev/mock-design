@@ -2,7 +2,7 @@ const fs = require('node:fs');
 const path = require('node:path');
 
 const source = fs.readFileSync(process.argv[2], 'utf8');
-const output = path.join(__dirname, '..', 'wallet-reference');
+const output = path.join(__dirname, '..', 'prototype', 'wallet2', 'reference');
 const screens = [
   'youlong', 'scan', 'pay', 'coins', 'coinsmm', 'payu', 'approve', 'celeb', 'done',
   'connect', 'topup', 'topcard', 'add', 'all', 'allone', 'plans', 'plansvip', 'plansfree',
@@ -35,7 +35,7 @@ const images = new Map();
 function externalizeImages(markup) {
   return prefixSvg(markup).replace(/data:image\/(png|jpeg|webp);base64,([A-Za-z0-9+/=]+)/g, (_, type, data) => {
     if (!images.has(data)) images.set(data, `image-${images.size + 1}.${type === 'jpeg' ? 'jpg' : type}`);
-    return `wallet-reference/${images.get(data)}`;
+    return `reference/${images.get(data)}`;
   });
 }
 

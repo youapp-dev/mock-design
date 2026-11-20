@@ -1,0 +1,67 @@
+<svg width="390" height="844" viewBox="0 0 390 844" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Arial, sans-serif">
+  <path d="M322 94A24 24 0 1 0 322 142A18.72 19.68 0 1 1 322 94Z" fill="#F7D36A" />
+  <path class="tw" d="M343.6 104.80000000000001Q345.112 111.688 352.0 113.2Q345.112 114.712 343.6 121.6Q342.088 114.712 335.20000000000005 113.2Q342.088 111.688 343.6 104.80000000000001Z" fill="#F7D36A" />
+  <path class="tw" d="M270 54Q271.08 58.92 276 60Q271.08 61.08 270 66Q268.92 61.08 264 60Q268.92 58.92 270 54Z" fill="#F7D36A" />
+  <path class="tw" d="M360 145Q360.9 149.1 365 150Q360.9 150.9 360 155Q359.1 150.9 355 150Q359.1 149.1 360 145Z" fill="#fff" />
+  <path class="tw" d="M40 185Q40.9 189.1 45 190Q40.9 190.9 40 195Q39.1 190.9 35 190Q39.1 189.1 40 185Z" fill="#F7D36A" />
+  <g class="swing">
+    <line x1="70" y1="46" x2="70" y2="72" stroke="#E9C46A" stroke-width="2" />
+    <g transform="translate(70 90) scale(0.9)">
+      <path d="M0-18L18 0 0 18-18 0Z" fill="#2FA05A" />
+      <path d="M-9-9L9 9M9-9L-9 9M-4.5-13.5L13.5 4.5M4.5-13.5L-13.5 4.5M-13.5-4.5L4.5 13.5M13.5-4.5L-4.5 13.5" stroke="#F4D35E" stroke-width="2.2" />
+      <path d="M0 18q-4 10-10 18M0 18q5 9 2 20" stroke="#2FA05A" stroke-width="4" fill="none" stroke-linecap="round" />
+    </g>
+  </g>
+  <g class="swing">
+    <line x1="104" y1="46" x2="104" y2="110" stroke="#E9C46A" stroke-width="2" />
+    <g transform="translate(104 128) scale(0.75)">
+      <path d="M0-18L18 0 0 18-18 0Z" fill="#2FA05A" />
+      <path d="M-9-9L9 9M9-9L-9 9M-4.5-13.5L13.5 4.5M4.5-13.5L-13.5 4.5M-13.5-4.5L4.5 13.5M13.5-4.5L-4.5 13.5" stroke="#F4D35E" stroke-width="2.2" />
+      <path d="M0 18q-4 10-10 18M0 18q5 9 2 20" stroke="#2FA05A" stroke-width="4" fill="none" stroke-linecap="round" />
+    </g>
+  </g>
+  <g class="swing">
+    <line x1="356" y1="46" x2="356" y2="166" stroke="#E9C46A" stroke-width="2" />
+    <g transform="translate(356 184) scale(0.75)">
+      <path d="M0-18L18 0 0 18-18 0Z" fill="#2FA05A" />
+      <path d="M-9-9L9 9M9-9L-9 9M-4.5-13.5L13.5 4.5M4.5-13.5L-13.5 4.5M-13.5-4.5L4.5 13.5M13.5-4.5L-4.5 13.5" stroke="#F4D35E" stroke-width="2.2" />
+      <path d="M0 18q-4 10-10 18M0 18q5 9 2 20" stroke="#2FA05A" stroke-width="4" fill="none" stroke-linecap="round" />
+    </g>
+  </g>
+  <g>
+    <rect x="32.7" y="724" width="6.6000000000000005" height="50.6" rx="2.2" fill="#A0703C" />
+    <path d="M27.2 724h17.6l-3.3000000000000003 -11.0h-11.0z" fill="#C9A227" />
+    <circle cx="36" cy="702.0" r="22.0" fill="#FFD45C" opacity=".22" />
+    <g class="flick">
+      <path d="M36 713.0q-10.780000000000001 -12.32 0 -33.88q10.780000000000001 21.560000000000002 0 33.88z" fill="#FFB020" />
+      <path d="M36 713.0q-5.390000000000001 -6.16 0 -16.94q5.390000000000001 10.780000000000001 0 16.94z" fill="#FFF1A8" />
+    </g>
+  </g>
+  <g>
+    <rect x="81.3" y="748" width="5.4" height="41.4" rx="1.8" fill="#A0703C" />
+    <path d="M76.8 748h14.4l-2.7 -9.0h-9.0z" fill="#C9A227" />
+    <circle cx="84" cy="730.0" r="18.0" fill="#FFD45C" opacity=".22" />
+    <g class="flick">
+      <path d="M84 739.0q-8.82 -10.08 0 -27.72q8.82 17.64 0 27.72z" fill="#FFB020" />
+      <path d="M84 739.0q-4.41 -5.04 0 -13.86q4.41 8.82 0 13.86z" fill="#FFF1A8" />
+    </g>
+  </g>
+  <g>
+    <rect x="303.3" y="748" width="5.4" height="41.4" rx="1.8" fill="#A0703C" />
+    <path d="M298.8 748h14.4l-2.7 -9.0h-9.0z" fill="#C9A227" />
+    <circle cx="306" cy="730.0" r="18.0" fill="#FFD45C" opacity=".22" />
+    <g class="flick">
+      <path d="M306 739.0q-8.82 -10.08 0 -27.72q8.82 17.64 0 27.72z" fill="#FFB020" />
+      <path d="M306 739.0q-4.41 -5.04 0 -13.86q4.41 8.82 0 13.86z" fill="#FFF1A8" />
+    </g>
+  </g>
+  <g>
+    <rect x="350.7" y="724" width="6.6000000000000005" height="50.6" rx="2.2" fill="#A0703C" />
+    <path d="M345.2 724h17.6l-3.3000000000000003 -11.0h-11.0z" fill="#C9A227" />
+    <circle cx="354" cy="702.0" r="22.0" fill="#FFD45C" opacity=".22" />
+    <g class="flick">
+      <path d="M354 713.0q-10.780000000000001 -12.32 0 -33.88q10.780000000000001 21.560000000000002 0 33.88z" fill="#FFB020" />
+      <path d="M354 713.0q-5.390000000000001 -6.16 0 -16.94q5.390000000000001 10.780000000000001 0 16.94z" fill="#FFF1A8" />
+    </g>
+  </g>
+</svg>

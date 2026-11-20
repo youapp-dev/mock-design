@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="320" viewBox="0 -70 200 320" overflow="visible" font-family="Inter, Arial, sans-serif">
+  <defs>
+    <linearGradient id="eb26" x1="0" y1="0" x2=".3" y2="1">
+      <stop stop-color="#27B872" />
+      <stop offset="1" stop-color="#0B7A47" />
+    </linearGradient>
+    <linearGradient id="ef26" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#43CD8A" />
+      <stop offset="1" stop-color="#179C5C" />
+    </linearGradient>
+    <radialGradient id="es26" cx=".35" cy=".3">
+      <stop stop-color="#FFF0B8" />
+      <stop offset=".6" stop-color="#F5B82E" />
+      <stop offset="1" stop-color="#C98A10" />
+    </radialGradient>
+    <pattern id="ep26" width="40" height="40" patternUnits="userSpaceOnUse">
+      <g opacity=".33">
+        <path d="M20 6l10 10-10 10-10-10z" fill="none" stroke="#F7D36A" stroke-width="2" />
+        <path d="M15 11l10 10M25 11L15 21" stroke="#F7D36A" stroke-width="1.5" />
+        <path d="M20 26v8" stroke="#F7D36A" stroke-width="1.5" />
+      </g>
+    </pattern>
+  </defs>
+  <rect width="200" height="250" rx="26" fill="url(#eb26)" stroke="none" stroke-width="2" />
+  <path class="fb" d="M0 62Q0 -20 100 -40Q200 -20 200 62Z" fill="url(#ef26)" opacity=".95" />
+  <g class="card">
+    <rect x="22" y="-64" width="156" height="150" rx="16" fill="#FFF8EC" />
+    <rect x="22" y="-64" width="156" height="150" rx="16" fill="none" stroke="#F7D36A" stroke-width="3" />
+    <g class="cn ">
+      <g transform="translate(100 -22)">
+        <circle r="26" fill="#E0A21B" />
+        <circle r="21.32" fill="#FFD45C" />
+        <text y="7.8" text-anchor="middle" font-family="Inter" font-weight="800" font-size="13.4" fill="#9A6400">MYRT</text>
+      </g>
+    </g>
+    <text x="100" y="30" text-anchor="middle" font-family="Inter" font-weight="800" font-size="15" fill="#0B7A47">Selamat Hari Raya</text>
+  </g>
+  <path d="M0 62Q100 128 200 62V224Q200 250 174 250H26Q0 250 0 224Z" fill="url(#eb26)" />
+  <path d="M0 62Q100 128 200 62V224Q200 250 174 250H26Q0 250 0 224Z" fill="url(#ep26)" />
+  <g opacity=".95">
+    <line x1="36" y1="96" x2="36" y2="128" stroke="#F7D36A" stroke-width="1.5" />
+    <path d="M36 128l11 11-11 11-11-11z" fill="#F4D35E" />
+    <path d="M30 133l12 12M42 133l-12 12" stroke="#0B7A47" stroke-width="1.5" />
+    <line x1="164" y1="96" x2="164" y2="140" stroke="#F7D36A" stroke-width="1.5" />
+    <path d="M164 140l11 11-11 11-11-11z" fill="#F4D35E" />
+    <path d="M158 145l12 12M170 145l-12 12" stroke="#0B7A47" stroke-width="1.5" />
+  </g>
+  <path d="M0 62Q100 128 200 62" fill="none" stroke="#F7D36A" stroke-width="3" class="pk" />
+</svg>

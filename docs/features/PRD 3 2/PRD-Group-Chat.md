@@ -4,7 +4,7 @@
 
 This PRD describes the Group Chat behavior represented in the YouApp 3.0 browser prototype: creating a group, chatting in a group, managing members and roles, group permissions, inviting people through a link and QR code, and leaving, removing, or deleting a group.
 
-Prototype reference: `mock-design/app30.html`. This document records prototype behavior; native, server-side, push-notification, and web landing-page behavior is not implied unless stated below.
+Prototype reference: [App 3.0 renderer](../../../prototype/app30/index.html). This document records prototype behavior; native, server-side, push-notification, and web landing-page behavior is not implied unless stated below.
 
 Covered:
 

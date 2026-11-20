@@ -1,38 +1,38 @@
-# [Nama fitur]
+# [Feature name]
 
-Status &nbsp; Draft / In Review / Ready for Dev / In Development / Ready for Release  
-Decision owner &nbsp; [Nama]  
-PM, Designer, Engineering, QA &nbsp; [Nama atau peran]
+Status &nbsp; Draft / In Review / Ready for Dev / In Development / Ready for Release\
+Decision owner &nbsp; [Name]\
+PM, Designer, Engineering, QA &nbsp; [Names or roles]
 
-## Ide dan bukti
+## Idea and evidence
 
-- Sumber, tanggal, dan permintaan asli
-- User terdampak, masalah, dan bukti
-- Hipotesis, alternatif, dan keputusan prioritas
+- Source, date, and original request
+- People affected, problem, and evidence
+- Hypothesis, alternatives, and prioritization decision
 
-## Definisi produk
+## Product definition
 
-- Tujuan dan ukuran keberhasilan
-- Scope MVP dan batas scope
-- Business rules, role dan permission
+- Goal and success measures
+- MVP scope and exclusions
+- Business rules, roles, and permissions
 
-## Desain dan implementasi
+## Design and implementation
 
-- Link desain, prototype, dan entry point yang bisa dicoba
-- Alur utama, states, Back/cancel/recovery
-- Perilaku bersama dan perbedaan iOS/Android
-- Dependensi, kontrak data/API, serta bagian yang disimulasikan
+- Links to the design, prototype, and testable entry points
+- Main flow, states, Back, cancel, and recovery
+- Shared behavior and iOS and Android differences
+- Dependencies, data and API contracts, and simulated behavior
 
-## Acceptance criteria dan QA
+## Acceptance criteria and QA
 
-| ID | Kondisi awal dan langkah | Hasil yang diharapkan | Lingkungan dan revisi/build | Hasil dan bukti |
+| ID | Preconditions and steps | Expected result | Environment and revision or build | Result and evidence |
 | --- | --- | --- | --- | --- |
-| AC-01 | [Kondisi dan tindakan user] | [Perilaku yang dapat diamati] | [Prototype, iOS, atau Android] | Belum diuji |
+| AC-01 | [Preconditions and user action] | [Observable behavior] | [Prototype, iOS, or Android] | Untested |
 
-Tambahkan baris per lingkungan bila skenario yang sama perlu diuji di lebih dari satu tempat. Catat link bukti atau langkah reproduksi untuk hasil yang gagal.
+Add a row per environment when the same scenario needs to be tested in multiple environments. Link to evidence or record reproduction steps for failures.
 
-## Keputusan dan pertanyaan terbuka
+## Decisions and open questions
 
-| Tanggal | Keputusan atau pertanyaan | Alasan atau dampak | Owner / tindak lanjut |
+| Date | Decision or question | Rationale or impact | Owner and follow-up |
 | --- | --- | --- | --- |
-| [Tanggal] | [Keputusan / pertanyaan] | [Bukti atau trade-off] | [Nama dan langkah berikutnya] |
+| [Date] | [Decision or question] | [Evidence or trade-off] | [Name and next step] |
