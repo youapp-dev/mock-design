@@ -813,9 +813,9 @@ code.k{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; 
 .ptext{margin:6px 0 8px; font-size:14px; line-height:20px; overflow-wrap:anywhere}
 .pmedia{display:grid; gap:6px; border-radius:14px; overflow:hidden}
 .pmedia.multi{grid-template-columns:1fr 1fr}
-.pm{border:0; padding:0; position:relative; background:var(--a-gray-100); display:block; aspect-ratio:4/5; overflow:hidden}
+.pmedia .pm{border:0; padding:0; position:relative; background:var(--a-gray-100); display:block; aspect-ratio:4/5; overflow:hidden}
 .pmedia:not(.multi) .pm{aspect-ratio:4/3}
-.pm img{width:100%; height:100%; object-fit:cover; display:block}
+.pmedia .pm img{width:100%; height:100%; object-fit:cover; display:block}
 .snd{position:absolute; right:8px; bottom:8px; width:28px; height:28px; border-radius:50%; background:rgba(0,0,0,.5); color:#fff; display:grid; place-items:center}
 .snd .ico{width:16px; height:16px}
 .pacts{display:flex; align-items:center; gap:18px; margin-top:10px}
@@ -6446,12 +6446,12 @@ V.myQr = () => `<div class="screen bz">${statusBar()}${topBar('Get Paid')}
 
 /* ===== Transaction history + receipt (Transaction Detail 1930:61880) ===== */
 const TXS = [
-  {id:'t1', m:'Oct 2026', t:'Topped up with USDT', d:'26 Oct 2026, 09:55AM', v:+210.55, st:'Completed', ic:'plus', kind:'top'},
-  {id:'t2', m:'Oct 2026', t:'Kopitiam Lee', d:'23 Oct 2026, 18:25PM', v:-100.00, st:'Completed', ic:'store', kind:'pay'},
-  {id:'t3', m:'Oct 2026', t:'Pickleball with Brandon Lim', d:'21 Oct 2026, 08:10AM', v:-100.00, st:'Pending', ic:'cal', kind:'book'},
-  {id:'t4', m:'Sep 2026', t:'Topped up with MYRT', d:'28 Sep 2026, 12:40PM', v:+500.00, st:'Completed', ic:'plus', kind:'top'},
-  {id:'t5', m:'Sep 2026', t:'Being Juice Dink Arena', d:'20 Sep 2026, 19:02PM', v:-45.00, st:'Cancelled', ic:'store', kind:'pay'},
-  {id:'t6', m:'Sep 2026', t:'Kopi Hutan', d:'12 Sep 2026, 07:45AM', v:-14.00, st:'Completed', ic:'store', kind:'pay'},
+  {id:'t1', m:'Oct 2026', t:'Topped up with USDT', d:'26 Oct 2026, 9:55 AM', v:+210.55, st:'Completed', ic:'plus', kind:'top'},
+  {id:'t2', m:'Oct 2026', t:'Kopitiam Lee', d:'23 Oct 2026, 6:25 PM', v:-100.00, st:'Completed', ic:'store', kind:'pay'},
+  {id:'t3', m:'Oct 2026', t:'Pickleball with Brandon Lim', d:'21 Oct 2026, 8:10 AM', v:-100.00, st:'Pending', ic:'cal', kind:'book'},
+  {id:'t4', m:'Sep 2026', t:'Topped up with MYRT', d:'28 Sep 2026, 12:40 PM', v:+500.00, st:'Completed', ic:'plus', kind:'top'},
+  {id:'t5', m:'Sep 2026', t:'Being Juice Dink Arena', d:'20 Sep 2026, 7:02 PM', v:-45.00, st:'Cancelled', ic:'store', kind:'pay'},
+  {id:'t6', m:'Sep 2026', t:'Kopi Hutan', d:'12 Sep 2026, 7:45 AM', v:-14.00, st:'Completed', ic:'store', kind:'pay'},
 ];
 V.txHist = () => { const f = S.txF||'all'; const tab = S.txTab||'tx';
   const rows = [...walletScanHistory(), ...TXS].filter(x=>f==='all'||x.st===f); const ms = [...new Set(rows.map(x=>x.m))];
@@ -7411,7 +7411,14 @@ SHEETS.scanSim = () => `<div class="grab"></div><div class="stack" style="gap:10
   <div class="xs-list">${[['duit','DuitNow QR','Kopitiam Lee · enter amount','scan'],['duitFixed','DuitNow QR (Fixed Amount)','Mydin Mart · RM45.90','scan'],['duitPersonal','Personal DuitNow QR','Ali Rahman · enter amount','person'],['ya','YouApp wallet QR','Catherine Lee · goes to Send MYRT','xsWallet'],['addr','Ethereum address QR','External wallet · goes to Send MYRT','xsExt'],['bad','Unsupported QR','A website link']].map(([k,a,b,i])=>`<button class="xs-row" data-act="scanAs" data-k="${k}"><span class="xs-avx">${ic(i||'alert')}</span><span class="xs-rt"><b>${a}</b><small>${b}</small></span>${ic('chev')}</button>`).join('')}</div></div>`;
 
 Object.assign(A, {
-  xsOpen: () => { if (!kycOk()) { toast('Verify your identity to send MYRT.','err'); return; } S.xs = null; xsInit(); go('xsTo'); },
+  xsOpen: el => {
+    if (!kycOk()) { toast('Verify your identity to send MYRT.','err'); return; }
+    S.xs = null;
+    const draft = xsInit();
+    const wallet = el?.dataset?.fromWallet;
+    if (wallet && wIds().includes(wallet)) draft.from = wallet;
+    go('xsTo');
+  },
   xsRecv: () => { if (!kycOk()) { toast('Verify your identity to receive MYRT.','err'); return; } go('xsRecv'); },
   xsClear: () => { xsInit().q=''; render(); },
   xsPaste: () => { xsInit().q = XS_EXT; render(); },
@@ -7773,7 +7780,7 @@ V.wDetail = () => { const w = W_ALL[S.wSel] || wMain(); const isMain = w.id===wM
     <div class="mw-hd">${wBadge(w,'lg')}<span><small class="mono">${xsShort(w.addr)} · Ethereum</small><b>${RM(wRM(w))}</b></span>${isMain?wMainTag:''}</div>
     <div class="mw-list">${wToks(w).map(([k,v])=>`<div class="mw-row"><span class="mw-tk lg">${k[0]}</span><span class="m"><b>${k}</b><small>${TOKN[k]}</small></span><span class="r"><b>${tokAmt('',v).trim()}</b><small>${RM(v*RATE[k])}</small></span></div>`).join('')}</div>
     ${w.hidden?`<button class="mw-row" data-act="toast" data-msg="Hidden tokens aren’t verified by YouApp. They can’t be sent or used to pay.">${ic('eye')}<span class="m"><b>Hidden tokens (${w.hidden})</b><small>Not verified by YouApp. Can’t be sent or used to pay.</small></span>${ic('chev')}</button>`:''}
-    <div class="mw-acts">${isMain?'':btn('Set as Main','wSetMain',{kind:'btn-secondary', cls:'btn-sm'})}${btn('Receive','wRecvOf',{kind:'btn-secondary', cls:'btn-sm'})}${btn('Rename','toast',{kind:'btn-secondary', cls:'btn-sm', data:'data-msg="Rename opens a short text field (demo)."'})}</div>
+    <div class="mw-acts">${btn('Send','xsOpen',{kind:'btn-secondary', cls:'btn-sm',data:`data-from-wallet="${w.id}"`})}${btn('Receive','wRecvOf',{kind:'btn-secondary', cls:'btn-sm'})}${w.id==='ya'?btn('Pay Bills','bills',{kind:'btn-secondary', cls:'btn-sm'}):''}${isMain?'':btn('Set as Main','wSetMain',{kind:'btn-secondary', cls:'btn-sm'})}${btn('Rename','toast',{kind:'btn-secondary', cls:'btn-sm', data:'data-msg="Rename opens a short text field (demo)."'})}</div>
     ${w.ext?`<button class="link mw-disc" data-act="sheet" data-s="wDisc">Disconnect wallet</button>`:'<p class="t-caption subtle" style="margin:0">The YouApp wallet can’t be removed.</p>'}</div></div></div>`; };
 SHEETS.wDisc = () => { const w = W_ALL[S.wSel]; const isMain = w.id===wMain().id; const alt = wList().find(x=>x.id!==w.id);
   return `<div class="grab"></div><div class="stack" style="gap:12px"><h2 class="t-title" style="margin:0">Disconnect ${esc(w.name)}?</h2><p class="t-body muted" style="margin:0">Your money stays in ${esc(w.app)}. You can connect it again anytime.</p>

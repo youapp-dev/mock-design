@@ -283,22 +283,127 @@
 .apshare span{width:40px; height:40px; border-radius:12px; display:grid; place-items:center; background:#f7effd; color:#5b2fb8}
 .apshare .ico{width:20px; height:20px}
 .apdetl{display:block; margin:12px auto 0; font-weight:600}
-.apclosed{display:grid; justify-items:center; gap:14px; padding:24px 24px 16px}
-.apenv{position:relative; width:100%; max-width:300px; aspect-ratio:3/4.1; border-radius:24px; display:flex; flex-direction:column; align-items:center; gap:6px; padding:34px 22px; color:#fff; text-align:center; background:linear-gradient(180deg,#e9443f 0%,#b5102a 100%); box-shadow:0 14px 30px rgba(141,11,34,.3); overflow:hidden}
-.apenv::before{content:""; position:absolute; left:-20%; right:-20%; top:58%; height:80%; border-radius:50% 50% 0 0; background:#9d0c25}
-.apenv > *{position:relative}
-.apenv-av{width:56px; height:56px; border-radius:50%; object-fit:cover; border:2px solid rgba(255,255,255,.7)}
-.apenv b{font-size:16px; margin-top:4px}
-.apenv span{font-size:13px; opacity:.85}
-.apenv p{margin:10px 0 0; font-size:20px; line-height:26px; font-weight:700; color:#ffe3a3}
-.apopen{position:absolute; left:50%; top:58%; transform:translate(-50%,-50%); width:84px; height:84px; border-radius:50%; border:0; background:radial-gradient(circle at 35% 30%,#ffe7a8,#e8b04a); color:#7a2a00; font:inherit; font-size:20px; font-weight:800; box-shadow:0 6px 16px rgba(0,0,0,.25); display:grid; place-items:center}
-.apclosed.opening .apopen{animation:apSpin .9s linear infinite}
-@keyframes apSpin{from{transform:translate(-50%,-50%) rotateY(0)} to{transform:translate(-50%,-50%) rotateY(360deg)}}
-.apwon{display:grid; justify-items:center; gap:2px; padding:16px 16px 4px; text-align:center}
-.apwon .apcard{width:100%; text-align:left}
-.apwon > small{font-size:13px; color:#7a7680}
-.apwon > b{font-size:32px; line-height:40px; color:#b5102a}
-.apwon > span{font-size:13px; color:#067647}
+.apreceive .scroll {
+  background: radial-gradient(ellipse at 50% 41%, #ffe6c6 0%, transparent 61%), linear-gradient(#fffaf3, #fff3e9 72%, #fffaf6);
+}
+.apreceive-panel { display:grid; justify-items:center; gap:12px; padding:16px 20px 26px; text-align:center; color:#4a2423 }
+.apreceive-sender { display:grid; justify-items:center; gap:6px; width:min(100%, 330px) }
+.apreceive-avatar { width:48px; height:48px; border:2px solid #fffaf0; border-radius:50%; object-fit:cover; box-shadow:0 0 0 1px #e9b96c }
+.apreceive-from { font-size:14px; line-height:20px; color:#6b3d37 }
+.apreceive-from b { font-weight:750; color:#4a2423 }
+.apreceive-sender h1 { margin:2px 0 0; font-size:clamp(20px, 5.8vw, 25px); line-height:1.16; font-weight:800; text-wrap:balance; overflow-wrap:anywhere }
+.apreceive-art { position:relative; isolation:isolate; width:min(100%, 330px); height:clamp(215px, 67vw, 274px); display:grid; place-items:center; pointer-events:none; overflow:clip; overflow-clip-margin:6px }
+.apreceive-art::before { content:''; position:absolute; width:82%; height:84%; border-radius:50%; background:radial-gradient(closest-side, #ffd487aa, #ffddaa4d 62%, transparent) }
+.apreceive-art::after { content:''; position:absolute; z-index:-1; bottom:3%; width:52%; height:8%; border-radius:50%; background:radial-gradient(ellipse, #a9242640, transparent 72%) }
+.ap-envelope-art { position:relative; width:clamp(158px, 50vw, 204px); height:73%; margin-top:6%; transform:rotate(-7deg); perspective:550px }
+.ap-envelope-base, .ap-envelope-front, .ap-envelope-flap { position:absolute; inset:0; border-radius:19px }
+.ap-envelope-base { background:linear-gradient(145deg,#b7182b,#800c25); box-shadow:0 15px 25px #a52a2a45, inset 0 1px 1px #ffcf9d80 }
+.ap-envelope-front {
+  z-index:3; top:22%; border-radius:0 0 19px 19px; overflow:hidden;
+  background:linear-gradient(145deg, #fb4a43 10%, #d91f35 47%, #a7112b 100%);
+  clip-path:polygon(0 0,50% 29%,100% 0,100% 100%,0 100%);
+}
+.ap-envelope-front::before { content:''; position:absolute; inset:0; background:linear-gradient(140deg,#ff8d6d60,transparent 70%); clip-path:polygon(0 0,66% 91%,0 100%) }
+.ap-envelope-front::after { content:''; position:absolute; inset:16% 9% 8%; border:1px solid #f7bb6d75; border-radius:0 0 13px 13px; clip-path:polygon(0 57%,24% 100%,76% 100%,100% 57%,100% 100%,0 100%) }
+.ap-envelope-flap {
+  z-index:4; bottom:auto; height:47%; overflow:hidden; transform-origin:center top; border-radius:19px 19px 0 0;
+  background:linear-gradient(150deg,#ff6a50,#ef292f 49%,#ba182e);
+  clip-path:polygon(0 0,100% 0,100% 51%,76% 83%,50% 100%,24% 83%,0 51%);
+}
+.ap-envelope-flap::after { content:''; position:absolute; inset:0; background:#ffcf72; clip-path:polygon(0 45%,24% 77%,50% 94%,76% 77%,100% 45%,100% 51%,76% 83%,50% 100%,24% 83%,0 51%) }
+.ap-envelope-open-lid {
+  position:absolute; z-index:1; top:-23%; left:0; right:0; height:68%; opacity:0;
+  transform:scaleY(.24); transform-origin:center 67%;
+  border-radius:50% 50% 15% 15% / 47% 47% 15% 15%;
+  background:radial-gradient(ellipse at 50% 94%,#ffdc84 0%,#ef8245 32%,#d43a28 69%,#a90f27 100%);
+  box-shadow:inset 0 3px 0 #ffad71a8;
+}
+.ap-envelope-light { position:absolute; z-index:2; height:88%; left:-15%; right:-15%; bottom:52%; opacity:0; background:radial-gradient(ellipse at center 80%,#fff0ad 2%,#ffd86d90 29%,transparent 68%) }
+.ap-envelope-rim {
+  position:absolute; z-index:4; top:22%; left:0; right:0; height:24.5%; opacity:0;
+  background:linear-gradient(90deg,#e6a147,#ffe5a1 50%,#e6a147);
+  clip-path:polygon(0 0,50% 92%,100% 0,100% 9%,50% 100%,0 9%);
+}
+.ap-envelope-rays {
+  position:absolute; z-index:2; bottom:60%; height:87%; left:-24%; right:-24%; opacity:0;
+  transform-origin:center bottom;
+  background:repeating-conic-gradient(from -67deg at 50% 100%,#ffd16c88 0deg 8deg,transparent 10deg 21deg);
+  mask-image:radial-gradient(ellipse at 50% 100%,#000 8%,#0009 47%,transparent 75%);
+}
+.ap-envelope-seal {
+  display:grid; place-items:center; position:absolute; z-index:5; left:50%; top:42%; width:30%; aspect-ratio:1; transform:translate(-50%,-50%);
+  border-radius:50%; border:2px solid #ffe59d; background:linear-gradient(145deg,#fff0a8,#f4b044); box-shadow:0 4px 0 #b86a18,0 8px 14px #68141b67;
+}
+.ap-envelope-seal::before { content:''; position:absolute; inset:10%; border:1px solid #c37b2d86; border-radius:50% }
+.ap-envelope-seal::after {
+  content:''; width:62%; aspect-ratio:1; background:#9a481c;
+  mask:url('./design-system/assets/Logos/youapp-mark.svg') center / contain no-repeat;
+}
+.apreceive-spark, .ap-burst-star {
+  content:''; width:46%; aspect-ratio:1; background:#db8d29; clip-path:polygon(50% 0,64% 36%,100% 50%,64% 64%,50% 100%,36% 64%,0 50%,36% 36%);
+}
+.apreceive-spark { position:absolute; width:19px; background:linear-gradient(#fff0ae,#e9a941) }
+.apreceive-spark.a { top:21%; left:12%; transform:rotate(-12deg) }
+.apreceive-spark.b { top:13%; right:11%; width:14px; transform:rotate(10deg) }
+.apreceive-spark.c { bottom:18%; right:10%; width:12px }
+.apreceive-spark.d { bottom:25%; left:9%; width:8px }
+.apreceive-open {
+  min-height:52px; width:min(100%, 278px); padding:10px 20px; border:1px solid #c58328; border-radius:999px;
+  background:linear-gradient(#ffe19a,#f2b94d); box-shadow:0 4px 0 #ca8a31,0 9px 17px #ba762a30;
+  color:#5e2e0c; font:800 16px/1.2 Inter,sans-serif; cursor:pointer;
+}
+.apreceive-open:active:not(:disabled) { transform:translateY(2px); box-shadow:0 2px 0 #ca8a31 }
+.apreceive-open:focus-visible { outline:2px solid #86322d; outline-offset:4px }
+.apreceive-open:disabled { cursor:wait }
+.apreceive-availability { margin:2px 0 0; display:grid; gap:3px; font-size:13px; line-height:18px; color:#7b4540 }
+.apreceive-availability time { font-size:12px }
+.apreceive-result { display:grid; justify-items:center; gap:2px; margin:0; outline:0; color:#6b3d37 }
+.apreceive-result small { font-size:14px; font-weight:700 }
+.apreceive-result strong { color:#a4152c; font-size:clamp(28px, 8.5vw, 38px); line-height:1.15; font-variant-numeric:tabular-nums }
+.apreceive-result > span { margin-top:3px; font-size:13px; color:#6b3d37 }
+.apreceive-result.is-new { animation:apResultIn 380ms 570ms both }
+.apreceive-art.is-opening .ap-envelope-art { animation:apPacketLift 610ms ease-out both }
+.apreceive-art.is-opening .ap-envelope-flap { animation:apFlapRelease 390ms 105ms ease-in both }
+.apreceive-art.is-opening .ap-envelope-open-lid { animation:apLidLift 330ms 190ms ease-out both }
+.apreceive-art.is-opening .ap-envelope-light, .apreceive-art.is-opening .ap-envelope-rim { animation:apLightOn 285ms 225ms ease-out both }
+.apreceive-art.is-opening .ap-envelope-seal { animation:apSealRelease 520ms ease-out both }
+.apreceive-art.is-open .ap-envelope-flap { opacity:0 }
+.apreceive-art.is-open .ap-envelope-seal { transform:translate(-50%,-42%) scale(.93) }
+.apreceive-art.is-open .ap-envelope-open-lid, .apreceive-art.is-open .ap-envelope-light, .apreceive-art.is-open .ap-envelope-rim { opacity:1; transform:none }
+.apreceive-art.is-open .ap-envelope-art { transform:translateY(-5px) rotate(-3deg) }
+.apreceive-art.is-celebrating .ap-envelope-rays { animation:apBurstGlow 1780ms ease-out both }
+.ap-burst-piece {
+  position:absolute; z-index:2; top:36%; left:50%; display:grid; place-items:center; opacity:0;
+  animation:apMoneyBurst 1430ms ease-out var(--delay,0ms) both;
+}
+.ap-burst-coin { width:calc(35px * var(--size,1)); aspect-ratio:1; background:linear-gradient(135deg,#fff2ad,#f7b33c); border:2px solid #ffe182; border-radius:50%; box-shadow:0 4px 0 #d88217,inset 0 0 0 2px #ec9d32 }
+.ap-burst-coin::before { content:''; width:46%; aspect-ratio:1; background:#fff2a3; clip-path:polygon(50% 0,65% 34%,100% 50%,65% 66%,50% 100%,35% 66%,0 50%,35% 34%) }
+.ap-burst-note { width:calc(28px * var(--size,1)); aspect-ratio:5/8; border:2px solid #ffd1a2; border-radius:5px 7px 4px 8px; background:linear-gradient(160deg,#ff967e,#ed676b); box-shadow:inset 0 0 0 2px #ffc2a494 }
+.ap-burst-note::before { content:''; width:47%; aspect-ratio:1; border-radius:50%; background:#ffbba4 }
+.ap-burst-star { width:15px; background:#f6bb46 }
+.ap-burst-ribbon { width:7px; height:17px; border-radius:3px; background:#ad77dd }
+@keyframes apPacketLift { from{transform:rotate(-7deg)} 48%{transform:translateY(3px) rotate(-9deg)} to{transform:translateY(-5px) rotate(-3deg)} }
+@keyframes apFlapRelease { from{opacity:1;transform:rotateX(0)} 68%{opacity:.85} to{opacity:0;transform:rotateX(93deg)} }
+@keyframes apLidLift { from{opacity:0;transform:scaleY(.12)} to{opacity:1;transform:none} }
+@keyframes apLightOn { from{opacity:0;transform:scale(.6)} to{opacity:1;transform:none} }
+@keyframes apSealRelease { 0%{transform:translate(-50%,-50%) scale(1)} 28%{transform:translate(-50%,-46%) scale(.88)} 100%{transform:translate(-50%,-42%) scale(.93)} }
+@keyframes apBurstGlow { 0%{opacity:.1;transform:scale(.72)} 24%{opacity:1;transform:scale(1.09)} 69%{opacity:.8} 100%{opacity:0;transform:scale(1.13)} }
+@keyframes apMoneyBurst {
+  0%{opacity:0;transform:translate(-50%,-12%) rotate(0) scale(.38)}
+  16%{opacity:1}
+  40%{opacity:1;transform:translate(calc(-50% + var(--x) * var(--burst-distance,1)),calc(-50% + var(--y) * var(--burst-distance,1))) rotate(var(--turn)) scale(1.02)}
+  68%{opacity:1;transform:translate(calc(-50% + var(--x) * var(--burst-distance,1)),calc(-40% + var(--y) * var(--burst-distance,1))) rotate(var(--turn)) scale(1)}
+  100%{opacity:0;transform:translate(calc(-50% + var(--x) * var(--burst-distance,1)),calc(22px + var(--y) * var(--burst-distance,1))) rotate(calc(var(--turn) * 1.35)) scale(.78)}
+}
+@keyframes apResultIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
+@media (max-width:340px) {
+  .apreceive-art { --burst-distance:.74 }
+  .apreceive-open { max-width:210px }
+}
+@media (prefers-reduced-motion:reduce) {
+  .apreceive-art *, .apreceive-result.is-new { animation:none!important }
+  .ap-burst-piece { display:none }
+}
 .aplh{display:flex; justify-content:space-between; gap:10px; padding:10px 0 6px; font-size:13px; color:#7a7680}
 .aplh b{color:#1a181b}
 .aprow, .aplrow{display:flex; align-items:center; gap:10px; width:100%; padding:10px 0; border:0; border-bottom:1px solid #f0eef2; background:none; font:inherit; text-align:left; color:inherit}
@@ -306,6 +411,80 @@
 .aprow b, .aplrow b{display:block; font-size:14px}
 .aprow small, .aplrow small{font-size:12px; color:#7a7680}
 .aprow-r{display:grid; justify-items:end; gap:3px; text-align:right}
+.aphist .scroll{background:#fffaf7}
+.aphist-tabs, .aphist-content{width:min(calc(100% - 32px), 600px); margin-inline:auto}
+.aphist-tabs{display:grid; grid-template-columns:1fr 1fr; gap:4px; margin-block:4px 10px; padding:4px; border-radius:16px; background:#faeee7}
+.aphist-tabs button{min-height:44px; border:0; border-radius:12px; background:none; color:#78423e; font:700 14px Inter,sans-serif}
+.aphist-tabs button[aria-selected="true"]{background:#fff; color:#a31c36; box-shadow:0 2px 8px #75261912}
+.aphist-content{display:grid; gap:14px; padding:6px 0 30px}
+.aphist-hero{position:relative; isolation:isolate; overflow:hidden; display:grid; align-content:center; gap:5px; min-height:126px; padding:16px 112px 16px 18px; border-radius:22px; color:#fff; background:linear-gradient(125deg,#a21937,#c4283c); box-shadow:0 8px 19px #9a1e2e2b}
+.aphist-hero small{color:#ffe2cd; font-size:13px; font-weight:600}
+.aphist-hero strong{font-size:clamp(23px,7vw,32px); line-height:1.12; letter-spacing:-.025em; font-variant-numeric:tabular-nums; overflow-wrap:anywhere}
+.aphist-hero p{margin:1px 0 0; color:#fff1e7; font-size:12.5px}
+.aphist-art{position:relative; display:grid; place-items:center; width:146px; height:126px; pointer-events:none}
+.aphist-art::before{content:''; position:absolute; inset:1% 0; border-radius:50%; background:radial-gradient(ellipse,#ffd98bba,#ffcf7928 62%,transparent 70%)}
+.aphist-art .ap-envelope-art{width:82px; height:85px; margin:0; transform:rotate(11deg)}
+.aphist-art .ap-envelope-base,.aphist-art .ap-envelope-front,.aphist-art .ap-envelope-flap{border-radius:11px}
+.aphist-art .ap-envelope-seal{border-width:1px; box-shadow:0 2px 0 #b86a18,0 4px 6px #68141b67}
+.aphist-art .ap-envelope-seal::before,.aphist-art .ap-envelope-front::after{display:none}
+.aphist-art .apreceive-spark{width:12px}
+.aphist-art .apreceive-spark.b{width:8px}
+.aphist-hero .aphist-art{position:absolute; width:121px; height:118px; right:0; bottom:4px}
+.aphist-hero .aphist-art::before{opacity:.55}
+.aphist-items{display:grid; gap:9px; margin:0; padding:0; list-style:none}
+.aphist-row{display:grid; grid-template-columns:40px minmax(0,1fr) minmax(0,auto) 14px; align-items:center; gap:10px; min-height:70px; width:100%; padding:11px 12px; border:1px solid #f2e6e1; border-radius:16px; background:#fff; color:#2c2030; font:inherit; text-align:left; cursor:pointer}
+.aphist-row:active{background:#fff2e9}
+.aphist-row-icon{display:grid; place-items:center; width:40px; height:40px; border-radius:13px; background:#fce6e5; color:#a72340}
+.aphist-row[data-side="sent"][data-state="ACTIVE"] .aphist-row-icon{background:#b9203c;color:#fff}
+.aphist-row-icon img{width:100%; height:100%; border-radius:inherit; object-fit:cover}
+.aphist-row-icon .ico{width:21px; height:21px}
+.aphist-row-copy,.aphist-row-value{display:grid; gap:3px; min-width:0; overflow-wrap:anywhere}
+.aphist-row-copy b,.aphist-row-value b{font-size:14px; line-height:1.24;font-weight:750}
+.aphist-row-copy small{font-size:12px; color:#756068; line-height:1.3}
+.aphist-row-value{justify-items:end; text-align:right; font-variant-numeric:tabular-nums}
+.aphist-row[data-side="got"] .aphist-row-value b{color:#087350}
+.aphist-row > .ico{width:14px; height:14px; color:#927984}
+.aphist-empty{display:grid; justify-items:center; gap:9px; padding:20px 16px 25px; background:linear-gradient(#fff4e8,#fff 85%); border:1px solid #f2e3d8; border-radius:22px; color:#40262d; text-align:center}
+.aphist-empty h2{margin:0; font-size:20px; line-height:1.2; letter-spacing:-.02em}
+.aphist-empty p{max-width:26ch; margin:0; font-size:14px; line-height:1.45; color:#765b61}
+.aphist-empty .btn{width:min(100%,248px); margin-top:7px}
+.apdetail .scroll{background:#fffaf7}
+.apdetail-hero{min-height:142px; gap:5px}
+.apdetail-hero .apst{justify-self:start; padding:4px 8px; background:#fff0df; color:#8f2637}
+.apdetail-hero h1{margin:1px 0 0;font-size:clamp(16px,4.6vw,21px);line-height:1.25;overflow-wrap:anywhere}
+.apdetail-hero .apdetail-total{font-size:clamp(20px,6.4vw,29px)}
+.apdetail-refund,.apdetail-section{border:1px solid #f0e3dc; border-radius:18px; background:#fff}
+.apdetail-refund{display:grid;grid-template-columns:38px minmax(0,1fr);gap:9px;align-items:center;padding:13px;color:#185446;background:#edf9f2;border-color:#cfe9da}
+.apdetail-refund-icon{display:grid;place-items:center;width:38px;height:38px;border-radius:12px;background:#d9f0e2;color:#16634d}
+.apdetail-refund-icon .ico{width:20px;height:20px}
+.apdetail-refund h2,.apdetail-section > h2,.apdetail-activity > h2{margin:0;font-size:15px;line-height:1.3}
+.apdetail-refund p{margin:4px 0 0;font-size:12.5px;line-height:1.4;color:#356354}
+.apdetail-refund strong{font-variant-numeric:tabular-nums}
+.apdetail-section{padding:13px 14px}
+.apdetail-section dl{margin:5px 0 0}
+.apdetail-section dl > div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:12px;padding:10px 0;color:#69545d;font-size:13px}
+.apdetail-section dl > div + div{border-top:1px solid #f3e8e3}
+.apdetail-section dd{margin:0;text-align:right;color:#342431;font-weight:700;overflow-wrap:anywhere}
+.apdetail .apdetail-activity{margin:0;padding:13px 12px;background:#fff;border:1px solid #f0e3dc;border-radius:18px}
+.apdetail-activity > h2{margin:0 1px 10px}
+.apdetail .apstat{margin:0;grid-template-columns:minmax(0,.87fr) minmax(0,1.13fr);transform:none;box-shadow:none;padding:10px 8px;gap:9px;background:#fdf3ed;border-radius:12px}
+.apdetail .apstat > div{gap:7px;min-width:0}
+.apdetail .apstat-i{width:29px;height:29px;flex:none;background:#f7e3eb;color:#9e2b48}
+.apdetail .apstat-i.g{background:#ffe9c9;color:#97531a}
+.apdetail .apstat-i .ico{width:16px;height:16px}
+.apdetail .apstat small{color:#755a62}
+.apdetail .apstat b{font-size:13px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.apdetail-meter{height:6px;margin-top:10px;overflow:hidden;background:#fae8de;border-radius:999px}
+.apdetail-meter > span{display:block;height:100%;background:linear-gradient(90deg,#e49d53,#bb2943);border-radius:inherit}
+.apdetail .apw-list{gap:10px;padding:12px 0 0}
+.apdetail .apw{gap:7px;padding:11px 8px}
+.apdetail .apw-av{width:32px;height:32px}
+.apdetail .apw-a{font-size:13px;text-align:right}
+.apdetail-no-openers{margin:0;padding:9px 8px;color:#785f68;font-size:13px;text-align:center}
+.apdetail .apcancel{width:100%;color:#a92a45}
+.apdetail .apdetail-share .apshare{margin:0}
+.aphist :is(button,[role="tab"]):focus-visible{outline:2px solid #963046; outline-offset:2px}
+@media(max-width:340px){.aphist-row{grid-template-columns:36px minmax(0,1fr) minmax(0,auto) 12px; gap:7px; padding-inline:9px}.aphist-row-icon{width:36px;height:36px}.aphist-row-value .apst{padding-inline:5px}}
 .apbest{font-style:normal; font-size:11px; font-weight:700; color:#b54708; background:#fef0c7; border-radius:999px; padding:1px 8px}
 .apl-ic{width:40px; height:40px; flex:none; border-radius:12px; display:grid; place-items:center; color:#fff; background:linear-gradient(135deg,#e5484d,#a1122b)}
 .apl-ic .ico{width:20px; height:20px}
@@ -376,7 +555,7 @@
 .apw-a{font-size:15px}
 .apw-exp{margin:0; padding:14px 16px 16px; text-align:center; font-size:12.5px; color:#7a7680}
 .apsec{margin:18px 0 8px; font-size:16px}
-.apwon + .pad16 .apboard, .apstate + .pad16 .apboard{margin-top:8px}
+.apreceive-panel + .pad16 .apboard, .apstate + .pad16 .apboard{margin-top:8px}
 /* ===== V2 · Group chat flow restyled to "YouApp wallet screens, redesigned" (Inter, ink #1E1050, lavender, gradient pills) ===== */
 #phone.gxs{--gx-ink:#1E1050; --gx-plum:#2A1466; --gx-pu:#5E35B8; --gx-deep:#4B2A9E; --gx-lav:#F4EFFF; --gx-lav2:#E9E0FB; --gx-lil:#B79BF0; --gx-mintbg:#E2F6EE; --gx-mintdk:#0B6B4B; --gx-mut:#6E6688; --gx-line:#ECE7F7; --gx-grad:linear-gradient(100deg,#9A6BBF,#3D1C96); --gx-card:linear-gradient(135deg,#A887DA 0%,#6A45C2 45%,#3A1B92 100%)}
 #phone.gxs .screen, #phone.gxs .sheet, #phone.gxs .dialog{font-family:Inter,-apple-system,system-ui,sans-serif; color:var(--gx-ink)}
@@ -961,12 +1140,6 @@ button.am-card.am-tap{border:1.5px solid #ECE7F7}
 .cm-sep{display:block; height:6px; margin:4px -6px; background:#F4EFFF}
 .cm-mi{display:inline-grid; place-items:center; color:#6E6688} .cm-mi .ico{width:14px; height:14px}
 
-/* red packet envelope: keep the sender's message clear of the Open button */
-.apenv{padding:26px 20px 0}
-.apenv::before{top:66%}
-.apenv p{margin:8px 0 0; font-size:18px; line-height:24px; max-width:100%; overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; text-align:center}
-.apopen{top:66%}
-.apopen:focus-visible{outline:3px solid #fff; outline-offset:3px}
 /* ===== group creation v2 (Douglas wallet-screens patterns: .conn, .sl, .prof, .st, .sr, .qrc, .code, .two) ===== */
 .gc-acts{display:grid; gap:8px; padding:8px 8px 4px}
 .gc-acts .gx-conn{margin:0}
@@ -7918,6 +8091,10 @@ restart();
     const sc = document.querySelector('#phone .scroll'); if (sc) sc.scrollTop = 0;
   };
   window.__state = () => ({gList:scen.gList==='has' ? (scen.gRole||'owner') : 'empty', screen:S.screen, kyc:scen.kyc, wallet:scen.wallet, host:scen.host, session:S.session, hostSt: scen.host==='yes' ? 'yes' : (D.h && D.h.svc==='review' && D.h.vh==='pending') ? 'pending' : 'no'});
+  window.__walletProfile = () => {
+    const {name, uname, passions} = C6().prof;
+    return {name, handle:`@${uname}`, interests:[...(passions || [])]};
+  };
   window.__panel = () => { const p = document.getElementById('panel'); if (p) p.classList.add('open'); };
   window.__refresh = () => render();
   window.__lang = () => { const l = langOf(S.lang); return {name:l.short, svg:SVG[l.flag]}; };
@@ -8522,6 +8699,7 @@ function apLuckyDraw(a, stamp){
 /* sample red packet from other people (chat cards) */
 function apSeed(){
   if (AP.seeded) return; AP.seeded = true;
+  const first = AP.list.length;
   apMake({token:'apCatherine', creator:'catherine', type:'random', total:5000, count:5, msg:'Thanks for the photo walk!', claimed:['fionna','daniel']});
   apMake({token:'apSeraWelcome', creator:'maulguy', type:'equal', per:500, count:6, msg:'Welcome to Sera.cx', claimed:['maulaura','ismaul','maulbucin','maulana','kwang','juan']});
   const ex = apMake({token:'apSeraKopi', creator:'ismaul', type:'random', total:3000, count:6, msg:'Kopi money', claimed:['maulaura','maulana'], expiresAt:NOW()-3600e3, expLbl:'24 hours'}); apTick(ex);
@@ -8537,6 +8715,7 @@ function apSeed(){
   apMake({token:'apMineFull', creator:'me', type:'equal', per:500, count:3, msg:'Enjoy!', claimed:['lara','catherine','daniel']});
   const mineExpired = apMake({token:'apMineExpired', creator:'me', type:'random', total:2100, count:3, msg:'Yesterday’s treat', expiresAt:NOW()-3600e3, expLbl:'6 hours', historical:true}); apTick(mineExpired);
   const mineCancelled = apMake({token:'apMineCancelled', creator:'me', type:'random', total:1600, count:2, msg:'Cancelled packet', historical:true}); apEnd(mineCancelled, 'CANCELLED');
+  AP.historySamples = new Set(AP.list.slice(first).filter(a => a.creator === 'me' || a.slots.some(slot => slot.by === 'me')).map(a => a.token));
 }
 const _C6ap = C6;
 C6 = function(){ const c = _C6ap(); apSeed();
@@ -8693,16 +8872,64 @@ function apTitles(a){ const got = a.slots.filter(s => s.by).sort((x, y) => (x.or
   if (a.type !== 'equal') t.luck = got.reduce((m, x) => x.amt > (m?.amt || 0) ? x : m, null);
   return {t, got}; }
 const claimList = (a, opt={}) => { const {t, got} = apTitles(a);
-  const left = a.status === 'ACTIVE' ? apAmountLeft(a) : 0;
+  const active = a.status === 'ACTIVE';
+  const left = active ? apAmountLeft(a) : 0;
   const pct = a.total ? Math.round(left / a.total * 100) : 0;
+  const closedSender = opt.sender && !active;
+  const balance = closedSender ? a.total - apAmountLeft(a) : left;
+  const balanceLabel = closedSender ? 'Claimed' : opt.sender ? 'Available' : 'Left';
   const stats = `
-    <div class="apstat"><div><span class="apstat-i">${ic('chat')}</span><span><small>Total opened</small><b>${got.length}${isLucky(a) ? '' : `/${a.count}`}</b></span></div><div><span class="apstat-i g">${ic('apGift')}</span><span><small>Left</small><b>${MY_(left)} <em>(${pct}%)</em></b></span></div></div>`;
+    <div class="apstat"><div><span class="apstat-i">${ic('chat')}</span><span><small>Total opened</small><b>${got.length}${isLucky(a) ? '' : `/${a.count}`}</b></span></div><div><span class="apstat-i g">${ic('apGift')}</span><span><small>${balanceLabel}</small><b>${MY_(balance)}${opt.sender ? '' : ` <em>(${pct}%)</em>`}</b></span></div></div>`;
   const rows = got.length ? got.map((x, i) => { const p = who(x.by); const tags = t.luck === x ? ['luck'] : [];
       return `<div class="apw ${tags.includes('luck')?'top':''} ${x.by==='me'?'me':''}">${tags.length?`<span class="apw-tag">${tags.map(k=>PDI[k]).join('')}${tags.map(k=>PDL[k]).join(' & ')}</span>`:''}<span class="apw-n">${i+1}</span>${img(p.av, p.n, 'apw-av')}<span class="apw-t"><b>${esc(p.n)}</b><small>Today · ${x.at}</small></span><b class="apw-a">${MY_(x.amt)}</b></div>`; }).join('')
-    : `<p class="apnote" style="text-align:left; margin:12px 0 0">No one has opened it yet.</p>`;
-  const exp = a.status==='ACTIVE' ? (a.expiresAt ? `Runs until ${new Date(a.expiresAt).toLocaleString('en-MY',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}` : 'Never expires')
+    : opt.sender ? `<p class="apdetail-no-openers">${active ? 'No one has opened it yet.' : 'No one opened this packet.'}</p>`
+    : '<p class="apnote" style="text-align:left; margin:12px 0 0">No one has opened it yet.</p>';
+  if (opt.sender) {
+    const progress = isLucky(a) ? 100 - pct : Math.round(got.length / a.count * 100);
+    const meter = active ? `<div class="apdetail-meter" aria-hidden="true"><span style="width:${progress}%"></span></div>` : '';
+    return `<section class="apboard apdetail-activity"><h2>Recipients</h2>${stats}${meter}<div class="apw-list">${rows}</div></section>`;
+  }
+  const exp = active ? (a.expiresAt ? `Runs until ${new Date(a.expiresAt).toLocaleString('en-MY',{day:'numeric',month:'short',year:'numeric',hour:'2-digit',minute:'2-digit'})}` : '')
     : a.status==='FULLY_CLAIMED' ? (isLucky(a) ? 'All available prizes drawn' : 'All packets opened') : a.status==='EXPIRED' ? 'Expired' : 'Cancelled by the sender';
-  return `<div class="apboard">${stats}<div class="apw-list">${rows}</div><p class="apw-exp">${exp}</p></div>`; };
+  return `<div class="apboard">${stats}<div class="apw-list">${rows}</div>${exp ? `<p class="apw-exp">${exp}</p>` : ''}</div>`; };
+const apBurst = [
+  ['coin', -104, -50, -27, 46, 1.02], ['coin', -38, -99, 19, 0, 1.14], ['coin', 47, -96, -21, 80, 1.02],
+  ['coin', 103, -52, 38, 152, .86], ['coin', -23, -43, 19, 104, .72], ['coin', 23, -57, -28, 196, .78],
+  ['note', -77, -77, -28, 30, 1.14], ['note', 77, -72, 27, 67, 1.16], ['note', 108, -22, 37, 145, .91],
+  ['note', -108, -27, -30, 238, .87], ['note', 11, -82, -14, 170, .83],
+  ['star', -130, -58, 19, 125, 1], ['star', 19, -107, 20, 143, 1], ['star', 130, -74, -20, 232, 1],
+  ['ribbon', -111, -95, -32, 125, 1], ['ribbon', 95, -100, 46, 229, 1],
+  ['coin', -67, -65, -36, 425, .87], ['coin', 65, -62, 31, 514, .85], ['coin', 5, -91, 18, 474, .93],
+  ['note', -117, -59, -32, 440, .96], ['note', 116, -69, 36, 553, .98],
+  ['star', 120, -23, 20, 548, 1], ['ribbon', -129, -18, 49, 565, 1],
+];
+const apEnvelopeMarkup = (contents = '') => `<div class="ap-envelope-art"><span class="ap-envelope-base"></span><span class="ap-envelope-open-lid"></span>
+  <span class="ap-envelope-light"></span><span class="ap-envelope-rays"></span>${contents}
+  <span class="ap-envelope-front"></span><span class="ap-envelope-rim"></span><span class="ap-envelope-flap"></span><span class="ap-envelope-seal"></span></div>`;
+
+function apReceivePanel(a, claim) {
+  const c = who(a.creator);
+  const opening = S.apOpening?.has(a.token);
+  const celebrated = claim?.amt > 0 && S.apJust;
+  const burst = celebrated ? apBurst.map(([type, x, y, turn, delay, size]) => `<span class="ap-burst-piece ap-burst-${type}" style="--x:${x}px;--y:${y}px;--turn:${turn}deg;--delay:${delay}ms;--size:${size}"></span>`).join('') : '';
+  const art = `<div class="apreceive-art${claim ? ' is-open' : opening ? ' is-opening' : ''}${celebrated ? ' is-celebrating' : ''}" aria-hidden="true">
+    <i class="apreceive-spark a"></i><i class="apreceive-spark b"></i><i class="apreceive-spark c"></i><i class="apreceive-spark d"></i>
+    ${apEnvelopeMarkup(burst)}
+  </div>`;
+  const expires = a.expiresAt ? new Date(a.expiresAt) : null;
+  return `<section class="apreceive-panel">
+    <header class="apreceive-sender">${img(c.av, '', 'apreceive-avatar')}<span class="apreceive-from"><b>${esc(c.n)}</b> sent you a red packet</span>
+      <h1>${esc(a.msg || 'Best wishes!')}</h1></header>
+    ${art}
+    ${claim ? `<div class="apreceive-result${celebrated ? ' is-new' : ''}" role="status" tabindex="-1">
+      <small>${claim.amt ? 'You received' : 'No MYRT this time'}</small><strong>${MY_(claim.amt)}</strong>
+      <span>${claim.amt ? `Added to your wallet${S.apJust ? '' : ' earlier'}` : 'You’ve used your draw for this red packet.'}</span></div>`
+    : `<button type="button" class="apreceive-open" data-act="apOpenIt"${opening ? ' disabled aria-busy="true"' : ''}>${opening ? 'Opening…' : 'Open red packet'}</button>
+      <p class="apreceive-availability">${isLucky(a) ? `${apAvailability(a)} · One draw per person` : `${apLeft(a)} of ${a.count} packets left`}
+      ${expires ? `<time datetime="${expires.toISOString()}">Expires ${expires.toLocaleString('en-MY', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</time>` : ''}</p>`}
+  </section>`;
+}
+
 V.aprecv = () => { const a = apGet(S.apTok); const st = apState(a);
   if (st === 'guest' || st === 'kyc') return gateHTML('Red Packet', 'open this angpao', 'aprecv');
   const top = `<div class="topbar"><button class="iconbtn" data-act="back" aria-label="Back">${ic('back')}</button><span class="t-headline" style="flex:1; text-align:center">Red Packet</span>${a?`<button class="iconbtn" data-act="apReport" aria-label="Report angpao">${ic('apFlag')}</button>`:'<span style="width:32px"></span>'}</div>`;
@@ -8712,34 +8939,67 @@ V.aprecv = () => { const a = apGet(S.apTok); const st = apState(a);
   else if (st === 'ended') body = msgBox('dim', 'Red Packet has ended', a.status==='CANCELLED' ? 'The sender cancelled this red packet.' : 'This red packet has expired.') + `<div class="pad16">${claimList(a)}</div>`;
   else if (st === 'own') body = msgBox('', 'This is your angpao', 'You can’t open your own red packet. Share it so others can open it.', btn('View details','apDetail',{cls:'btn-block'}).replace('data-act="apDetail"', `data-act="apDetail" data-tok="${a.token}"`));
   else if (st === 'full') body = msgBox('dim', 'Red Packet fully claimed', isLucky(a) ? 'All available prizes have been drawn.' : 'All packets have been opened. Better luck next time!') + `<div class="pad16">${claimList(a)}</div>`;
-  else if (st === 'claimed') { const mine = a.slots.find(s => s.by === 'me');
-    body = `<div class="apwon">${cardHTML(a, false)}<small>${mine.amt ? 'You got' : 'No MYRT this time'}</small><b>${MY_(mine.amt)}</b><span>${mine.amt ? `Added to your wallet${S.apJust?'':' earlier'}` : 'You’ve used your draw for this red packet.'}</span></div><div class="pad16">${claimList(a)}</div>`; }
-  else body = `<div class="apclosed ${S.apOpening?'opening':''}"><div class="apenv">${(() => { const c = who(a.creator); return `${img(c.av, c.n, 'apenv-av')}<b>${esc(c.n)}</b><span>sent you a red packet</span><p>${esc(a.msg || 'Best wishes!')}</p>`; })()}
-      <button class="apopen" data-act="apOpenIt" aria-label="Open angpao">${S.apOpening?'<span class="spin"></span>':'Open'}</button></div>
-      <p class="apnote">${isLucky(a) ? `${apAvailability(a)} · One draw per person` : `${apLeft(a)} of ${a.count} packets left`}${a.expiresAt?` · expires ${new Date(a.expiresAt).toLocaleString('en-MY',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}`:''}</p></div>`;
-  return `<div class="screen">${statusBar()}${top}<div class="scroll">${body}</div></div>`; };
+  else if (st === 'claimed') body = apReceivePanel(a, a.slots.find(s => s.by === 'me')) + `<div class="pad16">${claimList(a)}</div>`;
+  else body = apReceivePanel(a);
+  return `<div class="screen${st === 'ready' || st === 'claimed' ? ' apreceive' : ''}">${statusBar()}${top}<div class="scroll">${body}</div></div>`; };
 
 /* ---- section 7: sender detail ---- */
 const STL = {ACTIVE:['Active','ok'], FULLY_CLAIMED:['Fully claimed','done'], EXPIRED:['Expired','off'], CANCELLED:['Cancelled','off']};
-V.apdet = () => { const a = apGet(S.apTok); apTick(a); const s = STL[a.status]; const left = apLeft(a); const leftAmt = apAmountLeft(a);
-  const rows = [['Status', `<span class="apst ${s[1]}">${s[0]}</span>`], ['Type', AP_TYPES[a.type]], [isLucky(a) ? 'Budget' : 'Total', MY_(a.total)],
-    ['Validity', a.expiresAt ? `${a.expLbl} · ${a.status==='ACTIVE'?'until':'ended'} ${new Date(a.expiresAt).toLocaleString('en-MY',{day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}` : 'Never expires'], ...(a.msg?[['Message', esc(a.msg)]]:[]), ...(a.refunded?[['Refunded', MY_(a.refunded)]]:[])];
-  return `<div class="screen">${statusBar()}${topBar('Red Packet details')}<div class="scroll"><div class="pad16">
-    <div class="aplist">${claimList(a, {sender:true})}${leftAmt && a.status==='ACTIVE' ? `<p class="apleft">${isLucky(a) ? 'No people limit. Each amount is drawn when opened.' : `${left} packet${left===1?'':'s'} left · amounts stay hidden until opened`}</p>` : ''}
-      ${a.refunded ? `<p class="apleft">${MY_(a.refunded)} ${isLucky(a) ? 'in unused budget' : `from ${left} unclaimed packet${left===1?'':'s'}`} went back to your wallet.</p>` : ''}</div>
-    ${a.status==='ACTIVE' ? shareBtns(a) : ''}
-    <h2 class="apsec">Red Packet details</h2>
-    <div class="boxcard apkv">${rows.map(([k,v])=>`<div class="kv">${k}<b>${v}</b></div>`).join('')}</div>
-    ${a.status==='ACTIVE' && leftAmt ? `<button class="btn btn-tertiary btn-block apcancel" data-act="apCancelAsk">Cancel remaining red packet</button>` : ''}</div></div></div>`; };
+const apHistoryArt = () => `<div class="aphist-art" aria-hidden="true"><i class="apreceive-spark a"></i><i class="apreceive-spark b"></i><i class="apreceive-spark c"></i>${apEnvelopeMarkup()}</div>`;
+V.apdet = () => {
+  const a = apGet(S.apTok);
+  if (!a) return V.aprecv();
+  apTick(a);
+  const [status, tone] = STL[a.status];
+  const active = a.status === 'ACTIVE';
+  const lucky = isLucky(a);
+  const unclaimed = apLeft(a);
+  const rows = [['Type', AP_TYPES[a.type]], ['Recipients', lucky ? 'No people limit' : apPeople(a.count)]];
+  if (a.type === 'equal') rows.push(['Per person', MY_(a.per)]);
+  if (a.expiresAt) rows.push(['Scheduled expiry', new Date(a.expiresAt).toLocaleString('en-MY', {day:'numeric', month:'short', hour:'2-digit', minute:'2-digit'})]);
+  if (a.fee) rows.push(['Fee', MY_(a.fee)]);
+  const refundNote = lucky ? 'Unused budget returned to your wallet.'
+    : `Returned to your wallet from ${unclaimed} unclaimed ${unclaimed === 1 ? 'packet' : 'packets'}.`;
+  return `<div class="screen apdetail">${statusBar()}${topBar('Red Packet details')}<div class="scroll"><div class="aphist-content">
+    <section class="aphist-hero apdetail-hero"><span class="apst ${tone}">${status}</span><h1>${esc(a.msg || 'Best wishes!')}</h1>
+      <small>${lucky ? 'Packet budget' : 'Packet total'}</small><strong class="apdetail-total">${MY_(a.total)}</strong>${apHistoryArt()}</section>
+    ${a.refunded ? `<section class="apdetail-refund"><span class="apdetail-refund-icon">${ic('check')}</span><div><h2><strong>${MY_(a.refunded)}</strong> refunded</h2><p>${refundNote}</p></div></section>` : ''}
+    ${active ? `<div class="apdetail-share">${shareBtns(a)}</div>` : ''}
+    ${claimList(a, {sender:true})}
+    <section class="apdetail-section"><h2>Packet info</h2><dl>${rows.map(([label, value]) => `<div><dt>${label}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl></section>
+    ${active && apAmountLeft(a) ? `<button type="button" class="btn btn-tertiary apcancel" data-act="apCancelAsk">Cancel remaining red packet</button>` : ''}</div></div></div>`;
+};
 
 /* ---- my red packet (sent / received) ---- */
-V.aplist = () => { const tab = S.apTab || 'sent'; apSeed();
-  const sent = apMine().slice().reverse(), got = AP.list.filter(a => a.slots.some(s => s.by === 'me'));
-  const list = tab === 'sent' ? sent : got;
-  const row = a => { apTick(a); const s = STL[a.status]; const mine = a.slots.find(x => x.by === 'me'); const c = who(a.creator);
-    return `<button class="aplrow" data-act="${tab==='sent'?'apDetail':'apOpenTok'}" data-tok="${a.token}"><span class="apl-ic">${ic('apGift')}</span><span><b>${esc(a.msg || 'Best wishes!')}</b><small>${tab==='sent' ? apOpenedLabel(a) : 'From '+esc(c.n)}</small></span><span class="aprow-r"><b>${tab==='sent' ? '−'+C(a.total+a.fee) : (mine.amt ? '+' : '')+C(mine.amt)}</b>${tab==='sent'?`<i class="apst ${s[1]}">${s[0]}</i>`:''}</span></button>`; };
-  return `<div class="screen">${statusBar()}${topBar('My angpao')}<div class="apseg aptabs" role="tablist">${[['sent','Sent'],['got','Received']].map(([v,t])=>`<button role="tab" aria-selected="${tab===v}" aria-pressed="${tab===v}" data-act="apTab" data-v="${v}">${t}</button>`).join('')}</div>
-    <div class="scroll"><div class="pad16">${list.length ? list.map(row).join('') : `<div class="apstate"><span class="apgate-ic dim">${ic('apGift')}</span><h2>${tab==='sent'?'No red packet sent yet':'No red packet received yet'}</h2><p>${tab==='sent'?'Red Packet you create show up here.':'Red Packet you open show up here.'}</p></div>`}</div></div></div>`; };
+V.aplist = () => {
+  apSeed();
+  const tab = S.apTab || 'sent';
+  const sent = tab === 'sent';
+  const isVisible = a => !S.apHideHistorySamples || !AP.historySamples.has(a.token);
+  const history = sent ? apMine().filter(isVisible).reverse().map(a => ({a}))
+    : AP.list.filter(isVisible).map(a => ({a, claim:a.slots.find(slot => slot.by === 'me')})).filter(item => item.claim)
+      .sort((a, b) => (b.claim.ord || 0) - (a.claim.ord || 0));
+  const tabs = `<div class="aphist-tabs" role="tablist" aria-label="Red packet history">${[['sent','Sent'],['got','Received']].map(([value, label]) => `<button type="button" id="aphist-tab-${value}" role="tab" aria-selected="${tab === value}" aria-controls="aphist-panel" data-act="apTab" data-v="${value}">${label}</button>`).join('')}</div>`;
+  history.forEach(({a}) => apTick(a));
+  const rows = history.map(({a, claim}) => {
+    const [status, tone] = STL[a.status];
+    const sender = who(a.creator);
+    return `<li><button type="button" class="aphist-row" data-side="${tab}" data-state="${a.status}" data-act="${sent ? 'apDetail' : 'apOpenTok'}" data-tok="${esc(a.token)}">
+      <span class="aphist-row-icon" aria-hidden="true">${sent ? ic('apGift') : img(sender.av)}</span>
+      <span class="aphist-row-copy"><b>${esc(a.msg || 'Best wishes!')}</b><small>${sent ? apOpenedLabel(a) : `From ${esc(sender.n)}`}</small></span>
+      <span class="aphist-row-value"><b>${sent ? `−${MY_(a.total + a.fee)}` : `${claim.amt ? '+' : ''}${MY_(claim.amt)}`}</b>${sent ? `<span class="apst ${tone}">${status}</span>` : ''}</span>${ic('chev')}</button></li>`;
+  }).join('');
+  const count = history.length;
+  const summary = sent ? `${history.filter(({a}) => a.status === 'ACTIVE').length} active` : `${count} ${count === 1 ? 'packet' : 'packets'} opened`;
+  const total = sent ? count : MY_(history.reduce((sum, {claim}) => sum + claim.amt, 0));
+  const content = count ? `<section class="aphist-hero"><small>${sent ? 'Packets sent' : 'Total received'}</small><strong>${total}</strong><p>${summary}</p>${apHistoryArt()}</section><ul class="aphist-items">${rows}</ul>`
+    : `<section class="aphist-empty">${apHistoryArt()}<h2>${sent ? 'No red packets sent yet' : 'No red packets received yet'}</h2>
+      <p>${sent ? 'Send a red packet to a friend or group.' : 'Open a red packet from a chat and it’ll appear here.'}</p>
+      ${btn(sent ? 'Create red packet' : 'Open chats', sent ? 'apNew' : 'apHistoryChats')}</section>`;
+  const create = sent && count ? `<button class="iconbtn" type="button" data-act="apNew" aria-label="Create red packet">${ic('plus')}</button>` : '<span style="width:32px"></span>';
+  return `<div class="screen aphist">${statusBar()}<div class="topbar"><button class="iconbtn" type="button" data-act="back" aria-label="Back">${ic('back')}</button><span class="t-headline" style="flex:1;text-align:center">My Red Packet</span>${create}</div>
+    ${tabs}<div class="scroll" role="tabpanel" id="aphist-panel" aria-labelledby="aphist-tab-${tab}"><div class="aphist-content">${content}</div></div></div>`;
+};
 
 /* ---- chat card ---- */
 const _msgHTMLap = msgHTML;
@@ -8830,19 +9090,28 @@ Object.assign(A, {
   apCopy: () => { const a = apGet(S.apTok); try { navigator.clipboard.writeText('https://' + link(a)).catch(()=>{}); } catch(e) {} toast('Red Packet link copied.'); },
   apDetail: el => { if (el && el.dataset && el.dataset.tok) S.apTok = el.dataset.tok; go('apdet'); },
   apList: () => { S.apTab = 'sent'; go('aplist'); },
-  apTab: el => { S.apTab = el.dataset.v; render(); },
+  apTab: el => {
+    const focused = document.activeElement === el;
+    S.apTab = el.dataset.v;
+    render();
+    if (focused) document.getElementById(`aphist-tab-${S.apTab}`)?.focus({preventScroll:true});
+  },
+  apHistoryChats: () => { S.ctab = 'message'; S.cq = ''; go('chats'); },
   apOpenTok: el => { S.apTok = el.dataset.tok; S.apJust = false; go('aprecv'); },
   apTap: el => { const a = apGet(el.dataset.tok); S.apTok = el.dataset.tok; S.apJust = false; S.apSim = null;
     if (a && a.creator === 'me') { go('apdet'); return; } go('aprecv'); },
   apOpenIt: () => {
     const a = apGet(S.apTok);
-    if (S.apOpening || apState(a) !== 'ready') return;
+    if (apState(a) !== 'ready') return;
+    const pending = S.apOpening ||= new Set();
+    if (pending.has(a.token)) return;
     const session = S;
-    S.apOpening = true; render();
+    pending.add(a.token); render();
+    const viewingPacket = () => S.screen === 'aprecv' && S.apTok === a.token;
     setTimeout(() => {
       if (S !== session) return;
-      S.apOpening = false;
-      if (apState(a) !== 'ready') { render(); return; }
+      pending.delete(a.token);
+      if (apState(a) !== 'ready') { if (viewingPacket()) render(); return; }
       const stamp = {by:'me', at:'Now', ord:++AP.ord};
       let claim;
       if (isLucky(a)) claim = apLuckyDraw(a, stamp);
@@ -8854,10 +9123,14 @@ Object.assign(A, {
         AP.delta += claim.amt;
         apTx('angpao', a, claim.amt, `Red Packet from ${who(a.creator).n}`, true);
       }
-      S.apJust = S.apTok === a.token;
       apTick(a);
-      render();
-    }, 900);
+      if (viewingPacket()) {
+        S.apJust = true;
+        render();
+        document.querySelector('.apreceive-result')?.focus();
+      } else if ((S.screen === 'chat' || S.screen === 'bchat') &&
+        [...document.querySelectorAll('.rp-chat-card')].some(card => card.dataset.tok === a.token)) render();
+    }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 620);
   },
   apReport: () => toast('Thanks. We’ll review this red packet.'),
   apCancelAsk: () => { S.dialog = 'apCancel'; render(); },
@@ -8903,6 +9176,7 @@ const _openAp = window.__open;
 if (_openAp) window.__open = function(screen, c){
   const s = String(screen || '');
   if (s === 'apNew') { S.apf = apfNew(); S.apCtx = null; S.apSim = null; return _openAp('apform', c); }
+  if (s === 'apHistory' || s === 'apHistory:empty') { S.apHideHistorySamples = s.endsWith(':empty'); S.apTab = 'sent'; return _openAp('aplist', c); }
   if (s === 'apChat') { S.conv = 'c-lara'; _openAp('chat', c); setTimeout(scrollChat, 30); return; }
   if (s.indexOf('apRecv') === 0) { const t = apDemo(s.split(':')[1] || 'ready'); return _openAp(t, c); }
   return _openAp(screen, c); };
@@ -8915,7 +9189,7 @@ Object.assign(META, {
   apdone:{name:'Red Packet · Ready to share', group:'V2 · Red Packet', rules:['Card with QR','Send to chat / Send to group / Copy link, any number of times, same token (no new transaction)','View details for the sender']},
   aprecv:{name:'Red Packet · Receive', group:'V2 · Red Packet', rules:['Checks in order: not logged in → login; KYC/wallet → onboarding; token not found; expired/cancelled → ended; sender → View details only; already claimed → your result; all slots taken → fully claimed; else Open','Open: one free slot taken with a lock, unique (red packet, user), credited without fee or PIN','Amounts are fixed at create and never sent to the app before opening','Random shows a Luckiest label on the top amount']},
   apdet:{name:'Red Packet · Details (sender)', group:'V2 · Red Packet', rules:['Status, total, fee, validity, who opened and how much','Packets left shown; their amounts stay hidden','Cancel remaining while ACTIVE: unclaimed slots back to the sender, fee not refunded','Expired: a job refunds unclaimed slots and notifies. Never-expiring red packet only refund on cancel']},
-  aplist:{name:'Red Packet · My angpao', group:'V2 · Red Packet', rules:['Sent and Received lists. Sent rows open the details, received rows open your result']},
+  aplist:{name:'My Red Packet', group:'V2 · Red Packet', rules:['Sent and Received lists. Sent rows open the details, received rows open your result']},
 });
 const _rpAp = renderPanel;
 renderPanel = function(){ _rpAp(); const p = document.getElementById('panel'); if (!p) return;
