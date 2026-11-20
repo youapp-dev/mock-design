@@ -1,70 +1,70 @@
 # Wallet refresh 19 Nov
 
 Status **Prototype review**  
-Sumber desain **Design_update_19nov**, 19 November 2026
+Design source **Design_update_19nov**, November 19, 2026
 
-## Redesign dari HTML boss
+## Redesign from the reference HTML
 
-Prototype menggunakan layout, ilustrasi, warna, logo, dan ikon dari `Design_update_19nov/youapp-wallet-screens/index.html`. Buka **YouPage** dengan **KYC Approved** dan **Wallet Active** untuk mencoba desain. **Free** menampilkan banner SVIP seperti di referensi.
+The prototype uses the layout, illustrations, colors, logos, and icons from `Design_update_19nov/youapp-wallet-screens/index.html`. Open **YouPage** with **KYC Approved** and **Wallet Active** to try the design. The **Free** tier shows the SVIP banner from the reference.
 
-| Poin | Layar yang diperbarui | Yang bisa dicoba |
+| Section | Updated screens | What to try |
 | --- | --- | --- |
-| 0 | You Page | YouWallet Balance, swipe ke Booking Balance, sembunyikan saldo, referral, transaksi terakhir, lalu profil dengan chip minat. |
-| 1 dan 1b | Scan to Pay, Pay, Pay with, approval, Paid, Receipt, dan Connect a wallet | QR nominal bebas atau tetap, pilih sumber dana, konfirmasi wallet eksternal, quote kedaluwarsa, pending, gagal, retry, dan buka ulang receipt dari History. |
-| 2 sampai 2c | Top up, kartu, stablecoin, My money dan Connect a wallet | Pilih mata uang dan metode, cek fee, konfirmasi top up demo, lihat saldo per mata uang dan filter per wallet. Versi tanpa wallet eksternal punya ajakan Connect a wallet. |
-| 3 | Choose your plan | Bandingkan Free, VIP, dan SVIP. Periode VIP membuka checkout. SVIP mengikuti alur pengajuan yang sudah ada. |
-| 4 | Rewards dan Invite friends | Lihat kondisi kosong atau berisi, filter referral dan cashback, cek teman yang belum verifikasi, buka QR, dan bagikan link. |
-| 5 | Settings | Buka Transactions, Connected wallets, PIN, Limits, referral dan Coupons. Pilihan preferensi dan waitlist berfungsi di sesi demo. |
+| 0 | YouPage | View YouWallet Balance, swipe to Booking Balance, hide balances, see referrals and the last transaction, and view the profile with interest chips. |
+| 1 and 1b | Scan to Pay, Pay, Pay with, approval, Paid, Receipt, and Connect a wallet | Use open-amount or fixed-amount QR codes, choose a funding source, approve in an external wallet, test expired quotes, pending payments, failures and retries, and reopen a receipt from History. |
+| 2 through 2c | Top up, card, stablecoin, My money, and Connect a wallet | Choose a currency and method, check the fee, confirm a demo top-up, view balances by currency, and filter by wallet. A **Connect a wallet** prompt appears when no external wallet is connected. |
+| 3 | Choose your plan | Compare Free, VIP, and SVIP. Selecting a VIP billing period opens checkout. SVIP uses the existing application flow. |
+| 4 | Rewards and Invite friends | View empty and populated states, filter referrals and cashback, check which friends have yet to verify, open the QR code, and share the link. |
+| 5 | Settings | Open Transactions, Connected wallets, PIN, Limits, referrals, and Coupons. Preferences and the waitlist work within the demo session. |
 
-Nama profil, transaksi, mata uang, saldo, dan statistik referral mengikuti akun serta skenario prototype. Harga VIP tahunan tetap RM120 sesuai checkout yang sudah ada. Ringgit YouApp Wallet memakai aturan PIN yang sudah ada. Booking Balance tampil sebagai kartu terpisah dan tidak dihitung dalam My money.
+The profile name, transactions, currencies, balances, and referral statistics reflect the prototype account and scenario. Annual VIP stays at RM120 to match the existing checkout. Ringgit payments from YouApp Wallet use the existing PIN rules. Booking Balance has its own card and is excluded from My money.
 
-**Your profile** mengikuti urutan dan jarak dari HTML referensi. Nama, username, dan minat mengikuti Edit Profile. **Send**, **Receive**, dan **Pay Bills** ada di detail YouApp Wallet melalui My money. **My Activities** ada di Discover → Activities → Manage Activity.
+**Your profile** follows the order and spacing of the reference HTML. The name, username, and interests reflect Edit Profile. **Send**, **Receive**, and **Pay Bills** are in the YouApp Wallet details, accessible from My money. **My Activities** is under **Discover → Activities → Manage Activity**.
 
-**Top up** memakai judul dan urutan dari referensi. Pilihan mata uang tampil satu baris dan bisa digeser tanpa scrollbar yang terlihat. Catatan tujuan dana berada di bawah area scroll dan menampilkan mata uang yang dipilih. Fee tetap terlihat di setiap metode.
+**Top up** uses the headings and order from the reference. Currency options sit in a single swipeable row with a hidden scrollbar. The deposit note sits below the scroll area and shows the selected currency. Each payment method displays its fee.
 
-**My money** mempertahankan urutan saldo, wallet, mata uang, dan transaksi dari referensi. Filter wallet bisa digeser dalam satu baris tanpa scrollbar terlihat. Saat wallet dipilih, judul saldo menyebut nama wallet. Grafik ikut tersembunyi saat saldo disembunyikan. Recent menampilkan ikon transaksi dan status yang sesuai.
+**My money** follows the reference order for balances, wallets, currencies, and transactions. Wallet filters sit in a single swipeable row with a hidden scrollbar. Selecting a wallet adds its name to the balance heading. Hiding balances also hides the chart. **Recent** shows the relevant icons and statuses for each transaction.
 
-**Detail mata uang** menampilkan saldo dalam mata uang yang dipilih, estimasi RM, dan subtotal per wallet. Daftar menawarkan ikon token dan membedakan kuantitas token dari estimasi RM. Ketuk token untuk membuka wallet pemiliknya.
+**Currency details** show the balance in the selected currency, an estimated value in RM, and subtotals by wallet. The list shows token icons and distinguishes token quantities from estimated RM values. Tap a token to open the wallet that holds it.
 
-**Wallet eksternal** menampilkan saldo, token terverifikasi, dan pengaturan koneksi. Switch **Set as main** memilih wallet default untuk Scan to Pay. Saat dimatikan, YouApp Wallet mengambil alih jika tersedia, lalu wallet lain yang terhubung. **Disconnect wallet** meminta konfirmasi. Jika hanya ada satu wallet, buat YouApp Wallet sebelum melepasnya.
+**External wallets** show balances, verified tokens, and connection settings. The **Set as main** switch picks the default wallet for Scan to Pay. Turning it off falls back to YouApp Wallet if available, then another connected wallet. **Disconnect wallet** requires confirmation. If only one wallet remains, create a YouApp Wallet before disconnecting it.
 
-**Choose your plan** mempertahankan ilustrasi, tab, dan urutan manfaat dari referensi. Kartu menyesuaikan lebar layar agar empat manfaat, syarat, dan tombol tetap bisa dibaca. Label **Current** mengikuti tier akun. VIP tahunan ditampilkan sebagai RM120 sesuai checkout prototype.
+**Choose your plan** keeps the reference illustrations, tabs, and benefit order. Cards adapt to the screen width so all four benefits, requirements, and buttons remain readable. The **Current** label reflects the account tier. Annual VIP displays RM120 to match prototype checkout.
 
-Wallet provider, quote, top up, dan pembayaran berjalan dengan data demo. QR stablecoin diberi label demo. Withdraw to bank dan Back up wallet membuka informasi flow. Preferensi yang diubah berlaku di sesi prototype. Penanganan izin native dan koneksi gateway perlu QA di iOS dan Android.
+Wallet providers, quotes, top-ups, and payments use demo data. The stablecoin QR code is labeled as a demo. **Withdraw to bank** and **Back up wallet** open information about their flows. Preference changes apply within the prototype session. Native permissions and gateway connectivity require iOS and Android QA.
 
-**QA Chrome** mencakup entry point YouPage, hide balance, Booking Balance, satu dan beberapa wallet, koneksi MetaMask dan OKX, QR bebas dan tetap, debit internal dan eksternal, refresh quote, pending dan retry, top up kartu, pilihan stablecoin, receipt dari Settings, VIP checkout, filter Rewards dan referral, serta perubahan preferensi dan waitlist. QA viewport 375 px memeriksa akses QR referral, My money, serta pemilihan mata uang dan keypad top up. Kontrol prototype berada di luar layar Wallet pada viewport mobile.
+**Chrome QA** covers entry through YouPage, hiding balances, Booking Balance, single and multiple wallets, MetaMask and OKX connections, open-amount and fixed-amount QR codes, internal and external debits, quote refresh, pending payments and retries, card top-ups, stablecoin selection, opening a receipt from Settings, VIP checkout, Rewards and referral filters, preference changes, and the waitlist. At 375 px, QA checked access to the referral QR code, My money, currency selection, and the top-up keypad. Prototype controls sit outside the Wallet screen on mobile.
 
-Perbandingan Chrome pada tier Free memeriksa ukuran avatar, radius kartu, jarak chip, dan urutan profil terhadap HTML referensi. QA juga memeriksa banner di Free dan SVIP, perubahan nama setelah Save Changes, akses aksi wallet, dan teks verifikasi pada viewport 320 px.
+The Chrome comparison on the Free tier checked avatar size, card corner radius, chip spacing, and profile order against the reference HTML. QA also checked banners in Free and SVIP, the name after **Save Changes**, access to wallet actions, and verification text at 320 px.
 
-Audit ulang HTML memperbaiki posisi bottom sheet **Pay with** dan memulihkan **Top up to use** dengan mata uang yang dipilih langsung terisi. Deretan wallet dan filter teman tetap pada posisi swipe saat pilihan berubah. Histori referral menampilkan inisial saja. Settings merangkum jumlah wallet saat lebih dari dua provider terhubung.
+The HTML audit corrected the position of the **Pay with** bottom sheet and restored **Top up to use** with the currency preselected. Wallet and friend filter rows keep their swipe position when the selection changes. Referral history shows initials only. Settings shows the wallet count when more than two providers are connected.
 
 ## Batch 1
 
-Batch pertama mempercepat akses ke Scan to Pay dan menyamakan nominal dari Pay sampai History. Catatan di bawah mencatat desain dan pengujian batch tersebut sebelum layar diganti oleh redesign HTML di atas.
+The first batch made Scan to Pay easier to reach and aligned amounts across Pay and History. The notes below document the design and testing for that batch before the HTML redesign above replaced those screens.
 
-- **You Page** menempatkan saldo, Scan to Pay, Top Up, dan Rewards di atas referral dan aktivitas. Saldo YouApp Wallet di sini adalah saldo MYRT yang tersedia untuk pembayaran. View Wallets membuka daftar wallet, dan Booking Balance tersedia di Wallet and Activities.
-- **Scan to Pay** memakai aturan tier dan PIN yang sudah ada. QR dengan nominal tetap tidak menyediakan keypad. Layar Pay memisahkan nominal penerima, fee, rebate jika berlaku, dan total debit.
-- **Paid, Receipt, dan History** memakai record yang sama. Skenario pending menahan saldo sampai status diperbarui. Skenario gagal melepaskan saldo pembayaran dan memberi jalan untuk mencoba lagi. Saldo top up yang sudah masuk tetap tersedia.
+- **YouPage** places the balance, Scan to Pay, Top Up, and Rewards above referrals and activities. The YouApp Wallet balance shows the MYRT available for payments. **View Wallets** opens the wallet list, and Booking Balance is available in **Wallet and Activities**.
+- **Scan to Pay** uses the existing tier and PIN rules. Fixed-amount QR codes have no keypad. Pay shows the recipient amount, fee, any applicable rebate, and total debit separately.
+- **Paid**, **Receipt**, and **History** use the same record. A pending payment holds funds until the status is updated. A failed payment releases the reserved funds and lets the user retry. Funds from a completed top-up remain available.
 
 ## Acceptance criteria
 
-| ID | Aksi | Hasil yang diharapkan |
+| ID | Action | Expected result |
 | --- | --- | --- |
-| AC-01 | Buka YouPage, pakai Hide Balance, lalu buka Booking Balance | Scan to Pay dominan. Nominal pada YouPage tersembunyi. Booking Balance terpisah dari saldo pembayaran. |
-| AC-02 | Pilih QR bebas, masukkan RM25 pada tier Free, dan bayar | Penerima mendapat RM25.00, fee RM1.50, serta total debit RM26.50 pada Pay dan Receipt. History membuka reference yang sama. |
-| AC-03 | Pilih QR nominal tetap, lalu tekan Back | Nominal tetap tidak dapat diedit. Back kembali ke scanner tanpa membuat transaksi. |
-| AC-04 | Bayar dari skenario Pending Next Attempt, lalu Check Payment Status | Status sebelum penyelesaian adalah Pending. Setelah diselesaikan, reference tetap sama dan saldo hanya berubah sekali. |
-| AC-05 | Bayar dari skenario Fail Next Attempt, lalu Try Again | Upaya gagal tidak didebit. Review mempertahankan penerima dan nominal. Pembayaran berikutnya membuat record sukses tersendiri. |
-| AC-06 | Bayar dengan saldo rendah atau nominal yang membutuhkan PIN | Top Up & Pay menutup kekurangan saldo. PIN salah menampilkan feedback dan dapat dicoba ulang. |
+| AC-01 | Open YouPage, use **Hide Balance**, then open Booking Balance | Scan to Pay is the primary action. Amounts on YouPage are hidden. Booking Balance is separate from the payment balance. |
+| AC-02 | Choose an open-amount QR code, enter RM25 on the Free tier, and pay | The recipient gets RM25.00. Pay and Receipt show the RM1.50 fee and RM26.50 total debit. History opens the same reference. |
+| AC-03 | Choose a fixed-amount QR code, then tap **Back** | The amount is read-only. **Back** returns to the scanner without creating a transaction. |
+| AC-04 | Pay in the **Pending Next Attempt** scenario, then select **Check Payment Status** | The status is Pending before resolution. After resolution, the reference stays the same and the balance changes only once. |
+| AC-05 | Pay in the **Fail Next Attempt** scenario, then select **Try Again** | The failed attempt creates no debit. The review screen retains the recipient and amount. The next payment creates its own successful record. |
+| AC-06 | Pay with a low balance or an amount that requires a PIN | **Top Up & Pay** covers the shortfall. An incorrect PIN shows feedback and allows a retry. |
 
-## Keputusan untuk batch berikutnya
+## Decisions for the next batch
 
-- Konfirmasi definisi saldo gabungan dan sumber debit per transaksi, aset yang didukung, masa berlaku quote, serta network fee pada external wallet.
-- Konfirmasi metode top up per mata uang dan negara serta aturan settlement.
-- Kunci harga SVIP dan effective limit di plan, settings, dan pembayaran sebelum handoff.
+- Confirm the combined balance definition, funding source per transaction, supported assets, quote lifetime, and external wallet network fees.
+- Confirm top-up methods by currency and country and the settlement rules.
+- Finalize SVIP pricing and the limits that apply across plan selection, Settings, and payments before handoff.
 
-## Cakupan verifikasi
+## Verification coverage
 
-- **Lolos di Chrome desktop dan viewport 375 px.** AC-01 sampai AC-06 dijalankan melalui klik di prototype, termasuk PIN salah lalu berhasil, QR personal, gambar QR yang tidak valid, dan membuka receipt yang sama lewat History di YouPage maupun Settings.
-- **Simulasi.** Scanner, top up, dan settlement pada alur ini disimulasikan. Record pembayaran berada di sesi prototype.
-- **Belum diuji pada build native.** Kamera, PIN native, kontrak transaksi, idempotency di backend, dan lifecycle aplikasi saat kembali dari gateway perlu diverifikasi di iOS dan Android.
+- **Passed in Chrome on desktop and at 375 px.** AC-01 through AC-06 were exercised by clicking through the prototype, including retrying an incorrect PIN successfully, using a personal QR code, testing an invalid QR image, and opening the same receipt from History in both YouPage and Settings.
+- **Simulated.** The scanner, top-ups, and settlement in this flow are simulated. Payment records live in the prototype session.
+- **Native builds are untested.** The camera, native PIN flow, transaction contracts, backend idempotency, and app lifecycle when returning from the gateway need verification on iOS and Android.

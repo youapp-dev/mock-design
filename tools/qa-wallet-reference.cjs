@@ -9,9 +9,14 @@ const root = path.join(__dirname, '..');
 const temp = fs.mkdtempSync(path.join(os.tmpdir(), 'youapp-wallet-qa-'));
 const chrome = process.argv[2] || path.join(process.env.LOCALAPPDATA, 'Google', 'Chrome', 'Application', 'chrome.exe');
 const types = {'.html':'text/html', '.js':'text/javascript', '.css':'text/css', '.png':'image/png', '.jpg':'image/jpeg', '.webp':'image/webp', '.svg':'image/svg+xml'};
+const mount = '/mock-design/';
 const server = http.createServer((request, response) => {
   const name = new URL(request.url, 'http://localhost').pathname;
-  const file = path.resolve(root, '.' + (name === '/' ? '/index.html' : name));
+  if (!name.startsWith(mount)) {
+    response.writeHead(404).end();
+    return;
+  }
+  const file = path.resolve(root, name.slice(mount.length) || 'index.html');
   if (!file.startsWith(root + path.sep) || !fs.existsSync(file) || !fs.statSync(file).isFile()) {
     response.writeHead(404).end();
     return;
@@ -21,7 +26,7 @@ const server = http.createServer((request, response) => {
 });
 const pause = ms => new Promise(resolve => setTimeout(resolve, ms));
 async function until(fn, label) {
-  for (let i = 0; i < 55; i++) {
+  for (let i = 0; i < 90; i++) {
     const value = await fn();
     if (value) return value;
     await pause(100);
@@ -33,7 +38,7 @@ let browser;
 let ws;
 (async () => {
   await new Promise(resolve => server.listen(0, '127.0.0.1', resolve));
-  const address = `http://127.0.0.1:${server.address().port}/`;
+  const address = `http://127.0.0.1:${server.address().port}${mount}`;
   browser = spawn(chrome, ['--headless=new', '--disable-extensions', '--disable-background-networking', '--remote-debugging-port=0',
     `--user-data-dir=${path.join(temp, 'browser')}`, '--window-size=1440,1024', 'about:blank'], {stdio:'ignore', windowsHide:true});
   let launchError;
@@ -71,17 +76,21 @@ let ws;
     if (result.exceptionDetails) throw new Error(result.exceptionDetails.exception?.description || expression);
     return result.result.value;
   };
-  const wallet = expression => evaluate(`document.querySelector('#w2').contentWindow.eval(${JSON.stringify(expression)})`);
+  const inRenderer = (id, expression) => evaluate(`document.getElementById(${JSON.stringify(id)}).contentWindow.eval(${JSON.stringify(expression)})`);
+  const wallet = expression => inRenderer('w2', expression);
+  const app = expression => inRenderer('a30', expression);
   const inWallet = selector => `document.querySelector('#w2').contentDocument.querySelector(${JSON.stringify(selector)})`;
-  const click = async (selector, scope = 'wallet') => {
-    const expression = scope === 'wallet' ? inWallet(selector) : `document.querySelector(${JSON.stringify(selector)})`;
+  const click = async (selector, scope = 'wallet', reveal = true) => {
+    const frameId = {wallet:'w2', app:'a30'}[scope];
+    const frameElement = `document.getElementById(${JSON.stringify(frameId)})`;
+    const expression = `${frameId ? frameElement + '.contentDocument' : 'document'}.querySelector(${JSON.stringify(selector)})`;
     const coords = await evaluate(`(() => { const el = ${expression}; if (!el) return null;
-      el.scrollIntoView({block:'center',inline:'center'});
+      if (${reveal}) el.scrollIntoView({block:'center',inline:'center'});
       const rect = el.getBoundingClientRect();
-      const frame = ${scope === 'wallet' ? `document.querySelector('#w2').getBoundingClientRect()` : '{left:0,top:0}'};
+      const frame = ${frameId ? frameElement + '.getBoundingClientRect()' : '{left:0,top:0}'};
       const x = rect.left + rect.width / 2, y = rect.top + rect.height / 2;
       const top = document.elementFromPoint(x + frame.left, y + frame.top);
-      const unobstructed = ${scope === 'wallet' ? `top === document.querySelector('#w2')` : 'el.contains(top)'};
+      const unobstructed = ${frameId ? `top === ${frameElement}` : 'el.contains(top)'};
       return {x:x + frame.left, y:y + frame.top, hit:unobstructed && el.contains(el.ownerDocument.elementFromPoint(x,y))}; })()`);
     assert.ok(coords?.hit, `Visible click target ${selector}: ${JSON.stringify(coords)}`);
     const {x, y} = coords;
@@ -89,8 +98,11 @@ let ws;
     await cdp('Input.dispatchMouseEvent', {type:'mouseReleased', button:'left', clickCount:1, x, y});
   };
   const act = (action, extra = '') => click(`[data-act="${action}"]${extra}`);
+  const appAct = (action, extra = '') => click(`[data-act="${action}"]${extra}`, 'app');
+  const jump = route => click(`[data-j="${route}"]`, 'shell');
   const frame = name => until(() => evaluate(`!!${inWallet(`[data-reference="${name}"]`)}`), name);
   const state = name => until(() => wallet(`S.screen === ${JSON.stringify(name)}`), name);
+  const appState = name => until(() => app(`window.__state?.().screen === ${JSON.stringify(name)}`), name);
   const screenshot = async file => {
     await until(() => wallet(`!S.toast`), 'toast to clear');
     await pause(100);
@@ -135,7 +147,111 @@ let ws;
   await cdp('Runtime.enable');
   await cdp('Page.enable');
   await cdp('Page.navigate', {url:address});
-  await until(() => evaluate(`Boolean(document.querySelector('#w2')?.contentWindow.__open && document.querySelector('#a30')?.contentWindow.__open)`), 'prototype');
+  const ready = () => until(() => evaluate(`!document.getElementById('loading') && !!document.getElementById('w2')?.contentWindow.__state`), 'prototype');
+  await ready();
+  await appState('welcome');
+  assert.equal(await evaluate(`document.querySelector('iframe.on').id`), 'a30');
+  await click('[data-s="kyc"][data-v="rejected"]', 'shell');
+  assert.equal(await wallet('__state().kyc'), 'rejected');
+  await jump('start');
+  await appState('splash');
+  await appState('welcome');
+  let timeOrigin = await evaluate('performance.timeOrigin');
+  await cdp('Page.reload');
+  await until(() => evaluate(`performance.timeOrigin !== ${timeOrigin}`), 'new document after refresh');
+  await ready();
+  await appState('welcome');
+  assert.equal(await app('__state().kyc'), 'rejected');
+  timeOrigin = await evaluate('performance.timeOrigin');
+  await click('#resetAll', 'shell');
+  await until(() => evaluate(`performance.timeOrigin !== ${timeOrigin}`), 'new document after Reset');
+  await ready();
+  await appState('welcome');
+  assert.equal(await app('__state().kyc'), 'approved');
+  assert.equal(await wallet('__state().tier'), 'svip');
+  await cdp('Page.navigate', {url:address + '?app=app30&jump=apHistory:empty'});
+  await ready();
+  await appState('aplist');
+  assert.equal(await app('S.apHideHistorySamples'), true);
+
+  await jump('topup');
+  await state('walletTopUp');
+  await act('back');
+  await until(() => evaluate(`document.querySelector('iframe.on').id === 'a30'`), 'Back to App 3.0');
+  await appState('discover');
+  await jump('gInvite');
+  await appState('ginvite');
+  await jump('products');
+  await appState('chat');
+  assert.equal(await app('S.conv'), 'g-products');
+  await until(() => app(`(() => {
+    const scroll = document.getElementById('chatScroll');
+    return scroll.scrollHeight - scroll.clientHeight - scroll.scrollTop < 2;
+  })()`), 'initial chat scroll');
+  const voice = '[data-act="vPlay"][data-id="yp-voice"]';
+  await app(`document.querySelector(${JSON.stringify(voice)}).scrollIntoView({block:'center'})`);
+  const top = await app(`document.getElementById('chatScroll').scrollTop`);
+  assert.ok(top > 0, 'voice note is viewed below the top of the chat');
+  await click(voice, 'app', false);
+  await until(() => app(`S.vplay?.p > 0 && !S.vplay.paused`), 'voice playback');
+  assert.equal(await app(`document.getElementById('chatScroll').scrollTop`), top);
+  await click(voice, 'app', false);
+  assert.equal(await app('S.vplay.paused'), true);
+  await click(voice, 'app', false);
+  await pause(180);
+  assert.equal(await app('S.vplay.paused'), false);
+  assert.equal(await app(`document.getElementById('chatScroll').scrollTop`), top);
+  await appAct('chatMenu');
+  await appAct('cmVideo');
+  await until(() => app(`S.call?.kind === 'video'`), 'group video call');
+  await appAct('cxCallEnd');
+  assert.equal(await app('Boolean(S.call)'), false);
+
+  await jump('actMine');
+  await appState('actmine');
+  await jump('actJoinDemo');
+  await appState('exp');
+  await jump('apChat');
+  await appState('chat');
+  const walletStart = await wallet('bal()');
+  await appAct('apTap', '[data-tok="apLaraLucky"]');
+  await appState('aprecv');
+  await appAct('apOpenIt');
+  await until(() => app(`!!document.querySelector('.apreceive-result')`), 'Lara red packet claim');
+  const balanceDelta = () => evaluate('YouAppPrototypeWallet.redPacketDelta()');
+  const prize = await balanceDelta();
+  assert.ok(prize >= 100 && prize <= 1000 && prize % 100 === 0);
+  assert.equal(await wallet('bal()'), (Math.round(walletStart * 100) + prize) / 100);
+  await jump('apRecv:lucky');
+  await appState('aprecv');
+  assert.equal(await app(`!!document.querySelector('[data-act="apOpenIt"]')`), false);
+  assert.equal(await balanceDelta(), prize);
+
+  await jump('apNew');
+  await appState('apform');
+  assert.equal(await app('S.apf.type'), 'lucky');
+  for (const mode of ['random', 'equal', 'lucky']) {
+    await appAct('apType', `[data-v="${mode}"]`);
+    assert.equal(await app(`!!document.getElementById('apCount')`), mode !== 'lucky');
+  }
+  await click('#apAmt', 'app');
+  await cdp('Input.insertText', {text:'10'});
+  await appAct('apNext');
+  for (const digit of '123456') await appAct('key2', `[data-k="${digit}"]`);
+  await appAct('pin7Confirm');
+  await appState('apdone');
+  assert.equal(await balanceDelta(), prize - 1000);
+  await appAct('apDetail');
+  await appState('apdet');
+  await appAct('apCancelAsk');
+  await appAct('apCancelOk');
+  assert.equal(await balanceDelta(), prize);
+  assert.equal(await wallet('bal()'), (Math.round(walletStart * 100) + prize) / 100);
+  console.log('PASS startup, routing, scenario reset, chat playback, video call, Activity entries, and Red Packet claim and refund');
+
+  await cdp('Page.navigate', {url:address});
+  await ready();
+  await appState('welcome');
   await click('[data-s="kyc"][data-v="approved"]', 'shell');
   await click('[data-s="wallet"][data-v="active"]', 'shell');
   await click('[data-s="tier"][data-v="free"]', 'shell');
@@ -430,8 +546,16 @@ let ws;
   await pause(275);
   await click('[data-j="settings"]', 'shell');
   await frame('settingslong');
-  assert.deepEqual(errors, []);
   console.log('PASS mobile 375px click targets, top up currency, and prototype controls');
+
+  await cdp('Page.navigate', {url:address + 'prototype/forms/index.html'});
+  await until(() => evaluate(`document.readyState === 'complete' && !!document.querySelector('#tabs [data-f="merchant"]')`), 'registration forms');
+  await click('#tabs [data-f="merchant"]', 'shell');
+  assert.ok(await evaluate(`document.getElementById('mMode').getBoundingClientRect().height > 0`));
+  await click('#tabs [data-f="elite"]', 'shell');
+  assert.ok(await evaluate(`document.getElementById('e2').classList.contains('hide')`));
+  assert.deepEqual(errors, []);
+  console.log('PASS standalone Elite and Merchant registration');
 })().catch(error => { console.error(error); process.exitCode = 1; }).finally(() => {
   ws?.close();
   browser?.kill();

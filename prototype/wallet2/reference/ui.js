@@ -1378,14 +1378,13 @@
 
   const oldTxOpen = A.txOpen;
   A.txOpen = el => S.walletTopUps?.some(tx => tx.id === el.dataset.id) ? A.walletReferenceTx(el) : oldTxOpen(el);
-  const open = window.__open;
-  if (open) window.__open = (name, ctx) => {
-    if (name === 'walletTopUp') S.walletTopUp = null;
-    if (name === 'scanReceipt' && S.walletTopUps?.some(tx => tx.id === ctx?.txId)) {
-      S.txId = ctx.txId;
-      return open('walletTopUpReceipt', ctx);
-    }
-    return open(name, ctx);
+  walletEntryRoutes.walletTopUp = () => {
+    S.walletTopUp = null;
+  };
+  walletEntryRoutes.scanReceipt = ({txId}) => {
+    if (!S.walletTopUps?.some(tx => tx.id === txId)) return;
+    S.txId = txId;
+    return 'walletTopUpReceipt';
   };
 
   Object.assign(META, {

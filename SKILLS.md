@@ -1,6 +1,6 @@
 # YouApp project skills
 
-Install these four skills once per checkout. The versions pinned below are the team's baseline. Git ignores the downloaded folders under `.agents/skills/`. For how YouApp uses these skills during product development, see the [product development baseline](docs/product-development.md).
+Install the project skills once per checkout. The versions pinned below are the team's baseline. Git ignores the downloaded folders under `.agents/skills/`. For how YouApp uses these skills during product development, see the [product development baseline](docs/product-development.md).
 
 | Folder | When to use it | Source |
 | --- | --- | --- |
@@ -8,6 +8,7 @@ Install these four skills once per checkout. The versions pinned below are the t
 | `caveman` | Give concise updates when requested | [Caveman](https://github.com/JuliusBrussee/caveman) |
 | `graphify` | Trace dependencies and answer questions across the repo | [Graphify](https://github.com/graphify-labs/graphify) |
 | `ui-ux-pro-max` | Design and review mobile flows, accessibility, and interaction | [UI/UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) |
+| `architecture-review` | Review ownership, dependencies, and refactor boundaries | [Architecture Review](https://github.com/ruicore/codex-skills/tree/085e8957068bd0bed328faae9ac52aee24327fdf/skills/architecture-review) |
 
 ## Install from a fresh checkout
 
@@ -26,6 +27,7 @@ $youappSources = @(
     @{ Name = 'taste-skill'; Repo = 'Leonxlnx/taste-skill'; Ref = 'f6b76575f949707b4e3c37cd86cb44b0b98643e8'; Path = 'skills/taste-skill' }
     @{ Name = 'caveman'; Repo = 'JuliusBrussee/caveman'; Ref = 'a192894723a8f47e7f504c7b5041967ff1f18e55'; Path = 'skills/caveman' }
     @{ Name = 'ui-ux-pro-max'; Repo = 'nextlevelbuilder/ui-ux-pro-max-skill'; Ref = '2de1134dc4d1cfe112934611ae5803ae17a1bd7e'; Path = '.claude/skills/ui-ux-pro-max' }
+    @{ Name = 'architecture-review'; Repo = 'ruicore/codex-skills'; Ref = '085e8957068bd0bed328faae9ac52aee24327fdf'; Path = 'skills/architecture-review' }
 )
 
 foreach ($youappSource in $youappSources) {
@@ -46,7 +48,7 @@ For a manual install, copy each skill folder from its pinned GitHub revision to 
 
 ## Verify and use
 
-Confirm that all four manifests exist from the repo root.
+Confirm that all five manifests exist from the repo root.
 
 ```powershell
 Get-ChildItem .agents/skills/*/SKILL.md | Select-Object -ExpandProperty FullName
@@ -54,7 +56,7 @@ Get-ChildItem .agents/skills/*/SKILL.md | Select-Object -ExpandProperty FullName
 
 Start a new AI session from this repo after installation. If the agent does not load local skills automatically, give it this instruction.
 
-> Read `SKILLS.md` and check which of the four skills are installed. Install missing skills using the pinned sources when authorized. Read the relevant local `SKILL.md` and follow it for the current task. Report any skill you could not load.
+> Read `SKILLS.md` and check which project skills are installed. Install missing skills using the pinned sources when authorized. Read the relevant local `SKILL.md` and follow it for the current task. Report any skill you could not load.
 
 Run these CLI checks from the repo root when you need Graphify or UI/UX Pro Max.
 

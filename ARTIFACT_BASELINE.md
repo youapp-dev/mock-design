@@ -34,9 +34,11 @@ browser data cannot change the initial state.
 
 | Area | Latest renderer |
 | --- | --- |
-| Entry, onboarding, Discover, Feed, Locals, chat, Settings, profile, Red Packet, activities | YouApp 3.0 (`app30.html`) |
-| YouPage wallet views, account tiers, Scan to Pay, bills, referral/rewards, wallet Host tab, wallet Top Up | Wallet 2.0 (`wallet2.html`) |
+| Entry, Discover, Feed, Locals, chat, profile, Red Packet, activities | [YouApp 3.0](prototype/app30/index.html) |
+| YouPage wallet views, sign-up, account tiers, Scan to Pay, bills, referral/rewards, wallet Host tab, wallet Top Up, and the scenario panel Settings entry | [Wallet 2.0](prototype/wallet2/index.html) |
 | Cross-renderer routing, shared scenarios and embedded forms | Shell (`index.html`) |
+
+The [prototype architecture](docs/prototype-architecture.md) describes the runtime owners and browser regression checks. The scenario panel routes are defined in [`prototype/routes.js`](prototype/routes.js).
 
 ## Regression checklist
 

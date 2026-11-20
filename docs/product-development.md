@@ -1,65 +1,66 @@
 # YouApp Product Development Baseline
 
-Panduan untuk mengubah ide dari boss, client, dan stakeholder menjadi keputusan produk dan desain yang siap dibangun di iOS dan Android. Setiap fitur perlu menjawab empat pertanyaan. Masalah apa yang diselesaikan, apa yang sudah disepakati, apa yang developer bangun, dan bagaimana QA memverifikasinya?
+This guide turns ideas from leadership, clients, and stakeholders into product and design decisions that iOS and Android teams can implement. Every feature should answer four questions. What problem does it solve? What has been agreed? What will developers build? How will QA verify it?
 
-## Peran dan cara mengambil keputusan
+## Roles and decision-making
 
-| Peran | Skillset | Tanggung jawab |
+| Role | Skills | Responsibilities |
 | --- | --- | --- |
-| Senior Product Manager | Discovery, analisis bukti, prioritas, stakeholder alignment, business rules | Menilai peluang, menetapkan scope dan ukuran keberhasilan, serta mendokumentasikan keputusan. |
-| Senior UI/UX Designer | User flow, interaction design, design system, accessibility, prototyping dan usability testing | Merancang alur, state dan recovery, serta mendefinisikan perilaku lintas platform. |
-| Engineering reviewer | Feasibility iOS/Android, API, data, estimasi | Memeriksa dependensi dan batasan platform sebelum handoff. |
-| QA reviewer | Skenario, pengujian interaksi dan regresi | Memverifikasi acceptance criteria dan mencatat hasil per lingkungan. |
+| Senior Product Manager | Discovery, evidence analysis, prioritization, stakeholder alignment, business rules | Evaluates opportunities, defines scope and success measures, and documents decisions. |
+| Senior UI/UX Designer | User flows, interaction design, design systems, accessibility, prototyping, usability testing | Designs flows, states, and recovery paths and defines behavior across platforms. |
+| Engineering reviewer | iOS and Android feasibility, APIs, data, estimates | Checks dependencies and platform constraints before handoff. |
+| QA reviewer | Test scenarios, interaction testing, regression testing | Verifies acceptance criteria and records results by environment. |
 
-PM dan Designer bisa dijalankan oleh orang yang sama. Tunjuk satu decision owner per fitur. Jika masukan stakeholder bertentangan, PM mencatat pilihan, bukti, trade-off, dan rekomendasi. Decision owner memutuskan, lalu keputusan, tanggal, dan alasannya dicatat di spec.
+One person can fill both the PM and Designer roles. Assign one decision owner per feature. When stakeholders disagree, the PM documents the options, evidence, trade-offs, and recommendation. The decision owner makes the call. Record the decision, date, and rationale in the spec.
 
-## Dari ide sampai release
+## From idea to release
 
-| Tahap | Yang dikerjakan | Hasil sebelum lanjut |
+| Stage | Work | Outcome before moving on |
 | --- | --- | --- |
-| Intake | Simpan sumber masukan, permintaan asli, user terdampak, masalah yang dialami, dan alasan waktunya. Catat solusi yang diusulkan sebagai hipotesis. | Brief singkat dan decision owner teridentifikasi. |
-| Validasi dan prioritas | Periksa user feedback, data, observasi, atau kebutuhan bisnis. Nilai dampak, keyakinan terhadap bukti, effort, dan risiko. Jika buktinya kurang, pilih cara termurah untuk menguji asumsi utama. | Keputusan lanjut, perlu validasi, tunda, atau tutup, dengan alasan. |
-| Definisi | Sepakati tujuan, ukuran keberhasilan, scope MVP, batas scope, rules dan permissions. Review dependensi API/data dan perbedaan iOS/Android dengan engineering. | Scope disepakati. Pertanyaan terbuka punya owner dan dampak yang jelas. |
-| Desain dan prototype | Pakai komponen YouApp. Rancang alur utama dan state relevan seperti loading, empty, offline, error, retry, dan izin ditolak. Tentukan Back, cancel, dan resume. | Flow dan state bisa dicoba. Perbedaan platform dan simulasi prototype tercatat. |
-| QA prototype | Uji dari entry point normal. Jalankan acceptance criteria, aksi yang terdampak, recovery, dan regresi terkait. Catat platform atau browser, build/revisi, langkah, dan hasil. | Hasil **Pass**, **Fail**, atau **Belum diuji** dengan bukti dan isu yang masih terbuka. |
-| Handoff dan verifikasi build | Serahkan spec, desain, prototype, acceptance criteria, dan dependensi. Setelah implementasi, ulangi skenario pada build iOS dan Android. | Status **Ready for Dev** dan **Ready for Release** ditetapkan berdasarkan kriteria di bawah. |
+| Intake | Record the source, original request, people affected, problem, and why it matters now. Treat the proposed solution as a hypothesis. | A short brief and an identified decision owner. |
+| Validation and prioritization | Review user feedback, data, observations, or business needs. Assess impact, confidence in the evidence, effort, and risk. When evidence is limited, choose the lowest-cost way to test the main assumption. | A decision to proceed, validate further, defer, or close the request, with a rationale. |
+| Definition | Agree on the goal, success measures, MVP scope, exclusions, rules, and permissions. Review API and data dependencies and iOS and Android differences with Engineering. | Agreed scope. Open questions have owners and documented impact. |
+| Design and prototyping | Use YouApp components. Design the main flow and relevant states, including loading, empty, offline, error, retry, and permission denied. Define Back, cancel, and resume behavior. | Testable flows and states. Platform differences and prototype simulations are documented. |
+| Prototype QA | Test from the normal entry point. Run the acceptance criteria, affected actions, recovery paths, and relevant regression checks. Record the platform or browser, build or revision, steps, and results. | **Pass**, **Fail**, or **Untested** results with evidence and any outstanding issues. |
+| Handoff and build verification | Hand over the spec, designs, prototype, acceptance criteria, and dependencies. After implementation, repeat the scenarios on iOS and Android builds. | **Ready for Dev** and **Ready for Release** are determined using the criteria below. |
 
 ### Ready for Dev
 
-- Scope dan keputusan inti disetujui. Isu yang menghalangi implementasi sudah diselesaikan.
-- Spec, flow, state, business rules, permissions, dan acceptance criteria dapat ditemukan dari satu halaman.
-- Engineering sudah meninjau perilaku iOS/Android, dependensi, serta kontrak data dan API yang relevan.
-- Alur yang dapat dijalankan di prototype sudah diuji. Simulasi dan skenario yang harus diuji pada build native tercatat.
+- The scope and core decisions are approved. Implementation blockers are resolved.
+- The spec, flows, states, business rules, permissions, and acceptance criteria are available from one page.
+- Engineering has reviewed iOS and Android behavior, dependencies, and data and API contracts.
+- Testable prototype flows have been verified. Simulated behavior and scenarios that require native builds are documented.
 
 ### Ready for Release
 
-- Acceptance criteria dan regresi yang relevan diperiksa pada build iOS dan Android, dengan hasil per platform.
-- Isu yang menghalangi rilis sudah selesai. Isu lain yang diterima dicatat bersama decision owner dan dampaknya.
+- Acceptance criteria and relevant regressions have been checked on iOS and Android builds, with results recorded for each platform.
+- Release blockers are resolved. Record any other accepted issues with their decision owner and impact.
 
-## Skill pendukung
+## Supporting skills
 
-| Skill | Kapan dipakai | Cara pakai di YouApp |
+| Skill | When to use it | How YouApp uses it |
 | --- | --- | --- |
-| [Taste Skill](https://github.com/Leonxlnx/taste-skill) | Review visual setelah arah UX disepakati. | Ambil prinsip hierarki, konsistensi, dan polish. Terapkan hanya yang relevan dengan UI mobile dan design system YouApp. |
-| [UI/UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | Membandingkan pola interaksi dan review desain sebelum QA. | Periksa states, usability dan accessibility. Evaluasi rekomendasinya dengan konteks user dan komponen yang sudah ada. |
-| [Graphify](https://github.com/Graphify-Labs/graphify) | Memetakan dampak perubahan lintas route, dokumen, dan file prototype. | Mulai dari code-only untuk pemetaan kode. Verifikasi hubungan yang penting langsung di sumber. |
-| [Caveman](https://github.com/JuliusBrussee/caveman) | Merangkum update, triage, atau catatan keputusan singkat. | Pertahankan konteks, aturan, dan expected result yang diperlukan di spec, QA evidence, dan handoff. |
+| [Taste Skill](https://github.com/Leonxlnx/taste-skill) | Review the visuals once the UX direction is agreed. | Apply hierarchy, consistency, and polish principles that fit YouApp's mobile UI and design system. |
+| [UI/UX Pro Max](https://github.com/nextlevelbuilder/ui-ux-pro-max-skill) | Compare interaction patterns and review designs before QA. | Review states, usability, and accessibility. Evaluate recommendations against the user's context and existing components. |
+| [Graphify](https://github.com/Graphify-Labs/graphify) | Trace the impact of changes across routes, documentation, and prototype files. | Start with a code-only map. Verify important relationships directly in the source. |
+| [Architecture Review](../SKILLS.md) | Review feature ownership and contracts before an architectural change. | Verify the current behavior, identify the smallest boundary to improve, and validate changes through the prototype entry point. |
+| [Caveman](https://github.com/JuliusBrussee/caveman) | Summarize updates, triage, or short decision notes. | Keep the context, rules, and expected results necessary for specs, QA evidence, and handoff. |
 
-Gunakan skill sesuai kebutuhan per tahap. Temuan skill menjadi masukan untuk review. Decision owner menyetujui perubahan scope atau rules, dan QA memverifikasi perilaku yang dihasilkan.
+Use skills where they fit the stage. Their findings inform the review. The decision owner approves changes to scope or rules, and QA verifies the resulting behavior.
 
-### Setup skill untuk checkout baru
+### Set up skills for a fresh checkout
 
-Ikuti [panduan instalasi skill](../SKILLS.md) untuk versi yang dipin, langkah instalasi, dan cara verifikasi dari root repo.
+Follow the [skill installation guide](../SKILLS.md) for pinned versions, installation steps, and verification from the repository root.
 
-## Satu konteks untuk tim dan agent
+## Shared context for the team and agents
 
-- [AGENTS.md](../AGENTS.md) adalah pintu masuk untuk memahami cara kerja repo.
-- Gunakan [template fitur](features/_template.md) untuk spec baru, atau tautkan PRD yang sudah ada dari spec bila masih berlaku. Simpan perubahan keputusan di spec yang sama.
-- Spec yang sudah disetujui menjadi acuan perilaku dan scope. Desain serta prototype memperjelas tampilannya dan cara berinteraksi. [Design system](../design-system/README.md) menjadi acuan komponen dan token.
-- [Claude artifact baseline](../ARTIFACT_BASELINE.md) menyimpan benchmark historis dan pembagian route prototype. Jika spec, desain, dan prototype berbeda, decision owner mengonfirmasi perilaku yang berlaku sebelum handoff.
+- [AGENTS.md](../AGENTS.md) is the starting point for working in this repository.
+- Use the [feature template](features/_template.md) for new specs. Link an existing PRD if it still applies. Record decision changes in the same spec.
+- The approved spec defines behavior and scope. The design and prototype show how it looks and works. The [design system](../design-system/README.md) defines components and tokens.
+- The [Claude artifact baseline](../ARTIFACT_BASELINE.md) records the historical benchmark and prototype route ownership. If the spec, design, and prototype differ, the decision owner confirms which behavior applies before handoff.
 
-## Pilot pertama
+## First pilot
 
-Gunakan **Group Chat / YouApp Products**. Mulai dengan memetakan alur member dan admin, permissions, teks/media/voice, serta voice call, video call, dan call history. Konfirmasi scope bersama decision owner. Tandai fungsi yang disimulasikan di prototype dan pindahkan verifikasi native ke daftar QA iOS/Android.
+Use **Group Chat / YouApp Products**. Start by mapping member and admin flows, permissions, text, media, voice messages, voice and video calls, and call history. Confirm scope with the decision owner. Mark simulated prototype features and add native verification to the iOS and Android QA checklist.
 
-Skenario regresi pertama adalah voice note. Buka grup lewat daftar chat, scroll ke voice note di tengah riwayat, lalu play, pause, dan resume. Posisi chat tetap pada pesan yang sedang dilihat. Catat hasil per lingkungan. Gunakan hasil pilot untuk menyederhanakan baseline sebelum diterapkan ke fitur berikutnya.
+The first regression scenario covers voice messages. Open the group from the chat list, scroll to a voice message in the middle of the history, then play, pause, and resume it. The chat stays on the message being viewed. Record the result for each environment. Use the pilot findings to simplify the baseline before applying it to the next feature.
