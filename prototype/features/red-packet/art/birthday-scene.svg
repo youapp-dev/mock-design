@@ -1,0 +1,92 @@
+<svg width="390" height="844" viewBox="0 0 390 844" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Arial, sans-serif">
+  <path d="M-10 50Q195.0 102 400 50" stroke="#fff" stroke-width="1.5" fill="none" opacity=".8" />
+  <path d="M-1.4 54.5h20l-10 18z" fill="#FFD45C" />
+  <path d="M35.9 62.2h20l-10 18z" fill="#8E5BE8" />
+  <path d="M73.2 68.3h20l-10 18z" fill="#2FBF94" />
+  <path d="M110.5 72.6h20l-10 18z" fill="#fff" />
+  <path d="M147.7 75.1h20l-10 18z" fill="#5EC8F2" />
+  <path d="M185.0 76.0h20l-10 18z" fill="#FFD45C" />
+  <path d="M222.3 75.1h20l-10 18z" fill="#8E5BE8" />
+  <path d="M259.5 72.6h20l-10 18z" fill="#2FBF94" />
+  <path d="M296.8 68.3h20l-10 18z" fill="#fff" />
+  <path d="M334.1 62.2h20l-10 18z" fill="#5EC8F2" />
+  <path d="M371.4 54.5h20l-10 18z" fill="#FFD45C" />
+  <rect class="fall" x="98" y="257" width="6" height="10" rx="2" fill="#2FBF94" transform="rotate(16 98 257)" />
+  <rect class="fall" x="234" y="423" width="6" height="10" rx="2" fill="#fff" transform="rotate(120 234 423)" />
+  <rect class="fall" x="210" y="260" width="6" height="10" rx="2" fill="#fff" transform="rotate(162 210 260)" />
+  <rect class="fall" x="66" y="431" width="6" height="10" rx="2" fill="#FFD45C" transform="rotate(40 66 431)" />
+  <rect class="fall" x="291" y="278" width="6" height="10" rx="2" fill="#F892C8" transform="rotate(121 291 278)" />
+  <rect class="fall" x="230" y="428" width="6" height="10" rx="2" fill="#8E5BE8" transform="rotate(101 230 428)" />
+  <rect class="fall" x="279" y="272" width="6" height="10" rx="2" fill="#F892C8" transform="rotate(24 279 272)" />
+  <rect class="fall" x="23" y="235" width="6" height="10" rx="2" fill="#F892C8" transform="rotate(107 23 235)" />
+  <rect class="fall" x="198" y="185" width="6" height="10" rx="2" fill="#2FBF94" transform="rotate(59 198 185)" />
+  <rect class="fall" x="345" y="320" width="6" height="10" rx="2" fill="#2FBF94" transform="rotate(171 345 320)" />
+  <rect class="fall" x="267" y="327" width="6" height="10" rx="2" fill="#2FBF94" transform="rotate(145 267 327)" />
+  <rect class="fall" x="49" y="308" width="6" height="10" rx="2" fill="#F892C8" transform="rotate(72 49 308)" />
+  <rect class="fall" x="56" y="229" width="6" height="10" rx="2" fill="#F892C8" transform="rotate(17 56 229)" />
+  <rect class="fall" x="162" y="78" width="6" height="10" rx="2" fill="#FFD45C" transform="rotate(11 162 78)" />
+  <rect class="fall" x="234" y="356" width="6" height="10" rx="2" fill="#2FBF94" transform="rotate(71 234 356)" />
+  <rect class="fall" x="197" y="464" width="6" height="10" rx="2" fill="#2FBF94" transform="rotate(137 197 464)" />
+  <rect class="fall" x="22" y="100" width="6" height="10" rx="2" fill="#fff" transform="rotate(176 22 100)" />
+  <rect class="fall" x="26" y="404" width="6" height="10" rx="2" fill="#8E5BE8" transform="rotate(96 26 404)" />
+  <rect class="fall" x="180" y="246" width="6" height="10" rx="2" fill="#2FBF94" transform="rotate(26 180 246)" />
+  <rect class="fall" x="239" y="437" width="6" height="10" rx="2" fill="#fff" transform="rotate(77 239 437)" />
+  <rect class="fall" x="172" y="127" width="6" height="10" rx="2" fill="#8E5BE8" transform="rotate(148 172 127)" />
+  <rect class="fall" x="127" y="181" width="6" height="10" rx="2" fill="#F892C8" transform="rotate(119 127 181)" />
+  <rect class="fall" x="141" y="427" width="6" height="10" rx="2" fill="#8E5BE8" transform="rotate(5 141 427)" />
+  <rect class="fall" x="228" y="444" width="6" height="10" rx="2" fill="#8E5BE8" transform="rotate(76 228 444)" />
+  <rect class="fall" x="229" y="155" width="6" height="10" rx="2" fill="#F892C8" transform="rotate(152 229 155)" />
+  <rect class="fall" x="108" y="368" width="6" height="10" rx="2" fill="#2FBF94" transform="rotate(175 108 368)" />
+  <g class="bob">
+    <path d="M36 278q-6 18 2 34q8 16-2 34" stroke="#ffffffaa" stroke-width="1.5" fill="none" />
+    <ellipse cx="36" cy="250" rx="22" ry="27" fill="#FFD45C" />
+    <ellipse cx="28" cy="240" rx="5" ry="8" fill="#fff" opacity=".35" />
+    <path d="M32 280h8l-4 -5z" fill="#FFD45C" />
+  </g>
+  <g class="bob">
+    <path d="M76 323.8q-6 18 2 34q8 16-2 34" stroke="#ffffffaa" stroke-width="1.5" fill="none" />
+    <ellipse cx="76" cy="300" rx="18.7" ry="22.95" fill="#8E5BE8" />
+    <ellipse cx="69.2" cy="291.5" rx="4.25" ry="6.8" fill="#fff" opacity=".35" />
+    <path d="M72.6 325.5h6.8l-3.4 -4.25z" fill="#8E5BE8" />
+  </g>
+  <g class="bob">
+    <path d="M352 268q-6 18 2 34q8 16-2 34" stroke="#ffffffaa" stroke-width="1.5" fill="none" />
+    <ellipse cx="352" cy="240" rx="22" ry="27" fill="#5EC8F2" />
+    <ellipse cx="344" cy="230" rx="5" ry="8" fill="#fff" opacity=".35" />
+    <path d="M348 270h8l-4 -5z" fill="#5EC8F2" />
+  </g>
+  <g class="bob">
+    <path d="M316 322.4q-6 18 2 34q8 16-2 34" stroke="#ffffffaa" stroke-width="1.5" fill="none" />
+    <ellipse cx="316" cy="300" rx="17.6" ry="21.6" fill="#2FBF94" />
+    <ellipse cx="309.6" cy="292.0" rx="4.0" ry="6.4" fill="#fff" opacity=".35" />
+    <path d="M312.8 324.0h6.4l-3.2 -4.0z" fill="#2FBF94" />
+  </g>
+  <g transform="translate(195.0 820) scale(1.2)">
+    <rect x="-34" y="-30" width="68" height="30" rx="6" fill="#F892C8" />
+    <path d="M-34-22q8 8 17 0t17 0 17 0 17 0" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" />
+    <rect x="-24" y="-54" width="48" height="24" rx="6" fill="#FFF3E0" />
+    <path d="M-24-46q6 6 12 0t12 0 12 0 12 0" fill="none" stroke="#F273B6" stroke-width="4" stroke-linecap="round" />
+    <rect x="-12" y="-70" width="5" height="16" rx="2" fill="#8E5BE8" />
+    <rect x="7" y="-70" width="5" height="16" rx="2" fill="#2FBF94" />
+  </g>
+  <g class="flick">
+    <path d="M183.6 736.0q-5.04 -5.76 0 -15.84q5.04 10.08 0 15.84z" fill="#FFB020" />
+    <path d="M183.6 736.0q-2.52 -2.88 0 -7.92q2.52 5.04 0 7.92z" fill="#FFF1A8" />
+  </g>
+  <g class="flick">
+    <path d="M206.4 736.0q-5.04 -5.76 0 -15.84q5.04 10.08 0 15.84z" fill="#FFB020" />
+    <path d="M206.4 736.0q-2.52 -2.88 0 -7.92q2.52 5.04 0 7.92z" fill="#FFF1A8" />
+  </g>
+  <g transform="translate(54 820) scale(1.1)">
+    <rect x="-20" y="-30" width="40" height="30" rx="4" fill="#8E5BE8" />
+    <rect x="-23" y="-38" width="46" height="10" rx="3" fill="#8E5BE8" />
+    <rect x="-4" y="-38" width="8" height="38" fill="#FFD45C" />
+    <path d="M0-38q-14-14-16-4t16 4q14-14 16-4t-16 4" fill="none" stroke="#FFD45C" stroke-width="3" />
+  </g>
+  <g transform="translate(332 820) scale(1)">
+    <rect x="-20" y="-30" width="40" height="30" rx="4" fill="#2FBF94" />
+    <rect x="-23" y="-38" width="46" height="10" rx="3" fill="#2FBF94" />
+    <rect x="-4" y="-38" width="8" height="38" fill="#fff" />
+    <path d="M0-38q-14-14-16-4t16 4q14-14 16-4t-16 4" fill="none" stroke="#fff" stroke-width="3" />
+  </g>
+</svg>

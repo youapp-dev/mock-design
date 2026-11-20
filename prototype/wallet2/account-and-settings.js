@@ -777,6 +777,7 @@ Object.assign(A, {
   if (window.parent === window || !window.parent.__bridge) return;
   const a30 = () => { try { return JSON.parse(localStorage.getItem('ya-proto-scen') || '{}'); } catch(e){ return {}; } };
   const hostYes = () => a30().host === 'yes';
+  const needsReconnect = () => a30().wallet === 'reconnect' && a30().kyc === 'approved';
   /* KYC approved in 3.0 but the wallet is not activated yet: same locked states, activation wording */
   const toActivate = () => { const a = a30(); return scen.kyc === 'none' && a.kyc === 'approved' && a.wallet !== 'active'; };
   const ACT_COPY = [['Verify your identity to pay and earn','Activate your wallet to pay and earn'],
@@ -786,8 +787,18 @@ Object.assign(A, {
     ['Verify to start paying', 'Activate to start paying'], ['Verify to get rewards', 'Activate to get rewards'],
     ['Rewards from your referrals start once your identity is verified.', 'Rewards from your referrals start once your wallet is active.'],
     ['Wallet locked until KYC', 'Wallet not activated yet'], ['Verify Now', 'Activate Wallet'], ['Start Verification', 'Activate Wallet']];
+  const RECONNECT_COPY = [
+    ['Your identity is verified. Activate your wallet to open Scan to Pay.', 'Your wallet session expired. Reconnect to scan and pay.'],
+    ['Your identity is verified. Activate your wallet once to pay any DuitNow QR.', 'Reconnect your wallet to pay with DuitNow QR.'],
+    ['Activate in minutes and start using it', 'Reconnect to access your balance and make payments.'],
+    ['Activate to start paying', 'Reconnect to start paying'], ['Activate to get rewards', 'Reconnect to get rewards'],
+    ['Wallet not activated yet', 'Wallet session expired'],
+    ['Activate your wallet', 'Reconnect your wallet'], ['Activate Wallet', 'Reconnect Wallet'],
+    ['Top up opens when your YouApp Wallet is active.', 'Reconnect your wallet to top up.'],
+  ];
   const actCopy = () => { if (!toActivate()) return; const ph = document.getElementById('phone'); if (!ph) return; let h = ph.innerHTML; const h0 = h;
-    ACT_COPY.forEach(([a, b]) => { h = h.split(a).join(b); }); if (h !== h0) ph.innerHTML = h; };
+    const copy = needsReconnect() ? [...ACT_COPY, ...RECONNECT_COPY] : ACT_COPY;
+    copy.forEach(([a, b]) => { h = h.split(a).join(b); }); if (h !== h0) ph.innerHTML = h; };
   const TO_30 = {
     discover:'discover', editProfile:'profedit',
     txHist:'whist', txReceipt:'whist', topUp:'topup', tuSend:'topup', tuProc:'topup',
@@ -799,6 +810,12 @@ Object.assign(A, {
   const SIGN = new Set(['signup', 'otp', 'obName', 'obDob', 'obGender', 'obRef']);
   let last = {screen:S.screen, len:S.hist.length};
   const hand = (t, extra) => { try { window.parent.__bridge('w2', t, Object.assign({kyc:scen.kyc}, extra||{})); } catch(e){} };
+  const startKyc = A.kycStart;
+  A.kycStart = () => {
+    if (!needsReconnect()) return startKyc();
+    S.sheet = null;
+    hand('activate', {reconnectTo:S.screen});
+  };
   const _r = render;
   render = function(){
     if (S.screen === '__back') { S.screen = last.screen; S.sheet = null; hand('__back'); return; }
@@ -839,6 +856,7 @@ Object.assign(A, {
       if (!S.hist.length) S.hist = ['__back'];
     }
     const sc = document.querySelector('#phone .scroll'); if (sc) sc.scrollTop = 0;
+    if (c.reconnected) toast('Wallet reconnected.');
   };
   window.__state = () => ({wl:scen.wl||'ya', mainW:scen.mainW||'ya', eth:scen.eth||'ok', mreq:scen.mreq||'none', fph:scen.fph, lvl:scen.lvl, elChk:scen.elChk, ref:scen.ref, paid:scen.paid, pz:scen.pz, merch:scen.merch, screen:S.screen, kyc:scen.kyc, tier:scen.tier, sh:scen.sh, criteria:scen.criteria, biz:scen.biz, vipEnd:scen.vipEnd});
   window.__panel = () => { const p = document.getElementById('panel'); if (p) p.classList.add('open'); };

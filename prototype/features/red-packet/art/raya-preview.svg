@@ -1,0 +1,42 @@
+<svg width="358" height="190" viewBox="0 0 358 190" xmlns="http://www.w3.org/2000/svg" font-family="Inter, Arial, sans-serif">
+  <path class="tw" d="M40 31Q41.62 38.38 49 40Q41.62 41.62 40 49Q38.38 41.62 31 40Q38.38 38.38 40 31Z" fill="#B79BF0" />
+  <path class="tw" d="M320 41Q321.98 50.02 331 52Q321.98 53.98 320 63Q318.02 53.98 309 52Q318.02 50.02 320 41Z" fill="#F5B82E" />
+  <path class="tw" d="M300 143Q301.26 148.74 307 150Q301.26 151.26 300 157Q298.74 151.26 293 150Q298.74 148.74 300 143Z" fill="#C05CA8" />
+  <path class="tw" d="M60 144Q61.08 148.92 66 150Q61.08 151.08 60 156Q58.92 151.08 54 150Q58.92 148.92 60 144Z" fill="#F5B82E" />
+  <path d="M312 26A16 16 0 1 0 312 58A12.48 13.12 0 1 1 312 26Z" fill="#F7D36A" />
+  <path class="tw" d="M326.4 33.199999999999996Q327.40799999999996 37.791999999999994 332.0 38.8Q327.40799999999996 39.808 326.4 44.4Q325.392 39.808 320.79999999999995 38.8Q325.392 37.791999999999994 326.4 33.199999999999996Z" fill="#F7D36A" />
+  <g class="swing">
+    <line x1="36" y1="0" x2="36" y2="18" stroke="#E9C46A" stroke-width="2" />
+    <g transform="translate(36 36) scale(0.6)">
+      <path d="M0-18L18 0 0 18-18 0Z" fill="#2FA05A" />
+      <path d="M-9-9L9 9M9-9L-9 9M-4.5-13.5L13.5 4.5M4.5-13.5L-13.5 4.5M-13.5-4.5L4.5 13.5M13.5-4.5L-4.5 13.5" stroke="#F4D35E" stroke-width="2.2" />
+      <path d="M0 18q-4 10-10 18M0 18q5 9 2 20" stroke="#2FA05A" stroke-width="4" fill="none" stroke-linecap="round" />
+    </g>
+  </g>
+  <g class="swing">
+    <line x1="66" y1="0" x2="66" y2="40" stroke="#E9C46A" stroke-width="2" />
+    <g transform="translate(66 58) scale(0.5)">
+      <path d="M0-18L18 0 0 18-18 0Z" fill="#2FA05A" />
+      <path d="M-9-9L9 9M9-9L-9 9M-4.5-13.5L13.5 4.5M4.5-13.5L-13.5 4.5M-13.5-4.5L4.5 13.5M13.5-4.5L-4.5 13.5" stroke="#F4D35E" stroke-width="2.2" />
+      <path d="M0 18q-4 10-10 18M0 18q5 9 2 20" stroke="#2FA05A" stroke-width="4" fill="none" stroke-linecap="round" />
+    </g>
+  </g>
+  <g>
+    <rect x="28.2" y="150" width="3.5999999999999996" height="27.599999999999998" rx="1.2" fill="#A0703C" />
+    <path d="M25.2 150h9.6l-1.7999999999999998 -6.0h-6.0z" fill="#C9A227" />
+    <circle cx="30" cy="138.0" r="12.0" fill="#FFD45C" opacity=".22" />
+    <g class="flick">
+      <path d="M30 144.0q-5.88 -6.72 0 -18.48q5.88 11.76 0 18.48z" fill="#FFB020" />
+      <path d="M30 144.0q-2.94 -3.36 0 -9.24q2.94 5.88 0 9.24z" fill="#FFF1A8" />
+    </g>
+  </g>
+  <g>
+    <rect x="328.2" y="150" width="3.5999999999999996" height="27.599999999999998" rx="1.2" fill="#A0703C" />
+    <path d="M325.2 150h9.6l-1.7999999999999998 -6.0h-6.0z" fill="#C9A227" />
+    <circle cx="330" cy="138.0" r="12.0" fill="#FFD45C" opacity=".22" />
+    <g class="flick">
+      <path d="M330 144.0q-5.88 -6.72 0 -18.48q5.88 11.76 0 18.48z" fill="#FFB020" />
+      <path d="M330 144.0q-2.94 -3.36 0 -9.24q2.94 5.88 0 9.24z" fill="#FFF1A8" />
+    </g>
+  </g>
+</svg>

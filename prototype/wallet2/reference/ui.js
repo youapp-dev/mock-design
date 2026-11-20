@@ -157,16 +157,11 @@
     bind(badge, 'tierInfo', {}, `${T().name} plan benefits`);
   }
 
-  function upsell(row, context) {
+  function referralUpsell(row) {
     if (!row) return;
     if (T().key === 'svip') { row.remove(); return; }
-    if (context === 'payment') {
-      set(row, 'div b', 'Lower fees with SVIP');
-      set(row, 'div small', `${TIERS.svip.fee.toFixed(2)}% vs ${T().fee.toFixed(2)}%`);
-    } else {
-      set(row, 'div b', T().key === 'free' ? 'Earn 2x on referrals' : 'Earn more on referrals');
-      set(row, 'div small', `SVIP: ${TIERS.svip.ref}% instead of ${T().ref}%`);
-    }
+    set(row, 'div b', T().key === 'free' ? 'Earn 2x on referrals' : 'Earn more on referrals');
+    set(row, 'div small', `SVIP: ${TIERS.svip.ref}% instead of ${T().ref}%`);
     click(row, 'a', 'walletReferencePlan', {key:'svip'});
   }
 
@@ -265,7 +260,7 @@
     $(frame, '.invc .b1 svg').setAttribute('stroke', 'currentColor');
     click(frame, '.invc .b2', 'walletReferenceReferralQr');
     click(frame, '.invc .b1', 'walletReferenceShare', {value:assetLink, title:'Invite friends to YouApp'});
-    upsell($(frame, '.adrow'), 'referral');
+    referralUpsell($(frame, '.adrow'));
     click(frame, '.sec a', 'walletScanHistory');
     const tx = transactions().find(row => row.kind === 'pay');
     $(frame, '.tx').replaceWith(transactionRow($(frame, '.tx'), tx, true));
@@ -326,14 +321,13 @@
     click(frame, '.sec a', 'walletScanHistory');
     const sample = $(frame, '.tx');
     const recent = transactions().filter(tx => active.some(wallet => wallet.id === tx.wallet)).slice(0, 4);
-    const ad = $(frame, '.adrow');
+    $(frame, '.adrow')?.remove();
     if (recent.length) {
-      sample.before(transactionRow(sample, recent[0]));
-      ad.after(...recent.slice(1).map(tx => transactionRow(sample, tx)));
+      sample.before(...recent.map(tx => transactionRow(sample, tx)));
+    } else {
+      sample.before(Object.assign(document.createElement('p'), {className:'wr-empty', textContent:'No transactions in this wallet yet.'}));
     }
     for (const row of $$(frame, '.tx:not([data-act])')) row.remove();
-    if (!recent.length) ad.before(Object.assign(document.createElement('p'), {className:'wr-empty', textContent:'No transactions in this wallet yet.'}));
-    upsell(ad, 'payment');
     set(frame, '.disc span', 'Your money stays in your own wallets. Totals in RM are estimates.');
     const topUpButton = $(frame, '.fix .b1');
     if (selected?.ext) topUpButton.lastChild.textContent = ' Top up YouApp Wallet';
@@ -352,18 +346,15 @@
     return frame;
   }
 
-  function assetHoldingRow(token, value, walletId) {
+  function assetHoldingRow(token, value) {
     const logo = window.XS_TOKW?.[token];
     const tokenName = TOKN[token] || token;
     const quantity = value.toLocaleString('en-MY', {minimumFractionDigits:2, maximumFractionDigits:value < 1 ? 6 : 2});
-    const tag = walletId ? 'button' : 'div';
-    const action = walletId ? ` type="button" data-act="wOpen" data-id="${esc(walletId)}"` : '';
-    return `<li><${tag} class="wr-asset-row"${action} data-token="${esc(token)}">
+    return `<li><div class="wr-asset-row" data-token="${esc(token)}">
       <span class="wr-asset-icon" aria-hidden="true">${logo ? `<img src="${logo}" alt="">` : esc(token)}</span>
       <span class="wr-asset-name"><b>${esc(token)}</b>${tokenName !== token ? `<small>${esc(tokenName)}</small>` : ''}</span>
       <span class="wr-asset-value"><b>${S.balHide ? '••••' : `${quantity} ${esc(token)}`}</b>${S.balHide ? '' : `<small>≈ ${ringgit(value * RATE[token])}</small>`}</span>
-      ${walletId ? ic('chev') : ''}
-    </${tag}></li>`;
+    </div></li>`;
   }
 
   V.walletCurrency = () => {
@@ -396,9 +387,16 @@
       const {wallet} = holdings[0];
       const walletName = moneyWalletName(wallet);
       const subtotal = holdings.reduce((sum, holding) => sum + holding.value, 0);
+      const subtotalBalance = currencyBalance(subtotal);
       return `<section class="wr-asset-wallet" aria-labelledby="wr-asset-wallet-${wallet.id}">
-        <header><span aria-hidden="true">${walletBadge(wallet, 28)}</span><h2 id="wr-asset-wallet-${wallet.id}">${esc(walletName)}</h2><strong>${esc(currencyBalance(subtotal))}</strong></header>
-        <ul>${holdings.map(({token, value}) => assetHoldingRow(token, value, wallet.id)).join('')}</ul>
+        <header>
+          <span aria-hidden="true">${walletBadge(wallet, 28)}</span>
+          <h2 id="wr-asset-wallet-${wallet.id}">${esc(walletName)}</h2>
+          <button type="button" class="wr-asset-wallet-open" data-act="wOpen" data-id="${esc(wallet.id)}" aria-label="Open ${esc(walletName)} details, balance ${S.balHide ? 'hidden' : esc(subtotalBalance)}">
+            <strong>${esc(subtotalBalance)}</strong>${ic('chev')}
+          </button>
+        </header>
+        <ul>${holdings.map(({token, value}) => assetHoldingRow(token, value)).join('')}</ul>
       </section>`;
     }).join('')}</div>`);
     return screen(frame);
@@ -411,29 +409,36 @@
 
   V.wDetail = () => {
     const wallet = wList().find(entry => entry.id === S.wSel) || wMain();
-    if (!wallet?.ext) return original.wDetail();
-    const frame = walletDetailFrame('externalwallet', wallet.name);
+    if (!wallet) return V.wallets();
+    const frame = walletDetailFrame(wallet.ext ? 'externalwallet' : 'youappwallet', moneyWalletName(wallet));
+    frame.classList.add('wr-wallet-detail');
     const holdings = wToks(wallet);
     const isMain = wMain().id === wallet.id;
     const onlyWallet = isMain && !alternateMainWallet(wallet.id);
-    frame.insertAdjacentHTML('beforeend', `<section class="wr-asset-summary wr-ext-summary" aria-label="Estimated balance">
-      <div class="wr-asset-summary-top"><div class="wr-ext-identity"><span aria-hidden="true">${walletBadge(wallet, 32)}</span><small>Estimated balance</small></div><span>Ethereum</span></div>
+    frame.insertAdjacentHTML('beforeend', `<section class="wr-asset-summary wr-wallet-summary" aria-label="Estimated balance">
+      <div class="wr-asset-summary-top"><div class="wr-wallet-identity"><span aria-hidden="true">${walletBadge(wallet, 32)}</span><small>Estimated balance</small></div><span>Ethereum${!wallet.ext && isMain ? ' · Main' : ''}</span></div>
       <strong class="wr-asset-total">${ringgit(wRM(wallet))}</strong>
       <span class="wr-asset-estimate">${esc(xsShort(wallet.addr))}</span>
     </section>
     <div class="wr-asset-holdings">
-      <section class="wr-asset-wallet" aria-labelledby="wr-ext-assets">
-        <header><h2 id="wr-ext-assets">Assets</h2><small>${holdings.length} ${holdings.length === 1 ? 'token' : 'tokens'}</small></header>
+      <section class="wr-asset-wallet" aria-labelledby="wr-wallet-assets">
+        <header><h2 id="wr-wallet-assets">Assets</h2><small>${holdings.length} ${holdings.length === 1 ? 'token' : 'tokens'}</small></header>
         ${holdings.length ? `<ul>${holdings.map(([token, value]) => assetHoldingRow(token, value)).join('')}</ul>` : note('No verified tokens in this wallet yet.', 'wr-empty')}
         ${wallet.hidden ? `<button type="button" class="wr-ext-hidden" data-act="walletDetailSheet" data-s="walletHiddenTokens">${ic('eye')}<span>Hidden tokens (${wallet.hidden})</span>${ic('chev')}</button>` : ''}
       </section>
-      <section class="wr-ext-management" aria-labelledby="wr-ext-settings">
+      ${wallet.ext ? `<section class="wr-ext-management" aria-labelledby="wr-ext-settings">
         <h2 id="wr-ext-settings">Wallet settings</h2>
         <button type="button" class="wr-ext-switch" role="switch" aria-checked="${isMain}"${onlyWallet ? ' aria-disabled="true"' : ''} aria-labelledby="wr-ext-main-label" aria-describedby="wr-ext-main-help" data-act="walletMainToggle">
           <span><b id="wr-ext-main-label">Set as main</b><small id="wr-ext-main-help">${onlyWallet ? 'Connect another wallet to change your main wallet.' : 'Default wallet for Scan to Pay.'}</small></span><span class="wr-ext-switch-track" aria-hidden="true"></span>
         </button>
         <button type="button" class="wr-ext-disconnect" data-act="walletDetailSheet" data-s="wDisc">Disconnect wallet</button>
-      </section>
+      </section>` : `<div class="wr-wallet-actions" role="group" aria-label="Wallet actions">
+        ${btn('Send', 'xsOpen', {kind:'btn-secondary', data:'data-from-wallet="ya"'})}
+        ${btn('Receive', 'wRecvOf', {kind:'btn-secondary'})}
+        ${btn('Pay Bills', 'bills', {kind:'btn-secondary'})}
+        ${btn('Rename', 'toast', {kind:'btn-secondary', data:'data-msg="Rename opens a short text field (demo)."'})}
+        ${isMain ? '' : btn('Set as Main', 'wSetMain', {kind:'btn-secondary', cls:'wr-wallet-main-action'})}
+      </div>`}
     </div>`);
     return screen(frame);
   };
@@ -1196,7 +1201,7 @@
       if (!items.length) anchor.insertAdjacentHTML('beforebegin', note('No rewards in this category yet.', 'wr-empty'));
       rows.forEach(row => row.remove());
     }
-    upsell($(frame, '.adrow'), 'referral');
+    referralUpsell($(frame, '.adrow'));
     return screen(frame);
   };
 
@@ -1213,7 +1218,7 @@
     click(code, '.cpb', 'copy', {v:RF_ME.code}, 'Copy referral code');
     referralButtons(frame);
     click(frame, '.rbt .g', 'walletShareQr');
-    upsell($(frame, '.adrow'), 'referral');
+    referralUpsell($(frame, '.adrow'));
     $$(frame, '.rfs b').forEach((el, index) => { el.textContent = [friends.length, verified, paying, ringgit(earned)][index]; });
     click(frame, '.rfs .earn', 'rewards');
     const unpaid = verified - paying;

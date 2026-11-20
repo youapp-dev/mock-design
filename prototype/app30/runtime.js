@@ -1293,20 +1293,34 @@ V.kycRejected = () => { const open = S.rejOpen||{};
   <div class="cta">${btn('Resubmit Your Verification','kycStart')}</div></div>`; };
 
 /* ---------- Activate wallet ---------- */
-V.activate = () => { const pk = S.actPick || 'ya';
-  const card = (k, t, d, chips, rec) => `<button class="actc ${pk===k?'on':''}" data-act="actPick" data-k="${k}" aria-pressed="${pk===k}"><span class="actc-h"><b>${t}</b>${rec?'<span class="okchip">Recommended</span>':''}</span><span class="actc-d">${d}</span><span class="actc-chips">${chips.map(c=>`<em>${c}</em>`).join('')}</span></button>`;
-  return `<div class="screen">${statusBar()}${topBar('Activate Wallet')}
+const wallet2Frame = () => {
+  try { return window.parent.document.getElementById('w2')?.contentWindow; } catch (error) { return undefined; }
+};
+const mainWalletForReconnect = () => {
+  const getMainWallet = wallet2Frame()?.__mainWalletForReconnect;
+  return getMainWallet ? getMainWallet() : {name:'YouApp Wallet', ext:false};
+};
+V.activate = () => {
+  const reconnect = scen.wallet === 'reconnect';
+  const mainWallet = reconnect ? mainWalletForReconnect() : null;
+  const pk = S.actPick || 'ya';
+  const cardContent = (title, description, chips, badge) => `<span class="actc-h"><b>${esc(title)}</b>${badge?`<span class="okchip">${badge}</span>`:''}</span><span class="actc-d">${esc(description)}</span><span class="actc-chips">${chips.map(chip=>`<em>${esc(chip)}</em>`).join('')}</span>`;
+  const card = (key, title, description, chips, badge) => `<button class="actc ${pk===key?'on':''}" data-act="actPick" data-k="${key}" aria-pressed="${pk===key}">${cardContent(title, description, chips, badge)}</button>`;
+  const reconnectCard = mainWallet ? `<div class="actc">${cardContent(mainWallet.name,
+    mainWallet.ext ? `Approve the reconnection in ${mainWallet.app}.` : 'Confirm your PIN to reconnect.',
+    [mainWallet.ext ? mainWallet.address : 'YouApp PIN'], 'Main wallet')}</div>` : '<p class="t-body muted">We couldn’t find your Main wallet.</p>';
+  return `<div class="screen">${statusBar()}${topBar(reconnect ? 'Reconnect Wallet' : 'Activate Wallet')}
   <div class="scroll pad16">
     <img src="${IMG.kycIdentity}" alt="" style="width:180px; max-width:100%; margin:6px auto 10px; display:block">
-    <h1 class="t-title-lg" style="margin:0 0 6px; text-align:center">Identity Confirmed!</h1>
-    <p class="t-body-lg" style="margin:0 0 14px; text-align:center">How do you want to hold your money? You can add more wallets later and pick one as Main.</p>
-    <div class="actcs">
-      ${card('ya','Create YouApp wallet','A self custodial wallet created on this device by Privy. No other app needed. Confirm payments with your PIN.',['Self custodial','DuitNow account included','Recovery set'],true)}
-      ${card('ext','Connect my wallet','Use a wallet you already have.',['MetaMask','Coinbase Wallet','Rainbow','Phantom','WalletConnect'],false)}
-    </div>
+    <h1 class="t-title-lg" style="margin:0 0 6px; text-align:center">${reconnect ? 'Wallet Session Expired' : 'Identity Confirmed!'}</h1>
+    <p class="t-body-lg" style="margin:0 0 14px; text-align:center">${reconnect ? 'Reconnect your Main wallet to access your balance and make payments.' : 'How do you want to hold your money? You can add more wallets later and pick one as Main.'}</p>
+    ${reconnect ? reconnectCard : `<div class="actcs" role="group" aria-label="Wallet options">
+      ${card('ya','Create YouApp wallet','A self custodial wallet created on this device by Privy. No other app needed. Confirm payments with your PIN.',['Self custodial','DuitNow account included','Recovery set'],'Recommended')}
+      ${card('ext','Connect my wallet','Use a wallet you already have.',['MetaMask','Coinbase Wallet','Rainbow','Phantom','WalletConnect'])}
+    </div>`}
     <p class="t-caption muted" style="margin:10px 0 0; text-align:center">Ethereum network · stablecoins only</p>
   </div>
-  <div class="cta">${btn(pk==='ya'?'Activate Wallet':'Connect Wallet','actPickGo')}</div></div>`; };
+  <div class="cta">${btn(reconnect ? 'Reconnect Wallet' : pk==='ya'?'Activate Wallet':'Connect Wallet','actPickGo',{disabled:reconnect && !mainWallet})}</div></div>`; };
 
 V.verifying = () => `<div class="screen on-dark" style="background:linear-gradient(160deg,#9a73c2 0%,#5d33a8 55%,#38168e 100%)">${statusBar()}
   <div style="flex:1; display:grid; place-items:center; color:#fff; text-align:center"><div><p class="t-title" style="margin:0 0 18px">Verifying</p><img src="${IMG.lotus}" alt="" width="44" class="pulse"></div></div></div>`;
@@ -1324,7 +1338,7 @@ V.walletActive = () => `<div class="screen">${statusBar()}
       <div class="row-between"><b>Pay with DuitNow QR</b><span class="unl">Unlocked</span></div>
       <div class="row-between"><b>Use like a Local</b><span class="unl">Unlocked</span></div></div>
   </div>
-  <div class="cta" style="border:0">${btn('Arrive Ready · Convert Stablecoins','toTopUp')}<button class="link" style="display:block; margin:16px auto 0; font-size:16px" data-act="toWallet">Go to My Wallet</button></div></div>`;
+  <div class="cta" style="border:0">${S.actFrom === 'angpao' ? btn('Continue to Red Packet','walletDone') : `${btn('Arrive Ready · Convert Stablecoins','toTopUp')}<button class="link" style="display:block; margin:16px auto 0; font-size:16px" data-act="toWallet">Go to My Wallet</button>`}</div></div>`;
 
 /* ---------- Service schedule ---------- */
 V.schedule = () => { const b = S.bk; const s = svcById(b.svcId); const list = svcListFor(s);
@@ -1395,7 +1409,7 @@ V.pay = () => { const b = S.bk; const sm = bkSummary(b); const disc = b.promoApp
       <div class="hr"></div><div class="row-between"><span><b>Guests</b><p class="t-body" style="margin:4px 0 0">${b.guests} ${b.kind==='service'?(b.guests>1?'Guests':'Guest'):'Pax'}</p></span><button class="link" data-act="back">Edit</button></div></div>
     <h2 class="t-headline" style="font-size:16px; margin:20px 0 10px">Payment Method</h2>
     <div role="radiogroup" aria-label="Payment method" style="display:grid; gap:10px">${methods.map(([k,t,body,dis])=>`<button role="radio" aria-checked="${b.method===k}" class="pmeth ${b.method===k?'on':''}" ${dis?'aria-disabled="true"':''} data-act="pickMethod" data-k="${k}"><span style="display:grid; gap:6px; min-width:0">${t==='Balance'?'<span>Balance</span>':`<span>${t}</span>`}${body}</span><i></i></button>`).join('')}</div>
-    ${!walletOn() && kyc()==='approved' ? `<button class="link" style="margin-top:8px" data-act="goActivate">Activate wallet</button>` : ''}
+    ${!walletOn() && kyc()==='approved' ? `<button class="link" style="margin-top:8px" data-act="goActivate">${scen.wallet==='reconnect' ? 'Reconnect Wallet' : 'Activate wallet'}</button>` : ''}
     ${walletOn() && bal<total ? `<button class="link" style="margin-top:8px" data-act="toTopUp">Top Up balance</button>` : ''}
     <h2 class="t-headline" style="font-size:16px; margin:20px 0 10px">Promo Code</h2>
     <div class="field ${b.promoErr?'err':''}"><div style="display:flex; gap:8px"><input class="input" id="promoIn" data-model="promo" placeholder="Enter promo code" value="${esc(b.promo||'')}" autocapitalize="characters" style="flex:1; min-width:0">
@@ -1755,7 +1769,7 @@ renderPanel = function(){ _renderPanel3(); const p = document.getElementById('pa
   const later = sc && sc.parentElement.querySelector('.later:last-child');
   const html = `${segCtl('Mobile number on file','phone',[['yes','Yes'],['no','No']],'No: Verify me asks for a mobile number first.')}
     ${segCtl('Didit result','didit',[['approve','Approve'],['reject','Reject']],'Decides the outcome of the next verification attempt.')}
-    ${segCtl('Wallet (after KYC)','wallet',[['off','Not activated'],['active','Active']],'Paying with Booking Balance needs an active wallet.')}
+    ${segCtl('Wallet (after KYC)','wallet',[['off','Not activated'],['active','Active'],['reconnect','Reconnect']],'Paying with Booking Balance needs an active wallet.')}
     ${segCtl('Booking Balance','balance',[['enough','MYR 5,430'],['low','MYR 20']])}`;
   if (later) later.insertAdjacentHTML('beforebegin', html);
   const acts = [...p.querySelectorAll('.pgroup h2')].find(x=>x.textContent==='Actions');
@@ -5233,7 +5247,7 @@ const appEntryRoutes = Object.create(null);
     whist: () => A.openHist(),
     topup: () => A.openTopup(),
     gate: () => { S.gateFrom = 'wallet'; go('gate'); },
-    activate: () => { S.actFrom = 'youpage'; go('activate'); },
+    activate: c => { S.actFrom = c.reconnectTo || 'youpage'; go('activate'); if (c.reconnectPreview) S.hist = ['discover']; },
     cexp: () => A.startCx(),
     hsplans: () => A.openHsplans(),
     hxplans: () => { S.hxt = 'event'; go('hxplans'); },
@@ -5257,7 +5271,7 @@ const appEntryRoutes = Object.create(null);
     S.sheet = null; S.dialog = null; S.menu = false;
     const f = OPEN[screen] || (() => go(screen));
     S.hist = []; S.screen = '__back'; last = {screen:'__back', len:0};
-    f();
+    f(c);
     if (S.screen === '__back') { S.screen = 'discover'; render(); }
     if (!S.hist.length && screen !== 'discover' && screen !== 'locals' && screen !== 'welcome') S.hist = ['__back'];
     if (c.welcome) toast(c.welcome);
@@ -5280,7 +5294,7 @@ const appEntryRoutes = Object.create(null);
 (function(){ if (!window.__open) return;
   window.__set = (k, v) => {
     if (k === 'kyc') { scen.kyc = v; if (v !== 'approved') scen.wallet = 'off'; saveScen(); render(); return; }
-    if (k === 'wallet') { if (v === 'active') scen.kyc = 'approved'; scen.wallet = v; saveScen(); render(); return; }
+    if (k === 'wallet') { if (v === 'active' || v === 'reconnect') scen.kyc = 'approved'; scen.wallet = v; saveScen(); render(); return; }
     if (k === 'host') { P.scen({dataset:{k:'host', v}}); return; }
     if (k === 'gList') { if (v==='owner'||v==='admin'||v==='member') { scen.gRole = v; v = 'has'; } scen.gList = v; saveScen(); S.session = 'user'; S.ctab = 'group'; S.cq = ''; S.sheet = null; S.dialog = null; S.hist = ['discover']; S.screen = 'chats'; render(); return; }
   };
@@ -5426,9 +5440,48 @@ A.shrDone = () => { const d = S.done || {}; const kind = d.head==='Top Up' ? 'to
 
 
 /* ===== Multi-wallet: Activate Wallet lets the user create a YouApp wallet or connect their own (9 Nov 2026) ===== */
+function finishWalletReconnect() {
+  if (scen.wallet !== 'reconnect' || kyc() !== 'approved' || S.screen !== 'activate') return;
+  scen.wallet = 'active';
+  saveScen();
+  if (S.actFrom === 'angpao') {
+    A.walletDone();
+    toast('Wallet reconnected.');
+    return;
+  }
+  if (S.actFrom === 'pay' && S.hist.at(-1) === 'pay') {
+    wallet2Frame()?.__set?.('kyc', 'passed');
+    back();
+    toast('Wallet reconnected.');
+    return;
+  }
+  const target = ['scan', 'walletTopUp', 'bills'].includes(S.actFrom) ? S.actFrom : 'home';
+  if (window.parent !== window && window.parent.__bridge) {
+    S.hist = [];
+    go('discover', {replace:true});
+    window.parent.__bridge('a30', target, {kyc:scen.kyc, wallet:scen.wallet, host:scen.host, reconnected:true});
+    return;
+  }
+  A.toWallet();
+  toast('Wallet reconnected.');
+}
+appEntryRoutes.walletReconnected = finishWalletReconnect;
 Object.assign(A, {
   actPick: el => { S.actPick = el.dataset.k; render(); },
-  actPickGo: () => { const w2 = (() => { try { return window.parent.document.getElementById('w2').contentWindow; } catch(e) { return null; } })();
+  actPickGo: () => {
+    if (scen.wallet === 'reconnect') {
+      const wallet = mainWalletForReconnect();
+      if (!wallet || kyc() !== 'approved' || S.sheet) return;
+      if (scen.network === 'offline') { toast('Check your connection and try again.', 'err'); return; }
+      if (!wallet.ext) {
+        W();
+        auth('Confirm your PIN to reconnect your YouApp Wallet.', finishWalletReconnect, {pinOnly:true});
+      } else {
+        window.parent.__bridge('a30', 'walletReconnect', {kyc:scen.kyc, wallet:scen.wallet});
+      }
+      return;
+    }
+    const w2 = wallet2Frame();
     if ((S.actPick||'ya') === 'ya') { try { w2 && w2.__set && (w2.__set('wl','ya'), w2.__set('mainW','ya')); } catch(e){} A.activateWallet(); return; }
     if (window.parent !== window && window.parent.__bridge) { window.parent.__bridge('a30', 'wActConnect', {kyc:'approved', wallet:'off'}); return; }
     toast('Connect my wallet opens in the Wallet 2.0 prototype.'); },

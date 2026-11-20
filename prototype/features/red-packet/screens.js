@@ -19,7 +19,6 @@ const apTier = () => { const s = w2s(); return s.sh === 'active' ? 'svip' : (s.t
 const FEE = {free:{pct:0, min:0, name:'Free'}, vip:{pct:0, min:0, name:'VIP'}, svip:{pct:0, min:0, name:'SVIP'}};  /* red packet has no fee */
 const LIM = {free:{per:250000, mon:2000000}, vip:{per:500000, mon:15000000}, svip:{per:5000000, mon:200000000}};
 const feeOf = total => { const f = FEE[apTier()]; return f.pct === 0 || total <= 0 ? 0 : Math.max(Math.round(total * f.pct / 100), f.min); };
-const feeLbl = () => { const f = FEE[apTier()]; return f.pct === 0 ? `${f.name} · free` : `${f.name} · ${f.pct}%, min ${C(f.min)}`; };
 const monLeft = () => { const l = LIM[apTier()].mon; return scen.apLim === 'near' ? 3000 : l - 124000; };
 
 /* Bridge to the prototype wallet and its transaction history. */
@@ -61,11 +60,12 @@ function apSeed(){
   redPackets.create({token:'apSeraGong', creator:'maulana', type:'random', total:2000, count:5, msg:'Gong Xi Fa Cai', claimed:['juan']});
   redPackets.create({token:'apLaraReady', creator:'lara', type:'random', total:5000, count:5, msg:'For our next adventure!'});
   redPackets.create({token:'apLaraLucky', creator:'lara', type:'lucky', total:10000, msg:'Try your luck!', luckyRates:YouAppLuckyDraw.baseline});
-  redPackets.create({token:'apLaraOpened', creator:'lara', type:'equal', per:500, count:4, msg:'Coffee is on me ☕', claimed:['me']});
-  redPackets.create({token:'apLaraFull', creator:'lara', type:'equal', per:300, count:3, msg:'All claimed!', claimed:['catherine','daniel','fionna']});
-  const laraExpired = redPackets.create({token:'apLaraExpired', creator:'lara', type:'random', total:2400, count:4, msg:'Weekend treat', expiresAt:NOW()-3600e3, expLbl:'24 hours'}); redPackets.settle(laraExpired);
-  const laraCancelled = redPackets.create({token:'apLaraCancelled', creator:'lara', type:'random', total:1800, count:3, msg:'Plans changed'}); redPackets.close(laraCancelled, 'CANCELLED');
+  redPackets.create({token:'apLaraOpened', theme:'raya', creator:'lara', type:'equal', per:500, count:4, msg:'Coffee is on me ☕', claimed:['me']});
+  redPackets.create({token:'apLaraFull', theme:'deepavali', creator:'lara', type:'equal', per:300, count:3, msg:'All claimed!', claimed:['catherine','daniel','fionna']});
+  const laraExpired = redPackets.create({token:'apLaraExpired', theme:'birthday', creator:'lara', type:'random', total:2400, count:4, msg:'Weekend treat', expiresAt:NOW()-3600e3, expLbl:'24 hours'}); redPackets.settle(laraExpired);
+  const laraCancelled = redPackets.create({token:'apLaraCancelled', theme:'youapp', creator:'lara', type:'random', total:1800, count:3, msg:'Plans changed'}); redPackets.close(laraCancelled, 'CANCELLED');
   redPackets.create({token:'apMineActive', creator:'me', type:'random', total:4000, count:4, msg:'Best wishes!', claimed:['lara']});
+  redPackets.create({token:'apMineRandomFull', creator:'me', type:'random', total:8800, count:4, msg:'Happy New Year!', theme:'red', claimed:['lara','catherine','daniel','fionna'], historical:true});
   redPackets.create({token:'apMineFull', creator:'me', type:'equal', per:500, count:3, msg:'Enjoy!', claimed:['lara','catherine','daniel']});
   const mineExpired = redPackets.create({token:'apMineExpired', creator:'me', type:'random', total:2100, count:3, msg:'Yesterday’s treat', expiresAt:NOW()-3600e3, expLbl:'6 hours', historical:true}); redPackets.settle(mineExpired);
   const mineCancelled = redPackets.create({token:'apMineCancelled', creator:'me', type:'random', total:1600, count:2, msg:'Cancelled packet', historical:true}); redPackets.close(mineCancelled, 'CANCELLED');
@@ -95,19 +95,31 @@ C6 = function(){ const c = _C6ap(); apSeed();
 
 /* ---- eligibility (section 2 gate, section 6 checks 1-2) ---- */
 const apReady = () => S.session === 'user' && kyc() === 'approved' && scen.wallet === 'active';
-const gateHTML = (title, why, resume) => {
+const isRedPacketEntry = screen => screen === 'apform' || screen === 'aprecv';
+const renderBeforeRedPacketActivation = render;
+render = function() {
+  if (isRedPacketEntry(S.screen) && S.session === 'user' && !S.apSim && kyc() === 'approved' && scen.wallet !== 'active') {
+    S.apResume = S.screen;
+    S.actFrom = 'angpao';
+    S.screen = 'activate';
+    S.sheet = null;
+    S.dialog = null;
+    S.menu = false;
+  }
+  return renderBeforeRedPacketActivation.apply(this, arguments);
+};
+const gateHTML = (title, why) => {
   const notIn = S.session !== 'user' || S.apSim === 'guest';
-  const needKyc = kyc() !== 'approved';
-  const head = notIn ? 'Log in to continue' : needKyc ? 'Verify your identity first' : 'Activate your wallet first';
-  const body = notIn ? `Log in or sign up to ${why}. We’ll bring you back here after.` : needKyc ? `Badge Verification and an active wallet are needed to ${why}. New members can claim too once both are done.` : `Your identity is verified. Activate your wallet to ${why}.`;
-  const cta = notIn ? 'Log in or Sign up' : needKyc ? 'Start Badge Verification' : 'Activate Wallet';
+  const head = notIn ? 'Log in to continue' : 'Verify your identity first';
+  const body = notIn ? `Log in or sign up to ${why}. We’ll bring you back here after.` : `Badge Verification and an active wallet are needed to ${why}. New members can claim too once both are done.`;
+  const cta = notIn ? 'Log in or Sign up' : 'Start Badge Verification';
   return `<div class="screen">${statusBar()}${topBar(title)}<div class="scroll"><div class="apgate"><span class="apgate-ic">${ic('apGift')}</span><h2>${head}</h2><p>${body}</p></div></div>
     <div class="pad16" style="padding-bottom:24px">${btn(cta, 'apGateGo', {cls:'btn-block'})}</div></div>`;
 };
 
 /* ---- section 3: create form ---- */
 const DURS = [['1h','1 hour',1],['6h','6 hours',6],['24h','24 hours',24],['3d','3 days',72],['7d','7 days',168],['custom','Custom',0]];
-const apfNew = () => ({type:'lucky', amt:'', count:'', msg:'', forever:true, dur:'24h', days:'', expUnit:'days', touched:{}});
+const apfNew = () => ({type:'lucky', amt:'', count:'', msg:'', theme:'red', expiryOpen:false, forever:true, dur:'24h', days:'', expUnit:'days', touched:{}});
 function apCalc(){
   const f = S.apf, a = Math.round((parseFloat(f.amt) || 0) * 100), n = isLucky(f) ? 0 : parseInt(f.count, 10) || 0;
   const total = f.type === 'equal' ? a * n : a, fee = feeOf(total), ded = total + fee;
@@ -131,29 +143,6 @@ const expOf = () => { const f = S.apf; if (f.forever) return {at:null, lbl:'Neve
   if (f.dur === 'custom') { const n = parseInt(f.days, 10), unit = f.expUnit || 'days', ms = unit === 'hours' ? 3600e3 : 864e5; return {at:NOW() + n*ms, lbl:`${n} ${unit === 'hours' ? 'hour' : 'day'}${n===1?'':'s'}`}; }
   const x = DURS.find(d => d[0] === f.dur); return {at:NOW() + x[2]*3600e3, lbl:x[1]}; };
 const fld = (id, key, label, val, o={}) => `<label class="apfld ${o.err?'err':''}" for="${id}"><span class="apfld-l">${label}</span><span class="apfld-box"><input id="${id}" data-apf="${key}" value="${esc(val)}" inputmode="${o.mode||'text'}" placeholder="${o.ph||''}" ${o.max?`maxlength="${o.max}"`:''} autocomplete="off">${o.suf?`<em>${o.suf}</em>`:''}</span>${o.err?`<small class="apfld-e">${o.err}</small>`:o.help?`<small>${o.help}</small>`:''}</label>`;
-const AP_ILL = '<svg class="aph-art" viewBox="0 0 220 160" aria-hidden="true"><ellipse cx="110" cy="148" rx="96" ry="8" fill="#E9E0FB"/><path d="M28 40l3 8 8 3-8 3-3 8-3-8-8-3 8-3z" fill="#C05CA8"/><path d="M190 26l2.4 6.2 6.2 2.4-6.2 2.4-2.4 6.2-2.4-6.2-6.2-2.4 6.2-2.4z" fill="#C05CA8"/><path d="M200 96l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#C05CA8"/><circle cx="18" cy="104" r="3.5" fill="#B79BF0"/><circle cx="172" cy="62" r="3" fill="#B79BF0"/><circle cx="60" cy="18" r="2.5" fill="#B79BF0"/><rect x="44" y="84" width="40" height="58" rx="18" fill="#4B2A9E"/><rect x="52" y="122" width="9" height="24" rx="4.5" fill="#2A1466"/><rect x="67" y="122" width="9" height="24" rx="4.5" fill="#2A1466"/><circle cx="64" cy="68" r="17" fill="#F6D5BD"/><path d="M47 66a17 17 0 0 1 34 0z" fill="#2A1466"/><rect x="78" y="94" width="26" height="9" rx="4.5" fill="#4B2A9E" transform="rotate(-22 78 98)"/><rect x="140" y="88" width="38" height="54" rx="17" fill="#C05CA8"/><rect x="147" y="122" width="9" height="24" rx="4.5" fill="#7A3BB0"/><rect x="162" y="122" width="9" height="24" rx="4.5" fill="#7A3BB0"/><circle cx="159" cy="72" r="16" fill="#F6D5BD"/><path d="M143 70a16 16 0 0 1 32 0z" fill="#2A1466"/><rect x="118" y="96" width="26" height="9" rx="4.5" fill="#C05CA8" transform="rotate(20 144 100)"/><g transform="rotate(-8 112 82)"><rect x="96" y="58" width="34" height="46" rx="6" fill="#E5484D"/><path d="M96 66c5.6 5 11.3 7.5 17 7.5S124.4 71 130 66v-2a6 6 0 0 0-6-6h-22a6 6 0 0 0-6 6z" fill="#C3162F"/><circle cx="113" cy="76" r="7" fill="#F5B82E"/><circle cx="113" cy="76" r="3.6" fill="#FFE3A3"/></g><g><circle cx="98" cy="34" r="10" fill="#F5B82E"/><circle cx="98" cy="34" r="6.5" fill="#FFD66E"/><path d="M98 29.5v9" stroke="#C98A0B" stroke-width="2" stroke-linecap="round"/></g><g><circle cx="130" cy="24" r="8" fill="#F5B82E"/><circle cx="130" cy="24" r="5" fill="#FFD66E"/></g><g><circle cx="120" cy="46" r="6" fill="#F5B82E"/><circle cx="120" cy="46" r="3.6" fill="#FFD66E"/></g></svg>';
-const apHero = () => `<div class="aph"><div class="aph-h">${AP_ILL}<div><b>Share luck with Red Packet</b><small>Lock MYRT once. Friends open it from a chat, a link or your QR.</small></div></div>
-  <div class="aph-st">${[['1','Set amount'],['2','Pay with PIN'],['3','Share it']].map(([n,t])=>`<div><i>${n}</i>${t}</div>`).join('')}</div></div>`;
-V.apform = () => {
-  if (!apReady() || S.apSim) return gateHTML('Send Red Packet', 'send angpao', 'apform');
-  if (!S.apf) S.apf = apfNew();
-  const f = S.apf, r = apCalc(), rnd_ = f.type === 'random';
-  const type = `<div class="apseg" role="group" aria-label="Red Packet type">${[['random','Random'],['equal','Equal split']].map(([v,t])=>`<button aria-pressed="${f.type===v}" data-act="apType" data-v="${v}">${t}</button>`).join('')}</div>
-    <p class="apnote">${rnd_ ? 'Each person gets a random amount, at least 1 MYRT.' : 'Everyone gets the same amount.'}</p>`;
-  const exp = `<div class="apexp"><button class="apchk" role="checkbox" aria-checked="${f.forever}" data-act="apForever"><i>${f.forever?'✓':''}</i><span><b>Never expires</b><small>${f.forever?'Unclaimed MYRT only comes back if you cancel it.':'Unclaimed MYRT comes back to you when it expires.'}</small></span></button>
-    ${f.forever ? '' : `<div class="apdurs">${DURS.map(([v,t])=>`<button aria-pressed="${f.dur===v}" data-act="apDur" data-v="${v}">${t}</button>`).join('')}</div>
-      ${f.dur==='custom' ? fld('apDays','days','Number of days', f.days, {mode:'numeric', ph:'1–365', suf:'days', err:r.e.days, help:'Whole days, 1 to 365'}) : ''}`}</div>`;
-  const sum = `<div class="apsum"><div><span>Total red packet</span><b>${MY_(r.total)}</b></div><div><span>Fee <small>(${feeLbl()})</small></span><b>${MY_(r.fee)}</b></div><div class="tot"><span>You pay</span><b>${MY_(r.ded)}</b></div>
-    <p>Balance ${MY_(r.bal)}${r.e.bal?` · <span class="aperr">Not enough balance</span> <button class="link" data-act="apTopUp">Top Up</button>`:''}</p></div>`;
-  const lim = r.e.lim ? `<div class="aplim">${ic('info')}<span>${r.e.lim}</span><button class="link" data-act="apUpgrade">Upgrade</button></div>` : '';
-  return `<div class="screen">${statusBar()}${topBar('Send Red Packet', `<button class="iconbtn" data-act="apList" aria-label="My angpao">${ic('apList')}</button>`)}
-    <div class="scroll" id="apScroll"><div class="pad16 apform">${apHero()}${type}
-      ${fld('apAmt','amt', rnd_ ? 'Total amount' : 'Amount per person', f.amt, {mode:'decimal', ph:'0.00', suf:'MYRT', err:r.e.amt, help: rnd_ ? 'Split randomly between everyone' : 'Each person gets this amount'})}
-      ${fld('apCount','count','Number of people', f.count, {mode:'numeric', ph:'0', err:r.e.count, help:'Up to 100 people'})}
-      ${fld('apMsg','msg','Message (optional)', f.msg, {ph:'Best wishes!', max:50, help:`${f.msg.length}/50`})}
-      ${exp}${sum}${lim}</div></div>
-    <div class="pad16 apfoot">${btn('Continue','apNext',{cls:'btn-block', disabled:!r.ok})}</div></div>`;
-};
 V.apconf = () => { const f = S.apf, r = apCalc(), x = expOf();
   const rows = [['Type', AP_TYPES[f.type]], ['Recipients', isLucky(f) ? 'No people limit' : apPeople(r.n)], ...(f.type==='equal'?[['Per person', MY_(r.a)]]:[]), [isLucky(f) ? 'Budget' : 'Total', MY_(r.total)], ['Validity', x.lbl], ...(f.msg?[['Message', esc(f.msg)]]:[])];
   return `<div class="screen">${statusBar()}${topBar('Confirm Red Packet')}<div class="scroll"><div class="pad16">
@@ -182,7 +171,7 @@ V.apdone = () => { const a = apGet(S.apTok); const cx = S.apCtx && C6().convs.fi
     <div class="scroll"><div class="apd">
       <div class="apd-top"><span class="apd-badge">${ic('check')}Paid</span><div class="apd-amt">${C(a.total + a.fee)}<span>MYRT</span></div><p>Locked for ${sub}</p></div>
       <div class="apd-qrc">
-        <div class="apd-h">${img(ME_AV(), 'You', 'apd-av')}<span><b>${esc(a.msg || 'Best wishes!')}</b><small>Your red packet · ${MY_(a.total)} inside</small></span><span class="apd-env">${ic('apGift')}</span></div>
+        <div class="apd-h">${img(ME_AV(), 'You', 'apd-av')}<span><b>${esc(a.msg || 'Best wishes!')}</b><small>Your red packet · ${MY_(a.total)} inside</small></span><span class="apd-env">${redPacketArt(a.theme, 'packet', 'rp20-detail-thumb')}</span></div>
         <div class="apd-qr">${qrSVG(a.token)}</div>
         <small class="apd-cap">Scan to open this red packet</small>
         <div class="apd-ad"><span>${link(a)}</span><button data-act="apCopy" aria-label="Copy link">${ic('copy')}</button></div>
@@ -251,55 +240,110 @@ const apBurst = [
   ['note', -117, -59, -32, 440, .96], ['note', 116, -69, 36, 553, .98],
   ['star', 120, -23, 20, 548, 1], ['ribbon', -129, -18, 49, 565, 1],
 ];
-const apEnvelopeMarkup = (contents = '') => `<div class="ap-envelope-art"><span class="ap-envelope-base"></span><span class="ap-envelope-open-lid"></span>
-  <span class="ap-envelope-light"></span><span class="ap-envelope-rays"></span>${contents}
-  <span class="ap-envelope-front"></span><span class="ap-envelope-rim"></span><span class="ap-envelope-flap"></span><span class="ap-envelope-seal"></span></div>`;
+function apConversation(id) {
+  return id ? C6().convs.find(c => c.id === id && !c.gone && (!c.group || myRole(c) !== 'member' || c.perm?.send)) : null;
+}
 
-function apReceivePanel(a, claim) {
-  const c = who(a.creator);
-  const opening = S.apOpening?.has(a.token);
-  const celebrated = claim?.amt > 0 && S.apJust;
-  const burst = celebrated ? apBurst.map(([type, x, y, turn, delay, size]) => `<span class="ap-burst-piece ap-burst-${type}" style="--x:${x}px;--y:${y}px;--turn:${turn}deg;--delay:${delay}ms;--size:${size}"></span>`).join('') : '';
-  const art = `<div class="apreceive-art${claim ? ' is-open' : opening ? ' is-opening' : ''}${celebrated ? ' is-celebrating' : ''}" aria-hidden="true">
-    <i class="apreceive-spark a"></i><i class="apreceive-spark b"></i><i class="apreceive-spark c"></i><i class="apreceive-spark d"></i>
-    ${apEnvelopeMarkup(burst)}
-  </div>`;
-  const expires = a.expiresAt ? new Date(a.expiresAt) : null;
-  return `<section class="apreceive-panel">
-    <header class="apreceive-sender">${img(c.av, '', 'apreceive-avatar')}<span class="apreceive-from"><b>${esc(c.n)}</b> sent you a red packet</span>
-      <h1>${esc(a.msg || 'Best wishes!')}</h1></header>
-    ${art}
-    ${claim ? `<div class="apreceive-result${celebrated ? ' is-new' : ''}" role="status" tabindex="-1">
-      <small>${claim.amt ? 'You received' : 'No MYRT this time'}</small><strong>${MY_(claim.amt)}</strong>
-      <span>${claim.amt ? `Added to your wallet${S.apJust ? '' : ' earlier'}` : 'You’ve used your draw for this red packet.'}</span></div>`
-    : `<button type="button" class="apreceive-open" data-act="apOpenIt"${opening ? ' disabled aria-busy="true"' : ''}>${opening ? 'Opening…' : 'Open red packet'}</button>
-      <p class="apreceive-availability">${isLucky(a) ? `${apAvailability(a)} · One draw per person` : `${apLeft(a)} of ${a.count} packets left`}
-      ${expires ? `<time datetime="${expires.toISOString()}">Expires ${expires.toLocaleString('en-MY', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</time>` : ''}</p>`}
+function apPersonChat(key) {
+  const name = who(key).n;
+  return C6().convs.find(c => !c.group && (c.id === 'c-' + key || c.name === name));
+}
+
+function apOpenResult(a, claim, sender) {
+  const {got} = apTitles(a);
+  const source = apConversation(S.apSource) || apPersonChat(a.creator);
+  const target = apPersonChat(a.creator);
+  const progress = isLucky(a) ? apOpenedLabel(a) : `${got.length} of ${a.count} opened`;
+  return `<section class="rp20-result${S.apJust ? ' is-new' : ''}">
+    <header class="rp20-sender-chip">${img(sender.av, '')}<span>${esc(sender.n)} · “${esc(a.msg || 'Best wishes!')}”</span></header>
+    <div class="apreceive-result" role="status" aria-label="You got ${MY_(claim.amt)}. Added to YouWallet." tabindex="-1">
+      <small>You got</small><strong aria-hidden="true"><span data-ap-payout="${claim.amt}">${C(claim.amt)}</span><span class="rp20-unit">MYRT</span></strong>
+      <span>✓ Added to YouWallet</span>
+    </div>
+    <div class="rp20-result-actions">${source ? '<button type="button" class="rp20-secondary" data-act="apThanks">Say thanks</button>' : ''}${target ? '<button type="button" class="rp20-primary" data-act="apReturnGift">Send one back</button>' : ''}</div>
+    <div class="rp20-result-progress"><span class="rp20-openers" aria-hidden="true">${got.slice(-5).map(slot => img(who(slot.by).av, '')).join('')}</span>
+      <span>${progress}</span><button type="button" class="rp20-secondary" data-act="apToggleOpeners" aria-expanded="${Boolean(S.apShowOpeners)}">View openers</button></div>
+    ${S.apShowOpeners ? claimList(a) : ''}
+    <img class="rp20-confetti" src="../features/red-packet/art/result-confetti.svg" alt="" aria-hidden="true">
+    ${redPacketArt(a.theme, 'strip', 'rp20-strip')}
   </section>`;
 }
 
-V.aprecv = () => { const a = apGet(S.apTok); const st = apState(a);
-  if (st === 'guest' || st === 'kyc') return gateHTML('Red Packet', 'open this angpao', 'aprecv');
-  const top = `<div class="topbar"><button class="iconbtn" data-act="back" aria-label="Back">${ic('back')}</button><span class="t-headline" style="flex:1; text-align:center">Red Packet</span>${a?`<button class="iconbtn" data-act="apReport" aria-label="Report angpao">${ic('apFlag')}</button>`:'<span style="width:32px"></span>'}</div>`;
-  const msgBox = (icn, t, s, extra='') => `<div class="apstate"><span class="apgate-ic ${icn}">${ic('apGift')}</span><h2>${t}</h2><p>${s}</p>${extra}</div>`;
+function apReceivePanel(a, claim) {
+  const sender = who(a.creator);
+  const opening = S.apOpening?.has(a.token);
+  const celebrate = Boolean(claim && S.apJust);
+  const burst = celebrate ? apBurst.map(([type, x, y, turn, delay, size]) => `<span class="ap-burst-piece ap-burst-${type}" style="--x:${x}px;--y:${y}px;--turn:${turn}deg;--delay:${delay}ms;--size:${size}"></span>`).join('') : '';
+  const expires = a.expiresAt ? new Date(a.expiresAt) : null;
+  const stage = `<div class="rp20-scene-stage ${claim ? (celebrate ? 'is-celebrating' : 'is-open') : opening ? 'is-opening' : 'is-ready'}">
+    ${redPacketArt(a.theme, claim ? 'opened' : opening ? 'opening' : 'packet', claim || opening ? 'rp20-opened' : 'rp20-closed')}
+    ${burst ? `<div class="rp20-burst" aria-hidden="true">${burst}</div>` : ''}
+    ${claim ? '' : `<button type="button" class="rp20-open" data-act="apOpenIt"${opening ? ' disabled aria-busy="true"' : ''}>${opening ? 'Opening…' : 'Open'}</button>`}
+  </div>`;
+  if (claim) return stage + apOpenResult(a, claim, sender);
+  return `<header class="rp20-sender">${img(sender.av, '')}<h1>${esc(sender.n)} sent you a red packet</h1>
+    <p>${apTypeDetails(a)}</p></header>${stage}
+    <p class="rp20-progress">${isLucky(a) ? apAvailability(a) : `${a.count - apLeft(a)} of ${a.count} opened`}
+      ${expires ? `<time datetime="${expires.toISOString()}">Expires ${expires.toLocaleString('en-MY', {day:'numeric',month:'short',hour:'2-digit',minute:'2-digit'})}</time>` : ''}</p>`;
+}
+
+V.aprecv = () => {
+  const a = apGet(S.apTok);
+  const st = apState(a);
+  if (st === 'guest' || st === 'kyc') return gateHTML('Red Packet', 'open this red packet');
+  const top = `<div class="topbar"><button class="iconbtn" type="button" data-act="back" aria-label="Close">${ic('close')}</button><span class="t-headline" style="flex:1;text-align:center">${['ready','claimed'].includes(st) ? '' : 'Red packet'}</span>${a ? `<button class="iconbtn" type="button" data-act="apReport" aria-label="Report red packet">${ic('apFlag')}</button>` : ''}</div>`;
+  const state = (title, detail, extra = '') => `<div class="rp20-state"><section class="rp20-state-card">
+    ${redPacketArt(a?.theme, 'packet')}<h2>${title}</h2><p>${detail}</p>${extra}</section></div>`;
   let body;
-  if (st === 'notfound') body = msgBox('dim', 'Red Packet not found', 'This link or QR doesn’t match any red packet. Check that you have the full link.');
-  else if (st === 'ended') body = msgBox('dim', 'Red Packet has ended', a.status==='CANCELLED' ? 'The sender cancelled this red packet.' : 'This red packet has expired.') + `<div class="pad16">${claimList(a)}</div>`;
-  else if (st === 'own') body = msgBox('', 'This is your angpao', 'You can’t open your own red packet. Share it so others can open it.', btn('View details','apDetail',{cls:'btn-block'}).replace('data-act="apDetail"', `data-act="apDetail" data-tok="${a.token}"`));
-  else if (st === 'full') body = msgBox('dim', 'Red Packet fully claimed', isLucky(a) ? 'All available prizes have been drawn.' : 'All packets have been opened. Better luck next time!') + `<div class="pad16">${claimList(a)}</div>`;
-  else if (st === 'claimed') body = apReceivePanel(a, a.slots.find(s => s.by === 'me')) + `<div class="pad16">${claimList(a)}</div>`;
-  else body = apReceivePanel(a);
-  return `<div class="screen${st === 'ready' || st === 'claimed' ? ' apreceive' : ''}">${statusBar()}${top}<div class="scroll">${body}</div></div>`; };
+  if (st === 'notfound') body = state('Red packet not found', 'Check that you have the full link or QR code.');
+  else if (st === 'ended') body = state(a.status === 'CANCELLED' ? 'Red packet cancelled' : 'Red packet expired', a.status === 'CANCELLED' ? 'The sender cancelled this red packet.' : 'The time to open this red packet has ended.', claimList(a));
+  else if (st === 'own') body = state('This is your red packet', 'Share it so others can open it.', `<button class="rp20-primary" type="button" data-act="apDetail" data-tok="${esc(a.token)}">View details</button>`);
+  else if (st === 'full') body = state('Red packet fully claimed', isLucky(a) ? 'All available prizes have been drawn.' : 'All packets have been opened.', claimList(a));
+  else body = apReceivePanel(a, st === 'claimed' ? a.slots.find(slot => slot.by === 'me') : null);
+  return `<div class="screen rp20-receive${st === 'claimed' ? ' is-claimed' : ''}" style="${redPacketThemeStyle(a?.theme)}">
+    ${redPacketArt(a?.theme, 'scene', 'rp20-scene')}${statusBar()}${top}<div class="scroll">${body}</div></div>`;
+};
+
+function apAnimatePayout() {
+  const value = document.querySelector('[data-ap-payout]');
+  if (!value || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  const payout = Number(value.dataset.apPayout);
+  const start = performance.now() + 850;
+  value.textContent = C(0);
+  function frame(now) {
+    if (!value.isConnected) return;
+    const progress = Math.max(0, Math.min(1, (now - start) / 700));
+    value.textContent = C(Math.round(payout * (1 - (1 - progress) ** 3)));
+    if (progress < 1) requestAnimationFrame(frame);
+  }
+  requestAnimationFrame(frame);
+}
 
 /* ---- section 7: sender detail ---- */
 const STL = {ACTIVE:['Active','ok'], FULLY_CLAIMED:['Fully claimed','done'], EXPIRED:['Expired','off'], CANCELLED:['Cancelled','off']};
-const apHistoryArt = () => `<div class="aphist-art" aria-hidden="true"><i class="apreceive-spark a"></i><i class="apreceive-spark b"></i><i class="apreceive-spark c"></i>${apEnvelopeMarkup()}</div>`;
+const apHistoryArt = (theme = 'red') => `<div class="aphist-art" aria-hidden="true">${redPacketArt(theme, 'packet', 'rp20-detail-thumb')}</div>`;
+function apCompletedRecap(a) {
+  const {t} = apTitles(a);
+  const winner = t.luck && who(t.luck.by);
+  const winnerChat = t.luck && apPersonChat(t.luck.by);
+  const claimed = a.total - redPacketAmountLeft(a);
+  const progress = isLucky(a) ? apOpenedLabel(a) : `All ${a.count} opened`;
+  const summary = `<p class="rp20-recap-summary">${progress} · ${MY_(claimed)} claimed${a.refunded ? ` · <b>${MY_(a.refunded)} back to you</b>` : ''}</p>`;
+  if (!winner) return `<section class="rp20-recap-neutral">${redPacketArt(a.theme, 'packet', 'rp20-detail-thumb')}<h1>Red packet complete</h1>${summary}</section>`;
+  return `<section class="rp20-winner">
+    <div class="rp20-winner-art"><img src="../features/red-packet/art/winner.svg" alt="Luckiest" width="358" height="230">${img(winner.av, '', 'rp20-winner-avatar')}</div>
+    <h1>${esc(winner.n)} got the most!</h1>
+    <p><strong>${MY_(t.luck.amt)}</strong> from your ${MY_(a.total)} red packet</p>
+    ${winnerChat ? `<button type="button" class="rp20-secondary" data-act="apCongratulate" data-id="${esc(winnerChat.id)}">Congratulate ${esc(winner.n)}</button>` : ''}
+  </section>${summary}`;
+}
 V.apdet = () => {
   const a = apGet(S.apTok);
   if (!a) return V.aprecv();
   redPackets.settle(a);
   const [status, tone] = STL[a.status];
   const active = a.status === 'ACTIVE';
+  const complete = a.status === 'FULLY_CLAIMED';
   const lucky = isLucky(a);
   const unclaimed = apLeft(a);
   const rows = [['Type', AP_TYPES[a.type]], ['Recipients', lucky ? 'No people limit' : apPeople(a.count)]];
@@ -308,12 +352,14 @@ V.apdet = () => {
   if (a.fee) rows.push(['Fee', MY_(a.fee)]);
   const refundNote = lucky ? 'Unused budget returned to your wallet.'
     : `Returned to your wallet from ${unclaimed} unclaimed ${unclaimed === 1 ? 'packet' : 'packets'}.`;
-  return `<div class="screen apdetail">${statusBar()}${topBar('Red Packet details')}<div class="scroll"><div class="aphist-content">
-    <section class="aphist-hero apdetail-hero"><span class="apst ${tone}">${status}</span><h1>${esc(a.msg || 'Best wishes!')}</h1>
-      <small>${lucky ? 'Packet budget' : 'Packet total'}</small><strong class="apdetail-total">${MY_(a.total)}</strong>${apHistoryArt()}</section>
-    ${a.refunded ? `<section class="apdetail-refund"><span class="apdetail-refund-icon">${ic('check')}</span><div><h2><strong>${MY_(a.refunded)}</strong> refunded</h2><p>${refundNote}</p></div></section>` : ''}
+  return `<div class="screen apdetail">${statusBar()}${topBar(complete ? 'Your red packet' : 'Red Packet details')}<div class="scroll"><div class="aphist-content">
+    ${complete ? apCompletedRecap(a) : `<section class="aphist-hero apdetail-hero"><span class="apst ${tone}">${status}</span><h1>${esc(a.msg || 'Best wishes!')}</h1>
+      <small>${lucky ? 'Packet budget' : 'Packet total'}</small><strong class="apdetail-total">${MY_(a.total)}</strong>${apHistoryArt(a.theme)}</section>`}
+    ${a.refunded && !complete ? `<section class="apdetail-refund"><span class="apdetail-refund-icon">${ic('check')}</span><div><h2><strong>${MY_(a.refunded)}</strong> refunded</h2><p>${refundNote}</p></div></section>` : ''}
     ${active ? `<div class="apdetail-share">${shareBtns(a)}</div>` : ''}
     ${claimList(a, {sender:true})}
+    ${complete ? `<div class="rp20-result-actions">${apConversation(a.sentChatId) ? '<button type="button" class="rp20-secondary" data-act="apThankEveryone">Thank everyone</button>' : ''}
+      <button type="button" class="rp20-primary" data-act="apSendAnother">Send another</button></div>` : ''}
     <section class="apdetail-section"><h2>Packet info</h2><dl>${rows.map(([label, value]) => `<div><dt>${label}</dt><dd>${esc(value)}</dd></div>`).join('')}</dl></section>
     ${active && redPacketAmountLeft(a) ? `<button type="button" class="btn btn-tertiary apcancel" data-act="apCancelAsk">Cancel remaining red packet</button>` : ''}</div></div></div>`;
 };
@@ -333,7 +379,7 @@ V.aplist = () => {
     const [status, tone] = STL[a.status];
     const sender = who(a.creator);
     return `<li><button type="button" class="aphist-row" data-side="${tab}" data-state="${a.status}" data-act="${sent ? 'apDetail' : 'apOpenTok'}" data-tok="${esc(a.token)}">
-      <span class="aphist-row-icon" aria-hidden="true">${sent ? ic('apGift') : img(sender.av)}</span>
+      <span class="aphist-row-icon" aria-hidden="true">${redPacketArt(a.theme, 'packet', 'rp20-history-thumb')}</span>
       <span class="aphist-row-copy"><b>${esc(a.msg || 'Best wishes!')}</b><small>${sent ? apOpenedLabel(a) : `From ${esc(sender.n)}`}</small></span>
       <span class="aphist-row-value"><b>${sent ? `−${MY_(a.total + a.fee)}` : `${claim.amt ? '+' : ''}${MY_(claim.amt)}`}</b>${sent ? `<span class="apst ${tone}">${status}</span>` : ''}</span>${ic('chev')}</button></li>`;
   }).join('');
@@ -363,14 +409,26 @@ msgHTML = function(m, c, idx){
     else if (a.status === 'CANCELLED') { st = 'Cancelled by sender'; dim = true; }
     else if (a.status === 'FULLY_CLAIMED') { st = 'Fully claimed'; dim = true; } }
   const p = c.group && !m.me && m.who ? GP(m.who) : null;
-  const bub = `<div class="bub apbub ${m.me?'me':''} ${dim?'apdim':''}" data-id="${m.id}">${p?`<b class="gwho">${esc(p.n)}</b>`:''}<button class="rp-chat-card" data-act="apTap" data-tok="${m.tok}"><span class="rp-chat-icon">${ic('apGift')}</span><span class="rp-chat-copy"><b>${esc((a && a.msg) || 'Best wishes!')}</b><small>${st}</small></span></button><span class="apb-f">YouApp Red Packet</span><span class="bmeta">${m.at}${m.me?' ✓✓':''}</span></div>`;
+  const bub = `<div class="bub apbub rp20-chat ${m.me?'me':''} ${dim?'apdim':''}" style="${redPacketThemeStyle(a?.theme)}" data-id="${m.id}">${p?`<b class="gwho">${esc(p.n)}</b>`:''}<button class="rp-chat-card" data-act="apTap" data-tok="${m.tok}"><span class="rp-chat-icon">${redPacketArt(a?.theme, 'packet')}</span><span class="rp-chat-copy"><b>${esc((a && a.msg) || 'Best wishes!')}</b><small>${st}</small></span></button><span class="apb-f">YouApp Red Packet</span><span class="bmeta">${m.at}${m.me?' ✓✓':''}</span></div>`;
   return p ? `<div class="grow">${img(p.av, p.n, 'gmav')}${bub}</div>` : bub; };
 
 /* ---- overlays: attach row, chooser, chat/group picker, cancel dialog ---- */
 const _ovAp = overlayHTML;
 overlayHTML = () => { let h = _ovAp();
-  if (S.sheet === 'cAttach') h = h.replace('Photo &amp; Video Gallery</button>', `Photo &amp; Video Gallery</button><button class="menurow" data-act="apAttach">${ic('apGift')}Red Packet</button>`);
-  const sh = (inner, label) => `<div class="scrim ${S.sheetAnim?'anim':''}" data-act="apSheetX"></div><div class="sheet ${S.sheetAnim?'anim':''}" role="dialog" aria-label="${label}"><div class="grab" aria-hidden="true"></div>${inner}</div>`;
+  if (S.sheet === 'cAttach' && S.screen === 'chat' && apConversation(S.conv)) h = h.replace('Photo &amp; Video Gallery</button>', `Photo &amp; Video Gallery</button><button class="menurow" data-act="apAttach">${ic('apGift')}Red Packet</button>`);
+  const sh = (inner, label, close = 'apSheetX') => `<div class="scrim ${S.sheetAnim?'anim':''}" data-act="${close}"></div><div class="sheet ${S.sheetAnim?'anim':''}" role="dialog" aria-label="${label}"><div class="grab" aria-hidden="true"></div>${inner}</div>`;
+  if (S.sheet === 'apWallet') {
+    const connected = window.parent.YouAppPrototypeWallet?.connectedNames?.() ?? [];
+    const otherWallets = connected.map(name => `<button class="aplrow rp20-wallet-option" type="button" disabled>
+      <span class="apl-ic">${ic('wallet')}</span><span><b>${esc(name)}</b><small>Unavailable for Red Packet</small></span></button>`).join('');
+    h += sh(`<h2 class="t-headline rp20-wallet-heading">Change wallet</h2>
+      <button class="aplrow rp20-wallet-option" type="button" data-act="apWalletDone">
+        <img class="rp20-wallet-flag" src="../features/red-packet/art/wallet-flag.svg" alt="">
+        <span><b>YouWallet</b><small>${RM(apBal() / 100)} available</small></span><span class="apst ok">Selected</span>
+      </button>${otherWallets}
+      <p class="t-caption muted">Red packets are paid from YouWallet.</p>
+      <button class="rp20-secondary rp20-wallet-topup" type="button" data-act="apTopUp">Top up YouWallet</button>`, 'Change wallet', 'apWalletDone');
+  }
   if (S.sheet === 'apChoose') { const act = apMine().filter(a => { redPackets.settle(a); return a.status === 'ACTIVE'; });
     h += sh(`<h2 class="t-headline" style="margin:0 0 8px">Red Packet</h2><button class="menurow" data-act="apNewCtx">${ic('plus')}Create new red packet</button>
       <p class="kicker3" style="margin:14px 0 6px">Send a red packet you created</p>${act.length ? act.map(a => `<button class="aplrow" data-act="apSendExisting" data-tok="${a.token}"><span class="apl-ic">${ic('apGift')}</span><span><b>${esc(a.msg || 'Best wishes!')}</b><small>${AP_TYPES[a.type]} · ${apAvailability(a)}</small></span><span class="aprow-r"><b>${C(a.total)}</b></span></button>`).join('') : `<p class="apnote" style="text-align:left">No active red packet yet. Create one and it shows up here.</p>`}`, 'Red Packet');
@@ -387,55 +445,135 @@ overlayHTML = () => { let h = _ovAp();
   return h; };
 
 /* ---- actions ---- */
-const sendCard = (convId, tok) => { const v = C6().convs.find(x => x.id === convId); const a = apGet(tok); if (!v || !a) return null;
-  v.msgs.push({id:'ap'+Date.now()+rnd(99), t:'angpao', tok, me:true, at:'Now', st:'sent'}); v.at = 'Now';
-  if (!a.sentTo.includes(v.name)) a.sentTo.push(v.name); return v; };
+const sendCard = (convId, tok) => {
+  const v = apConversation(convId);
+  const a = apGet(tok);
+  if (!v || !a) return null;
+  v.msgs.push({id:'ap-' + tok + '-' + v.msgs.length, t:'angpao', tok, me:true, at:'Now', st:'sent'}); v.at = 'Now';
+  a.sentChatId ||= v.id;
+  if (!a.sentTo.includes(v.name)) a.sentTo.push(v.name);
+  return v;
+};
+function apVisitChat(chat, draft) {
+  if (S.conv === chat.id && S.hist.at(-1) === 'chat') S.hist.pop();
+  S.apSource = chat.id;
+  S.conv = chat.id;
+  S.ctext = [chat.draft, draft].filter(Boolean).join(' ').slice(0, 1000);
+  chat.draft = S.ctext;
+  go('chat', {replace:true});
+  setTimeout(scrollChat, 20);
+}
+
+function apFinishSend() {
+  const chat = apConversation(S.apSentChat);
+  if (chat) {
+    apVisitChat(chat);
+  } else go('apdone', {replace:true});
+}
+
+function apShowSend(a) {
+  S.apTok = a.token;
+  S.apBusy = false;
+  S.apSentChat = (apConversation(S.apCtx) && sendCard(S.apCtx, a.token))?.id;
+  const previousForm = S.hist.lastIndexOf('apform');
+  if (previousForm >= 0) S.hist = S.hist.slice(0, previousForm);
+  if (matchMedia('(prefers-reduced-motion: reduce)').matches) return apFinishSend();
+  const session = S;
+  go('apsending', {replace:true});
+  setTimeout(() => {
+    if (S === session && S.screen === 'apsending' && S.apTok === a.token) apFinishSend();
+  }, 1370);
+}
+
+V.apsending = () => {
+  const a = apGet(S.apTok);
+  const chat = apConversation(S.apSentChat);
+  return `<div class="screen rp20-sending" style="${redPacketThemeStyle(a?.theme)}">${statusBar()}
+    <div class="topbar"><span class="t-headline" style="flex:1;text-align:center">Red packet</span><button class="iconbtn" type="button" data-act="apFinishSend" aria-label="Continue">${ic('close')}</button></div>
+    <div class="rp20-send-stage"><img class="rp20-send-trail" src="../features/red-packet/art/send-trail.svg" alt="" aria-hidden="true">
+      ${redPacketArt(a?.theme, 'packet', 'rp20-flight')}<div class="rp20-sent-mark" role="status"><span>${ic('check')}</span>
+      <h2>${chat ? `Sent to ${esc(chat.name)}` : 'Red packet ready'}</h2><p>${a ? MY_(a.total) : ''}</p></div></div>
+  </div>`;
+};
 Object.assign(A, {
   apNew: () => { S.apf = apfNew(); S.apCtx = null; S.apSim = null; go('apform'); },
   apAttach: () => { S.apCtx = S.conv; openSheet('apChoose'); },
   apNewCtx: () => { S.sheet = null; S.apf = apfNew(); S.apCtx = S.conv; S.apSim = null; go('apform'); },
-  apSendExisting: el => { const v = sendCard(S.conv, el.dataset.tok); S.sheet = null; render(); setTimeout(scrollChat, 20); toast(`Red Packet sent to ${v.name}.`); },
+  apFinishSend,
+  apThanks: () => {
+    const a = apGet(S.apTok);
+    const chat = a && (apConversation(S.apSource) || apPersonChat(a.creator));
+    if (chat) apVisitChat(chat, 'Thank you for the red packet!');
+  },
+  apReturnGift: () => {
+    const a = apGet(S.apTok);
+    const chat = a && apPersonChat(a.creator);
+    if (!chat) return;
+    S.apCtx = chat.id;
+    S.apf = {...apfNew(), theme:redPacketTheme(a.theme)};
+    S.apSim = null;
+    go('apform');
+  },
+  apCongratulate: el => {
+    const chat = apConversation(el.dataset.id);
+    if (chat) apVisitChat(chat, 'Congrats! You got the biggest share.');
+  },
+  apThankEveryone: () => {
+    const a = apGet(S.apTok);
+    const chat = apConversation(a?.sentChatId);
+    if (chat) apVisitChat(chat, 'Thanks everyone for opening my red packet!');
+  },
+  apSendAnother: () => {
+    const a = apGet(S.apTok);
+    S.apf = {...apfNew(), theme:redPacketTheme(a?.theme)};
+    S.apCtx = apConversation(a?.sentChatId)?.id || null;
+    go('apform');
+  },
+  apToggleOpeners: () => { S.apShowOpeners = !S.apShowOpeners; render(); },
+  apSendExisting: el => { const v = sendCard(S.conv, el.dataset.tok); if (!v) return; S.sheet = null; render(); setTimeout(scrollChat, 20); toast(`Red Packet sent to ${v.name}.`); },
   apSheetX: () => { S.sheet = null; render(); },
   apType: el => {
     const mode = el.dataset.v;
     if (mode === S.apf.type) return;
+    const scroll = document.getElementById('apScroll')?.scrollTop || 0;
     const keyboardFocus = el.matches(':focus-visible');
     S.apf.type = mode;
     S.apf.amt = '';
     render();
+    document.getElementById('apScroll')?.scrollTo(0, scroll);
     if (keyboardFocus) document.querySelector(`.ap-modes [data-v="${mode}"]`)?.focus({preventScroll:true});
-    if (!matchMedia('(prefers-reduced-motion: reduce)').matches) {
-      document.querySelector('.ap-mode-art')?.animate(
-        [{opacity:.45, transform:'translateY(4px) scale(.96)'}, {opacity:1, transform:'none'}],
-        {duration:170, easing:'ease-out'},
-      );
-    }
   },
-  apForever: () => { S.apf.forever = !S.apf.forever; render(); },
-  apDur: el => { S.apf.dur = el.dataset.v; render(); },
-  apExpUnit: el => { S.apf.expUnit = el.dataset.v; S.apf.days = ''; render(); },
-  apTopUp: () => go('topup'),
+  apTopUp: () => {
+    if (!window.parent.__bridge) return A.openTopup();
+    S.sheet = null;
+    window.parent.__bridge('a30', 'walletTopUp', {kyc:scen.kyc, wallet:scen.wallet, host:scen.host});
+  },
   apUpgrade: () => { try { window.parent.__bridge('a30', 'subscribe', {}); } catch(e) { toast('Opens Choose plan (VIP, SVIP).'); } },
   apNext: () => { if (!apCalc().ok) return; S.apKey = 'k' + Date.now(); go('apconf'); },
-  apPay: () => { if (S.apBusy || !apReady() || !apCalc().ok) return; const key = S.apKey, session = S;
+  apPay: () => { if (S.apBusy || !apReady() || !apCalc().ok) return; const key = S.apKey, session = S, form = S.apf;
     auth('Send angpao', () => {
+      if (S !== session || S.apKey !== key || S.apf !== form) return;
       const alreadySent = redPackets.sentWithKey(key);
-      if (alreadySent) { S.apTok = alreadySent.token; go('apdone', {replace:true}); return; }
+      if (alreadySent) { S.apTok = alreadySent.token; apFinishSend(); return; }
       S.apBusy = true; render();
-      setTimeout(() => { const f = S.apf, r = apCalc(), x = expOf();
+      setTimeout(() => {
         if (S !== session || S.apKey !== key) return;
+        if (S.apf !== form || (S.screen !== 'apform' && S.screen !== 'apconf')) {
+          S.apBusy = false;
+          if (S.screen === 'apform') render();
+          return;
+        }
+        const f = form, r = apCalc(), x = expOf();
         if (!apReady() || !r.ok) { S.apBusy = false; render(); toast('Check the balance and red packet details, then try again.','err'); return; }
         apSeed();
-        const a = redPackets.send({type:f.type, total:r.total, per:f.type==='equal'?r.a:0, count:r.n, fee:r.fee, msg:f.msg.trim(), expiresAt:x.at, expLbl:x.lbl}, key);
-        S.apTok = a.token; S.apBusy = false;
-        const i = S.hist.lastIndexOf('apform'); if (i >= 0) S.hist = S.hist.slice(0, i);
-        go('apdone', {replace:true}); }, 700);
+        const a = redPackets.send({type:f.type, total:r.total, per:f.type==='equal'?r.a:0, count:r.n, fee:r.fee, msg:f.msg.trim(), expiresAt:x.at, expLbl:x.lbl, theme:f.theme}, key);
+        apShowSend(a); }, 700);
     }); },
   apDoneX: () => { if (S.apCtx && C6().convs.find(v => v.id === S.apCtx)) { S.conv = S.apCtx; go('chat', {replace:true}); setTimeout(scrollChat, 20); return; } back(); },
-  apSendCtx: () => { const v = sendCard(S.apCtx, S.apTok); toast(`Red Packet sent to ${v.name}.`); S.conv = v.id; go('chat', {replace:true}); setTimeout(scrollChat, 20); },
+  apSendCtx: () => { const v = sendCard(S.apCtx, S.apTok); if (!v) return; toast(`Red Packet sent to ${v.name}.`); S.conv = v.id; go('chat', {replace:true}); setTimeout(scrollChat, 20); },
   apPickChat: () => { S.apPickK = 'chat'; openSheet('apPick'); },
   apPickGroup: () => { S.apPickK = 'group'; openSheet('apPick'); },
-  apSendTo: el => { const v = sendCard(el.dataset.id, S.apTok); S.sheetAnim = false; render(); toast(`Red Packet sent to ${v.name}.`); },
+  apSendTo: el => { const v = sendCard(el.dataset.id, S.apTok); if (!v) return; S.sheetAnim = false; render(); toast(`Red Packet sent to ${v.name}.`); },
   apCopy: () => { const a = apGet(S.apTok); try { navigator.clipboard.writeText('https://' + link(a)).catch(()=>{}); } catch(e) {} toast('Red Packet link copied.'); },
   apDetail: el => { if (el && el.dataset && el.dataset.tok) S.apTok = el.dataset.tok; go('apdet'); },
   apList: () => { S.apTab = 'sent'; go('aplist'); },
@@ -446,8 +584,8 @@ Object.assign(A, {
     if (focused) document.getElementById(`aphist-tab-${S.apTab}`)?.focus({preventScroll:true});
   },
   apHistoryChats: () => { S.ctab = 'message'; S.cq = ''; go('chats'); },
-  apOpenTok: el => { S.apTok = el.dataset.tok; S.apJust = false; go('aprecv'); },
-  apTap: el => { const a = apGet(el.dataset.tok); S.apTok = el.dataset.tok; S.apJust = false; S.apSim = null;
+  apOpenTok: el => { S.apTok = el.dataset.tok; S.apJust = false; S.apSource = null; S.apShowOpeners = false; go('aprecv'); },
+  apTap: el => { const a = apGet(el.dataset.tok); S.apTok = el.dataset.tok; S.apJust = false; S.apSim = null; S.apSource = S.screen === 'chat' ? S.conv : null; S.apShowOpeners = false;
     if (a && a.creator === 'me') { go('apdet'); return; } go('aprecv'); },
   apOpenIt: () => {
     const a = apGet(S.apTok);
@@ -465,7 +603,9 @@ Object.assign(A, {
       if (viewingPacket()) {
         S.apJust = true;
         render();
-        document.querySelector('.apreceive-result')?.focus();
+        S.apJust = false;
+        apAnimatePayout();
+        document.querySelector('.apreceive-result')?.focus({preventScroll:true});
       } else if ((S.screen === 'chat' || S.screen === 'bchat') &&
         [...document.querySelectorAll('.rp-chat-card')].some(card => card.dataset.tok === a.token)) render();
     }, matchMedia('(prefers-reduced-motion: reduce)').matches ? 0 : 620);
@@ -482,8 +622,21 @@ Object.assign(A, {
   apExpireNow: () => { const a = apMine().reverse().find(x => x.status === 'ACTIVE'); if (!a) { toast('No active red packet of yours to expire.'); return; }
     if (!a.expiresAt) { a.expiresAt = NOW() - 1000; a.expLbl = a.expLbl === 'Never expires' ? 'Test expiry' : a.expLbl; } else a.expiresAt = NOW() - 1000; redPackets.settle(a); render(); },
 });
-/* back to the red packet after onboarding (section 2 gate / section 6 checks) */
-A.walletDone = (orig => el => { if (S.apResume) { const r = S.apResume; S.apResume = null; S.hist = S.hist.filter(h => !['gate','activate','walletActive','verifying'].includes(h)); go(r, {replace:true}); return; } orig(el); })(A.walletDone);
+function resumeRedPacketAfterWallet() {
+  const target = S.apResume;
+  if (S.actFrom !== 'angpao' || !isRedPacketEntry(target) || !apReady()) return false;
+  S.apResume = null;
+  S.actFrom = null;
+  S.hist = S.hist.filter(screen => ![target, 'gate', 'activate', 'walletActive', 'verifying'].includes(screen));
+  wallet2Frame()?.__set?.('kyc', 'passed');
+  go(target, {replace:true});
+  return true;
+}
+const walletDoneBeforeRedPacket = A.walletDone;
+A.walletDone = el => {
+  if (!resumeRedPacketAfterWallet()) walletDoneBeforeRedPacket(el);
+};
+window.__resumeRedPacketAfterWallet = () => S.screen === 'activate' && resumeRedPacketAfterWallet();
 
 /* text inputs */
 document.addEventListener('input', e => { const k = e.target.dataset && e.target.dataset.apf; if (!k || !S.apf) return;
@@ -496,7 +649,7 @@ document.addEventListener('input', e => { const k = e.target.dataset && e.target
   const n = document.getElementById(id); if (n) { n.focus({preventScroll:true}); try { n.setSelectionRange(pos, pos); } catch(x) {} } });
 
 /* demo entry points (shell Quick scenario / internal panel) */
-function apDemo(st){ apSeed(); S.apSim = null; S.apJust = false;
+function apDemo(st){ apSeed(); S.apSim = null; S.apJust = false; S.apSource = null; S.apShowOpeners = false;
   if (st === 'guest' || st === 'kyc') { S.apSim = st; S.apTok = 'apCatherine'; return 'aprecv'; }
   if (st === 'notfound') { S.apTok = 'zzNotARealToken'; return 'aprecv'; }
   if (st === 'ended') { S.apTok = 'apSeraKopi'; return 'aprecv'; }
@@ -549,58 +702,113 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
 
 /* ===== V2 · Send Red Packet, simplified (no fee, no confirm screen, PIN shows the summary) ===== */
 (function(){
-  const ENV = '<svg viewBox="0 0 48 48" aria-hidden="true"><g transform="rotate(-10 24 24)"><rect x="10" y="6" width="26" height="36" rx="5" fill="#E8333A"/><path d="M10 11a5 5 0 0 1 5-5h16a5 5 0 0 1 5 5v5c-3.8 3.4-8.2 5.2-13 5.2S13.8 19.4 10 16z" fill="#C81E2B"/><circle cx="23" cy="21.5" r="4.8" fill="#F7C548"/><circle cx="23" cy="21.5" r="2" fill="#E0A528"/></g><path d="M40 7l1.4 3.6M44 12.5l-3.4 1M42.5 4.5l.2 2.2" stroke="#F2B035" stroke-width="2" stroke-linecap="round"/></svg>';
   const MINUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 12h12"/></svg>';
-  const PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M12 6v12M6 12h12"/></svg>';
-  const MODE_COPY = {
-    random:['Surprise shares', 'Set a total and choose how many people can share it. Each gets a random amount.'],
-    equal:['Same share for all', 'Choose how much each person gets. Everyone receives the same amount.'],
-    lucky:['One draw each', 'Set a budget. Each person gets one draw while funds last.'],
-  };
-  const STACK_ART = `<span class="ap-art-packet"></span><span class="ap-art-packet"></span><span class="ap-art-packet"></span>
-    <span class="ap-art-stack ap-art-stack--left"></span><span class="ap-art-stack ap-art-stack--middle"></span><span class="ap-art-stack ap-art-stack--right"></span>`;
-  const OPEN_ART = `<span class="ap-art-open"></span><span class="ap-art-coin ap-art-coin--high"></span><span class="ap-art-coin ap-art-coin--small"></span>`;
-  function modePanel(mode){
-    const [title, detail] = MODE_COPY[mode];
-    return `<section class="ap-mode-panel" data-mode="${mode}" aria-labelledby="apModeTitle">
-      <div class="ap-mode-copy"><h2 id="apModeTitle">${title}</h2><p>${detail}</p></div>
-      <div class="ap-mode-art ap-mode-art--${mode}" aria-hidden="true">${mode === 'lucky' ? OPEN_ART : STACK_ART}
-        <span class="ap-art-spark ap-art-spark--top"></span><span class="ap-art-spark ap-art-spark--side"></span>
-      </div>
+  const PLUS = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 12h12M12 6v12"/></svg>';
+  const MESSAGES = ['Best wishes!', '恭喜发财', 'Selamat Hari Raya', 'Happy birthday!', 'Thank you!'];
+
+  function updateCreationControl(selector, change) {
+    const scrollTop = document.getElementById('apScroll')?.scrollTop || 0;
+    const focus = document.activeElement?.matches(':focus-visible');
+    change();
+    render();
+    const scroll = document.getElementById('apScroll');
+    if (scroll) scroll.scrollTop = scrollTop;
+    if (focus) scroll?.querySelector(selector)?.focus({preventScroll:true});
+  }
+
+  function expiryFields(f, r) {
+    const unit = f.expUnit || 'days';
+    const max = unit === 'hours' ? 168 : 365;
+    const duration = !f.forever && f.dur === 'custom' && (!f.days || r.e.days) ? 'Set a custom expiry' : `Comes back to you after ${f.forever ? '' : expOf().lbl}`;
+    const label = f.forever ? 'Comes back to you when you cancel' : duration;
+    return `<section class="rp20-box rp20-exp">
+      <button type="button" data-act="apExpiryOptions" aria-expanded="${f.expiryOpen}" aria-controls="apExpiryFields">${ic('clock')}
+        <span class="rp20-exp-copy"><small>Leftover money</small><b>${label}</b></span>${ic('chevdown')}</button>
+      <div id="apExpiryFields"${f.expiryOpen ? '' : ' hidden'}><div class="apexp">
+        <button type="button" class="apchk" role="checkbox" aria-checked="${f.forever}" data-act="apForever"><i>${f.forever?'✓':''}</i><span><b>Never expires</b><small>Choose when unclaimed MYRT returns to your wallet.</small></span></button>
+        ${f.forever ? '' : `<div class="apdurs">${DURS.map(([v,t]) => `<button type="button" aria-pressed="${f.dur===v}" data-act="apDur" data-v="${v}">${t}</button>`).join('')}</div>
+        ${f.dur === 'custom' ? `<div class="apcustom"><div class="apunits" role="group" aria-label="Custom expiry unit">${['hours','days'].map(value => `<button type="button" aria-pressed="${unit === value}" data-act="apExpUnit" data-v="${value}">${value === 'hours' ? 'Hours' : 'Days'}</button>`).join('')}</div>
+          ${fld('apDays','days',`Number of ${unit}`,f.days,{mode:'numeric', ph:`1–${max}`, suf:unit, err:r.e.days, help:`Whole ${unit}, 1 to ${max}`})}</div>` : ''}`}
+      </div></div>
     </section>`;
   }
+
   V.apform = () => {
-    if (!apReady() || S.apSim) return gateHTML('Send Red Packet', 'send angpao', 'apform');
-    if (!S.apf) S.apf = apfNew();
-    const f = S.apf, r = apCalc(), lucky = isLucky(f), n = r.n;
-    const type = `<div class="apseg ap-modes" role="group" aria-label="Red Packet type">${Object.entries(AP_TYPES).map(([v,t]) => `<button type="button" aria-pressed="${f.type===v}" data-act="apType" data-v="${v}">${t}</button>`).join('')}</div>`;
-    const balLine = r.e.amt ? `<small class="ap2-e" id="apAmtH">${r.e.amt}</small>`
-      : r.e.bal ? `<small class="ap2-e" id="apAmtH">Not enough MYRT. <button class="link" data-act="apTopUp">Top up</button> to continue.</small>`
-      : `<small class="ap2-h2" id="apAmtH">Balance ${MY_(r.bal)}</small>`;
-    const amt = `<div class="ap2-f ${r.e.amt || r.e.bal ? 'err' : ''}"><label class="ap2-l" for="apAmt">${lucky ? 'Budget' : f.type === 'equal' ? 'Amount per person' : 'Total'}</label>
-      <div class="ap2-amt"><input id="apAmt" data-apf="amt" value="${esc(f.amt)}" inputmode="decimal" placeholder="0.00" autocomplete="off" aria-describedby="apAmtH"><em>MYRT</em></div>${balLine}</div>`;
-    const cnt = `<div class="ap2-f ap2-count ${r.e.count ? 'err' : ''}">
-      <div class="ap2-count-copy"><label class="ap2-l" id="apCountLabel" for="apCount">Number of people</label><small class="ap2-h2" id="apCountH">Up to 100 people</small></div>
-      <div class="ap2-step" role="group" aria-labelledby="apCountLabel">
-        <button type="button" data-act="apStep" data-d="-1" aria-label="One person fewer" ${n <= 1 ? 'aria-disabled="true"' : ''}>${MINUS}</button>
-        <input id="apCount" data-apf="count" value="${esc(f.count)}" inputmode="numeric" placeholder="0" autocomplete="off" aria-invalid="${Boolean(r.e.count)}" aria-describedby="apCountH${r.e.count ? ' apCountError' : ''}">
-        <button type="button" data-act="apStep" data-d="1" aria-label="One more person" ${n >= 100 ? 'aria-disabled="true"' : ''}>${PLUS}</button>
-      </div>
-      ${r.e.count ? `<small class="ap2-e" id="apCountError">${r.e.count}</small>` : ''}
+    if (!apReady() || S.apSim) return gateHTML('Send Red Packet', 'send a red packet');
+    const f = S.apf ||= apfNew();
+    const r = apCalc();
+    const theme = redPacketTheme(f.theme);
+    const chat = apConversation(S.apCtx);
+    const lucky = isLucky(f);
+    const copy = lucky ? 'Each person gets one draw while funds last.'
+      : f.type === 'random' ? 'Each person gets a random share of the total.'
+      : r.n && r.a ? `Total ${MY_(r.total)} · ${MY_(r.a)} × ${apPeople(r.n)}` : 'Everyone receives the same amount.';
+    const previewArt = theme === 'red' || theme === 'raya' ? 'preview' : 'scene';
+    const amountHelp = r.e.amt || r.e.lim;
+    const canSend = r.ok && !S.apBusy;
+    const action = r.total && !r.e.amt && !r.e.count && (lucky || r.n) ? `Send ${MY_(r.total)}` : 'Send';
+    return `<div class="screen rp20-form" style="${redPacketThemeStyle(theme)}">${statusBar()}
+      <div class="topbar"><button type="button" class="iconbtn" data-act="back" aria-label="Back">${ic('back')}</button><span class="rp20-title t-headline"><b>Red packet</b>${chat ? `<small>To ${esc(chat.name)}</small>` : ''}</span>
+        <button type="button" class="iconbtn" data-act="apList" aria-label="My red packets">${ic('apList')}</button></div>
+      <div class="scroll" id="apScroll"><div class="rp20-fields">
+        <div class="rp20-preview" aria-hidden="true">${redPacketArt(theme, previewArt, 'rp20-preview-background' + (previewArt === 'scene' ? ' rp20-preview-crop' : ''))}${redPacketArt(theme, 'packet', 'rp20-packet')}</div>
+        <div class="rp20-themes" role="group" aria-label="Packet design">
+          ${Object.entries(redPacketThemes).map(([key, design]) => `<button type="button" class="rp20-theme" data-act="apTheme" data-v="${key}" aria-pressed="${theme === key}">${redPacketArt(key,'packet')}<span>${design.name}</span></button>`).join('')}
+        </div>
+        <div class="apseg ap-modes" role="group" aria-label="Red Packet type">${Object.entries(AP_TYPES).map(([v,t]) => `<button type="button" aria-pressed="${f.type===v}" data-act="apType" data-v="${v}">${t}</button>`).join('')}</div>
+        <section class="rp20-box rp20-amount-box">
+          <label for="apAmt">${f.type === 'equal' ? 'Each person gets' : 'Total'}</label>
+          <div class="rp20-amount-line"><span>MYRT</span><div class="rp20-amount-field"><input id="apAmt" data-apf="amt" value="${esc(f.amt)}" inputmode="decimal" placeholder="0.00" autocomplete="off" aria-invalid="${Boolean(amountHelp || r.e.bal)}" aria-describedby="apAmtH${r.e.bal ? ' apAmtBalance' : ''}">
+            ${f.amt && Number.isFinite(r.a) ? `<span class="rp20-amount-display" aria-hidden="true">${C(r.a)}</span>` : ''}</div></div>
+          ${amountHelp ? `<p class="rp20-error" id="apAmtH">${esc(amountHelp)} ${r.e.lim ? '<button class="link" type="button" data-act="apUpgrade">Upgrade</button>' : ''}</p>` : ''}
+          <div class="rp20-wallet"><img class="rp20-wallet-flag" src="../features/red-packet/art/wallet-flag.svg" alt=""><span${amountHelp ? '' : ' id="apAmtH"'}>YouWallet · ${RM(r.bal / 100)}</span>
+            <button class="rp20-wallet-change" type="button" data-act="apChangeWallet" aria-label="Change wallet" aria-haspopup="dialog">Change ${ic('chevdown')}</button></div>
+          ${r.e.bal ? '<p class="rp20-error" id="apAmtBalance">Not enough MYRT in your wallet. <button class="link" type="button" data-act="apTopUp">Top up</button></p>' : ''}
+        </section>
+        ${lucky ? '' : `<div class="rp20-box rp20-people">${ic('group')}<div>
+          <label for="apCount">How many people${chat?.group && chat.mem ? ` · ${chat.mem.length} in group` : ''}</label><input id="apCount" data-apf="count" value="${esc(f.count)}" inputmode="numeric" placeholder="0" autocomplete="off" aria-invalid="${Boolean(r.e.count)}"></div>
+          <div class="ap2-step" role="group" aria-label="Number of people">
+            <button type="button" data-act="apStep" data-d="-1" aria-label="One person fewer" ${r.n <= 1 ? 'aria-disabled="true"' : ''}>${MINUS}</button>
+            <button type="button" data-act="apStep" data-d="1" aria-label="One more person" ${r.n >= 100 ? 'aria-disabled="true"' : ''}>${PLUS}</button>
+          </div>${r.e.count ? `<small class="rp20-error">${esc(r.e.count)}</small>` : ''}</div>`}
+        <p class="rp20-help">${copy}</p>
+        <section class="rp20-message"><div><label for="apMsg">Message <span>(optional)</span></label><span class="rp20-message-actions">${f.messageOpen ? `<span>${f.msg.length}/50</span>` : ''}<button type="button" data-act="apEditMessage" aria-expanded="${Boolean(f.messageOpen)}" aria-controls="apMsg">${f.messageOpen ? 'Done' : f.msg && !MESSAGES.includes(f.msg) ? 'Edit message' : 'Write a message'}</button></span></div>
+          <div class="rp20-presets" role="group" aria-label="Message suggestions">${MESSAGES.map((msg, i) => `<button type="button" data-act="apMessage" data-v="${i}" aria-pressed="${f.msg === msg}">${esc(msg)}</button>`).join('')}</div>
+          <input id="apMsg" data-apf="msg" value="${esc(f.msg)}" placeholder="Write a message" maxlength="50" autocomplete="off"${f.messageOpen ? '' : ' hidden'}>
+        </section>
+        ${expiryFields(f, r)}
+      </div></div>
+      <div class="rp20-footer"><button type="button" class="rp20-primary" data-act="apNext"${canSend ? '' : ' disabled'}>${S.apBusy ? 'Sending…' : action}</button></div>
     </div>`;
-    const msg = `<div class="ap2-f"><div class="ap2-lr"><label class="ap2-l" for="apMsg">Message <span>(optional)</span></label><small class="ap2-h2">${f.msg.length}/50</small></div>
-      <div class="ap2-box"><input id="apMsg" data-apf="msg" value="${esc(f.msg)}" placeholder="Best wishes!" maxlength="50" autocomplete="off"></div></div>`;
-    const unit = f.expUnit || 'days', max = unit === 'hours' ? 168 : 365;
-    const exp = `<div class="apexp"><button class="apchk" role="checkbox" aria-checked="${f.forever}" data-act="apForever"><i>${f.forever?'✓':''}</i><span><b>Never expires</b><small>${f.forever?'Unclaimed MYRT comes back when you cancel.':'Choose when unclaimed MYRT returns to your wallet.'}</small></span></button>
-      ${f.forever ? '' : `<div class="apdurs">${DURS.map(([v,t])=>`<button aria-pressed="${f.dur===v}" data-act="apDur" data-v="${v}">${t}</button>`).join('')}</div>
-        ${f.dur==='custom' ? `<div class="apcustom"><div class="apunits" role="group" aria-label="Custom expiry unit"><button aria-pressed="${unit==='hours'}" data-act="apExpUnit" data-v="hours">Hours</button><button aria-pressed="${unit==='days'}" data-act="apExpUnit" data-v="days">Days</button></div>${fld('apDays','days',`Number of ${unit}`, f.days, {mode:'numeric', ph:`1–${max}`, suf:unit, err:r.e.days, help:`Whole ${unit}, 1 to ${max}`})}</div>` : ''}`}</div>`;
-    const lim = r.e.lim && !r.e.bal ? `<div class="aplim">${ic('info')}<span>${r.e.lim}</span><button class="link" data-act="apUpgrade">Upgrade</button></div>` : '';
-    const label = r.total > 0 && (lucky || n > 0) && !r.e.amt && !r.e.count ? `Send ${MY_(r.total)}` : 'Send';
-    return `<div class="screen">${statusBar()}${topBar('Send Red Packet', `<button class="iconbtn" data-act="apList" aria-label="My red packets">${ic('apList')}</button>`)}
-      <div class="scroll" id="apScroll"><div class="pad16 ap2">${type}${modePanel(f.type)}${amt}${lucky ? '' : cnt}${msg}${exp}${lim}</div></div>
-      <div class="pad16 apfoot">${btn(label, 'apNext', {cls:'btn-block', loading:S.apBusy, disabled:!r.ok || S.apBusy})}</div></div>`;
   };
   Object.assign(A, {
+    apTheme: el => {
+      const theme = redPacketTheme(el.dataset.v);
+      if (theme === S.apf.theme) return;
+      updateCreationControl(`[data-act="apTheme"][data-v="${theme}"]`, () => { S.apf.theme = theme; });
+      if (matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+      document.querySelector('.rp20-preview .rp20-packet')?.animate(
+        [{opacity:.35, scale:.94, translate:'0 6px'}, {opacity:1, scale:1, translate:'0 0'}],
+        {duration:240, easing:'ease-out'}
+      );
+    },
+    apChangeWallet: () => {
+      updateCreationControl('[data-act="apChangeWallet"]', () => { S.sheet = 'apWallet'; S.sheetAnim = true; });
+      document.querySelector('[data-act="apWalletDone"].rp20-wallet-option')?.focus({preventScroll:true});
+    },
+    apWalletDone: () => {
+      updateCreationControl('[data-act="apChangeWallet"]', () => { S.sheet = null; });
+      document.querySelector('[data-act="apChangeWallet"]')?.focus({preventScroll:true});
+    },
+    apMessage: el => updateCreationControl(`[data-act="apMessage"][data-v="${el.dataset.v}"]`, () => { S.apf.msg = MESSAGES[Number(el.dataset.v)] || ''; S.apf.messageOpen = false; }),
+    apEditMessage: () => {
+      updateCreationControl('[data-act="apEditMessage"]', () => { S.apf.messageOpen = !S.apf.messageOpen; });
+      if (S.apf.messageOpen) document.getElementById('apMsg')?.focus();
+    },
+    apExpiryOptions: () => updateCreationControl('[data-act="apExpiryOptions"]', () => { S.apf.expiryOpen = !S.apf.expiryOpen; }),
+    apForever: () => updateCreationControl('[data-act="apForever"]', () => { S.apf.forever = !S.apf.forever; }),
+    apDur: el => updateCreationControl(`[data-act="apDur"][data-v="${el.dataset.v}"]`, () => { S.apf.dur = el.dataset.v; }),
+    apExpUnit: el => updateCreationControl(`[data-act="apExpUnit"][data-v="${el.dataset.v}"]`, () => { S.apf.expUnit = el.dataset.v; S.apf.days = ''; }),
     apStep: el => {
       if (el.getAttribute('aria-disabled') === 'true') return;
       const f = S.apf, direction = el.dataset.d;
@@ -620,7 +828,7 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
   overlayHTML = () => { let h = _ovApPin(); if (S.sheet !== 'pin' || S.authReason !== S.apAuthSum || !S.apAuthSum || S.screen !== 'apform') return h;
     const r = apCalc(); const sub = esc(S.apAuthSum);
     const hold = isLucky(S.apf) ? '<small>Set aside when you confirm</small>' : '';
-    return h.replace(sub, `<span class="ap2-pin"><span class="ap2-pin-e">${ENV}</span><b>${MY_(r.total)}</b>${hold}<small>${apTypeDetails({type:S.apf.type, count:r.n})} · ${expOf().lbl}</small></span>`); };
+    return h.replace(sub, `<span class="ap2-pin"><span class="ap2-pin-e">${redPacketArt(S.apf.theme, 'packet')}</span><b>${MY_(r.total)}</b>${hold}<small>${apTypeDetails({type:S.apf.type, count:r.n})} · ${expOf().lbl}</small></span>`); };
   /* the PIN step carries the summary the confirm screen used to show */
   const _authAp = auth;
   auth = function(reason, ok, opts){ if (reason === 'Send angpao' && S.apAuthSum) reason = S.apAuthSum; return _authAp(reason, ok, opts); };

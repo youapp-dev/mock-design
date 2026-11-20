@@ -92,7 +92,6 @@
 .wallet-reference .wr-money .tx .rt b, .wallet-reference .wr-money .cr .rt b { font-variant-numeric: tabular-nums; }
 .wallet-reference .wr-money .wr-transaction-icon { color: var(--deep); }
 .wallet-reference .wr-money .wr-transaction-icon .ico { width: 22px; height: 22px; }
-.wallet-reference .wr-money .adrow { margin-inline: 16px; }
 .wallet-reference .wr-asset-summary {
   position: relative;
   isolation: isolate;
@@ -145,11 +144,26 @@
 }
 .wallet-reference .wr-asset-wallet header h2 { flex: 1; min-width: 0; font: 750 13.5px/1.25 Inter, sans-serif; overflow-wrap: anywhere; }
 .wallet-reference .wr-asset-wallet header strong { text-align: right; font: 750 13px/1.25 Inter, sans-serif; }
+.wallet-reference .wr-currency-detail .wr-asset-wallet header { padding-block: 2px; }
+.wallet-reference .wr-asset-wallet-open {
+  display: inline-flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 8px;
+  min-width: 44px;
+  min-height: 44px;
+  padding: 0;
+  border: 0;
+  border-radius: 8px;
+  background: transparent;
+}
+.wallet-reference .wr-asset-wallet-open:active { background: var(--lav2); }
+.wallet-reference .wr-asset-wallet-open .ico { flex: none; width: 14px; height: 14px; color: var(--deep); }
 .wallet-reference .wr-asset-wallet ul { list-style: none; }
 .wallet-reference .wr-asset-wallet li + li { border-top: 1px solid var(--line); }
 .wallet-reference .wr-asset-row {
   display: grid;
-  grid-template-columns: auto minmax(0, 1fr) minmax(0, auto) 14px;
+  grid-template-columns: auto minmax(0, 1fr) minmax(0, auto);
   align-items: center;
   column-gap: 9px;
   width: 100%;
@@ -161,7 +175,6 @@
   text-align: left;
   font: inherit;
 }
-.wallet-reference .wr-asset-row:active { background: var(--lav); }
 .wallet-reference .wr-asset-icon {
   display: grid;
   place-items: center;
@@ -176,18 +189,19 @@
 .wallet-reference .wr-asset-icon img { display: block; width: 100%; height: 100%; object-fit: cover; }
 .wallet-reference [data-token="DAI"] .wr-asset-icon { background: var(--goldbg); color: var(--golddk); }
 .wallet-reference [data-token="PYUSD"] .wr-asset-icon { background: #e6f0ff; color: #164a92; }
-.wallet-reference .wr-asset-row > .ico { width: 14px; height: 14px; color: var(--mut); }
 .wallet-reference .wr-asset-name, .wallet-reference .wr-asset-value { min-width: 0; overflow-wrap: anywhere; }
 .wallet-reference .wr-asset-value { text-align: right; }
 .wallet-reference .wr-asset-name b, .wallet-reference .wr-asset-value b { display: block; font: 750 14px/1.25 Inter, sans-serif; }
 .wallet-reference .wr-asset-name small, .wallet-reference .wr-asset-value small { display: block; margin-top: 3px; color: var(--mut); font: 500 12px/1.25 Inter, sans-serif; }
 .wallet-reference .wr-asset-total, .wallet-reference .wr-asset-estimate,
 .wallet-reference .wr-asset-wallet header strong, .wallet-reference .wr-asset-value { font-variant-numeric: tabular-nums; }
-.wallet-reference .wr-ext-identity { display: flex; align-items: center; gap: 9px; }
-.wallet-reference .wr-ext-summary .wr-asset-estimate { font-family: ui-monospace, monospace; }
-.wallet-reference [data-reference="externalwallet"] .wr-asset-wallet header { justify-content: space-between; }
-.wallet-reference [data-reference="externalwallet"] .wr-asset-wallet header small { color: var(--mut); font: 600 12px Inter, sans-serif; }
-.wallet-reference [data-reference="externalwallet"] .wr-asset-row { grid-template-columns: auto minmax(0, 1fr) minmax(0, auto); }
+.wallet-reference .wr-wallet-identity { display: flex; align-items: center; gap: 9px; }
+.wallet-reference .wr-wallet-summary .wr-asset-estimate { font-family: ui-monospace, monospace; }
+.wallet-reference .wr-wallet-detail .wr-asset-wallet header { justify-content: space-between; }
+.wallet-reference .wr-wallet-detail .wr-asset-wallet header small { color: var(--mut); font: 600 12px Inter, sans-serif; }
+.wallet-reference .wr-wallet-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.wallet-reference .wr-wallet-actions .btn { height: auto; min-height: var(--control-md, 48px); padding: 8px 12px; }
+.wallet-reference .wr-wallet-actions .wr-wallet-main-action { grid-column: 1 / -1; }
 .wallet-reference .wr-ext-hidden {
   display: flex;
   align-items: center;

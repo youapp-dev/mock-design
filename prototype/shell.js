@@ -9,6 +9,7 @@
   const ready = k => { try { return !!win(k).__open; } catch(e){ return false; } };
   window.YouAppPrototypeWallet = {
     baseCents: () => win('w2').__apBal?.(),
+    connectedNames: () => win('w2').__apConnectedNames?.() ?? [],
     redPacketDelta: () => win('a30').__apWalletDelta?.() ?? 0,
     refreshBalance() {
       if (active === 'w2') win('w2').__refresh?.();
@@ -47,6 +48,11 @@
       win('a30').__set(k, v);
       const a = ctxOf('a30');
       win('w2').__set('kyc', a.kyc==='approved' && a.wallet==='active' ? 'passed' : a.kyc==='rejected' ? 'rejected' : 'none');
+      if (k === 'wallet' && v === 'reconnect') {
+        if (active !== 'a30' || a.screen !== 'activate') win('a30').__open('activate', {reconnectPreview:true});
+        show('a30');
+        closeP();
+      }
     } else {
       win('w2').__set(k, v);
       if (k==='lvl' && v!=='0') { win('w2').__set('fph','2'); if (ctxOf('w2').sh!=='active') win('w2').__set('sh','active'); }
@@ -64,10 +70,10 @@
 
   function status(){
     const st = ctxOf(active);
-    document.querySelector('.stage').classList.toggle('has-preview-dock', active==='w2' || st.screen==='apform');
+    document.querySelector('.stage').classList.toggle('has-preview-dock', active==='w2' || st.screen==='apform' || st.screen==='activate');
     document.getElementById('nowTag').textContent = active==='a30' ? '3.0' : 'Wallet 2.0';
     document.getElementById('nowTag').classList.toggle('w2', active==='w2');
-    document.getElementById('nowName').textContent = YouAppPrototypeRoutes.label(st.screen);
+    document.getElementById('nowName').textContent = st.screen==='activate' && st.wallet==='reconnect' ? 'Reconnect Wallet' : YouAppPrototypeRoutes.label(st.screen);
     const a = ctxOf('a30'), w = ctxOf('w2');
     const cur = {gList:a.gList||'empty', mreq:w.mreq||'none', fph:w.fph||'1', lvl:w.lvl||'0', elChk:w.elChk||'first90', kyc:a.kyc, wallet:a.wallet, host:a.hostSt, tier:w.tier, vipEnd:w.vipEnd, sh:w.sh, ref:w.ref==='none'?'none':'scarlette', paid:w.paid||'no', criteria:w.criteria, biz:w.biz, merch:w.merch||'has', pz:w.pz||'won'};
     document.querySelectorAll('[data-s]').forEach(b => b.setAttribute('aria-pressed', String(cur[b.dataset.s]===b.dataset.v)));

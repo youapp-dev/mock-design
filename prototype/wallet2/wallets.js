@@ -64,7 +64,7 @@ SHEETS.xsReview = () => { let h = _xsReview(); const w = xsFromW();
 
 /* waiting for the external wallet app (send, pay, top up, connect, sign) */
 V.mwWait = () => { const k = S.mwWait||{}; const app = k.app||'MetaMask';
-  const t = {send:'Approve the transfer', pay:'Approve the payment', topup:'Approve the top up', connect:'Approve the connection', sign:'Sign the message'}[k.kind]||'Approve';
+  const t = {send:'Approve the transfer', pay:'Approve the payment', topup:'Approve the top up', connect:'Approve the connection', reconnect:'Approve the reconnection', sign:'Sign the message'}[k.kind]||'Approve';
   return `<div class="screen bz">${statusBar()}${topBar(k.title||'Confirm')}
   <div class="scroll"><div class="pad16 stack" style="gap:14px; align-items:center; text-align:center; padding-top:56px">
     <span class="mw-bd ext xl">${app[0]}</span><h1 class="t-title" style="margin:0">Waiting for ${esc(app)}…</h1>
@@ -72,10 +72,10 @@ V.mwWait = () => { const k = S.mwWait||{}; const app = k.app||'MetaMask';
     ${k.kind==='sign'||k.kind==='connect'?'<span class="tag act">No gas fee</span>':''}</div></div>
   <div class="w2foot">${btn(`Open ${esc(app)}`,'mwApprove')}${btn('Cancel','mwCancel',{kind:'btn-tertiary'})}<p class="t-caption subtle" style="margin:0; text-align:center">Demo: Open ${esc(app)} plays the result from the scenario “Approval in wallet app”.</p></div></div>`; };
 V.mwCancelled = () => { const k = S.mwWait||{}; const app = k.app||'MetaMask';
-  const msg = k.kind==='pay' ? 'Payment cancelled in '+app : k.kind==='sign'||k.kind==='connect' ? 'Signature cancelled' : 'Cancelled in '+app;
+  const msg = k.kind==='reconnect' ? 'Wallet reconnection cancelled' : k.kind==='pay' ? 'Payment cancelled in '+app : k.kind==='sign'||k.kind==='connect' ? 'Signature cancelled' : 'Cancelled in '+app;
   return `<div class="screen bz">${statusBar()}${topBar(k.title||'Confirm')}
   <div class="scroll"><div class="pad16 stack" style="gap:12px; padding-top:40px; text-align:center; align-items:center"><span class="big warn">${ic('xcircle')}</span><h1 class="t-title" style="margin:0">${esc(msg)}</h1>
-  <p class="t-body muted" style="margin:0">${k.kind==='sign'||k.kind==='connect'?'The wallet wasn’t linked. Try again when you’re ready.':'Nothing was charged.'}</p></div></div>
+  <p class="t-body muted" style="margin:0">${k.kind==='reconnect'?'Try again to restore access to this wallet.':k.kind==='sign'||k.kind==='connect'?'The wallet wasn’t linked. Try again when you’re ready.':'Nothing was charged.'}</p></div></div>
   <div class="w2foot">${btn('Try again','mwRetry')}${k.kind==='pay'&&wHasYa()?btn('Pay with YouApp wallet','mwPayYa',{kind:'btn-secondary'}):btn('Close','mwClose',{kind:'btn-tertiary'})}</div></div>`; };
 
 /* Activate wallet: choose */
@@ -190,6 +190,17 @@ V.settings = () => _settings().replace(/<button class="st-row" data-act="copy"[^
 
 const wSetWl = ids => { scen.wl = ids.join(','); if (!ids.includes(scen.mainW)) scen.mainW = ids[0]; saveScen(); };
 const mwStart = (kind, app, title, next) => { S.sheet = null; S.mwWait = {kind, app, title, next}; go('mwWait'); };
+window.__mainWalletForReconnect = () => {
+  const wallet = wMain();
+  return wallet ? {name:wallet.ext ? wallet.name : 'YouApp Wallet', ext:wallet.ext,
+    app:wallet.app, address:xsShort(wallet.addr)} : null;
+};
+walletEntryRoutes.walletReconnect = () => {
+  const wallet = wMain();
+  if (!wallet?.ext) return 'home';
+  S.mwWait = {kind:'reconnect', app:wallet.app, title:'Reconnect Wallet', next:'reconnect'};
+  return 'mwWait';
+};
 Object.assign(A, {
   mwFromPick: el => { const x = xsInit(); x.from = el.dataset.id; x.tok = null; x.amt=''; S.sheet = null; render(); },
   mwTokPick: el => { const x = xsInit(); x.tok = el.dataset.k; x.amt=''; S.sheet = null; render(); },
@@ -202,11 +213,15 @@ Object.assign(A, {
     if (k.next==='send') { const x = xsInit(); x.fail=false; x.bgDone=false; go('xsProc',{replace:true}); xsRun(); }
     else if (k.next==='pay') go('done',{replace:true});
     else if (k.next==='topup') go('tuExtDone',{replace:true});
+    else if (k.next==='reconnect') {
+      scen.extSess = 'on'; saveScen(); S.mwWait = null;
+      window.parent.__bridge('w2', 'walletReconnected');
+    }
     else if (k.next==='connect') go('wVerify',{replace:true});
     else if (k.next==='sign') { S.wUseMain = undefined; go('wConnected',{replace:true}); } },
   mwCancel: () => { go('mwCancelled',{replace:true}); },
   mwRetry: () => { const k = S.mwWait||{}; go('mwWait',{replace:true}); },
-  mwClose: () => { S.hist = S.hist.filter(k=>!/^(mw|w[A-Z])/.test(k)); S.screen = S.hist.pop() || 'home'; render(); },
+  mwClose: () => { if (S.mwWait?.kind === 'reconnect') { S.mwWait = null; back(); return; } S.hist = S.hist.filter(k=>!/^(mw|w[A-Z])/.test(k)); S.screen = S.hist.pop() || 'home'; render(); },
   wPick: el => { S.wPick = el.dataset.k; render(); },
   wChooseGo: () => { if ((S.wPick||'ya')==='ya') { wSetWl(['ya']); scen.mainW='ya'; saveScen(); go('kycActive',{replace:true}); } else { S.sheet = 'wProv'; render(); } },
   wAdd: () => { S.wCtx = 'add'; S.sheet = 'wProv'; render(); },
@@ -216,8 +231,16 @@ Object.assign(A, {
   wUseMain: () => { if (S.wCtx==='activate') return; S.wUseMain = !(S.wUseMain); render(); },
   wConnDone: () => { const id = S.wApp==='Coinbase Wallet' ? 'cb' : 'mm'; if (id==='mm') { const a = S.wApp||'MetaMask'; Object.assign(W_ALL.mm, {name:a, app:a, ini:a[0]}); }
     if (S.wCtx==='activate') { wSetWl([id]); scen.mainW = id; scen.kyc = 'passed'; saveScen(); S.wCtx = null;
-      try { const a = window.parent.document.getElementById('a30').contentWindow; a.__set && a.__set('wallet','active'); } catch(e){}
-      S.hist=['discover']; S.screen='home'; render(); toast(`${W_ALL[id].name} is your Main wallet.`); return; }
+      let resumedRedPacket = false;
+      try {
+        const a = window.parent.document.getElementById('a30').contentWindow;
+        a.__set?.('wallet','active');
+        resumedRedPacket = a.__resumeRedPacketAfterWallet?.();
+      } catch(e) {}
+      S.hist = ['discover']; S.screen = 'home'; render();
+      if (resumedRedPacket) window.parent.__bridge('w2', '__back');
+      else toast(`${W_ALL[id].name} is your Main wallet.`);
+      return; }
     let ids = wIds(); if (!ids.includes(id)) ids.push(id); else if (!ids.includes('cb')) { ids.push('cb'); } wSetWl(ids); if (S.wUseMain) { scen.mainW = id; saveScen(); }
     S.hist = S.hist.filter(k=>!/^(mw|w[A-Z])/.test(k)); go('wallets',{replace:true}); toast(`${W_ALL[id].name} added.`); },
   wOpen: el => { S.wSel = el.dataset.id; go('wDetail'); },
@@ -305,6 +328,7 @@ SVG.apGift = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 A.apOpen = () => { try { window.parent.__bridge('w2', 'apNew', {kyc:scen.kyc}); } catch(e) { toast('Red Packet opens in the full flow.'); } };
 /* Base balance excludes Red Packet movements, which are applied by bal(). */
 window.__apBal = () => wHasYa() ? walletCashBaseCents() : 0;
+window.__apConnectedNames = () => wList().filter(wallet => wallet.ext).map(wallet => wallet.name);
 try { render(); } catch(e) {}
 
 /* V2 · Activity V3: My Activities on the You page, Create Service on the Host tab */

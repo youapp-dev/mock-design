@@ -12,6 +12,23 @@ Source **Cing, November 19, 2026**, relaying Florence's request
 - **Luckiest** marks the largest claim so far. If two claims tie for the largest amount, the earlier claim gets the badge.
 - Random and Equal split still use a recipient count. All three modes support **Never expires**, presets, and **Custom** durations in hours or days.
 
+## November 20 design update
+
+- Creation, chat cards, and receiving screens use the Red, Raya, Deepavali, Birthday, and YouApp artwork from the supplied November 20 reference. The selected design travels with the packet. Older packets use Red.
+- In a chat, open **Attachments → Red Packet** to create or share a packet. PIN confirmation posts a new packet to that conversation and plays the send animation. Wallet and History entry points offer chat, link, and QR sharing after confirmation.
+- Verified users who need wallet activation or reconnection enter the shared wallet screen. Completing it returns to the same Red Packet draft or incoming packet.
+- The opening sequence lifts the envelope flap and card, plays the existing bills and coins burst, and counts up to the recorded payout in the result sheet. Reduced motion shows the settled result directly.
+- **Say thanks** drafts a message in the originating chat when available. **Send one back** starts a new packet for an available conversation with the sender. Completed Random and Lucky draw packets use the winner recap, while Equal split uses a neutral summary.
+- The form shows the packet total in MYRT and the YouWallet balance in RM. **Change** opens the wallet picker. YouWallet funds Red Packets, and connected wallets appear as unavailable in the picker. Random distributes its configured total across the chosen slots. The compact leftover-money row opens the expiry controls and shows the applicable refund timing.
+
+### November 20 browser verification
+
+Passed the Chrome prototype suite through `/mock-design/` on Windows at desktop widths and at 390, 375, and 320 px. The suite exercised all five themes, the three mode layouts, custom messaging, both expiry units, the PIN summary, delivery to a group chat, repeat-claim protection, a cancellation refund, and reduced-motion opening. It also checked the invalid, expired, and fully claimed receive screens. The 390 px Random creation and receive captures were compared with the supplied reference.
+
+The Leftover money summary fit at 390, 375, and 320 px. At 390 px, **Change → Top up YouWallet → Back** returned to the open chat draft, and the theme preview respected reduced motion.
+
+Desktop Chrome verified Back to chat from activation, YouWallet OTP activation returning to the sender draft, and PIN reconnection returning to the same incoming packet. At 390 px, the simulated external-wallet activation also returned to the sender draft.
+
 ## Prototype and QA
 
 Open **Red Packet → Create → Lucky draw**. To test as a recipient, open **Lucky draw from Lara** or the **Try your luck!** card in Lara's chat. Use **KYC Approved** and **Wallet Active**.

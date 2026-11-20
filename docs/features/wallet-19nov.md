@@ -5,7 +5,7 @@ Design source **Design_update_19nov**, November 19, 2026
 
 ## Redesign from the reference HTML
 
-The prototype uses the layout, illustrations, colors, logos, and icons from `Design_update_19nov/youapp-wallet-screens/index.html`. Open **YouPage** with **KYC Approved** and **Wallet Active** to try the design. The **Free** tier shows the SVIP banner from the reference.
+The prototype uses the layout, illustrations, colors, logos, and icons from `Design_update_19nov/youapp-wallet-screens/index.html`. Open **YouPage** with **KYC Approved** and **Wallet Active** to try the design. On the **Free** tier, **YouPage** shows the SVIP referral banner from the reference.
 
 | Section | Updated screens | What to try |
 | --- | --- | --- |
@@ -22,11 +22,15 @@ The profile name, transactions, currencies, balances, and referral statistics re
 
 **Top up** uses the headings and order from the reference. Currency options sit in a single swipeable row with a hidden scrollbar. The deposit note sits below the scroll area and shows the selected currency. Each payment method displays its fee.
 
-**My money** follows the reference order for balances, wallets, currencies, and transactions. Wallet filters sit in a single swipeable row with a hidden scrollbar. Selecting a wallet adds its name to the balance heading. Hiding balances also hides the chart. **Recent** shows the relevant icons and statuses for each transaction.
+**My money** follows the reference order for balances, wallets, currencies, and transactions. Wallet filters sit in a single swipeable row with a hidden scrollbar. Selecting a wallet adds its name to the balance heading. Hiding balances also hides the chart. **Recent** lists transactions consecutively with their icons and statuses. The SVIP fee banner was removed from this screen to keep the list focused on transactions.
 
-**Currency details** show the balance in the selected currency, an estimated value in RM, and subtotals by wallet. The list shows token icons and distinguishes token quantities from estimated RM values. Tap a token to open the wallet that holds it.
+**Currency details** show the balance in the selected currency, an estimated value in RM, and subtotals by wallet. The list shows token icons and distinguishes token quantities from estimated RM values. Tap the subtotal or chevron in a wallet header to open that wallet. Token rows are read-only.
+
+**YouApp Wallet details** use the same balance card and asset list as connected wallets, with the YouApp Wallet logo and a Main indicator when selected. Send, Receive, and Pay Bills open their existing flows. Rename displays demo feedback.
 
 **External wallets** show balances, verified tokens, and connection settings. The **Set as main** switch picks the default wallet for Scan to Pay. Turning it off falls back to YouApp Wallet if available, then another connected wallet. **Disconnect wallet** requires confirmation. If only one wallet remains, create a YouApp Wallet before disconnecting it.
+
+**Reconnect Wallet** is a separate scenario for an expired wallet session after identity approval. It uses the activation layout and shows the last Main wallet in a single read-only card. The button reconnects that wallet. YouApp Wallet uses the existing PIN prompt. An external Main wallet uses simulated approval in its wallet app, with Cancel and Try Again. Successful reconnection restores access and preserves the wallet list, balances, and Main setting. **Quick Scenario → Wallet → Reconnect** opens the preview. Actual session expiry and provider reauthorization require iOS and Android verification.
 
 **Choose your plan** keeps the reference illustrations, tabs, and benefit order. Cards adapt to the screen width so all four benefits, requirements, and buttons remain readable. The **Current** label reflects the account tier. Annual VIP displays RM120 to match prototype checkout.
 
@@ -35,6 +39,12 @@ Wallet providers, quotes, top-ups, and payments use demo data. The stablecoin QR
 **Chrome QA** covers entry through YouPage, hiding balances, Booking Balance, single and multiple wallets, MetaMask and OKX connections, open-amount and fixed-amount QR codes, internal and external debits, quote refresh, pending payments and retries, card top-ups, stablecoin selection, opening a receipt from Settings, VIP checkout, Rewards and referral filters, preference changes, and the waitlist. At 375 px, QA checked access to the referral QR code, My money, currency selection, and the top-up keypad. Prototype controls sit outside the Wallet screen on mobile.
 
 The Chrome comparison on the Free tier checked avatar size, card corner radius, chip spacing, and profile order against the reference HTML. QA also checked banners in Free and SVIP, the name after **Save Changes**, access to wallet actions, and verification text at 320 px.
+
+**Chrome QA passed** for the uninterrupted Recent list, **See all**, and the empty MetaMask transaction state. From **My money → US dollar**, QA opened YouApp Wallet, MetaMask, and OKX Wallet from their header buttons and confirmed that token rows had no chevrons. At 375 px, QA also opened MetaMask from its header and checked Back navigation.
+
+From the same currency screen, Chrome QA compared all three wallet detail layouts at a 390 px phone width. Send, Receive, Pay Bills, and Set as Main worked from YouApp Wallet. At 375 px, all four default action buttons fit above the prototype controls.
+
+Chrome QA checked **Reconnect Wallet** from Quick Scenario and the expired YouPage banner. The desktop run set YouApp Wallet and OKX as Main in turn and verified that each appeared as the sole wallet card. It covered PIN dismissal and confirmation, OKX cancellation and retry, and preserved wallet IDs, Main setting, and balances. At 375 px, the reconnect button stayed visible and PIN confirmation restored access.
 
 The HTML audit corrected the position of the **Pay with** bottom sheet and restored **Top up to use** with the currency preselected. Wallet and friend filter rows keep their swipe position when the selection changes. Referral history shows initials only. Settings shows the wallet count when more than two providers are connected.
 

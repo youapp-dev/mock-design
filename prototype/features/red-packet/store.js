@@ -81,7 +81,7 @@ function createRedPacketStore({rates, onMovement, onExpiry, onScheduledExpiry}) 
       type:options.type, total, per:options.per || 0, fee:options.fee || 0, count:lucky ? null : options.count,
       msg:options.msg || '', status:'ACTIVE', expiresAt:options.expiresAt || null,
       expLbl:options.expLbl || 'Never expires', createdAt:options.createdAt || Date.now(),
-      refunded:0, historical:!!options.historical, slots, sentTo:[],
+      refunded:0, historical:!!options.historical, slots, sentTo:[], theme:options.theme,
     };
     if (lucky) packet.luckyRates = options.luckyRates || rates.current();
     (options.claimed || []).forEach((by, i) => {

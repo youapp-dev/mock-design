@@ -93,7 +93,8 @@
 .srow.mer-addr{display:flex!important; grid-template-columns:none!important} .srow.mer-addr>.ico{flex:none; width:20px; height:20px; color:var(--a-indigo)} .srow.mer-addr>.t-body{text-align:left; justify-self:auto}
 
 .actcs{display:flex; flex-direction:column; gap:10px}
-.actc{display:flex; flex-direction:column; gap:6px; text-align:left; background:#fff; border:1.5px solid #e5e4e7; border-radius:16px; padding:14px; font:inherit; color:inherit; cursor:pointer}
+.actc{display:flex; flex-direction:column; gap:6px; text-align:left; background:#fff; border:1.5px solid #e5e4e7; border-radius:16px; padding:14px; font:inherit; color:inherit}
+button.actc{cursor:pointer}
 .actc.on{border-color:#38168e; box-shadow:0 0 0 3px #f2edfc}
 .actc-h{display:flex; justify-content:space-between; align-items:center; gap:8px} .actc-h b{font-size:16px}
 .actc-d{font-size:13px; color:#66616b; line-height:18px}
@@ -2825,7 +2826,9 @@ p.kicker3.pad16{margin:18px 0 6px; color:var(--a-ink-3)}
 </div>
 <button class="fab-panel" id="fabPanel" aria-label="Open scenario panel"><span class="ico" aria-hidden="true"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'><path d='M4 7h10M18 7h2M4 17h4M12 17h8' stroke='currentColor' stroke-width='1.8' stroke-linecap='round'/><circle cx='16' cy='7' r='2.2' stroke='currentColor' stroke-width='1.8'/><circle cx='10' cy='17' r='2.2' stroke='currentColor' stroke-width='1.8'/></svg></span></button>
 
+<link rel="stylesheet" href="../features/red-packet/design.css">
 <script src="../features/red-packet/rates.js"></script>
+<script src="../features/red-packet/themes.js"></script>
 <script src="../features/red-packet/store.js"></script>
 <script src="runtime.js"></script>
 <script src="../features/group-chat/groups.js"></script>
