@@ -1716,6 +1716,32 @@ button.sec-title{border:0; background:none; width:100%; text-align:left}
 .pico img{width:20px; height:20px; filter:brightness(10)}
 .gatehero{display:grid; place-items:center; margin:16px 0 8px}
 .gatehero img{width:195px; max-width:60%}
+.verify-intro-bar{position:relative; justify-content:center}
+.verify-intro-bar .wv-title{font-size:17px; font-weight:700; color:#21144e}
+.verify-intro-back{position:absolute; left:16px; margin:0}
+.verify-intro-content{display:flex; flex-direction:column; padding:8px 16px 6px}
+.wv-hero{display:block; width:100%; height:156px; flex:none}
+.wv-heading{margin:8px 0 2px; color:#21144e; font-size:24px; line-height:30px; text-align:center; font-weight:700}
+.wv-subheading{margin:0 0 8px; color:#716a7e; font-size:15px; line-height:20px; text-align:center}
+.wv-table{overflow:hidden; border:1px solid #e6e3eb; border-radius:20px; background:#fff}
+.wv-table-head,.wv-table-row{display:grid; grid-template-columns:minmax(0,1fr) 64px 72px; align-items:center}
+.wv-table-head{height:34px; background:#faf9fc; color:#858091; font-size:12px; font-weight:600; text-align:center}
+.wv-table-head span:last-child{color:#4b91ee}
+.wv-table-row{min-height:40px; border-top:1px solid #e9e7ed}
+.wv-table-row:last-child{min-height:48px}
+.wv-table-row>span:first-child{padding:0 6px 0 14px; color:#241d3f; font-size:13px; line-height:17px; font-weight:600}
+.wv-status{width:24px; height:24px; justify-self:center; display:grid; place-items:center}
+.wv-status svg{width:15px; height:15px}
+.wv-status.now{padding:0; border:0; border-radius:50%; background:#e3f6ee; color:#23966a}
+.wv-now-check{display:block; width:15px; height:15px; line-height:0}
+.wv-now-check svg{display:block; width:100%; height:100%}
+.wv-status.locked{color:#b7b3c0}
+.wv-status.verified{border-radius:50%; background:#4b91ee; color:#fff}
+.wv-status.verified svg{width:16px; height:16px}
+.wv-actions{display:flex; flex-direction:column; align-items:stretch; padding-top:8px}
+.wv-actions .btn{height:56px; font-size:16px}
+.wv-later{height:32px; border:0; background:none; color:var(--a-indigo); font-weight:600}
+.wv-terms{height:32px; border:0; background:none; color:var(--a-indigo); font-size:13px}
 .gatehead{font-size:22px; line-height:30px; font-weight:700; color:var(--a-indigo); text-align:center; margin:4px 16px 18px; text-wrap:balance}
 .rejhead{font-size:22px; line-height:30px; font-weight:800; text-align:center; margin:4px 16px 8px; color:var(--a-ink)}
 .rejhead span{color:var(--a-error)}
@@ -3954,7 +3980,7 @@ Object.assign(META, {
   post:{name:'Feed detail', group:'Feed', figma:'Flow Feed › Feed Detail', rules:['Unverified: comment box replaced by the restriction message','Post owner: comment menu with Block User / Delete Comment','Replies collapse under “View n replies”']},
   media:{name:'Media viewer', group:'Feed', figma:'Flow Feed › Preview', rules:['Page indicator, like and comment counts, Book Host for host posts']},
   compose:{name:'New Feed / Edit Feed', group:'Feed', figma:'Flow Feed › Create Feed, Flow Edit Feed', rules:['Post needs a caption and at least 1 photo','Offensive words disable Post (try “idiot”)','Caption max 256 characters','Edit: caption and location only (Figma) — PRD allows media edits, flagged']},
-  gate:{name:'Verify gate', group:'Feed', figma:'Flow Feed › Reservation / Scan (Verify to post)', rules:['No way to post or comment without Badge Verification','Rejected users see the rejection with Re-Submit']},
+  gate:{name:'Verify gate', group:'Feed', figma:'Flow Feed › Reservation / Scan (Verify to post)', rules:['Unverified Wallet, Post, Comment, Locals and Badge Verification gates share the Get verified benefit comparison.','Locals keeps its bottom navigation; Maybe later remains only on entries that already allow it.','Learn more about Terms and Conditions remains available.','No way to post or comment without Badge Verification','Rejected users see the rejection with Re-Submit']},
   profile:{name:'Other Profile', group:'Discover', figma:'Other Profile › Other profile', rules:['Guests: Chat, QR, Share, Like open the login sheet; Block and Report hidden','Block hides the user’s posts from your feed']},
 });
 JUMP.push('sub','svc','exp','mer','search','myfeed','post','compose','gate','profile');
@@ -4038,7 +4064,10 @@ const GATE = {
   group:  {title:'Badge Verification', head:'Verify to create a group', later:false},
 };
 V.gate = () => { const g = GATE[S.gateFrom] || GATE.post; const rej = kyc()==='rejected';
-  const top = g.tab
+  const verifyIntro = S.gateFrom!=='scan' && kyc()!=='approved' && !rej;
+  const top = verifyIntro
+    ? `<div class="appbar verify-intro-bar"><button class="iconbtn verify-intro-back" data-act="back" aria-label="Back">${ic('back')}</button><span class="wv-title">Get verified</span><span style="width:38px"></span></div>`
+    : g.tab
     ? `<div class="appbar"><button class="avatar" data-act="youpage" aria-label="Open YouPage"><img src="${IMG.avatar}" alt=""></button><span class="t-headline">${g.title}</span><span style="width:32px"></span></div>`
     : topBar(g.title);
   const scanArt = S.gateFrom==='scan' ? `<div class="scanart">${ic('scan')}<p class="t-body muted" style="margin:0">Scan any DuitNow QR code across Malaysia and receive cashback with participating merchants.</p></div>` : '';
@@ -4050,7 +4079,46 @@ V.gate = () => { const g = GATE[S.gateFrom] || GATE.post; const rej = kyc()==='r
     <div class="pad16"><div class="notesbox">${ic('info')}<div><b>Notes</b><span>${esc(D.rejectNote || 'Your ID card image is not valid with your personal data.')}</span></div></div>
     <div style="margin-top:20px">${btn('Re-Submit','kycStart')}</div>
     ${g.later?`<button class="link" style="display:block; margin:20px auto 0" data-act="gateLater">Maybe Later</button>`:''}</div>`;
-  else body = `<div class="gatehero"><img src="${IMG.kycBadge}" alt=""></div>
+  else if (verifyIntro) {
+    const benefits = [
+      ['Browse locals and activities', true],
+      ['Blue tick on your profile', false],
+      ['Chat and meet verified locals', false],
+      ['Book hosts and activities', false],
+      ['Pay any QR', false],
+      ['Your own wallet, top up with stablecoins', false],
+    ];
+    const check = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m5 12 4.5 4.5L19 7"/></svg>';
+    const lock = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="5" y="10" width="14" height="11" rx="2"/><path d="M8 10V7a4 4 0 0 1 8 0v3"/></svg>';
+    body = `<div class="verify-intro-content">
+      <svg class="wv-hero" viewBox="0 0 540 240" role="img" aria-label="Verified identity card illustration">
+        <rect x="2" y="2" width="536" height="236" rx="32" fill="#faeffb"/>
+        <path d="M56 48l6 12 12 2-9 8 2 12-11-6-11 6 2-12-9-8 12-2zM469 39l7 13 13 2-10 9 2 13-12-7-11 7 3-13-10-9 13-2zM83 183l4 8 9 1-7 6 2 9-8-4-8 4 2-9-7-6 9-1zM440 174l5 9 10 1-7 7 2 10-10-5-9 5 2-10-8-7 10-1z" fill="#d4a0d4"/>
+        <circle cx="89" cy="118" r="20" fill="#f5bd32"/><text x="89" y="123" text-anchor="middle" fill="#9c6a12" font-size="12" font-weight="700">RM</text>
+        <circle cx="451" cy="128" r="20" fill="#44c79a"/><text x="451" y="133" text-anchor="middle" fill="#fff" font-size="12" font-weight="700">RM</text>
+        <rect x="194" y="38" width="152" height="112" rx="16" fill="#fff" stroke="#d7c6ea" stroke-width="2"/>
+        <path d="M210 38h120a16 16 0 0 1 16 16v9H194v-9a16 16 0 0 1 16-16" fill="#5630a8"/>
+        <circle cx="230" cy="94" r="18" fill="#f1cbb4"/>
+        <path d="M213 91c0-14 8-21 18-21 11 0 19 8 19 20-10-2-22-8-25-15-2 7-6 12-12 16" fill="#302058"/>
+        <rect x="258" y="82" width="66" height="9" rx="4.5" fill="#d6c6ee"/><rect x="258" y="101" width="50" height="8" rx="4" fill="#e9e2f2"/>
+        <circle cx="358" cy="111" r="24" fill="#35b987"/><path d="m348 111 7 7 14-16" fill="none" stroke="#fff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+        <rect x="128" y="166" width="284" height="54" rx="27" fill="#fff"/>
+        <circle cx="163" cy="193" r="15" fill="#4b91ee"/><path d="m156 193 5 5 9-11" fill="none" stroke="#fff" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+        <text x="188" y="199" fill="#21144e" font-size="17" font-weight="700">Mei Ling</text><text x="282" y="199" fill="#777184" font-size="15">Verified</text>
+      </svg>
+      <h1 class="wv-heading">Get your verified badge</h1>
+      <p class="wv-subheading">Your ID and a selfie. Takes about 2 minutes.</p>
+      <div class="wv-table" role="table" aria-label="What you can do before and after verification">
+        <div class="wv-table-head" role="row"><span role="columnheader" aria-label="Benefit"></span><span role="columnheader">Now</span><span role="columnheader">Verified</span></div>
+        ${benefits.map(([label, available]) => `<div class="wv-table-row" role="row">
+          <span role="rowheader">${label}</span>
+          <span class="wv-status ${available?'now':'locked'}" role="img" aria-label="${available?'Available now':'Available after verification'}">${available?`<span class="wv-now-check" aria-hidden="true">${check}</span>`:lock}</span>
+          <span class="wv-status verified" role="img" aria-label="Available after verification">${check}</span>
+        </div>`).join('')}
+      </div>
+      <div class="wv-actions">${btn('Verify me','kycStart')}${g.later?'<button class="wv-later" data-act="gateLater">Maybe later</button>':''}<button class="wv-terms" data-act="toast" data-msg="Opens the Terms and Conditions.">Learn more about Terms and Conditions</button></div>
+    </div>`;
+  } else body = `<div class="gatehero"><img src="${IMG.kycBadge}" alt=""></div>
     <h1 class="gatehead">${g.head}</h1>
     ${S.gateFrom==='scan' ? `<div class="pad16">${btn('Verify me · takes 2 minutes','kycStart')}</div>` : `
     <div class="pad16"><div class="benefits"><div><b>Right now you can</b><span>Browse locals, activities and merchants · read the feed</span></div>
@@ -4058,7 +4126,8 @@ V.gate = () => { const g = GATE[S.gateFrom] || GATE.post; const rej = kyc()==='r
     <div style="margin-top:28px">${btn('Verify me · takes 2 minutes','kycStart')}</div>
     ${g.later?`<button class="link" style="display:block; margin:20px auto 0" data-act="gateLater">Maybe later</button>`:''}
     <button class="link subtle" style="display:block; margin:18px auto 0; font-weight:500; font-size:13px" data-act="toast" data-msg="Opens the Terms and Conditions.">Learn more about Terms and Conditions</button></div>`}`;
-  return `<div class="screen">${statusBar()}${top}<div class="scroll" style="padding-bottom:20px">${body}${scanArt}</div>${g.tab?bottomNav(g.tab):''}</div>`; };
+  const nav = g.tab ? bottomNav(g.tab) : S.gateFrom==='wallet' && verifyIntro ? bottomNav('locals') : '';
+  return `<div class="screen">${statusBar()}${top}<div class="scroll" style="padding-bottom:20px">${body}${scanArt}</div>${nav}</div>`; };
 
 /* ---------- Mobile number (only when missing) ---------- */
 V.phone = () => { const cc = COUNTRY_CODES.find(c=>c[0]===(S.cc||'MY')); const v = S.phoneNum||''; const ok = v.replace(/\D/g,'').length>=8;
