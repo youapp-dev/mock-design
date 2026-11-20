@@ -1,0 +1,145 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="390" height="150" viewBox="0 0 390 150" font-family="Inter, Arial, sans-serif">
+  <g class="swing">
+    <line x1="30" y1="0" x2="30" y2="30" stroke="#F7C76A" stroke-width="2" />
+    <g transform="translate(30 30) scale(0.8)">
+      <rect x="-9" y="-2" width="18" height="6" rx="2" fill="#F5B82E" />
+      <ellipse cy="20" rx="24" ry="19" fill="#E8303F" />
+      <ellipse cy="20" rx="12" ry="19" fill="none" stroke="#B5122B" stroke-width="2" />
+      <ellipse cy="20" rx="24" ry="19" fill="none" stroke="#B5122B" stroke-width="1.5" />
+      <rect x="-24" y="18" width="48" height="4" fill="#F5B82E" opacity=".9" />
+      <text y="27" text-anchor="middle" font-family="serif" font-weight="900" font-size="15" fill="#FFD45C">福</text>
+      <rect x="-9" y="36" width="18" height="6" rx="2" fill="#F5B82E" />
+      <path d="M-4 42v16M0 42v20M4 42v16" stroke="#F5B82E" stroke-width="2" stroke-linecap="round" />
+    </g>
+  </g>
+  <g class="swing">
+    <line x1="360" y1="0" x2="360" y2="50" stroke="#F7C76A" stroke-width="2" />
+    <g transform="translate(360 50) scale(0.75)">
+      <rect x="-9" y="-2" width="18" height="6" rx="2" fill="#F5B82E" />
+      <ellipse cy="20" rx="24" ry="19" fill="#E8303F" />
+      <ellipse cy="20" rx="12" ry="19" fill="none" stroke="#B5122B" stroke-width="2" />
+      <ellipse cy="20" rx="24" ry="19" fill="none" stroke="#B5122B" stroke-width="1.5" />
+      <rect x="-24" y="18" width="48" height="4" fill="#F5B82E" opacity=".9" />
+      <text y="27" text-anchor="middle" font-family="serif" font-weight="900" font-size="15" fill="#FFD45C">福</text>
+      <rect x="-9" y="36" width="18" height="6" rx="2" fill="#F5B82E" />
+      <path d="M-4 42v16M0 42v20M4 42v16" stroke="#F5B82E" stroke-width="2" stroke-linecap="round" />
+    </g>
+  </g>
+  <g transform="translate(-4 154) scale(1.15 1.15)">
+    <path d="M0 0Q30 -20 60 -60Q75 -80 100 -90M40 -32Q55 -30 70 -20M70 -66Q66 -86 74 -100" stroke="#7A3B2E" stroke-width="4" fill="none" stroke-linecap="round" />
+    <circle cx="66.3" cy="-60.0" r="4.34" fill="#FFB3C7" />
+    <circle cx="61.94702912260193" cy="-54.008416102920705" r="4.34" fill="#FFB3C7" />
+    <circle cx="54.90346742992383" cy="-56.296575130753595" r="4.34" fill="#FFB3C7" />
+    <circle cx="54.90278124621471" cy="-63.702480381590085" r="4.34" fill="#FFB3C7" />
+    <circle cx="61.94591880566579" cy="-65.99194459268077" r="4.34" fill="#FFB3C7" />
+    <circle cx="60" cy="-60" r="2.66" fill="#F5B82E" />
+    <circle cx="107.2" cy="-90.0" r="4.96" fill="#FFB3C7" />
+    <circle cx="102.2251761401165" cy="-83.15247554619509" r="4.96" fill="#FFB3C7" />
+    <circle cx="94.17539134848437" cy="-85.76751443514696" r="4.96" fill="#FFB3C7" />
+    <circle cx="94.17460713853109" cy="-94.23140615038868" r="4.96" fill="#FFB3C7" />
+    <circle cx="102.22390720647519" cy="-96.84793667734944" r="4.96" fill="#FFB3C7" />
+    <circle cx="100" cy="-90" r="3.04" fill="#F5B82E" />
+    <circle cx="75.4" cy="-20.0" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="71.66888210508738" cy="-14.864356659646315" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="65.63154351136328" cy="-16.825635826360223" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="65.63095535389832" cy="-23.173554612791506" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="71.66793040485639" cy="-25.135952508012082" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="70" cy="-20" r="2.2800000000000002" fill="#F5B82E" />
+    <circle cx="79.4" cy="-100.0" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="75.66888210508738" cy="-94.86435665964632" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="69.63154351136328" cy="-96.82563582636023" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="69.63095535389832" cy="-103.1735546127915" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="75.66793040485639" cy="-105.13595250801208" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="74" cy="-100" r="2.2800000000000002" fill="#F5B82E" />
+    <circle cx="35.4" cy="-18.0" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="31.668882105087373" cy="-12.864356659646315" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="25.63154351136328" cy="-14.825635826360223" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="25.63095535389832" cy="-21.173554612791506" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="31.667930404856392" cy="-23.135952508012082" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="30" cy="-18" r="2.2800000000000002" fill="#F5B82E" />
+  </g>
+  <g transform="translate(394 160) scale(-1.05 1.05)">
+    <path d="M0 0Q30 -20 60 -60Q75 -80 100 -90M40 -32Q55 -30 70 -20M70 -66Q66 -86 74 -100" stroke="#7A3B2E" stroke-width="4" fill="none" stroke-linecap="round" />
+    <circle cx="66.3" cy="-60.0" r="4.34" fill="#FFB3C7" />
+    <circle cx="61.94702912260193" cy="-54.008416102920705" r="4.34" fill="#FFB3C7" />
+    <circle cx="54.90346742992383" cy="-56.296575130753595" r="4.34" fill="#FFB3C7" />
+    <circle cx="54.90278124621471" cy="-63.702480381590085" r="4.34" fill="#FFB3C7" />
+    <circle cx="61.94591880566579" cy="-65.99194459268077" r="4.34" fill="#FFB3C7" />
+    <circle cx="60" cy="-60" r="2.66" fill="#F5B82E" />
+    <circle cx="107.2" cy="-90.0" r="4.96" fill="#FFB3C7" />
+    <circle cx="102.2251761401165" cy="-83.15247554619509" r="4.96" fill="#FFB3C7" />
+    <circle cx="94.17539134848437" cy="-85.76751443514696" r="4.96" fill="#FFB3C7" />
+    <circle cx="94.17460713853109" cy="-94.23140615038868" r="4.96" fill="#FFB3C7" />
+    <circle cx="102.22390720647519" cy="-96.84793667734944" r="4.96" fill="#FFB3C7" />
+    <circle cx="100" cy="-90" r="3.04" fill="#F5B82E" />
+    <circle cx="75.4" cy="-20.0" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="71.66888210508738" cy="-14.864356659646315" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="65.63154351136328" cy="-16.825635826360223" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="65.63095535389832" cy="-23.173554612791506" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="71.66793040485639" cy="-25.135952508012082" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="70" cy="-20" r="2.2800000000000002" fill="#F5B82E" />
+    <circle cx="79.4" cy="-100.0" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="75.66888210508738" cy="-94.86435665964632" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="69.63154351136328" cy="-96.82563582636023" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="69.63095535389832" cy="-103.1735546127915" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="75.66793040485639" cy="-105.13595250801208" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="74" cy="-100" r="2.2800000000000002" fill="#F5B82E" />
+    <circle cx="35.4" cy="-18.0" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="31.668882105087373" cy="-12.864356659646315" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="25.63154351136328" cy="-14.825635826360223" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="25.63095535389832" cy="-21.173554612791506" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="31.667930404856392" cy="-23.135952508012082" r="3.7199999999999998" fill="#FFB3C7" />
+    <circle cx="30" cy="-18" r="2.2800000000000002" fill="#F5B82E" />
+  </g>
+  <g class="cn ">
+    <g transform="translate(140 130)">
+      <circle r="16" fill="#E0A21B" />
+      <circle r="13.12" fill="#FFD45C" />
+      <text y="4.8" text-anchor="middle" font-family="Inter" font-weight="800" font-size="8.2" fill="#9A6400">MYRT</text>
+    </g>
+  </g>
+  <g class="cn ">
+    <g transform="translate(166 138)">
+      <circle r="13" fill="#E0A21B" />
+      <circle r="10.66" fill="#FFD45C" />
+      <text y="3.9" text-anchor="middle" font-family="Inter" font-weight="800" font-size="6.7" fill="#9A6400">MYRT</text>
+    </g>
+  </g>
+  <g class="cn ">
+    <g transform="translate(250 132)">
+      <circle r="15" fill="#E0A21B" />
+      <circle r="12.299999999999999" fill="#FFD45C" />
+      <text y="4.5" text-anchor="middle" font-family="Inter" font-weight="800" font-size="7.7" fill="#9A6400">MYRT</text>
+    </g>
+  </g>
+  <g class="cn ">
+    <g transform="translate(226 140)">
+      <circle r="12" fill="#E0A21B" />
+      <circle r="9.84" fill="#FFD45C" />
+      <text y="3.5999999999999996" text-anchor="middle" font-family="Inter" font-weight="800" font-size="6.2" fill="#9A6400">MYRT</text>
+    </g>
+  </g>
+  <g transform="translate(197 140) scale(1.4)">
+    <path d="M-16 0h32l-5-12h-22z" fill="#F5B82E" />
+    <ellipse cy="-12" rx="9" ry="5" fill="#F5B82E" />
+  </g>
+  <g class="swing">
+    <line x1="306" y1="30" x2="306" y2="112" stroke="#7A3B2E" stroke-width="2" />
+    <g transform="translate(315 44) rotate(20)">
+      <rect x="-5" y="-9" width="10" height="18" rx="2" fill="#E8303F" />
+      <rect x="-5" y="-3" width="10" height="3" fill="#F5B82E" />
+    </g>
+    <g transform="translate(297 62) rotate(-20)">
+      <rect x="-5" y="-9" width="10" height="18" rx="2" fill="#E8303F" />
+      <rect x="-5" y="-3" width="10" height="3" fill="#F5B82E" />
+    </g>
+    <g transform="translate(315 80) rotate(20)">
+      <rect x="-5" y="-9" width="10" height="18" rx="2" fill="#E8303F" />
+      <rect x="-5" y="-3" width="10" height="3" fill="#F5B82E" />
+    </g>
+    <g transform="translate(297 98) rotate(-20)">
+      <rect x="-5" y="-9" width="10" height="18" rx="2" fill="#E8303F" />
+      <rect x="-5" y="-3" width="10" height="3" fill="#F5B82E" />
+    </g>
+  </g>
+</svg>

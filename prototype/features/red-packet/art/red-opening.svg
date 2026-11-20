@@ -1,0 +1,68 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="320" viewBox="0 -70 200 320" overflow="visible" font-family="Inter, Arial, sans-serif">
+  <defs>
+    <linearGradient id="eb25" x1="0" y1="0" x2=".3" y2="1">
+      <stop stop-color="#F2525D" />
+      <stop offset="1" stop-color="#B5122B" />
+    </linearGradient>
+    <linearGradient id="ef25" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#FA6E77" />
+      <stop offset="1" stop-color="#D52B3C" />
+    </linearGradient>
+    <radialGradient id="es25" cx=".35" cy=".3">
+      <stop stop-color="#FFF0B8" />
+      <stop offset=".6" stop-color="#F5B82E" />
+      <stop offset="1" stop-color="#C98A10" />
+    </radialGradient>
+    <pattern id="ep25" width="40" height="40" patternUnits="userSpaceOnUse">
+      <g fill="none" stroke="#F7C76A" stroke-width="2" opacity=".35">
+        <path d="M8 26a6 6 0 0 1 12 0a5 5 0 0 1 10 0" />
+        <circle cx="34" cy="10" r="2.5" fill="#F7C76A" stroke="none" />
+      </g>
+    </pattern>
+  </defs>
+  <rect width="200" height="250" rx="26" fill="url(#eb25)" stroke="none" stroke-width="2" />
+  <path class="fb" d="M0 62Q0 -20 100 -40Q200 -20 200 62Z" fill="url(#ef25)" opacity=".95" />
+  <g class="card">
+    <rect x="22" y="-64" width="156" height="150" rx="16" fill="#FFF8EC" />
+    <rect x="22" y="-64" width="156" height="150" rx="16" fill="none" stroke="#F7C76A" stroke-width="3" />
+    <g class="cn ">
+      <g transform="translate(100 -22)">
+        <circle r="26" fill="#E0A21B" />
+        <circle r="21.32" fill="#FFD45C" />
+        <text y="7.8" text-anchor="middle" font-family="Inter" font-weight="800" font-size="13.4" fill="#9A6400">MYRT</text>
+      </g>
+    </g>
+    <text x="100" y="30" text-anchor="middle" font-family="Inter" font-weight="800" font-size="15" fill="#B5122B">恭喜发财</text>
+  </g>
+  <path d="M0 62Q100 128 200 62V224Q200 250 174 250H26Q0 250 0 224Z" fill="url(#eb25)" />
+  <path d="M0 62Q100 128 200 62V224Q200 250 174 250H26Q0 250 0 224Z" fill="url(#ep25)" />
+  <g opacity=".95">
+    <path d="M14 236Q30 214 46 196M30 214q10-2 18 4" stroke="#F7C76A" stroke-width="2.5" fill="none" stroke-linecap="round" />
+    <circle cx="46" cy="194" r="5.5" fill="none" stroke="#F7C76A" stroke-width="2" />
+    <circle cx="46" cy="194" r="1.8" fill="#F7C76A" />
+    <circle cx="50" cy="218" r="5.5" fill="none" stroke="#F7C76A" stroke-width="2" />
+    <circle cx="50" cy="218" r="1.8" fill="#F7C76A" />
+    <circle cx="26" cy="222" r="5.5" fill="none" stroke="#F7C76A" stroke-width="2" />
+    <circle cx="26" cy="222" r="1.8" fill="#F7C76A" />
+  </g>
+  <g transform="translate(176 226)">
+    <path d="M-14 0h28l-4-10h-20z" fill="#F7C76A" />
+    <ellipse cy="-10" rx="8" ry="5" fill="#F7C76A" />
+  </g>
+  <path d="M0 62Q100 128 200 62" fill="none" stroke="#F7C76A" stroke-width="3" class="pk" />
+  <style>
+.ff,.fb { transform-box:view-box;transform-origin:100px 62px }
+.ff { animation:close-flap .33s ease-in both }
+.fb { animation:open-flap .28s .17s ease-out both }
+.card { animation:lift-card .36s .24s cubic-bezier(.2,1.15,.4,1) both }
+@keyframes close-flap { 68% { transform:scaleY(.16) } to { transform:scaleY(0);opacity:0 } }
+@keyframes open-flap { from { transform:scaleY(0) } to { transform:scaleY(1) } }
+@keyframes lift-card { from { transform:translateY(110px);opacity:0 } to { transform:none;opacity:1 } }
+@media(prefers-reduced-motion:reduce) { .ff { display:none } .fb,.card { animation:none } }
+</style>
+  <g class="ff">
+    <path d="M0 26Q0 0 26 0H174Q200 0 200 26V62Q100 128 0 62Z" fill="url(#ef25)" />
+    <path d="M0 26Q0 0 26 0H174Q200 0 200 26V62Q100 128 0 62Z" fill="url(#ep25)" />
+    <path d="M0 62Q100 128 200 62" fill="none" stroke="#F7C76A" stroke-width="3" />
+  </g>
+</svg>

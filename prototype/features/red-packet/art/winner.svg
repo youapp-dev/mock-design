@@ -1,0 +1,111 @@
+<svg width="358" height="230" viewBox="0 0 358 230" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="crG" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#FFF0A8" />
+      <stop offset=".5" stop-color="#FFC82E" />
+      <stop offset="1" stop-color="#E09A0B" />
+    </linearGradient>
+    <radialGradient id="lhG">
+      <stop stop-color="#FFF6D6" />
+      <stop offset="1" stop-color="#FFF6D6" stop-opacity="0" />
+    </radialGradient>
+  </defs>
+  <g>
+    <path d="M179.0 104L439 104L436 145Z" fill="#FFE07A" opacity=".35" />
+    <path d="M179.0 104L419 203L400 240Z" fill="#FFE07A" opacity=".35" />
+    <path d="M179.0 104L363 288L331 315Z" fill="#FFE07A" opacity=".35" />
+    <path d="M179.0 104L278 344L239 357Z" fill="#FFE07A" opacity=".35" />
+    <path d="M179.0 104L179 364L138 361Z" fill="#FFE07A" opacity=".35" />
+    <path d="M179.0 104L80 344L43 325Z" fill="#FFE07A" opacity=".35" />
+    <path d="M179.0 104L-5 288L-32 256Z" fill="#FFE07A" opacity=".35" />
+    <path d="M179.0 104L-61 203L-74 164Z" fill="#FFE07A" opacity=".35" />
+    <path d="M179.0 104L-81 104L-78 63Z" fill="#FFE07A" opacity=".35" />
+    <path d="M179.0 104L-61 5L-42 -32Z" fill="#FFE07A" opacity=".35" />
+    <path d="M179.0 104L-5 -80L27 -107Z" fill="#FFE07A" opacity=".35" />
+    <path d="M179.0 104L80 -136L119 -149Z" fill="#FFE07A" opacity=".35" />
+    <path d="M179.0 104L179 -156L220 -153Z" fill="#FFE07A" opacity=".35" />
+    <path d="M179.0 104L279 -136L315 -117Z" fill="#FFE07A" opacity=".35" />
+    <path d="M179.0 104L363 -80L390 -48Z" fill="#FFE07A" opacity=".35" />
+    <path d="M179.0 104L419 5L432 44Z" fill="#FFE07A" opacity=".35" />
+  </g>
+  <circle cx="179.0" cy="104" r="90" fill="url(#lhG)" />
+  <g>
+    <g transform="translate(70 70)">
+      <circle r="15" fill="#E0A21B" />
+      <circle r="12.299999999999999" fill="#FFD45C" />
+      <text y="4.5" text-anchor="middle" font-family="Inter" font-weight="800" font-size="7.7" fill="#9A6400">MYRT</text>
+    </g>
+  </g>
+  <g>
+    <g transform="translate(292 64)">
+      <circle r="13" fill="#E0A21B" />
+      <circle r="10.66" fill="#FFD45C" />
+      <text y="3.9" text-anchor="middle" font-family="Inter" font-weight="800" font-size="6.7" fill="#9A6400">MYRT</text>
+    </g>
+  </g>
+  <g>
+    <g transform="translate(52 150)">
+      <circle r="11" fill="#14A877" />
+      <circle r="9.02" fill="#3FD3A4" />
+      <text y="3.3" text-anchor="middle" font-family="Inter" font-weight="800" font-size="5.7" fill="#fff">MYRT</text>
+    </g>
+  </g>
+  <g>
+    <g transform="translate(310 146)">
+      <circle r="14" fill="#E0A21B" />
+      <circle r="11.479999999999999" fill="#FFD45C" />
+      <text y="4.2" text-anchor="middle" font-family="Inter" font-weight="800" font-size="7.2" fill="#9A6400">MYRT</text>
+    </g>
+  </g>
+  <g>
+    <g transform="translate(108 190)">
+      <circle r="10" fill="#E0A21B" />
+      <circle r="8.2" fill="#FFD45C" />
+      <text y="3.0" text-anchor="middle" font-family="Inter" font-weight="800" font-size="5.1" fill="#9A6400">MYRT</text>
+    </g>
+  </g>
+  <g>
+    <g transform="translate(252 192)">
+      <circle r="11" fill="#E0A21B" />
+      <circle r="9.02" fill="#FFD45C" />
+      <text y="3.3" text-anchor="middle" font-family="Inter" font-weight="800" font-size="5.7" fill="#9A6400">MYRT</text>
+    </g>
+  </g>
+  <g transform="translate(96 112) rotate(-14)">
+    <path d="M-9 0l9-9 9 9-9 9z" fill="#E8303F" stroke="#F5B82E" stroke-width="2" />
+    <text y="4" text-anchor="middle" font-family="serif" font-weight="900" font-size="9" fill="#FFD45C">福</text>
+  </g>
+  <g transform="translate(266 110) rotate(12)">
+    <path d="M-9 0l9-9 9 9-9 9z" fill="#E8303F" stroke="#F5B82E" stroke-width="2" />
+    <text y="4" text-anchor="middle" font-family="serif" font-weight="900" font-size="9" fill="#FFD45C">福</text>
+  </g>
+  <path d="M124 31Q125.62 38.38 133 40Q125.62 41.62 124 49Q122.38 41.62 115 40Q122.38 38.38 124 31Z" fill="#F5B82E" />
+  <path d="M236 25Q237.98 34.02 247 36Q237.98 37.98 236 47Q234.02 37.98 225 36Q234.02 34.02 236 25Z" fill="#E8303F" />
+  <path d="M40 101Q41.26 106.74 47 108Q41.26 109.26 40 115Q38.74 109.26 33 108Q38.74 106.74 40 101Z" fill="#C05CA8" />
+  <path d="M322 96Q323.44 102.56 330 104Q323.44 105.44 322 112Q320.56 105.44 314 104Q320.56 102.56 322 96Z" fill="#F5B82E" />
+  <circle cx="179.0" cy="112" r="46" fill="#fff" />
+  <circle cx="179.0" cy="112" r="46" fill="none" stroke="url(#crG)" stroke-width="6" />
+  <circle cx="179.0" cy="112" r="38" fill="#2FBF94" />
+  <g transform="translate(179.0 58) scale(1.05)">
+    <path d="M-30 10L-36 -22L-16 -6L0 -32L16 -6L36 -22L30 10Z" fill="url(#crG)" stroke="#B07400" stroke-width="2.5" stroke-linejoin="round" />
+    <rect x="-31" y="8" width="62" height="11" rx="4" fill="#F5B82E" stroke="#B07400" stroke-width="2.5" />
+    <circle cx="0" cy="-32" r="5" fill="#E8303F" stroke="#B07400" stroke-width="2" />
+    <circle cx="-36" cy="-22" r="4" fill="#2FBF94" stroke="#B07400" stroke-width="2" />
+    <circle cx="36" cy="-22" r="4" fill="#8E5BE8" stroke="#B07400" stroke-width="2" />
+    <circle cx="0" cy="2" r="4.5" fill="#E8303F" />
+    <circle cx="-16" cy="4" r="3" fill="#fff" />
+    <circle cx="16" cy="4" r="3" fill="#fff" />
+    <path d="M-22 -2L-26 -14" stroke="#FFF6C8" stroke-width="3" stroke-linecap="round" />
+  </g>
+  <g transform="translate(179.0 170)">
+    <path d="M-92 -4h-16l10 13-10 13h24zM92 -4h16l-10 13 10 13h-24z" fill="#B5122B" />
+    <rect x="-86" y="-12" width="172" height="30" rx="6" fill="url(#rbG)" />
+    <text y="8" text-anchor="middle" font-family="Inter" font-weight="900" font-size="14" letter-spacing="2" fill="#FFF3C4">LUCKIEST</text>
+  </g>
+  <defs>
+    <linearGradient id="rbG" x1="0" y1="0" x2="0" y2="1">
+      <stop stop-color="#F2525D" />
+      <stop offset="1" stop-color="#B5122B" />
+    </linearGradient>
+  </defs>
+</svg>
