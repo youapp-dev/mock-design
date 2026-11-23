@@ -52,7 +52,7 @@
     bus: st('<rect x="4" y="3" width="16" height="15" rx="3"/><path d="M4 11h16M7 21v-3M17 21v-3"/><circle cx="8" cy="14.5" r=".6" fill="currentColor"/><circle cx="16" cy="14.5" r=".6" fill="currentColor"/>'),
     car: st('<path d="M5 16l1.6-5.2A2 2 0 0 1 8.5 9.4h7a2 2 0 0 1 1.9 1.4L19 16"/><rect x="3" y="15" width="18" height="5" rx="2"/><path d="M6.5 20v1.5M17.5 20v1.5"/>'),
     boat: st('<path d="M3 17l2.5 3.5h13L21 17H3z"/><path d="M12 3v14M12 4l6 9h-6"/>'),
-    inbox: st('<path d="M3.5 13.5l2.3-7.1A2 2 0 0 1 7.7 5h8.6a2 2 0 0 1 1.9 1.4l2.3 7.1"/><path d="M3.5 13.5V18a2 2 0 0 0 2 2h13a2 2 0 0 0 2-2v-4.5h-5l-1.5 2h-4l-1.5-2h-5z"/>'),
+    inbox: st('<path d="M12 4.25c4.69 0 8.5 3.13 8.5 7s-3.81 7-8.5 7c-1.02 0-2-.15-2.9-.42L4.75 19.5l1.2-3.66C4.4 14.6 3.5 13 3.5 11.25c0-3.87 3.81-7 8.5-7z"/>'),
     pin: st('<path d="M12 21s-6.5-5.4-6.5-11a6.5 6.5 0 0 1 13 0c0 5.6-6.5 11-6.5 11z"/><circle cx="12" cy="10" r="2.4"/>'),
     cal: st('<rect x="4" y="5.5" width="16" height="14.5" rx="2.5"/><path d="M4 10h16M8.5 3.5v4M15.5 3.5v4"/>'),
     route: st('<circle cx="6" cy="18" r="2"/><circle cx="18" cy="6" r="2"/><path d="M8 18h6.5a3.5 3.5 0 0 0 0-7h-5a3.5 3.5 0 0 1 0-7H16"/>'),

@@ -5,9 +5,10 @@
 .bnav .tp-navi{width:30px; height:30px}
 
 /* header */
-.tp-inbox{position:relative; display:grid; width:36px; height:36px; margin-right:-6px; place-items:center; border:0; border-radius:50%; background:none; color:var(--tp-deep)}
+.tp-inbox{position:relative; display:grid; width:36px; height:36px; margin-right:-6px; place-items:center; border:0; border-radius:50%; background:none; color:#1E1050}
 .tp-inbox .tp-i{width:24px; height:24px}
-.tp-inbox i{position:absolute; top:3px; right:1px; min-width:18px; height:18px; padding:0 5px; border:2px solid #fff; border-radius:999px; background:#C05CA8; color:#fff; font:700 10.5px/14px Inter,sans-serif; font-style:normal; text-align:center}
+.tp-inbox i{position:absolute; top:1px; right:-5px; min-width:17px; height:17px; padding:0 4px; border:2px solid #fff; border-radius:999px; background:#C05CA8; color:#fff; font:700 10px/13px Inter,sans-serif; font-style:normal; text-align:center}
+.tp-inbox:focus-visible{outline:2px solid #6a2ad8; outline-offset:2px}
 .tp-pad{padding:4px 16px 24px}
 
 /* stats */
