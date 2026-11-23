@@ -3753,6 +3753,23 @@ div.sp-fr{cursor:pointer} .sp-fr .rf-chat{margin-left:auto}
 .ob-card b{margin-top:10px; color:#1E1050; font-size:20px; font-weight:800; line-height:1.25; letter-spacing:-.2px}
 .ob-card p{margin:6px 8px 0; color:#6E6688; font-size:15px; line-height:22px; text-wrap:balance}
 .ob-ref-content{padding-top:20px; padding-bottom:16px}
+.ob-card{position:relative; overflow:hidden}
+.ob-card>*:not(.ob-spark):not(.ob-dot){position:relative}
+.ob-spark{position:absolute; pointer-events:none}
+.ob-spark.s1{top:14px; left:16px; width:14px; height:14px}
+.ob-spark.s2{top:10px; right:18px; width:18px; height:18px}
+.ob-spark.s3{top:86px; right:12px; width:12px; height:12px}
+.ob-dot{position:absolute; width:6px; height:6px; border-radius:50%; background:#C9B5F7; pointer-events:none}
+.ob-dot.d1{top:92px; left:12px} .ob-dot.d2{top:20px; right:56px; width:5px; height:5px}
+.ob-name-card{margin-top:12px; padding-top:30px}
+.ob-pv{display:flex; align-items:center; gap:12px; width:min(260px,calc(100% - 36px)); padding:12px 14px; border-radius:18px; background:#fff; box-shadow:0 10px 24px -12px rgba(42,20,102,.35); text-align:left}
+.ob-pv-av{display:grid; width:48px; height:48px; flex:none; place-items:center; border-radius:50%; background:linear-gradient(135deg,#9A6BBF,#3D1C96); color:#fff; font-size:18px; font-weight:800; letter-spacing:.5px}
+.ob-pv-av svg{width:24px; height:24px}
+.ob-pv-tx{display:flex; flex:1; min-width:0; flex-direction:column; gap:2px}
+.ob-pv-tx b{margin:0!important; overflow:hidden; color:#1E1050!important; font-size:17px!important; font-weight:700!important; line-height:22px!important; white-space:nowrap; text-overflow:ellipsis}
+.ob-pv-tx b.ph{color:#A39BB8!important}
+.ob-pv-tx small{color:#8C849D; font-size:12.5px; line-height:17px}
+.ob-name-card>b{margin-top:16px; text-wrap:balance}
 .ob-ref-field{display:flex; align-items:center; gap:10px; height:56px; margin-top:22px; padding:0 16px; border:1.5px solid #7F57E5; border-radius:16px; background:#fff}
 .ob-ref-field:focus-within{border-color:#5E35B8; box-shadow:0 0 0 4px rgba(94,53,184,.1)}
 .ob-ref-at{color:#5E35B8; font-size:18px; font-weight:800}

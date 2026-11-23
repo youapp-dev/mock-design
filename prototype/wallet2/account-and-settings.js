@@ -84,14 +84,20 @@ const obTop = (i, skip) => `<div class="topbar ob-top"><button class="iconbtn" d
 const OB_ICO = {
   person:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.8"/><path d="M4.8 20c.7-3.7 3.6-6.2 7.2-6.2s6.5 2.5 7.2 6.2"/></svg>',
   cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.8" y="5.3" width="16.4" height="15" rx="3"/><path d="M3.8 10h16.4M8.3 3.3v4M15.7 3.3v4"/></svg>'};
+const OB_SPARKS = '<svg class="ob-spark s1" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 0q1.8 8.2 10 10-8.2 1.8-10 10-1.8-8.2-10-10 8.2-1.8 10-10z" fill="#9B7BF0"/></svg><svg class="ob-spark s2" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 0q1.8 8.2 10 10-8.2 1.8-10 10-1.8-8.2-10-10 8.2-1.8 10-10z" fill="#D35FA8"/></svg><svg class="ob-spark s3" viewBox="0 0 20 20" aria-hidden="true"><path d="M10 0q1.8 8.2 10 10-8.2 1.8-10 10-1.8-8.2-10-10 8.2-1.8 10-10z" fill="#F5B82E"/></svg><i class="ob-dot d1"></i><i class="ob-dot d2"></i>';
 const obFoot = (act, dis, label='Continue') => `<div class="w2foot">${btn(esc(label), dis?'noop':act, {disabled:!!dis})}</div>`;
 
-V.obName = () => { const o = obInit(); const n = o.name;
+V.obName = () => { const o = obInit(); const n = o.name; const shown = n.trim().replace(/\s+/g,' ');
+  const initials = shown.split(' ').filter(Boolean).slice(0,2).map(w => Array.from(w)[0]).join('').toUpperCase();
   return `<div class="screen ob ob-flow">${statusBar()}${obTop(0,false)}
   <div class="scroll"><div class="pad16 ob-flow-content">
     <div><h1 class="ob-h">What’s your name?</h1><p class="ob-p">Enter the name you want to show on your profile.</p></div>
     <label class="ob-ref-field ${o.nameErr?'err':''}"><span class="ob-ref-at ob-ico">${OB_ICO.person}</span><input id="obName" data-in="obName" maxlength="30" value="${esc(n)}" placeholder="Enter your name" aria-label="Display name (required)" ${o.nameErr?'aria-invalid="true" aria-describedby="obNameErr"':''} autocomplete="nickname"></label>
-    <div class="ob-under">${o.nameErr?`<small class="err" id="obNameErr">${o.nameErr}</small>`:'<small>Required</small>'}<small>${n.length}/30</small></div>
+    <div class="ob-under">${o.nameErr?`<small class="err" id="obNameErr">${o.nameErr}</small>`:'<small></small>'}<small>${n.length}/30</small></div>
+    <div class="ob-card ob-name-card">${OB_SPARKS}
+      <div class="ob-pv" aria-hidden="true"><span class="ob-pv-av">${initials?esc(initials):OB_ICO.person}</span>
+        <span class="ob-pv-tx"><b class="${shown?'':'ph'}">${shown?esc(shown):'Your name'}</b><small>New to YouApp</small></span></div>
+      <b>This is how friends will see you</b><p>Use the name people know you by. You can change it later in Edit profile.</p></div>
   </div></div>${obFoot('obNameGo')}</div>`; };
 
 V.obDob = () => { const o = obInit();
