@@ -313,7 +313,6 @@
     bar.innerHTML = bar.hidden ? '' : groups.map(group => `<i style="width:${group.rm / total * 100}%;background:${currencyInfo(group.key)[2]}"></i>`).join('');
     if (single) nav(frame, '.cwal .cb', 'walletConnect');
     else {
-      nav(frame, '.wsec a', 'walletConnect');
       nav(frame, '.conn', 'walletConnect');
       const rail = $(frame, '.wx');
       rail.setAttribute('role', 'group');
@@ -680,8 +679,6 @@
     const walletList = $$(frame, '.wcs').at(-1);
     walletList.classList.add('wr-picker-wallets');
     chips(sheet, '.wcs', wList(), wallet.id, 'walletPaymentWallet', false);
-    walletList.insertAdjacentHTML('beforeend', `<div class="wc add"><span class="wt" style="background:#e9e0fb;width:24px;height:24px">${ic('plus')}</span><span><b>Connect</b>a wallet</span></div>`);
-    nav(sheet, '.wc.add', 'walletConnect');
     for (const row of $$(sheet, '.cr, .grp')) row.remove();
     const groups = currencies([wallet]);
     const display = !isExternal && !groups.some(group => group.key === 'MYR') ? [...groups, {key:'MYR', units:0, rm:0}] : groups;
