@@ -14,6 +14,24 @@
   const ewBal = () => S.ewBal || 0;
   const ewIc = () => `<span class="wr-currency-icon ew-ic" aria-hidden="true">${ic('wallet2')}</span>`;
   const now = () => new Date();
+  /* brand illustration: wallet + RM coin + the three things it unlocks (receive, bills, reload) */
+  const ART = (w = 168) => `<svg class="ew-art" width="${w}" height="${Math.round(w * 0.72)}" viewBox="0 0 200 144" fill="none" aria-hidden="true">
+    <defs><linearGradient id="ewg" x1="40" y1="44" x2="150" y2="124" gradientUnits="userSpaceOnUse"><stop stop-color="#8B5CF0"/><stop offset="1" stop-color="#4B2A9E"/></linearGradient></defs>
+    <ellipse cx="100" cy="82" rx="86" ry="56" fill="#F4EFFF"/>
+    <path d="M38 132c20-6 104-6 124 0" stroke="#E9E0FB" stroke-width="6" stroke-linecap="round"/>
+    <rect x="62" y="30" width="76" height="46" rx="8" transform="rotate(-8 100 53)" fill="#fff" stroke="#E9E0FB" stroke-width="2"/>
+    <rect x="70" y="40" width="40" height="6" rx="3" transform="rotate(-8 100 53)" fill="#C9B6F5"/>
+    <rect x="48" y="52" width="104" height="70" rx="16" fill="url(#ewg)"/>
+    <path d="M48 70h104" stroke="#fff" stroke-opacity=".18" stroke-width="2"/>
+    <rect x="118" y="78" width="40" height="26" rx="13" fill="#fff" fill-opacity=".22"/>
+    <circle cx="131" cy="91" r="6" fill="#fff"/>
+    <circle cx="76" cy="104" r="17" fill="#F5B82E" stroke="#fff" stroke-width="3"/>
+    <text x="76" y="109" text-anchor="middle" font-family="Inter,sans-serif" font-size="13" font-weight="800" fill="#fff">RM</text>
+    <g><circle cx="34" cy="50" r="14" fill="#fff" stroke="#E9E0FB" stroke-width="2"/><path d="M39 45l-9 9m0-6v6h6" stroke="#2FA36B" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <g><circle cx="168" cy="44" r="14" fill="#fff" stroke="#E9E0FB" stroke-width="2"/><path d="M170 36l-7 10h5l-2 8 7-10h-5l2-8z" fill="#C05CA8"/></g>
+    <g><circle cx="174" cy="96" r="12" fill="#fff" stroke="#E9E0FB" stroke-width="2"/><rect x="169.5" y="88.5" width="9" height="15" rx="2" stroke="#5E35B8" stroke-width="2"/><path d="M172.5 100h3" stroke="#5E35B8" stroke-width="2" stroke-linecap="round"/></g>
+    <path d="M150 18l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#F5B82E"/><path d="M24 92l1.5 3.5L29 97l-3.5 1.5L24 102l-1.5-3.5L19 97l3.5-1.5z" fill="#C05CA8"/><circle cx="58" cy="22" r="3" fill="#C9B6F5"/>
+  </svg>`;
   const fmtD = d => d.toLocaleString('en-MY', {dateStyle:'medium', timeStyle:'short'});
 
   /* ---------- styles (reuse wallet tokens; only layout for the new pieces) ---------- */
@@ -23,14 +41,16 @@
   .ew-ic svg{width:20px; height:20px}
   .cr.ew-row .rt a{font-weight:700; color:#5E35B8; text-decoration:none}
   .cr.ew-row small.ew-sub{display:block; font-weight:500; color:#6E6688; margin-top:2px}
-  .ew-unlock{display:grid; gap:10px; margin:0; padding:0; list-style:none}
-  .ew-unlock li{display:flex; gap:12px; align-items:center}
-  .ew-unlock li > span{display:grid; place-items:center; width:36px; height:36px; flex:none; border-radius:12px; background:#F4EFFF; color:#4B2A9E}
+  .ew-unlock{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:0; padding:0; list-style:none}
+  .ew-unlock li{display:grid; justify-items:center; gap:6px; padding:12px 6px; border-radius:16px; background:#F8F5FF; text-align:center}
+  .ew-unlock li > span{display:grid; place-items:center; width:36px; height:36px; border-radius:12px; background:#fff; color:#4B2A9E}
   .ew-unlock li > span svg{width:20px; height:20px}
-  .ew-unlock b{display:block} .ew-unlock small{color:#6E6688}
-  .ew-hero{display:grid; justify-items:center; gap:6px; text-align:center; padding:8px 0 4px}
-  .ew-hero .ew-ic{width:56px; height:56px; border-radius:18px} .ew-hero .ew-ic svg{width:28px; height:28px}
+  .ew-unlock b{font-size:12.5px; line-height:1.25; color:#1E1050}
+  .ew-hero{display:grid; justify-items:center; gap:4px; text-align:center; padding:0 0 2px}
   .ew-hero p{margin:0; color:#6E6688}
+  .ew-art{display:block; margin:0 auto; max-width:100%; height:auto}
+  .ew-intro{display:grid; justify-items:center; gap:6px; text-align:center}
+  .ew-intro .t-title{margin:6px 0 0} .ew-intro p{margin:0}
   .ew-tools{display:grid; grid-template-columns:1fr 1fr; gap:10px}
   .ew-assume{font-size:12px; color:#8A6D00; background:#FFF6D6; border-radius:12px; padding:8px 10px; margin:0}
   .wr-quick-actions + .wr-quick-actions{margin-top:10px}
@@ -77,9 +97,10 @@
 
   SHEETS.ewGate = () => { const n = NEXT[S.ewNext];
     return `<div class="grab"></div><div class="stack" style="gap:14px">
-      <div><h2 class="t-title" style="margin:0">${n ? `Activate your eWallet to ${n[0].toLowerCase()}` : 'Activate your eWallet'}</h2>
-        <p class="t-body muted" style="margin:4px 0 0">Bill payment, mobile reload and receiving ringgit run on your eWallet. Scan to Pay works without it.</p></div>
-      <div class="kvbox sp-box"><div class="kv"><span>Account opening fee</span><b>${RM(FEE)}</b></div><div class="kv"><span>Charged</span><b>Once</b></div><div class="kv"><span>Identity check</span><b>Already done</b></div></div>
+      <div class="ew-intro">${ART(152)}<h2 class="t-title">${n ? `Activate your eWallet to ${n[0].toLowerCase()}` : 'Activate your eWallet'}</h2>
+        <p class="t-body muted">Bills, reloads and receiving ringgit run on your eWallet. Scan to Pay doesn’t need it.</p></div>
+      <div class="kvbox sp-box"><div class="kv"><span>One-time opening fee</span><b>${RM(FEE)}</b></div><div class="kv"><span>Identity check</span><b>Already done</b></div></div>
+      ${bal() < FEE ? `<p class="t-caption subtle" style="margin:0; text-align:center">Your MYRT is ${RM(bal())}. You can top up the rest on the next step.</p>` : ''}
       ${btn('Continue', 'ewStart')}${btn('Not now', 'closeSheet', {kind:'btn-tertiary'})}</div>`; };
 
   /* ---------- activation ---------- */
@@ -87,22 +108,22 @@
     const m = S.ewTm || 'duitnow';
     return `<div class="screen bz">${statusBar()}${topBar('Activate eWallet')}
     <div class="scroll" style="padding-bottom:16px"><div class="pad16 stack" style="gap:14px; padding-top:4px">
-      <div class="ew-hero">${ewIc()}<b class="t-body-lg">Your ringgit eWallet</b><p>Opens instantly with the ID you already verified.</p></div>
-      <ul class="ew-unlock">
-        <li><span>${ic('xsDown')}</span><div><b>Receive ringgit</b><small>Get paid by DuitNow from any bank or eWallet</small></div></li>
-        <li><span>${ic('bill')}</span><div><b>Pay bills</b><small>TNB, Air Selangor, Unifi and more</small></div></li>
-        <li><span>${ic('mreload')}</span><div><b>Mobile reload</b><small>Maxis, CelcomDigi, U Mobile and more</small></div></li>
+      <div class="ew-hero">${ART(184)}<b class="t-body-lg">Your ringgit eWallet</b><p>Opens instantly with the ID you already verified.</p></div>
+      <ul class="ew-unlock" aria-label="What you can do with it">
+        <li><span>${ic('xsDown')}</span><b>Receive ringgit</b></li>
+        <li><span>${ic('bill')}</span><b>Pay bills</b></li>
+        <li><span>${ic('mreload')}</span><b>Mobile reload</b></li>
       </ul>
       <div class="kvbox sp-box">
         <div class="kv"><span>Account opening fee</span><b>${RM(FEE)}</b></div>
         <div class="kv"><span>Pay from</span><b>YouWallet · MYRT ${myrt(b)}</b></div>
         ${low ? `<div class="kv"><span>Top up first</span><b>${RM(short)}</b></div>` : ''}
         <div class="kv total"><span>Total</span><b>${RM(FEE)}</b></div></div>
-      ${low ? `<div class="sp-short">${ic('alert')}<span><b>${RM(short)} short</b>Choose how to add the rest. We use your MYRT first.</span></div>
+      ${low ? `<div class="sp-short">${ic('alert')}<span><b>${RM(short)} short</b>Your MYRT covers ${RM(b)}. Choose how to top up the rest.</span></div>
         <div class="bl-pm" role="radiogroup" aria-label="Top up with">${[['applepay','Apple Pay','Pay with Face ID'],['duitnow','DuitNow Transfer','Ringgit · from your bank'],['card','Debit or Credit Card','Visa, Mastercard']].map(([k,n,s]) => { const p = PM.find(x => x.k === k) || {k}; return `<button role="radio" aria-checked="${m===k}" class="${m===k?'on':''}" data-act="ewTm" data-k="${k}">${pmIcon(p)}<span><b>${n}</b><small>${s}</small></span><i class="rd"></i></button>`; }).join('')}</div>` : ''}
-      <p class="t-caption subtle" style="margin:0">The ${RM(FEE)} is a one-time account opening fee. It is not added to your eWallet balance. It shows as −${RM(FEE)} in your history.</p>
+      <p class="t-caption subtle" style="margin:0">One-time fee. It isn’t added to your eWallet balance and shows as −${RM(FEE)} in your history.</p>
     </div></div>
-    <div class="w2foot">${btn(busy ? 'Opening your eWallet…' : low ? `Top up ${RM(short)} &amp; activate` : `Pay ${RM(FEE)} &amp; activate`, busy ? 'noop' : 'ewPay', {disabled:busy, loading:busy})}</div></div>`; };
+    <div class="w2foot">${low && !busy ? `<p class="t-caption subtle" style="margin:0 0 8px; text-align:center">Uses MYRT ${myrt(b)} and tops up ${RM(short)} with ${({applepay:'Apple Pay',duitnow:'DuitNow Transfer',card:'card'})[m]}</p>` : ''}${btn(busy ? 'Opening your eWallet…' : low ? `Top up &amp; pay ${RM(FEE)}` : `Pay ${RM(FEE)} &amp; activate`, busy ? 'noop' : 'ewPay', {disabled:busy, loading:busy})}</div></div>`; };
 
   V.ewDone = () => { const n = NEXT[S.ewNext]; const r = S.ewRef || 'YA-EW-2611';
     return `<div class="screen bz">${statusBar()}${topBar('eWallet')}
@@ -184,7 +205,7 @@
 
   /* panel state + META */
   const _st = window.__state;
-  window.__state = () => Object.assign(_st ? _st() : {}, {ew: scen.ew === 'on' ? 'on' : scen.ew === 'fail' ? 'fail' : 'off'});
+  window.__state = () => Object.assign(_st ? _st() : {}, {ew: scen.ew === 'on' ? 'on' : scen.ew === 'fail' ? 'fail' : 'off', bal: scen.bal === 'low' ? 'low' : 'enough'});
   Object.assign(META, {
     ewConfirm:{name:'Activate eWallet', ph:1, rules:['Only needed for Receive (eWallet), Bill payment and Mobile reload. Scan to Pay does not need it','One-time RM50 account opening fee, not added to balance; shows as −RM50 in history','Paid from MYRT first; if short, top up the rest (Apple Pay, DuitNow, card)','Existing KYC covers it, no extra screens','⚠️ Assumption: opening is instant (pending Kevon)']},
     ewDone:{name:'eWallet activated', ph:1, rules:['−RM50 account opening fee, account number, paid with, reference, date','Continue takes the user back into the flow they started (Bills, Reload or Receive)','⚠️ Assumption: account details are an account number + DuitNow QR']},

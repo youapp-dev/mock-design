@@ -21,8 +21,8 @@ Receive (in ringgit), Bill payment and Mobile reload run on MYR rails. YouApp ne
 ## Flow
 
 1. YouPage: **Bill payment** and **Mobile reload** tiles sit below Top up and Rewards.
-2. Tapping Bill payment, Mobile reload or eWallet Receive while the eWallet is not active opens the **Activate your eWallet** sheet: why, the RM50 opening fee, charged once, identity already verified. Buttons: Continue, Not now.
-3. **Activate eWallet** screen: what it unlocks, fee summary, Pay from YouWallet · MYRT. If MYRT is short, a "RM{x} short" warning and a top-up method picker (Apple Pay, DuitNow transfer, card) appear and the button reads "Top up RM{x} & activate".
+2. Tapping Bill payment, Mobile reload or eWallet Receive while the eWallet is not active opens the **Activate your eWallet** sheet: illustration, why, one-time RM50 opening fee, identity already verified. Below RM50 of MYRT it adds "Your MYRT is RM{x}. You can top up the rest on the next step." Buttons: Continue, Not now.
+3. **Activate eWallet** screen: illustration, the three things it unlocks, fee summary, Pay from YouWallet · MYRT. Button: "Pay RM50.00 & activate". If MYRT is below RM50, a "RM{x} short" warning and a top-up method picker (Apple Pay, DuitNow transfer, card) appear, a line above the button says "Uses MYRT {a} and tops up RM{x} with {method}", and the button reads **"Top up & pay RM50.00"**.
 4. **eWallet activated**: −RM50.00 account opening fee, account number (copy), paid with, reference, date. The primary button continues into the flow the user started (Pay bills, Reload a number, Receive money). Done returns to where they were.
 5. Bills and Mobile reload follow the existing W6 flows (biller or network, number, fetched or chosen amount, PIN at RM100+, Paid, Receipt). The confirm screen and receipt show "Paid through eWallet, funded from YouWallet · MYRT".
 6. **My money** has an eWallet section under the currencies. Off: "Receive, pay bills and reload" with Activate. On: the eWallet balance, opening **eWallet** details (balance, account number and name, Receive, Pay bills, history).
@@ -67,7 +67,7 @@ Receive (in ringgit), Bill payment and Mobile reload run on MYR rails. YouApp ne
 
 ## Prototype controls
 
-eWallet: Not activated / Active / Fails next. Jumps: Mobile reload, eWallet (activation screen). The Balance control (enough / low) tests the MYRT-short path.
+eWallet: Not activated / Active / Fails next. MYRT balance: RM50 or more / Below RM50 (RM12.40). Jumps: Mobile reload, eWallet (activation screen).
 
 ## QA
 
