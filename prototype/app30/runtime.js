@@ -5374,7 +5374,7 @@ const appEntryRoutes = Object.create(null);
     if (k === 'kyc') { scen.kyc = v; if (v !== 'approved') scen.wallet = 'off'; saveScen(); render(); return; }
     if (k === 'wallet') { if (v === 'active' || v === 'reconnect') scen.kyc = 'approved'; scen.wallet = v; saveScen(); render(); return; }
     if (k === 'host') { P.scen({dataset:{k:'host', v}}); return; }
-    if (k === 'gList') { if (v==='owner'||v==='admin'||v==='member') { scen.gRole = v; v = 'has'; } scen.gList = v; saveScen(); S.session = 'user'; S.ctab = 'group'; S.cq = ''; S.sheet = null; S.dialog = null; S.hist = ['discover']; S.screen = 'chats'; render(); return; }
+    if (k === 'gList') { if (v==='owner'||v==='admin'||v==='member') { scen.gRole = v; v = 'has'; } scen.gList = v; saveScen(); S.session = 'user'; S.ctab = 'group'; S.cq = ''; S.sheet = null; S.dialog = null; S.hist = ['discover', 'trips']; S.screen = 'chats'; render(); return; }
   };
 })();
 

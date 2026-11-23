@@ -34,7 +34,7 @@ browser data cannot change the initial state.
 
 | Area | Latest renderer |
 | --- | --- |
-| Entry, Discover, Feed, Locals, chat, profile, Red Packet, activities | [YouApp 3.0](prototype/app30/index.html) |
+| Entry, Discover, Feed, Trips (was Locals), Inbox and chat, profile, Red Packet, activities | [YouApp 3.0](prototype/app30/index.html) |
 | YouPage wallet views, sign-up, account tiers, Scan to Pay, bills, referral/rewards, wallet Host tab, wallet Top Up, and the scenario panel Settings entry | [Wallet 2.0](prototype/wallet2/index.html) |
 | Cross-renderer routing, shared scenarios and embedded forms | Shell (`index.html`) |
 
