@@ -1,6 +1,6 @@
 /* ===== Share · "Send to" bottom sheet (Figma 3.1 · organism/bottomsheet/share-activity, node 2308:1631) =====
-   Rolled out first on Service details (⋯ › Share service). Other share entry points keep the old sheet
-   until this one is approved. Icons are the Figma exports (SVG, unchanged). */
+   Used on Service details, Activity details (⋯ › Share) and the Merchant page share button.
+   Other share entry points keep the old sheet for now. Icons are the Figma exports (SVG, unchanged). */
 (function(){
   const ICON = {
     search:`<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19.5 29.75C13.85 29.75 9.25 25.15 9.25 19.5C9.25 13.85 13.85 9.25 19.5 9.25C25.15 9.25 29.75 13.85 29.75 19.5C29.75 25.15 25.15 29.75 19.5 29.75ZM19.5 10.75C14.67 10.75 10.75 14.68 10.75 19.5C10.75 24.32 14.67 28.25 19.5 28.25C24.33 28.25 28.25 24.32 28.25 19.5C28.25 14.68 24.33 10.75 19.5 10.75Z" fill="#1A181B"/><path d="M29.9995 30.7499C29.8095 30.7499 29.6195 30.6799 29.4695 30.5299L27.4695 28.5299C27.1795 28.2399 27.1795 27.7599 27.4695 27.4699C27.7595 27.1799 28.2395 27.1799 28.5295 27.4699L30.5295 29.4699C30.8195 29.7599 30.8195 30.2399 30.5295 30.5299C30.3795 30.6799 30.1895 30.7499 29.9995 30.7499Z" fill="#1A181B"/></svg>`,
@@ -24,7 +24,8 @@
   /* order and labels as in Figma (the design labels the Instagram icon "Instagram") */
   const TARGETS = [['whatsapp','Whatsapp'],['telegram','Telegram'],['instagram','Instagram'],['x','X'],['copy','Copy Link'],['more','More'],['facebook','Facebook'],['sms','SMS'],['email','Email'],['wechat','Wechat'],['threads','Threads'],['messenger','Messenger'],['discord','Discord']];
   const CONTACTS = [['Aaron Lim','ca5'],['Clarissa','ca3'],['Cherie Tan','ca2'],['Justin Ng','ca4'],['Daniel Ed','ca1'],['Lara','ca2'],['Fionna','ca4']];
-  const ST = () => S.sh31 || (S.sh31 = {sel:[], q:'', search:false});
+  const ST = () => S.sh31 || (S.sh31 = {sel:[], q:'', search:false, what:'service'});
+  const open31 = what => { S.sh31 = {sel:[], q:'', search:false, what}; openSheet('share31'); };
 
   const css = document.createElement('style');
   css.textContent = `
@@ -73,9 +74,12 @@
   const _ov = overlayHTML;
   overlayHTML = () => _ov() + (S.sheet === 'share31' ? sheetHTML() : '');
 
-  /* Service details first; every other share keeps the old sheet for now */
+  /* Service details, Activity details and the Merchant page use this sheet */
+  const KIND = {service:'service', experience:'activity', activity:'activity'};
   const _share = A.share;
-  A.share = el => { if (el && el.dataset && el.dataset.kind === 'service') { if (isGuest && isGuest()) return _share(el); S.sh31 = {sel:[], q:'', search:false}; openSheet('share31'); return; } return _share(el); };
+  A.share = el => { const k = el && el.dataset && KIND[el.dataset.kind]; if (k && !isGuest()) { open31(k); return; } return _share(el); };
+  const _mx = A.mxShare;
+  if (_mx) A.mxShare = el => { if (isGuest()) return _mx(el); open31('place'); };
   const keep = () => { S.sheetAnim = false; render(); };
   Object.assign(A, {
     sh31Search: () => { const st = ST(); st.search = !st.search; if (!st.search) st.q = ''; keep(); if (st.search) setTimeout(() => document.querySelector('.sh31-q input')?.focus(), 0); },
@@ -83,7 +87,7 @@
     sh31To: el => { const k = el.dataset.k;
       if (k === 'copy') { try { navigator.clipboard.writeText('https://youapp.ai/share/demo').catch(() => {}); } catch(e) {} S.sheet = null; render(); toast('Link copied.'); return; }
       const name = (TARGETS.find(t => t[0] === k) || [])[1];
-      S.sheet = null; render(); toast(k === 'more' ? 'Opens the phone’s share options.' : `Opens ${name} to share this service.`); },
+      S.sheet = null; render(); toast(k === 'more' ? 'Opens the phone’s share options.' : `Opens ${name} to share this ${ST().what}.`); },
     sh31Send: () => { const st = ST(); const n = st.sel.length; S.sheet = null; render(); toast(n > 1 ? `Sent to ${n} people.` : `Sent to ${st.sel[0]}.`); },
   });
   /* search input: filter as you type without losing focus */
