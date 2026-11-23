@@ -1018,7 +1018,7 @@ let ws;
   await state('obGender');
   await act('obSkip');
   await state('obRef');
-  await until(() => wallet(`performance.getEntriesByName(new URL(document.querySelector('.ob-ref-hero image').getAttribute('href'), location.href).href).some(entry => entry.decodedBodySize > 0)`), 'referral onboarding artwork');
+  await until(() => wallet(`performance.getEntriesByName(new URL(document.querySelector('.ob-ref-hero img').getAttribute('src'), location.href).href).some(entry => entry.decodedBodySize > 0)`), 'referral onboarding artwork');
   await click('#obRef');
   await cdp('Input.insertText', {text:'SCAR88'});
   assert.match(await wallet(`document.querySelector('.ob-ref-legacy').textContent`), /referral code/);

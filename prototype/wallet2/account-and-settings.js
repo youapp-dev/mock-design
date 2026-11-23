@@ -80,31 +80,34 @@ V.otp = () => { const v = S.otp||''; const err = S.otpErr; const ok = v.length==
   </div>
   ${keypad('otk')}</div>`; };
 
-const obTop = (i, skip) => `<div class="topbar ob-top"><button class="iconbtn" data-act="back" aria-label="Back">${ic('back')}</button><div class="ob-prog"><i style="width:${(i+1)/OB_STEPS.length*100}%"></i></div>${skip?`<button class="ob-skip" data-act="obSkip">Skip</button>`:'<span style="width:34px"></span>'}</div>`;
+const obTop = (i, skip) => `<div class="topbar ob-top"><button class="iconbtn" data-act="back" aria-label="Back">${ic('back')}</button><div class="ob-prog"><i style="width:${(i+1)/(OB_STEPS.length+1)*100}%"></i></div>${skip?`<button class="ob-skip" data-act="obSkip">Skip</button>`:'<span style="width:34px"></span>'}</div>`;
+const OB_ICO = {
+  person:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="3.8"/><path d="M4.8 20c.7-3.7 3.6-6.2 7.2-6.2s6.5 2.5 7.2 6.2"/></svg>',
+  cal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3.8" y="5.3" width="16.4" height="15" rx="3"/><path d="M3.8 10h16.4M8.3 3.3v4M15.7 3.3v4"/></svg>'};
 const obFoot = (act, dis, label='Continue') => `<div class="w2foot">${btn(esc(label), dis?'noop':act, {disabled:!!dis})}</div>`;
 
 V.obName = () => { const o = obInit(); const n = o.name;
-  return `<div class="screen ob">${statusBar()}${obTop(0,false)}
-  <div class="scroll"><div class="pad16 stack" style="gap:14px; padding-top:8px">
-    <div><h1 class="ob-h">What’s Your Name?</h1><p class="ob-p">Enter your preferred name as it should appear on your profile.</p></div>
-    <div><label class="ob-field ${o.nameErr?'err':''}"><b>Display Name <span class="req">*</span></b><input id="obName" data-in="obName" maxlength="30" value="${esc(n)}" placeholder="Enter your name"></label>
-      <div class="ob-under">${o.nameErr?`<small class="err">${o.nameErr}</small>`:'<small></small>'}<small>${n.length}/30</small></div></div>
+  return `<div class="screen ob ob-flow">${statusBar()}${obTop(0,false)}
+  <div class="scroll"><div class="pad16 ob-flow-content">
+    <div><h1 class="ob-h">What’s your name?</h1><p class="ob-p">Enter the name you want to show on your profile.</p></div>
+    <label class="ob-ref-field ${o.nameErr?'err':''}"><span class="ob-ref-at ob-ico">${OB_ICO.person}</span><input id="obName" data-in="obName" maxlength="30" value="${esc(n)}" placeholder="Enter your name" aria-label="Display name (required)" ${o.nameErr?'aria-invalid="true" aria-describedby="obNameErr"':''} autocomplete="nickname"></label>
+    <div class="ob-under">${o.nameErr?`<small class="err" id="obNameErr">${o.nameErr}</small>`:'<small>Required</small>'}<small>${n.length}/30</small></div>
   </div></div>${obFoot('obNameGo')}</div>`; };
 
 V.obDob = () => { const o = obInit();
-  return `<div class="screen ob">${statusBar()}${obTop(1,true)}
-  <div class="scroll"><div class="pad16 stack" style="gap:14px; padding-top:8px">
-    <img class="ob-cake" src="${OB_IMG.cake}" alt="">
-    <div><h1 class="ob-h">What’s Your Date of Birth?</h1><p class="ob-p">Enter the date you were born to complete your profile information.</p></div>
-    <label class="ob-field"><b>Date of Birth</b><input type="date" id="obDob" data-in="obDob" value="${o.dob}" max="2008-10-26" aria-label="Date of birth"></label>
-    ${o.dobErr?`<small class="err" style="margin-top:-8px">${o.dobErr}</small>`:''}
+  return `<div class="screen ob ob-flow">${statusBar()}${obTop(1,true)}
+  <div class="scroll"><div class="pad16 ob-flow-content">
+    <div><h1 class="ob-h">What’s your date of birth?</h1><p class="ob-p">Enter the date you were born to complete your profile.</p></div>
+    <label class="ob-ref-field ${o.dobErr?'err':''}"><span class="ob-ref-at ob-ico">${OB_ICO.cal}</span><input type="date" id="obDob" data-in="obDob" value="${o.dob}" max="2008-10-26" aria-label="Date of birth"></label>
+    ${o.dobErr?`<div class="ob-under"><small class="err">${o.dobErr}</small></div>`:''}
+    <div class="ob-card"><img class="ob-card-art ob-card-cake" src="${OB_IMG.cake}" alt=""><b>You must be 18 or older</b><p>We use your birthday to confirm your age.</p></div>
   </div></div>${obFoot('obDobGo', !o.dob)}</div>`; };
 
 V.obGender = () => { const o = obInit(); const g = o.gender;
   const card = (k,l) => `<button class="ob-g ${g===k?'on':''}" data-act="obG" data-k="${k}" aria-pressed="${g===k}"><img src="${OB_IMG[k]}" alt=""><span>${l}</span></button>`;
-  return `<div class="screen ob">${statusBar()}${obTop(2,true)}
-  <div class="scroll"><div class="pad16 stack" style="gap:14px; padding-top:8px">
-    <div><h1 class="ob-h">What’s Your Gender?</h1><p class="ob-p">Select the gender you were assigned at birth to complete your profile information.</p></div>
+  return `<div class="screen ob ob-flow">${statusBar()}${obTop(2,true)}
+  <div class="scroll"><div class="pad16 ob-flow-content">
+    <div><h1 class="ob-h">What’s your gender?</h1><p class="ob-p">Select the gender you were assigned at birth to complete your profile.</p></div>
     <div class="ob-gs">${card('male','Male')}${card('female','Female')}</div>
     <button class="ob-g wide ${g==='none'?'on':''}" data-act="obG" data-k="none" aria-pressed="${g==='none'}"><span>Prefer not to say</span></button>
   </div></div>${obFoot('obGenderGo', !g)}</div>`; };
@@ -117,24 +120,17 @@ V.obRef = () => { const o = obInit(); const selected = referrerById(o.ref); cons
     <small>@${esc(user.username)} · ${esc(user.city)}</small>${legacy&&legacy.id===user.id?`<small class="ob-ref-legacy">Matched to this username from a referral code</small>`:''}</span>${ic('chev')}</button>`).join('');
   const field = selected
     ? `<div class="ob-ref-field" role="group" aria-label="Selected referrer username"><span class="ob-ref-at">@</span><span class="ob-ref-value">${esc(selected.username)}</span>${locked?'':`<button class="ob-ref-clear" data-act="obRefEdit" aria-label="Clear selected referrer"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>`}</div>`
-    : `<label class="ob-ref-field"><span class="ob-ref-at">@</span><input id="obRef" data-in="obRef" value="${esc(query.replace(/^@+/,''))}" placeholder="Their username" aria-label="Their username" autocomplete="off" autocapitalize="none"></label>`;
-  const hero = !query.trim() ? `<div class="ob-ref-hero" aria-hidden="true"><svg viewBox="0 0 358 160">
-    <path d="M30 22Q31.44 28.56 38 30Q31.44 31.44 30 38Q28.56 31.44 22 30Q28.56 28.56 30 22Z" fill="#B79BF0"/>
-    <path d="M330 30Q331.8 38.2 340 40Q331.8 41.8 330 50Q328.2 41.8 320 40Q328.2 38.2 330 30Z" fill="#F5B82E"/>
-    <path d="M310 124Q311.08 128.92 316 130Q311.08 131.08 310 136Q308.92 131.08 304 130Q308.92 128.92 310 124Z" fill="#C05CA8"/>
-    <g transform="translate(50 120)"><circle r="13" fill="#E0A21B"/><circle r="10.66" fill="#FFD45C"/><text y="3.9" text-anchor="middle" font-family="Inter,sans-serif" font-weight="800" font-size="10.14" fill="#9A6400">RM</text></g>
-    <g transform="translate(300 96)"><circle r="11" fill="#14A877"/><circle r="9.02" fill="#3FD3A4"/><text y="3.3" text-anchor="middle" font-family="Inter,sans-serif" font-weight="800" font-size="8.58" fill="#fff">RM</text></g>
-    <image href="../../assets/referral-onboarding-hero.png" x="54" y="0" width="250" height="120"/>
-  </svg></div>` : '';
+    : `<label class="ob-ref-field"><span class="ob-ref-at">@</span><input id="obRef" data-in="obRef" value="${esc(query.replace(/^@+/,''))}" placeholder="Enter username" aria-label="Your friend’s YouApp username" autocomplete="off" autocapitalize="none"></label>`;
+  const hero = !query.trim() && !selected ? `<div class="ob-card ob-ref-hero"><img class="ob-card-art" src="../../assets/referral-onboarding-gift.webp" alt="Two friends sharing a gift"><b>Sharing is rewarding!</b><p>Your friend can earn rewards when you start using YouApp.</p></div>` : '';
   const picked = selected ? `<div class="ob-ref-picked"><div class="ob-ref-card">${img(selected.avatar,selected.name,'width:72px;height:72px')}<span class="ob-ref-person"><b>${esc(selected.name)}${selected.verified?`<span class="ob-ref-verified" aria-label="Verified">${ic('check')}</span>`:''}</b><small>@${esc(selected.username)} · ${esc(selected.city)}</small></span><span class="ob-ref-confirmed" aria-label="Selected">${ic('check')}</span></div>
     <p class="ob-ref-note">You’ll be linked to ${esc(selected.name)}. This can’t be changed later.</p>${locked?'':`<button class="ob-ref-change" data-act="obRefEdit">Not them? Change</button>`}</div>` : '';
   const emptyMessage = !selected && !results.length && query.trim()
     ? `<small class="ob-ref-hint">${query.trim().length>=2?'No active, KYC-verified users found.':'Type at least 2 characters to search.'}</small>` : '';
-  const initialHint = !query.trim() && !selected ? '<div class="ob-ref-hint">They get rewards when you use YouApp. You can skip this.</div>' : '';
+  const initialHint = '';
   const label = selected ? `Continue with ${selected.name}` : 'Continue';
-  return `<div class="screen ob ob-ref-page">${statusBar()}${obTop(3, !locked)}
-  <div class="scroll"><div class="pad16 ob-ref-content">
-    <div><h1 class="ob-h">Who referred you?</h1><p class="ob-p">Type their YouApp username.</p></div>
+  return `<div class="screen ob ob-flow ob-ref-page">${statusBar()}${obTop(3, !locked)}
+  <div class="scroll"><div class="pad16 ob-flow-content ob-ref-content">
+    <div><h1 class="ob-h">Who referred you?</h1><p class="ob-p">Enter your friend’s YouApp username to connect your referral.</p></div>
     ${field}${selected?picked:rows?`<div class="ob-ref-results" role="list">${rows}</div>`:`${hero}${initialHint}${emptyMessage}`}
   </div></div>${obFoot('obRefGo', !selected, label)}</div>`; };
 

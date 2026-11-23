@@ -3730,15 +3730,30 @@ div.sp-fr{cursor:pointer} .sp-fr .rf-chat{margin-left:auto}
 .ob-field.err{border-color:var(--a-error)} .ob-field.lock{background:#e9e8ec} .ob-field.lock b,.ob-field.lock input{color:var(--a-ink-3)}
 .ob-row{display:flex; align-items:center; gap:8px}
 .ob-at{color:var(--a-ink-2); font-weight:600}
-.screen.ob-ref-page{background:#FAF8FD}
-.screen.ob-ref-page .ob-top{height:44px; gap:14px; padding:0 18px}
-.screen.ob-ref-page .ob-top .iconbtn{width:24px; height:24px; margin:0; padding:0}
-.screen.ob-ref-page .ob-prog{height:6px; background:#E4DCFA}
-.screen.ob-ref-page .ob-skip{color:#5E35B8}
-.ob-ref-content{padding-top:16px; padding-bottom:14px}
-.screen.ob-ref-page .ob-h{margin:0 0 6px; color:#1E1050; font-size:26px; font-weight:800; letter-spacing:-.4px; line-height:1.2}
-.screen.ob-ref-page .ob-p{color:#8C849D; font-size:14px; line-height:20px}
-.ob-ref-field{display:flex; align-items:center; gap:6px; height:56px; margin-top:18px; padding:0 14px; border:1.5px solid #E5E0EE; border-radius:16px; background:#fff}
+/* Onboarding flow (Name, Birthday, Gender, Who referred you?) — one visual system, from the referral reference */
+.screen.ob-flow{background:#FAF8FD}
+.screen.ob-flow .ob-top{height:44px; gap:14px; padding:0 18px}
+.screen.ob-flow .ob-top .iconbtn{width:24px; height:24px; margin:0; padding:0}
+.screen.ob-flow .ob-prog{height:6px; background:#E4DCFA}
+.screen.ob-flow .ob-skip{width:auto; min-width:34px; color:#5E35B8; font-size:15px; font-weight:700}
+.ob-flow-content{display:flex; flex-direction:column; padding-top:20px; padding-bottom:16px}
+.screen.ob-flow .ob-h{margin:0 0 8px; color:#1E1050; font-size:28px; font-weight:800; letter-spacing:-.5px; line-height:1.18}
+.screen.ob-flow .ob-p{margin:0; color:#6E6688; font-size:15px; line-height:22px}
+.screen.ob-flow .ob-ref-field.err{border-color:var(--a-error)}
+.screen.ob-flow .ob-ref-field.err:focus-within{box-shadow:0 0 0 4px rgba(217,45,32,.1)}
+.ob-ico{display:grid; width:22px; height:22px; flex:none; place-items:center}
+.ob-ico svg{width:20px; height:20px}
+.screen.ob-flow .ob-ref-field input[type=date]{height:100%; color:#1E1050}
+.screen.ob-flow .ob-ref-field input[type=date]:invalid,.screen.ob-flow .ob-ref-field input[type=date][value=""]{color:#A39BB8}
+.screen.ob-flow .ob-under{margin:6px 4px 0; font-size:12.5px; color:#8C849D}
+.screen.ob-flow .ob-under .err{color:var(--a-error)}
+.ob-card{display:flex; flex-direction:column; align-items:center; margin-top:18px; padding:14px 16px 22px; border-radius:24px; background:#F6E9FD; text-align:center}
+.ob-card-art{display:block; width:100%; max-width:330px; height:auto}
+.ob-card-cake{max-width:250px; border-radius:16px}
+.ob-card b{margin-top:10px; color:#1E1050; font-size:20px; font-weight:800; line-height:1.25; letter-spacing:-.2px}
+.ob-card p{margin:6px 8px 0; color:#6E6688; font-size:15px; line-height:22px; text-wrap:balance}
+.ob-ref-content{padding-top:20px; padding-bottom:16px}
+.ob-ref-field{display:flex; align-items:center; gap:10px; height:56px; margin-top:22px; padding:0 16px; border:1.5px solid #7F57E5; border-radius:16px; background:#fff}
 .ob-ref-field:focus-within{border-color:#5E35B8; box-shadow:0 0 0 4px rgba(94,53,184,.1)}
 .ob-ref-at{color:#5E35B8; font-size:18px; font-weight:800}
 .ob-ref-field input{flex:1; min-width:0; border:0; outline:0; padding:0; background:none; color:#1E1050; font:500 16px/24px var(--font)}
@@ -3747,8 +3762,6 @@ div.sp-fr{cursor:pointer} .sp-fr .rf-chat{margin-left:auto}
 .ob-ref-clear{display:grid; width:22px; height:22px; flex:none; place-items:center; border:0; border-radius:50%; background:#C9C1DA; color:#fff}
 .ob-ref-clear .ico{width:14px; height:14px}
 .ob-ref-hint{display:block; margin:14px 6px 0; color:#8C849D; font-size:13px; line-height:19px; text-align:center}
-.ob-ref-hero{display:flex; justify-content:center; overflow:hidden; height:170px; margin-top:18px; border-radius:22px; background:linear-gradient(160deg,#F4EFFF,#FFEAF4); padding-top:10px}
-.ob-ref-hero svg{display:block; width:100%; max-width:358px; height:160px}
 .ob-ref-results{overflow:hidden; margin-top:8px; border-radius:18px; background:#fff; box-shadow:0 12px 30px rgba(42,20,102,.14)}
 .ob-ref-result{display:flex; align-items:center; gap:12px; width:100%; padding:10px 12px; border:0; border-bottom:1px solid #EAE6F0; background:#fff; text-align:left}
 .ob-ref-result:last-child{border-bottom:0}
@@ -3778,13 +3791,14 @@ div.sp-fr{cursor:pointer} .sp-fr .rf-chat{margin-left:auto}
 @keyframes obSpin{to{transform:rotate(360deg)}}
 .ob-under{display:flex; justify-content:space-between; margin-top:4px; font-size:12px; color:var(--a-ink-2)}
 .ob small.err,.ob .ob-under .err{color:var(--a-error); font-size:12px} .ob small.ok{color:var(--a-success); font-size:12px; display:block; margin-top:4px}
-.ob-cake{width:100%; border-radius:18px; display:block}
-.ob-gs{display:grid; grid-template-columns:1fr 1fr; gap:14px}
-.ob-g{border:0; border-radius:16px; background:#e6e5e9; padding:8px; display:flex; flex-direction:column; align-items:center; gap:8px}
-.ob-g img{width:130px; height:130px; filter:grayscale(1) brightness(1.05); opacity:.85}
-.ob-g span{width:100%; padding:10px; border-radius:8px; background:rgba(255,255,255,.6); color:var(--a-ink-3); font-size:15px}
-.ob-g.on{background:linear-gradient(135deg,#e8dcfb,#f3e6f7)} .ob-g.on img{filter:none; opacity:1} .ob-g.on span{background:#fff; color:var(--a-ink)}
-.ob-g.wide span{background:rgba(255,255,255,.6)}
+.ob-gs{display:grid; grid-template-columns:1fr 1fr; gap:12px}
+.screen.ob-flow .ob-gs{margin-top:22px}
+.ob-g{display:flex; flex-direction:column; align-items:center; gap:6px; padding:14px 8px 12px; border:1.5px solid #E5E0EE; border-radius:20px; background:#fff; color:#1E1050; font:inherit}
+.ob-g img{width:min(112px,100%); height:auto; aspect-ratio:1; filter:grayscale(1) brightness(1.05); opacity:.7}
+.ob-g span{font-size:15px; font-weight:600; color:#6E6688}
+.ob-g.on{border-color:#5E35B8; box-shadow:inset 0 0 0 1px #5E35B8; background:#F6E9FD} .ob-g.on img{filter:none; opacity:1} .ob-g.on span{color:#1E1050; font-weight:700}
+.ob-g.wide{flex-direction:row; justify-content:center; height:56px; margin-top:12px; padding:0 16px}
+.ob-g:focus-visible{outline:2px solid #5E35B8; outline-offset:2px}
 /* ---------- 3.0 features (unchanged in Wallet 2.0) ---------- */
 .tu-ill{width:300px; max-width:90%; align-self:center; display:block}
 .tu-p{margin:0; font-size:13px; color:var(--a-ink-2); line-height:1.45}
