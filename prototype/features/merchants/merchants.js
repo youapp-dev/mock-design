@@ -135,7 +135,7 @@ V.mer = () => { const p = placeById(S.mer) || PLACES[0]; const a = PPL[p.amb]; c
   const hoursOpen = MX.hours === p.id;
   return `<div class="screen mxp"><div class="scroll mx-scroll">
     <div class="mx-hero">${img(p.img, p.name)}<div class="mx-hshade"></div>
-      <div class="mx-htop">${statusBar()}<div class="mx-hbar"><button class="mx-glass" data-act="back" aria-label="Back">${SV.back}</button><button class="mx-glass" data-act="share" data-kind="merchant" aria-label="Share ${esc(p.name)}">${SV.share}</button></div></div>
+      <div class="mx-htop">${statusBar()}<div class="mx-hbar"><button class="mx-glass" data-act="back" aria-label="Back">${SV.back}</button><button class="mx-glass" data-act="mxShare" aria-label="Share ${esc(p.name)}">${SV.share}</button></div></div>
       <div class="mx-hb"><h1>${esc(p.name)}</h1><span class="mx-rt w"><b>${p.rating}</b>${starRow(p.rating)}<small>(${fmt(p.rev)})</small></span><span class="mx-hs">${esc(p.type)}${p.price ? ` · ${esc(p.price)}` : ''} · ${dist(p.m)}</span></div>
       <span class="mx-cnt">1 / ${p.photos}</span></div>
     ${p.id === 'px-kopi' ? `<div class="mx-thumbs">${gal.map(([k, pos]) => `<button data-act="mxPhoto" aria-label="Open photo">${img(k, 'Photo of ' + p.name, '', pos ? `object-position:${pos}; transform:scale(1.6)` : '')}</button>`).join('')}<button class="more" data-act="mxPhoto" aria-label="See all ${p.photos} photos">+${Math.max(0, p.photos - 4)}</button></div>` : ''}
@@ -225,6 +225,10 @@ Object.assign(A, {
   mxHours: () => { MX.hours = MX.hours === S.mer ? null : S.mer; render(); },
   mxDir: () => toast('Opens this place in Google Maps.'),
   mxCall: () => { const p = placeById(S.mer); toast(`Calls ${p ? p.phone : 'the shop'}.`); },
+  mxShare: guard(() => {
+    const p = placeById(S.mer) || PLACES[0];
+    SHR.open({placeName:p.name, caption:p.name + ' on YouApp', url:'https://youapp.ai/share/demo'});
+  }),
   mxPhoto: () => toast('Opens the photo viewer.'),
   mxChat: guard(el => { const u = PPL[el.dataset.k]; toast(`Opens a chat with ${u ? u.n : 'the ambassador'}.`); }),
   mxPerson: el => { const u = PPL[el.dataset.k]; toast(`Opens ${u ? u.n : 'their'} profile. Say hi from there.`); },

@@ -5440,7 +5440,7 @@ const appEntryRoutes = Object.create(null);
       return `<div class="shr-scr">${sb()}${top('New Feed','closeAll')}
       <div class="shr-body"><div class="shr-post"><img class="shr-av" src="${ME.av}" alt=""><div class="shr-pb">${vn(ME.n)}
         <textarea id="shrCap" rows="4" aria-label="Write a caption" placeholder="What's on your mind?">${E(SH.caption)}</textarea>
-        ${SH.att?`<div class="shr-attw">${thumb(D,'noop')}<button class="shr-rm" data-sh="rm" aria-label="Remove picture">${I.x}</button></div>`:`<button class="shr-readd" data-sh="readd">+ Add transaction picture</button>`}
+        ${D.placeName?'':SH.att?`<div class="shr-attw">${thumb(D,'noop')}<button class="shr-rm" data-sh="rm" aria-label="Remove picture">${I.x}</button></div>`:`<button class="shr-readd" data-sh="readd">+ Add transaction picture</button>`}
         <div class="shr-tools"><button data-sh="toast" data-msg="Opens your camera or photos." aria-label="Add photo">${I.cam}</button><button data-sh="toast" data-msg="Add a location to your post." aria-label="Add location">${I.pin}</button></div>
       </div></div></div>
       <div class="shr-foot"><button class="shr-btn" data-sh="${can?'post':'noop'}" ${can?'':'disabled aria-disabled="true"'}>${SH.busy?'Posting…':'Post'}</button></div></div>`; },
@@ -5478,10 +5478,10 @@ const appEntryRoutes = Object.create(null);
     const P = () => SH.posts.find(x=>x.id===+ds.id);
     switch(a){
       case 'close': case 'closeAll': st='closed'; SH.tmsg=null; paint(); break;
-      case 'feed': SH.caption = D.caption; SH.att = true; SH.busy=false; st='compose'; paint(); break;
+      case 'feed': SH.caption = D.caption; SH.att = !D.placeName; SH.busy=false; st='compose'; paint(); break;
       case 'dm': st='closed'; paint(); notify(`Sent to ${ds.n}.`); break;
-      case 'app': st='closed'; paint(); notify(`Opens ${ds.n} with your transaction picture.`); break;
-      case 'copy': try { navigator.clipboard && navigator.clipboard.writeText('https://youapp.ai/m/'+(D.ref||'tx')); } catch(_){} st='closed'; paint(); notify('Link copied.'); break;
+      case 'app': st='closed'; paint(); notify(`Opens ${ds.n} with ${D.placeName || 'your transaction picture'}.`); break;
+      case 'copy': try { navigator.clipboard && navigator.clipboard.writeText(D.url || 'https://youapp.ai/m/'+(D.ref||'tx')); } catch(_){} st='closed'; paint(); notify('Link copied.'); break;
       case 'rm': SH.att=false; paint(); break;
       case 'readd': SH.att=true; paint(); break;
       case 'post': if (SH.busy) return; SH.busy=true; paint(); setTimeout(()=>{ SH.busy=false; const id = Date.now();
