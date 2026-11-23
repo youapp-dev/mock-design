@@ -231,3 +231,20 @@ function walletScanHistory() {
 }
 
 window.__walletScanHistory = walletScanHistory;
+
+/* ===== Activity V3 · PRD 6.9.3: "Experience" reads "Activity" in menus, buttons and statuses ===== */
+(function(){
+  /* brand copy and category names keep their wording */
+  const KEEP = /Experience life like a local|Years of Experience|Local Experiences|Culinary Experiences/;
+  const swap = t => t.replace(/^(\s*)Experience\s*:\s*/, '$1Activity: ')
+    .replace(/\bExperiences\b/g, 'Activities').replace(/\bExperience\b/g, 'Activity')
+    .replace(/\bexperiences\b/g, 'activities').replace(/\bexperience\b/g, 'activity');
+  const pass = () => { const ph = document.getElementById('phone'); if (!ph) return;
+    const w = document.createTreeWalker(ph, NodeFilter.SHOW_TEXT); let n;
+    while ((n = w.nextNode())) { const v = n.nodeValue; if (/xperience/.test(v) && !KEEP.test(v) && !(n.parentElement && n.parentElement.closest('script,style'))) n.nodeValue = swap(v); }
+    ph.querySelectorAll('[aria-label*="xperience"],[placeholder*="xperience"]').forEach(el => ['aria-label','placeholder'].forEach(a => { const v = el.getAttribute(a); if (v && !KEEP.test(v)) el.setAttribute(a, swap(v)); })); };
+  const _r = render;
+  render = function(){ const out = _r.apply(this, arguments); pass(); return out; };
+  if (typeof toast === 'function') { const _t = toast; toast = function(m, ...r){ return _t(typeof m === 'string' && !KEEP.test(m) ? swap(m) : m, ...r); }; }
+  try { render(); } catch(e) {}
+})();

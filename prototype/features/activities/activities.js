@@ -235,7 +235,7 @@ overlayHTML = () => { let h = _ovAct();
   if (S.sheet === 'actJoinS') { const e = expById(S.exp); const ss = sessOf(e.id); const sel = S.actSess || (ss.find(s=>s[3]>0)||ss[0])[0]; const s = ss.find(x=>x[0]===sel); const maxP = Math.max(0,s[3]); const pax = Math.min(S.actPax||1, maxP);
     h += sh(`<p class="sh-t">Request to Join</p><p class="sh-s">The owner reviews your request. It stays open until they answer.</p>
       <p class="gx-sl" style="margin-left:4px">Choose a session</p><div class="gx-sg">${ss.map(([id,d,t,left])=>`<button class="act-ss ${id===sel?'on':''}" data-act="actSess" data-id="${id}" ${left?'':'disabled'}><span><b>${d}</b><small>${t}</small></span><em>${left?left+' spots left':'Full'}</em><i class="act-rad"></i></button>`).join('')}</div>
-      <p class="gx-sl" style="margin-left:4px">How many people</p><div class="act-pax"><span><b>${pax} ${pax>1?'people':'person'}</b><small>Up to ${maxP} for this session</small></span><span class="act-step"><button data-act="actPax" data-d="-1" ${pax<=1?'disabled':''} aria-label="Fewer">−</button><b>${pax}</b><button data-act="actPax" data-d="1" ${pax>=maxP?'disabled':''} aria-label="More">+</button></span></div>
+      <p class="gx-sl" style="margin-left:4px">How many people</p><div class="act-pax"><span><b>${pax} ${pax>1?'people':'person'}</b>${pax>=maxP && maxP>0 ? `<small class="act-paxerr">Only ${maxP} spot${maxP>1?'s':''} left for this session.</small>` : `<small>Up to ${maxP} for this session</small>`}</span><span class="act-step"><button data-act="actPax" data-d="-1" ${pax<=1?'disabled':''} aria-label="Fewer">−</button><b>${pax}</b><button data-act="actPax" data-d="1" ${pax>=maxP?'disabled':''} aria-label="More">+</button></span></div>
       <div style="margin-top:16px">${btn('Send request','actJoinGo',{disabled:maxP===0})}</div>`, 'Request to Join'); }
   if (S.dialog === 'actLock') h += gModal('alert', 'Not available yet', esc(S.actLock||''), ['Okay','closeDialog']);
   if (S.dialog === 'actConfirm') h += gModal('edit', S.cx && S.cx.editId ? 'Resubmit activity?' : 'Create activity?', S.cx && S.cx.editId ? 'Your changes go to admin review. The activity is hidden until it’s approved again.' : 'Please check the details. Your activity goes to admin review before people can see it.', [S.cx && S.cx.editId ? 'Resubmit' : 'Create', 'actCreateOk'], ['Cancel','closeDialog']);
@@ -245,7 +245,7 @@ overlayHTML = () => { let h = _ovAct();
         <div class="gm8-body"><h2 id="actDelT">Delete activity?</h2><p>This activity has a group chat with ${g.mem.length} member${g.mem.length>1?'s':''}. What should happen to it?</p></div>
         <div class="gm8-acts"><button class="gm8-pri" data-act="actDelOk" data-g="del">Delete activity and group</button><button class="gm8-pri act-alt" data-act="actDelOk" data-g="keep">Delete activity, keep the group</button><button class="gm8-sec" data-act="closeDialog">Cancel</button></div></div>`
       : gModal('trash', 'Delete activity?', `“${esc(a.title)}” will be removed for good.`, ['Delete','actDelOk'], ['Cancel','closeDialog']); }
-  if (S.dialog === 'actWd') h += gModal('alert', 'Withdraw request?', 'The owner won’t see your request anymore. You can send a new one later.', ['Withdraw','actWithdrawOk'], ['Keep request','closeDialog']);
+  if (S.dialog === 'actWd') h += gModal('alert', 'Withdraw request?', 'Your request will be cancelled and the spots will be released.', ['Withdraw','actWithdrawOk'], ['Cancel','closeDialog']);
   return h; };
 const _actGroupOverlay = overlayHTML;
 overlayHTML = () => {
@@ -306,7 +306,7 @@ Object.assign(A, {
   actDelete: () => { const a = cur(); if (isActive(a)) { lock('delete'); return; } S.dialog = 'actDel'; render(); },
   actDelOk: el => { const a = cur(); const g = a.gid && findGroup(a.gid); const mode = el.dataset.g; S.dialog = null;
     if (g && mode === 'del') { const c = C6(); c.convs = c.convs.filter(v => v !== g); }
-    if (g && mode === 'keep') { g.name = g.name.replace(/^Activity:\s*/, ''); delete g.actId; g.bio = ''; gMsg(g, 'The activity was deleted. This is now a regular group.'); }
+    if (g && mode === 'keep') { g.name = g.name.replace(/^Activity:\s*/, ''); delete g.actId; g.bio = ''; gMsg(g, 'This group is no longer linked to an Activity and is now a regular group.'); }
     AV.mine = AV.mine.filter(x => x !== a); back(); toast(g ? (mode==='del' ? 'Activity and group deleted.' : 'Activity deleted. The group is now a regular group.') : 'Activity deleted.'); },
   /* participant */
   actJoin: el => { if (S.session !== 'user') { if (A.g7Login) A.g7Login(); else openSheet('login'); return; }
@@ -315,12 +315,12 @@ Object.assign(A, {
     S.exp = e.id; S.actSess = null; S.actPax = 1; openSheet('actJoinS'); },
   actSess: el => { S.actSess = el.dataset.id; S.actPax = 1; S.sheetAnim = false; render(); },
   actPax: el => { S.actPax = Math.max(1, (S.actPax||1) + (+el.dataset.d)); S.sheetAnim = false; render(); },
-  actJoinGo: () => { const e = expById(S.exp); const ss = sessOf(e.id); const sel = S.actSess || (ss.find(s=>s[3]>0)||ss[0])[0]; const s = ss.find(x=>x[0]===sel);
+  actJoinGo: () => { if (scen.network==='offline') { toast('No internet connection. Your choices are kept, try again.','err'); return; } const e = expById(S.exp); const ss = sessOf(e.id); const sel = S.actSess || (ss.find(s=>s[3]>0)||ss[0])[0]; const s = ss.find(x=>x[0]===sel);
     if (!s || s[3] <= 0 || e.full || AV.req[e.id] || e.country!==userCountry() || sessionsEnded(ss)) { S.sheet=null; render(); toast('This session is no longer available.','err'); return; }
     const pax = Math.min(S.actPax||1, s[3]); AV.req[e.id] = {st:'pending', sess:sel, pax, at:'Now'}; s[3] -= pax; S.sheet = null;
     render(); toast('Request sent. The owner will review it.'); },
   actWithdraw: el => { S.actWdId = el.dataset.id; S.dialog = 'actWd'; render(); },
-  actWithdrawOk: () => { const r = AV.req[S.actWdId]; if (r) { const s = sessOf(S.actWdId).find(x=>x[0]===r.sess); if (s) s[3] += r.pax; } delete AV.req[S.actWdId]; S.dialog = null; render(); toast('Request withdrawn.'); },
+  actWithdrawOk: () => { if (scen.network==='offline') { S.dialog = null; render(); toast('No internet connection. Your request is still pending, try again.','err'); return; } const r = AV.req[S.actWdId]; if (r) { const s = sessOf(S.actWdId).find(x=>x[0]===r.sess); if (s) s[3] += r.pax; } delete AV.req[S.actWdId]; S.dialog = null; render(); toast('Request withdrawn.'); },
   actOpenExpGroup: el => { const e = expById(el.dataset.id); const g = joinExpGroup(e); S.conv = g.id; S.gid = g.id; go('chat'); setTimeout(scrollChat, 20); },
   actManageOwn: el => { C6(); const a = AV.mine.find(x => x.expId === el.dataset.id); if (a) { S.actId = a.id; go('actd'); } else A.actMine(); },
   actNewSvc: () => A.newSvc(),
@@ -410,7 +410,7 @@ Object.assign(appEntryRoutes, {
 });
 
 Object.assign(META, {
-  actmine:{name:'My Activities', group:'V2 · Activity', rules:['Entry: You page › My Activities. Create Activity: guest → login, KYC not approved → Verify sheet, approved → form','Created: In review, Live, Ended, Unlisted, Rejected','Applied: requests you sent with Request to Join. Pending requests never expire; withdraw anytime']},
+  actmine:{name:'My Activities', group:'V2 · Activity', rules:['Entry: Discover › Activities › Manage Activity (also You page › My Activities, pending decision). Create Activity: guest → login, KYC not approved → Verify sheet, approved → form','Created: In review, Live, Ended, Unlisted, Rejected','Applied: requests you sent with Request to Join. Pending requests never expire; withdraw anytime']},
   actd:{name:'My activity (owner)', group:'V2 · Activity', rules:['Active = approved until the last session ends','While active: Delete and Unlist are locked; Edit is locked once someone joined. Locked rows are dimmed and explain why','Delete with a group: delete both, keep the group (it becomes a regular group), or cancel']},
   actedit:{name:'Edit activity', group:'V2 · Activity', figma:'https://www.figma.com/design/EahbSzrwt1lVMNFG4gHLbG/YouApp-3.0?node-id=1982-9978', rules:['Edit opens an overview of the existing activity before any section editor','Change opens the matching editor; Save changes returns to this overview','Save & resubmit uses the existing review confirmation flow']},
   actappl:{name:'Applicants', group:'V2 · Activity', rules:['New Request, Accepted, Rejected. Pending requests count toward the max','Accept adds the person to the group chat; accepted people can’t be removed','Free: rejecting has no refund']},
@@ -465,10 +465,53 @@ try { render(); } catch(e) {}
       h = h.replace(/<span class="csub">From RM[\d.]+\/pax<\/span>/g, '<span class="csub act-free">Free · owner approves</span>')
         .replace('No available experience', 'No activities yet')
         .replace(/No available experiences yet in ([^<.]+)\./, 'There are no activities in $1 yet. Try another country.');
+      /* PRD 6.6.2: Manage Activity floating button, logged-in users only (Host role not needed) */
+      if (!isGuest()) {
+        h = h.replace('<div class="scroll" id="mainScroll">', '<div class="scroll act-fabpad" id="mainScroll">');
+        const i = h.lastIndexOf('<nav class="bnav"');
+        if (i > 0) h = h.slice(0, i) + `<button class="act-fab" data-act="actManage">${ic('cal')}<span>Manage Activity</span></button>` + h.slice(i);
+      }
     }
     return h; };
+  A.actManage = () => { if (isGuest()) { openSheet('loginGuest'); return; } S.actTab = 'event'; go('actmine'); };
   /* a stale Merchants/Feed choice falls back to Hosts */
   A.browseTab = (orig => el => { const k = el.dataset.k === 'activities' ? 'activities' : 'locals'; S.htab = 'discover'; S.seg = k; S.menu = false; render(); const sc = document.querySelector('#phone .scroll'); if (sc) sc.scrollTop = 0; })(A.browseTab);
   META.discover = Object.assign({}, META.discover, {rules:['Top tabs: Hosts and Activities (PRD Activity V3 6.9). Cashback is not a Discover tab','Top-right Inbox button with unread badge, same as Trips','Activities: country picker, categories, activity cards (Free, Fully Booked)']});
+  try { render(); } catch(e) {}
+})();
+
+/* ===== Activity V3 · PRD 6.1: the old paid "Create Experience" paths are closed ===== */
+(function(){
+  /* the only way to create is Discover › Activities › Manage Activity › My Activities › Create Activity */
+  A.startCx = () => { S.sheet = null; A.actManage(); };
+  appEntryRoutes.cexp = () => A.actManage();
+  /* Host dashboard creates Services only (6.1.2) */
+  A.hCreate = () => A.newSvc();
+  const _hexps = V.hexps;
+  V.hexps = () => _hexps().replace(/(<button[^>]*data-act=")startCx("[^>]*>)Create Experience(<\/button>)/, '$1actManage$2Go to My Activities$3');
+  try { render(); } catch(e) {}
+})();
+
+/* ===== Activity V3 · PRD 6.9.3: "Experience" reads "Activity" in menus, buttons and statuses ===== */
+(function(){
+  /* brand copy, the host's "Years of Experience" stat and real listing titles keep their wording */
+  const KEEP = /Experience life like a local|Years of Experience|Local Experiences/;
+  const titles = () => new Set([...(typeof EXPERIENCES !== 'undefined' ? EXPERIENCES : []).map(e => e.title), ...(AV && AV.mine || []).map(a => a.title)]);
+  const swap = t => t.replace(/^(\s*)Experience\s*:\s*/, '$1Activity: ')
+    .replace(/\bExperiences\b/g, 'Activities').replace(/\bExperience\b/g, 'Activity')
+    .replace(/\bexperiences\b/g, 'activities').replace(/\bexperience\b/g, 'activity');
+  const _r = render;
+  render = function(){ _r.apply(this, arguments); const ph = document.getElementById('phone'); if (!ph) return;
+    const T = titles();
+    const w = document.createTreeWalker(ph, NodeFilter.SHOW_TEXT); let n;
+    while ((n = w.nextNode())) { const v = n.nodeValue; if (!/xperience/.test(v) || KEEP.test(v) || T.has(v.trim())) continue;
+      const p = n.parentElement; if (p && p.closest('script,style')) continue;
+      if ([...T].some(t => t && v.includes(t) && /xperience/.test(t))) continue;
+      n.nodeValue = swap(v); }
+    ph.querySelectorAll('[aria-label*="xperience"],[placeholder*="xperience"]').forEach(el => {
+      ['aria-label','placeholder'].forEach(a => { const v = el.getAttribute(a); if (v && !KEEP.test(v)) el.setAttribute(a, swap(v)); }); });
+  };
+  const _toast = toast;
+  toast = function(m, ...r){ return _toast(typeof m === 'string' && !KEEP.test(m) ? swap(m) : m, ...r); };
   try { render(); } catch(e) {}
 })();

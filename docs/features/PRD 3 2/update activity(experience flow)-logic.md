@@ -59,3 +59,32 @@ This document defines Activity behavior in the prototype. Activities are free. S
 - The Discover tabs are **Hosts / Activities**. Cashback is not a Discover tab. Internal keys stay the same.
 - The bottom navigation and chat list title follow the Trips spec (**Trips**, **Inbox**).
 - Reviews after an activity ends follow the existing rules.
+
+## 7. Prototype implementation (23 Nov 2026)
+
+Branch `dev-claude`, App 3.0 renderer (`prototype/features/activities/activities.js`) and Wallet 2.0 renderer (`prototype/wallet2/wallet19nov.js`).
+
+| Phase | Delivered |
+| --- | --- |
+| 0. Audit | Gap check of PRD 6.1–6.10 and edge cases 1–31 against the build |
+| 1. Discover tabs | Header tabs **Hosts / Activities**. The in-page switch and the Merchants (Cashback) tab are removed. Activity cards show **Free · owner approves** instead of a price. The empty state reads "No activities yet" |
+| 2. Manage Activity | Floating **Manage Activity** button on the Activities tab for logged-in users, hidden for guests and on the Hosts tab. It opens My Activities on My Event. The list has bottom space so the last card stays visible |
+| 3. Gaps | Old paid "Create Experience" paths (Your Experiences, the host Create sheet, the `cexp` deep link, Wallet 2.0 Create Experience) now lead to My Activities. "Only {n} spots left for this session." shows when the people count reaches the limit. Offline errors on request and withdraw keep the input |
+| 4. Naming and wording | "Experience" reads "Activity" in menus, buttons, statuses, toasts and accessibility labels. Brand copy ("Experience life like a local"), the host "Years of Experience" stat, category names and listing titles keep their wording. Withdraw modal and group-kept system message use the PRD wording |
+
+### Intentional differences from the PRD
+
+| Item | PRD | Prototype | Reason |
+| --- | --- | --- | --- |
+| Locked action text | One message: "This action is not available while the Activity is running." | A specific reason per action, such as "You can unlist this activity after its last session ends." | Tells the user when the action becomes available. Pending product confirmation |
+| My Activities entry | Manage Activity button | Manage Activity button, and the existing You page row | The You page row stays until the open item is decided |
+
+### Known limits
+
+- Your Activities (host legacy list) still shows the old paid listing data (price per pax). It is no longer a creation path.
+- Feed has no entry point in Discover.
+
+### QA
+
+- `node tools/qa-wallet-reference.cjs` passes all 7 groups. Added checks: Hosts / Activities tabs, Free label, Manage Activity opens My Activities on My Event, the button is hidden on Hosts, `startCx` leads to My Activities, no "Experience" text on Discover.
+- Visual sweep at 375 and 320 px: Discover (Hosts, Activities, loading, empty, error, guest), Manage Activity button, My Activities, Request to Join at the limit, withdraw modal, Your Activities, Activities plans, Inbox, Business page.
