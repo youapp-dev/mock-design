@@ -117,23 +117,26 @@ V.obRef = () => { const o = obInit(); const selected = referrerById(o.ref); cons
     <small>@${esc(user.username)} · ${esc(user.city)}</small>${legacy&&legacy.id===user.id?`<small class="ob-ref-legacy">Matched to this username from a referral code</small>`:''}</span>${ic('chev')}</button>`).join('');
   const field = selected
     ? `<div class="ob-ref-field" role="group" aria-label="Selected referrer username"><span class="ob-ref-at">@</span><span class="ob-ref-value">${esc(selected.username)}</span>${locked?'':`<button class="ob-ref-clear" data-act="obRefEdit" aria-label="Clear selected referrer"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>`}</div>`
-    : `<label class="ob-ref-field ob-ref-search">${ic('search')}<input id="obRef" data-in="obRef" type="search" enterkeyhint="search" value="${esc(query)}" placeholder="Name or @username" aria-label="Search your friend by name or @username" autocomplete="off" autocapitalize="none" spellcheck="false"></label>`;
-  const hero = `<div class="ob-ref-hero" aria-hidden="true"><img src="../../assets/referral-onboarding-hero.png" alt=""></div>`;
+    : `<label class="ob-ref-field"><span class="ob-ref-at">@</span><input id="obRef" data-in="obRef" value="${esc(query.replace(/^@+/,''))}" placeholder="Their username" aria-label="Their username" autocomplete="off" autocapitalize="none"></label>`;
+  const hero = !query.trim() ? `<div class="ob-ref-hero" aria-hidden="true"><svg viewBox="0 0 358 160">
+    <path d="M30 22Q31.44 28.56 38 30Q31.44 31.44 30 38Q28.56 31.44 22 30Q28.56 28.56 30 22Z" fill="#B79BF0"/>
+    <path d="M330 30Q331.8 38.2 340 40Q331.8 41.8 330 50Q328.2 41.8 320 40Q328.2 38.2 330 30Z" fill="#F5B82E"/>
+    <path d="M310 124Q311.08 128.92 316 130Q311.08 131.08 310 136Q308.92 131.08 304 130Q308.92 128.92 310 124Z" fill="#C05CA8"/>
+    <g transform="translate(50 120)"><circle r="13" fill="#E0A21B"/><circle r="10.66" fill="#FFD45C"/><text y="3.9" text-anchor="middle" font-family="Inter,sans-serif" font-weight="800" font-size="10.14" fill="#9A6400">RM</text></g>
+    <g transform="translate(300 96)"><circle r="11" fill="#14A877"/><circle r="9.02" fill="#3FD3A4"/><text y="3.3" text-anchor="middle" font-family="Inter,sans-serif" font-weight="800" font-size="8.58" fill="#fff">RM</text></g>
+    <image href="../../assets/referral-onboarding-hero.png" x="54" y="0" width="250" height="120"/>
+  </svg></div>` : '';
   const picked = selected ? `<div class="ob-ref-picked"><div class="ob-ref-card">${img(selected.avatar,selected.name,'width:72px;height:72px')}<span class="ob-ref-person"><b>${esc(selected.name)}${selected.verified?`<span class="ob-ref-verified" aria-label="Verified">${ic('check')}</span>`:''}</b><small>@${esc(selected.username)} · ${esc(selected.city)}</small></span><span class="ob-ref-confirmed" aria-label="Selected">${ic('check')}</span></div>
     <p class="ob-ref-note">You’ll be linked to ${esc(selected.name)}. This can’t be changed later.</p>${locked?'':`<button class="ob-ref-change" data-act="obRefEdit">Not them? Change</button>`}</div>` : '';
-  const typed = query.replace(/^@+/,'').trim();
-  const emptyMessage = !selected && !results.length && typed
-    ? `<small class="ob-ref-hint">${typed.length>=2?'No one found. Check the spelling, or skip for now.':'Type at least 2 characters to search.'}</small>` : '';
-  const initialHint = !query.trim() && !selected ? `<p class="ob-ref-why">${ic('info')}<span>Your friend earns a reward when you pay with YouApp. It costs you nothing extra.</span></p>` : '';
-  const label = selected ? `Continue with ${selected.name}` : 'Skip for now';
-  const foot = selected
-    ? obFoot('obRefGo', false, label)
-    : `<div class="w2foot">${btn(label, 'obRefGo', {kind:'btn-secondary', cls:'ob-ref-skipbtn'})}</div>`;
-  return `<div class="screen ob ob-ref-page">${statusBar()}${obTop(3, false)}
+  const emptyMessage = !selected && !results.length && query.trim()
+    ? `<small class="ob-ref-hint">${query.trim().length>=2?'No active, KYC-verified users found.':'Type at least 2 characters to search.'}</small>` : '';
+  const initialHint = !query.trim() && !selected ? '<div class="ob-ref-hint">They get rewards when you use YouApp. You can skip this.</div>' : '';
+  const label = selected ? `Continue with ${selected.name}` : 'Continue';
+  return `<div class="screen ob ob-ref-page">${statusBar()}${obTop(3, !locked)}
   <div class="scroll"><div class="pad16 ob-ref-content">
-    ${hero}<div><h1 class="ob-h">Who referred you?</h1><p class="ob-p">Search your friend’s name or @username.</p></div>
-    ${field}${selected?picked:rows?`<div class="ob-ref-results" role="list">${rows}</div>`:`${initialHint}${emptyMessage}`}
-  </div></div>${foot}</div>`; };
+    <div><h1 class="ob-h">Who referred you?</h1><p class="ob-p">Type their YouApp username.</p></div>
+    ${field}${selected?picked:rows?`<div class="ob-ref-results" role="list">${rows}</div>`:`${hero}${initialHint}${emptyMessage}`}
+  </div></div>${obFoot('obRefGo', !selected, label)}</div>`; };
 
 let otpTimer = null;
 const otpTick = () => { clearInterval(otpTimer); otpTimer = setInterval(() => { if (S.screen!=='otp') { clearInterval(otpTimer); return; }
@@ -173,8 +176,8 @@ Object.assign(A, {
   obRefEdit: () => { const o=obInit(); if (o.refLink || o.refSt==='ok') return; o.ref=''; o.refQuery=''; o.refSt='idle'; render(); },
   obRefGo: () => { const o=obInit();
     if (o.ref && ['selected','locked','ok'].includes(o.refSt)) { obFinish(); return; }
-    if (o.refLink) return;
-    o.ref=''; o.refQuery=''; o.refSt='idle'; obFinish(); },
+    if (!o.refQuery.trim()) { obFinish(); return; }
+    toast('Choose an active account from the search results.'); },
 });
 
 Object.assign(META, {
@@ -183,7 +186,7 @@ Object.assign(META, {
   obName:{name:'Onboarding · Name', ph:1, rules:['Display Name, required, 2–30 characters with counter. Error shows after Continue.']},
   obDob:{name:'Onboarding · Date of Birth', ph:1, rules:['Optional (Skip). Date picker, must be 18 or older.']},
   obGender:{name:'Onboarding · Gender', ph:1, rules:['Optional (Skip). Male, Female or Prefer not to say. Continue turns on after a pick.']},
-  obRef:{name:'Onboarding · Who Referred You?', ph:1, fb:['F1'], rules:['Last onboarding step, optional. With no referrer picked the bottom button reads Skip for now (secondary); after picking it becomes Continue with {name}. No top-right Skip.','Search by username or display name after 2 characters; show up to 5 active, KYC-verified users, verified users first. Never offer the current user.','Selecting a user previews the relationship; Continue saves it permanently.','A legacy referral code pasted into search resolves to its owner’s username. Invite links carrying legacy codes resolve the same way and cannot be changed.']},
+  obRef:{name:'Onboarding · Who Referred You?', ph:1, fb:['F1'], rules:['Last onboarding step. Optional (Skip) when no referrer was chosen.','Search by username or display name after 2 characters; show up to 5 active, KYC-verified users, verified users first. Never offer the current user.','Selecting a user previews the relationship; Continue saves it permanently.','A legacy referral code pasted into search resolves to its owner’s username. Invite links carrying legacy codes resolve the same way and cannot be changed.']},
 });
 { const o = ORDER[0][1]; o.splice(o.indexOf('otp')+1, 0, 'obName','obDob','obGender','obRef'); }
 
@@ -764,7 +767,7 @@ function onInput(e){ const k = e.target.dataset.in; if (!k) return; const v = e.
   else if (k==='tpAmt') { S.tp.amt = +v.replace(/[^\d.]/g,'')||0; reRender(e); }
   else if (k==='obName') { obInit().name=v.slice(0,30); obInit().nameErr=''; reRender(e); }
   else if (k==='obDob') { obInit().dob=v; render(); }
-  else if (k==='obRef') { const o=obInit(); if (o.refLink || o.refSt==='ok') return; o.refQuery=v; o.ref=''; o.refSt=o.refQuery.replace(/^@+/,'').trim()?'searching':'idle'; reRender(e); }
+  else if (k==='obRef') { const o=obInit(); if (o.refLink || o.refSt==='ok') return; o.refQuery=v.replace(/^@+/, ''); o.ref=''; o.refSt=o.refQuery.trim()?'searching':'idle'; reRender(e); }
   else if (k==='cxT') { S.cx.title=v.slice(0,120); reRender(e); }
   else if (k==='cxD') { S.cx.desc=v.slice(0,500); reRender(e); }
   else if (k==='epName') { S.ep.name=v; }

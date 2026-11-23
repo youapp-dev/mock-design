@@ -16,7 +16,7 @@ link artifact : https://claude.ai/artifact/DZ2YFW3QXY4ViG4uncePA5
 
 | # | Module | Type | Priority |
 | --- | --- | --- | --- |
-| W1 | Onboarding with Referral Code (sign up, OTP, Name, Birthday, Gender, "Who referred you?") and **Settings › Referral code** | Update to 3.0 Login / Onboarding / Settings | P0 |
+| W1 | Onboarding with Referral Code (sign up, OTP, Name, Birthday, Gender, "Have a Referral Code?") and **Settings › Referral code** | Update to 3.0 Login / Onboarding / Settings | P0 |
 | W2 | Account Tiers — Free, VIP, SVIP (Choose your plan, Confirmation, VIP months, SVIP review, payment from MYRT, result, renew, Limits) | New | P0 |
 | W3 | Business roles — Host (unchanged), **Elite** and **Merchant** (granted by admin; info page + Contact Admin; Elite page, Prize pool, read-only merchant data, merchant dashboard) | New | P0 |
 | W4 | Scan to Pay — Wallet 2.0 (tier payment fee, minimum, PIN threshold, Top Up & Pay, limit upsell, cashback, QR routing) | Update to 3.0 Scan and Pay + 3.1.0 M1 | P0 |
@@ -66,7 +66,7 @@ link artifact : https://claude.ai/artifact/DZ2YFW3QXY4ViG4uncePA5
 
 | Existing PRD | Previous rule | New rule |
 | --- | --- | --- |
-| 3.0 Login / Onboarding | Ends after profile steps; no referral | Adds optional **Who referred you?** as the last step (Skip allowed). Invite links pre-fill and lock the code. |
+| 3.0 Login / Onboarding | Ends after profile steps; no referral | Adds optional **Have a Referral Code?** as the last step (Skip allowed). Invite links pre-fill and lock the code. |
 | 3.0 Settings | No referral entry | Adds **Settings › Referral code** (gear on You / Host). |
 | 3.0 YouPage | Balance card, Invite tile, plan card | Tier badge and tier strip on the balance card; tiles Top Up, Card, Bills, Mobile Reload; Rewards card; **Business** switch next to You at the top (Host / Elite / Merchant). Balance is called Travel Balance. |
 | 3.1.0 M4 Limits & Wallet Tier | MCash tier sets limits | Two tier concepts: MCash wallet tier and YouApp Account Tier. ⚠️ Q1 — effective limit is the lower of the two. |
@@ -157,7 +157,7 @@ link artifact : https://claude.ai/artifact/DZ2YFW3QXY4ViG4uncePA5
 
 ### 3.1 High-level Solution
 
-1. **W1 Onboarding:** Get Started (email / Google / Apple) → OTP → Name → Birthday (skip) → Gender (skip) → **Who referred you?** (Skip for now). Invite links pre-fill and lock the code. Later: **Settings › Referral code** until the first payment.
+1. **W1 Onboarding:** Get Started (email / Google / Apple) → OTP → Name → Birthday (skip) → Gender (skip) → **Have a Referral Code?** (Skip). Invite links pre-fill and lock the code. Later: **Settings › Referral code** until the first payment.
 2. **W2 Tiers:** badge and strip on the balance card → Choose your plan (Free / VIP / SVIP) → Confirmation (VIP Monthly with month stepper; VIP Yearly RM120 with RM20 bonus credit) → pay from Travel Balance → result. SVIP needs proof of income review before payment.
 3. **W3 Business:** You › **Business** with segments **Host · Elite · Merchant**. Host unchanged. Elite and Merchant show an info page with **Contact Admin** (WhatsApp) until admin grants the role. Active Elite sees earnings, prize pool, merchants (read-only) and referrals. Active Merchant sees the merchant dashboard.
 4. **W4 Scan to Pay:** scan → amount (min RM20) → fees → PIN at RM100+ → paid → Share this moment. Low balance → Top Up & Pay. Over limit → upgrade card.
@@ -192,13 +192,10 @@ link artifact : https://claude.ai/artifact/DZ2YFW3QXY4ViG4uncePA5
 3. **Name** (required, 2–30 characters).
 4. **Birthday** (optional, Skip). Must be 18 or older.
 5. **Gender** (optional, Skip).
-6. **Who referred you?** (last step, progress bar, optional). Updated 23 Nov 2026 to match the prototype: the referrer is found by **name or @username search**; a legacy referral code typed or pasted into the search still resolves to its owner.
-    - Copy: title "Who referred you?", subtitle "Search your friend's name or @username.", search placeholder "Name or @username", note under the field "Your friend earns a reward when you pay with YouApp. It costs you nothing extra."
-    - Search starts at 2 characters (a leading @ is ignored) and shows up to 5 active, KYC-verified users, verified first. The user's own account is never offered. No match → "No one found. Check the spelling, or skip for now."
-    - Picking a result shows the person card and "You'll be linked to {name}. This can't be changed later." with "Not them? Change".
-    - Bottom button: **Skip for now** (secondary) while nobody is picked; **Continue with {name}** (primary) once picked. There is no top-right Skip.
-    - From an invite link → referrer pre-filled and locked; Continue → app.
-    - Skip for now → app with no referrer (can still be added in Settings › Referral code before the first payment).
+6. **Have a Referral Code?** (last step, progress bar, **Skip** top right). Field "Referral Code", placeholder "Enter code here", Continue.
+    - From an invite link → pre-filled, applied, field locked: "Referral code applied". Continue → app.
+    - Typed code → Continue validates (spinner): valid → locked and applied; invalid → "Invalid referral code" (edit, retry or Skip).
+    - Skip → app with no referrer.
 7. Into the app (Discover). The referrer sees the new friend as "Pending verification" until KYC passes.
 
 #### B. Settings › Referral code
@@ -351,7 +348,7 @@ flowchart LR
     A[Invite link opened] --> B{New user?}
     B -- Yes --> C[Code stored on device]
     C --> D[Sign up + OTP + profile steps]
-    D --> E[Who referred you step: referrer pre-filled and locked]
+    D --> E[Have a Referral Code step: code pre-filled and locked]
     F[Code typed at that step] --> G{Valid, max 5 chars?}
     G -- Yes --> H[Referrer linked permanently]
     G -- No --> F
@@ -449,7 +446,7 @@ sequenceDiagram
 | Get Started | Email, Login, Google, Apple, terms line | "By continuing you confirm you are 18+ and agree to the Terms." |
 | OTP | 6 boxes, resend after 25 s; wrong → red | "OTP has been sent to your email." / "Incorrect OTP Code. Please try again!" |
 | Name / Birthday | Name 2–30 chars; under 18 blocked | "Name must be 2–30 characters." / "You need to be 18 or older to use YouApp." |
-| Who referred you? | Progress bar, small illustration, search field, why-note, bottom button (Skip for now / Continue with {name}) | "Who referred you?" / "Search your friend's name or @username." / placeholder "Name or @username" / "Your friend earns a reward when you pay with YouApp. It costs you nothing extra." |
+| Have a Referral Code? | Progress bar, **Skip** top right, field, Continue | "Have a Referral Code?" / "Enter a referral code to connect with your referrer." / placeholder "Enter code here" |
 | Field input | Auto-uppercase, stops at 5 characters, counter 0/5, spaces and symbols stripped on paste | — |
 | Checking | Spinner in button | — |
 | Invalid | Field error, editable | "Invalid referral code" |
