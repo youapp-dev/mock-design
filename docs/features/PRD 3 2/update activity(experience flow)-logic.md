@@ -56,7 +56,7 @@ This document defines Activity behavior in the prototype. Activities are free. S
 
 ## 6. Navigation and naming
 
-- The Discover tabs are **Hosts / Activities / Cashback**. Internal keys stay the same.
+- Discover top tabs are **Locals / Merchants**. Locals has a **Hosts / Activities** switch. Internal keys stay the same.
 - The bottom navigation and chat list title follow the Trips spec (**Trips**, **Inbox**).
 - Reviews after an activity ends follow the existing rules.
 
@@ -67,7 +67,7 @@ Branch `dev-claude`, App 3.0 renderer (`prototype/features/activities/activities
 | Phase | Delivered |
 | --- | --- |
 | 0. Audit | Gap check of PRD 6.1–6.10 and edge cases 1–31 against the build |
-| 1. Discover tabs | Header tabs **Hosts / Activities / Cashback** (Cashback shows the merchant list). The in-page switch is removed. Activity cards show **Free · owner approves** instead of a price. The empty state reads "No activities yet" |
+| 1. Discover tabs | Header tabs **Locals / Merchants**; inside Locals a **Hosts / Activities** switch (Merchants is the cashback list). Activity cards show **Free · owner approves** instead of a price. The empty state reads "No activities yet" |
 | 2. Manage Activity | Floating **Manage Activity** button on the Activities tab for logged-in users, hidden for guests and on the Hosts tab. It opens My Activities on My Event. The list has bottom space so the last card stays visible |
 | 3. Gaps | Old paid "Create Experience" paths (Your Experiences, the host Create sheet, the `cexp` deep link, Wallet 2.0 Create Experience) now lead to My Activities. "Only {n} spots left for this session." shows when the people count reaches the limit. Offline errors on request and withdraw keep the input |
 | 4. Naming and wording | "Experience" reads "Activity" in menus, buttons, statuses, toasts and accessibility labels. Brand copy ("Experience life like a local"), the host "Years of Experience" stat, category names and listing titles keep their wording. Withdraw modal and group-kept system message use the PRD wording |

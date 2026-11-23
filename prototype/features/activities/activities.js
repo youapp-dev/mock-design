@@ -449,17 +449,16 @@ try { render(); } catch(e) {}
   try { render(); } catch(e) {}
 })();
 
-/* ===== Activity V3 · Discover top tabs: Hosts | Activities | Cashback (PRD 6.9) ===== */
+/* ===== Activity V3 · Discover: Locals | Merchants on top; inside Locals a Hosts | Activities switch (PRD 6.9) ===== */
 (function(){
   const _disc = V.discover;
   V.discover = () => {
-    if (!['activities','merchants'].includes(S.seg)) S.seg = 'locals';
+    if (!['locals','activities','merchants'].includes(S.seg)) S.seg = 'locals';
     if (S.htab === 'feed') S.htab = 'discover';
-    const act = S.seg === 'activities'; const cb = S.seg === 'merchants';
+    const act = S.seg === 'activities';
     let h = _disc();
-    h = h.replace(/<div class="htabs" role="tablist">[\s\S]*?<\/div>/, `<div class="htabs" role="tablist" aria-label="Hosts, Activities or Cashback"><button role="tab" aria-selected="${!act && !cb}" data-act="browseTab" data-k="locals">Hosts</button><button role="tab" aria-selected="${act}" data-act="browseTab" data-k="activities">Activities</button><button role="tab" aria-selected="${cb}" data-act="browseTab" data-k="merchants">Cashback</button></div>`);
-    /* the in-page Hosts | Activities switch moved to the header */
-    h = h.replace(/<div class="seg" role="tablist">(?:<button[^>]*data-act="seg"[^>]*>[^<]*<\/button>)+<\/div>/, '');
+    /* header: Locals (Hosts + Activities) | Merchants */
+    h = h.replace(/<div class="htabs" role="tablist">[\s\S]*?<\/div>/, `<div class="htabs" role="tablist" aria-label="Locals or Merchants"><button role="tab" aria-selected="${S.seg !== 'merchants'}" data-act="browseTab" data-k="locals">Locals</button><button role="tab" aria-selected="${S.seg === 'merchants'}" data-act="browseTab" data-k="merchants">Merchants</button></div>`);
     if (act) {
       /* Activities are free (PRD 6.5): no price on the cards, Activity naming in the empty state */
       h = h.replace(/<span class="csub">From RM[\d.]+\/pax<\/span>/g, '<span class="csub act-free">Free · owner approves</span>')
@@ -474,9 +473,10 @@ try { render(); } catch(e) {}
     }
     return h; };
   A.actManage = () => { if (isGuest()) { openSheet('loginGuest'); return; } S.actTab = 'event'; go('actmine'); };
-  /* Hosts, Activities or Cashback (merchants); a stale Feed choice falls back to Hosts */
-  A.browseTab = (orig => el => { const k = ['activities','merchants'].includes(el.dataset.k) ? el.dataset.k : 'locals'; S.htab = 'discover'; S.seg = k; S.merCat = S.merCat || 'Nightlife'; S.menu = false; render(); const sc = document.querySelector('#phone .scroll'); if (sc) sc.scrollTop = 0; })(A.browseTab);
-  META.discover = Object.assign({}, META.discover, {rules:['Top tabs: Hosts, Activities and Cashback (PRD Activity V3 6.9). Cashback shows the merchant list','Top-right Inbox button with unread badge, same as Trips','Activities: country picker, categories, activity cards (Free, Fully Booked)']});
+  /* Locals keeps the last Hosts / Activities choice; Merchants opens the merchant list */
+  A.browseTab = el => { const k = el.dataset.k === 'merchants' ? 'merchants' : (S.lastLocal || 'locals'); S.htab = 'discover'; S.seg = k; S.merCat = S.merCat || 'Nightlife'; S.menu = false; render(); const sc = document.querySelector('#phone .scroll'); if (sc) sc.scrollTop = 0; };
+  A.seg = (orig => el => { S.lastLocal = el.dataset.k; orig(el); })(A.seg);
+  META.discover = Object.assign({}, META.discover, {rules:['Top tabs: Locals and Merchants. Locals has a Hosts | Activities switch under the search (PRD Activity V3 6.9)','Top-right Inbox button with unread badge, same as Trips','Activities: country picker, categories, activity cards (Free, Fully Booked)']});
   try { render(); } catch(e) {}
 })();
 
