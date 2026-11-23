@@ -317,13 +317,13 @@ document.head.insertAdjacentHTML('beforeend', `<style id="mx-css">
 .mx-thumbs .more{font:800 15px Inter, sans-serif; color:#4B2A9E}
 .mx-body{padding:12px 16px 0; display:grid; gap:12px; grid-template-columns:minmax(0,1fr)}
 .mx-pay{display:flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:8px 12px; border:0; border-radius:12px; background:#E2F6EE; color:#0B6B4B; font:600 13.5px Inter, sans-serif; text-align:left} .mx-pay svg{width:16px; height:16px; flex:none}
-.mx-cbb{position:relative; overflow:hidden; isolation:isolate; display:flex; align-items:center; gap:10px; min-height:88px; padding:6px 16px 6px 6px; border-radius:20px; background:#F1EBFE; border:1px solid #E4DAFB}
+.mx-cbb{position:relative; overflow:hidden; isolation:isolate; display:flex; align-items:center; gap:8px; min-height:64px; padding:4px 14px 4px 4px; border-radius:16px; background:#F1EBFE; border:1px solid #E4DAFB}
 .mx-cbb-bg{position:absolute; inset:0; width:100%; height:100%; z-index:-1; pointer-events:none}
-.mx-cbb-g{flex:none; width:84px; height:74px} .mx-cbb-g svg{width:100%; height:100%; display:block; overflow:visible}
+.mx-cbb-g{flex:none; width:62px; height:54px} .mx-cbb-g svg{width:100%; height:100%; display:block; overflow:visible}
 .mx-cbb-t{flex:1; min-width:0; margin:0; display:grid; gap:1px}
-.mx-cbb-t small{font:700 15px/1.25 Inter, sans-serif; color:#5E35B8; letter-spacing:-.1px}
-.mx-cbb-t b{font:800 27px/1.1 Inter, sans-serif; color:#2A1466; letter-spacing:-.6px; white-space:nowrap}
-@media (max-width:340px){.mx-cbb-g{width:68px; height:60px} .mx-cbb-t small{font-size:13.5px} .mx-cbb-t b{font-size:23px}}
+.mx-cbb-t small{font:700 12.5px/1.25 Inter, sans-serif; color:#5E35B8; letter-spacing:-.1px}
+.mx-cbb-t b{font:800 20px/1.1 Inter, sans-serif; color:#2A1466; letter-spacing:-.4px; white-space:nowrap}
+@media (max-width:340px){.mx-cbb-g{width:54px; height:48px} .mx-cbb-t small{font-size:12px} .mx-cbb-t b{font-size:18px}}
 .mx-info{border:1.5px solid #ECE7F7; border-radius:16px; overflow:hidden}
 .mx-ir{display:flex; align-items:flex-start; gap:10px; width:100%; padding:12px 14px; border:0; border-top:1px solid #ECE7F7; background:none; text-align:left; font:500 14px/1.4 Inter, sans-serif; color:#1E1050}
 .mx-info > .mx-ir:first-child{border-top:0} .mx-ir > svg{width:19px; height:19px; flex:none; color:#4B2A9E; margin-top:1px}
