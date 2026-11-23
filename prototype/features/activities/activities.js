@@ -524,6 +524,11 @@ try { render(); } catch(e) {}
     const empty = scen.actMine === 'empty'; const keep = empty ? [AV.mine, AV.req] : null;
     if (empty) { AV.mine = []; AV.req = {}; }
     let h; try { h = _mine(); } finally { if (keep) { AV.mine = keep[0]; AV.req = keep[1]; } }
+    /* empty My Event: the action sits in the empty card (same as Explore activities on Applied), no FAB */
+    if (/<b>No activities yet<\/b>/.test(h) && /data-act="actCreate"/.test(h)) {
+      h = h.replace(/<div class="cta"><button[^>]*data-act="actCreate"[^>]*>[\s\S]*?<\/button><\/div>/, '')
+        .replace(/(<b>No activities yet<\/b><small>[^<]*<\/small>)/, `$1${btn('Create Activity','actCreate',{cls:'am-exbtn'})}`);
+      return h; }
     /* bottom-right extended FAB, stays put while the list scrolls (My Event only) */
     h = h.replace(/<div class="cta"><button[^>]*data-act="actCreate"[^>]*>[\s\S]*?<\/button><\/div>/, `<button class="act-cfab" data-act="actCreate">${ic('plus')}<span>Create Activity</span></button>`);
     if (h.includes('act-cfab')) h = h.replace('<div class="scroll" style="padding:12px 16px 24px">', '<div class="scroll act-cfabpad" style="padding:12px 16px 24px">');
@@ -534,6 +539,6 @@ try { render(); } catch(e) {}
     return _set ? _set(k, v) : undefined; };
   const _st = window.__state;
   window.__state = () => Object.assign(_st ? _st() : {}, {actMine: scen.actMine === 'empty' ? 'empty' : 'has'});
-  META.actmine = Object.assign({}, META.actmine, {rules:[...(META.actmine && META.actmine.rules || []).filter(r => !/^Create Activity button/.test(r)), 'Create Activity button: extended FAB fixed bottom-right, visible while the list scrolls, My Event tab only','Scenario My Activities › Empty: no created activities and no requests']});
+  META.actmine = Object.assign({}, META.actmine, {rules:[...(META.actmine && META.actmine.rules || []).filter(r => !/^Create Activity button/.test(r)), 'Create Activity button: extended FAB fixed bottom-right, visible while the list scrolls, My Event tab only','Empty My Event: Create Activity sits in the empty card instead of the FAB','Scenario My Activities › Empty: no created activities and no requests']});
   try { render(); } catch(e) {}
 })();
