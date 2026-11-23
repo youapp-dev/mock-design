@@ -1002,7 +1002,11 @@ let ws;
 
   await jump('discover');
   await appState('discover');
-  assert.deepEqual(JSON.parse(await app(`JSON.stringify([...document.querySelectorAll('.appbar .htabs button')].map(b => b.textContent))`)), ['Hosts', 'Activities']);
+  assert.deepEqual(JSON.parse(await app(`JSON.stringify([...document.querySelectorAll('.appbar .htabs button')].map(b => b.textContent))`)), ['Hosts', 'Activities', 'Cashback']);
+  await appAct('browseTab', '[data-k="merchants"]');
+  assert.equal(await app('S.seg'), 'merchants');
+  await until(() => app(`!!document.querySelector('.mx-row [data-id]')`), 'Cashback merchants');
+  assert.equal(await app(`!!document.querySelector('.act-fab')`), false);
   assert.equal(await app(`!!document.querySelector('.seg [data-act="seg"]')`), false);
   await appAct('browseTab', '[data-k="activities"]');
   assert.equal(await app('S.seg'), 'activities');

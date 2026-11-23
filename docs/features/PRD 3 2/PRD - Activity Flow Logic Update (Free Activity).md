@@ -11,7 +11,7 @@ This PRD defines the behavior of **Activity** (formerly Experience) in the YouAp
 - The automatic group of an Activity.
 - Request to Join, My Activities, and the applicant list.
 - Edit, leave, unlist, delete, and the locks during an active schedule.
-- Navigation and naming (Discover tabs Hosts and Activities).
+- Navigation and naming (Discover tabs Hosts, Activities, Cashback).
 
 **Not covered (follow current system):**
 - Service creation, Service booking, and the Service fee (unchanged).
@@ -22,7 +22,7 @@ This PRD defines the behavior of **Activity** (formerly Experience) in the YouAp
 **Naming used in this PRD:**
 - **Activity** replaces Experience in the app.
 - **Owner** is the user who created the Activity.
-- Discover tabs are **Hosts / Activities**. Cashback is not a Discover tab. Internal keys do not change.
+- Discover tabs are **Hosts / Activities / Cashback**. Internal keys do not change.
 
 **Supersedes:** where it conflicts with this PRD, the paid Experience logic in earlier PRDs (Reserve-and-Pay booking, the Price step in Create Experience, refund to Booking Wallet) no longer applies to Activity.
 
@@ -150,7 +150,7 @@ This PRD defines the behavior of **Activity** (formerly Experience) in the YouAp
 4. If the group is kept: the `Activity:` prefix and the Activity link are removed from the group, and a system message explains that the group becomes a regular group.
 
 ### 6.9 Navigation and Naming
-1. The Discover tabs at the top of the screen are **Hosts / Activities**. Cashback is not a Discover tab. Internal keys do not change.
+1. The Discover tabs at the top of the screen are **Hosts / Activities / Cashback**. Internal keys do not change.
 2. The bottom navigation and the chat list title follow the Trips spec (**Trips** tab, **Inbox** title).
 3. "Experience" is replaced by "Activity" in the app (menus, buttons, and statuses).
 4. Review after the Activity is completed follows the existing review rules.

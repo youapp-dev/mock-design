@@ -449,15 +449,15 @@ try { render(); } catch(e) {}
   try { render(); } catch(e) {}
 })();
 
-/* ===== Activity V3 · Discover top tabs: Hosts | Activities (PRD 6.9). Cashback is not a Discover tab ===== */
+/* ===== Activity V3 · Discover top tabs: Hosts | Activities | Cashback (PRD 6.9) ===== */
 (function(){
   const _disc = V.discover;
   V.discover = () => {
-    if (S.seg !== 'activities') S.seg = 'locals';
+    if (!['activities','merchants'].includes(S.seg)) S.seg = 'locals';
     if (S.htab === 'feed') S.htab = 'discover';
-    const act = S.seg === 'activities';
+    const act = S.seg === 'activities'; const cb = S.seg === 'merchants';
     let h = _disc();
-    h = h.replace(/<div class="htabs" role="tablist">[\s\S]*?<\/div>/, `<div class="htabs" role="tablist" aria-label="Hosts or Activities"><button role="tab" aria-selected="${!act}" data-act="browseTab" data-k="locals">Hosts</button><button role="tab" aria-selected="${act}" data-act="browseTab" data-k="activities">Activities</button></div>`);
+    h = h.replace(/<div class="htabs" role="tablist">[\s\S]*?<\/div>/, `<div class="htabs" role="tablist" aria-label="Hosts, Activities or Cashback"><button role="tab" aria-selected="${!act && !cb}" data-act="browseTab" data-k="locals">Hosts</button><button role="tab" aria-selected="${act}" data-act="browseTab" data-k="activities">Activities</button><button role="tab" aria-selected="${cb}" data-act="browseTab" data-k="merchants">Cashback</button></div>`);
     /* the in-page Hosts | Activities switch moved to the header */
     h = h.replace(/<div class="seg" role="tablist">(?:<button[^>]*data-act="seg"[^>]*>[^<]*<\/button>)+<\/div>/, '');
     if (act) {
@@ -474,9 +474,9 @@ try { render(); } catch(e) {}
     }
     return h; };
   A.actManage = () => { if (isGuest()) { openSheet('loginGuest'); return; } S.actTab = 'event'; go('actmine'); };
-  /* a stale Merchants/Feed choice falls back to Hosts */
-  A.browseTab = (orig => el => { const k = el.dataset.k === 'activities' ? 'activities' : 'locals'; S.htab = 'discover'; S.seg = k; S.menu = false; render(); const sc = document.querySelector('#phone .scroll'); if (sc) sc.scrollTop = 0; })(A.browseTab);
-  META.discover = Object.assign({}, META.discover, {rules:['Top tabs: Hosts and Activities (PRD Activity V3 6.9). Cashback is not a Discover tab','Top-right Inbox button with unread badge, same as Trips','Activities: country picker, categories, activity cards (Free, Fully Booked)']});
+  /* Hosts, Activities or Cashback (merchants); a stale Feed choice falls back to Hosts */
+  A.browseTab = (orig => el => { const k = ['activities','merchants'].includes(el.dataset.k) ? el.dataset.k : 'locals'; S.htab = 'discover'; S.seg = k; S.merCat = S.merCat || 'Nightlife'; S.menu = false; render(); const sc = document.querySelector('#phone .scroll'); if (sc) sc.scrollTop = 0; })(A.browseTab);
+  META.discover = Object.assign({}, META.discover, {rules:['Top tabs: Hosts, Activities and Cashback (PRD Activity V3 6.9). Cashback shows the merchant list','Top-right Inbox button with unread badge, same as Trips','Activities: country picker, categories, activity cards (Free, Fully Booked)']});
   try { render(); } catch(e) {}
 })();
 
