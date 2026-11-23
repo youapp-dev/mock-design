@@ -112,6 +112,7 @@ let ws;
         content.firstElementChild.matches('.wr-wallet-settings') &&
         Boolean(content.querySelector('[data-s="wDisc"]')) === ${id !== 'ya'} &&
         !content.querySelector('[data-act="xsOpen"], [data-act="wRecvOf"], [data-act="bills"], [data-msg*="Rename"]') &&
+        Boolean(document.querySelector('.wr-wallet-summary [data-act="ewCryptoRecv"]')) &&
         content.lastElementChild.matches('.wr-asset-wallet') &&
         !/Hidden tokens/i.test(content.textContent) &&
         Array.from(content.querySelectorAll('.wr-asset-pages button'), button => button.offsetWidth >= 44 && button.offsetHeight >= 44).every(Boolean);
@@ -493,6 +494,16 @@ let ws;
   assert.equal(await wallet(`document.querySelector('.wr-wallet-main').getAttribute('aria-disabled')`), 'true');
   await checkWalletAddress('ya');
   await screenshot('youapp-wallet-details.png');
+  const ewKeep = await wallet(`JSON.stringify({screen:S.screen, hist:S.hist, ew:scen.ew||'off', bal:scen.bal, cents:S.scanTopUpCents||0})`);
+  assert.equal(await wallet(`(scen.ew='off', scen.bal='enough', S.sheet=null, S.hist=['home'], S.screen='home', render(), A.bills(), S.sheet)`), 'ewGate');
+  assert.equal(await wallet(`(A.ewStart(), S.screen)`), 'ewConfirm');
+  await wallet(`(A.ewPay(), 1)`);
+  await until(() => wallet(`S.screen === 'ewDone'`), 'eWallet activated');
+  assert.equal(await wallet('scen.ew'), 'on');
+  assert.ok(await wallet(`!PM.some(p => ['applepay', 'duitnow'].includes(p.k)) && PM.some(p => p.k === 'card')`), 'Card is the only bank or card method');
+  assert.ok(await wallet(`walletScanHistory().some(t => t.id === 'ew-fee' && t.v === -50)`), 'Opening fee in history');
+  assert.equal(await wallet(`(A.ewResume(), S.screen)`), 'bills');
+  await wallet(`(() => { const k = ${ewKeep}; scen.ew = k.ew; scen.bal = k.bal; S.scanTopUpCents = k.cents; S.ewFeeAt = null; S.ewTx = []; S.sheet = null; S.hist = k.hist; S.screen = k.screen; saveScen(); render(); return 1; })()`);
   await act('back');
   await act('back');
   await act('nav', '[data-to="walletConnect"]');
@@ -991,9 +1002,14 @@ let ws;
 
   await jump('discover');
   await appState('discover');
-  assert.deepEqual(JSON.parse(await app(`JSON.stringify([...document.querySelectorAll('.appbar .htabs button')].map(b => b.textContent))`)), ['Hosts', 'Activities']);
-  assert.equal(await app(`!!document.querySelector('.seg [data-act="seg"]')`), false);
-  await appAct('browseTab', '[data-k="activities"]');
+  assert.deepEqual(JSON.parse(await app(`JSON.stringify([...document.querySelectorAll('.appbar .htabs button')].map(b => b.textContent))`)), ['Locals', 'Merchants']);
+  await appAct('browseTab', '[data-k="merchants"]');
+  assert.equal(await app('S.seg'), 'merchants');
+  await until(() => app(`!!document.querySelector('.mx-row [data-id]')`), 'Merchant list');
+  assert.equal(await app(`!!document.querySelector('.act-fab')`), false);
+  await appAct('browseTab', '[data-k="locals"]');
+  assert.deepEqual(JSON.parse(await app(`JSON.stringify([...document.querySelectorAll('.seg [data-act="seg"]')].map(b => b.textContent))`)), ['Hosts', 'Activities']);
+  await appAct('seg', '[data-k="activities"]');
   assert.equal(await app('S.seg'), 'activities');
   await until(() => app(`!!document.querySelector('[data-act="openExp"]')`), 'Activity card');
   assert.match(await app(`document.querySelector('[data-act="openExp"]').innerText`), /Free/);
@@ -1003,9 +1019,9 @@ let ws;
   assert.equal(await app(`document.querySelector('.act-tabs [aria-selected="true"]').textContent`), 'My Event');
   await appAct('back');
   await appState('discover');
-  await appAct('browseTab', '[data-k="locals"]');
+  await appAct('seg', '[data-k="locals"]');
   assert.equal(await app(`!!document.querySelector('.act-fab')`), false);
-  await appAct('browseTab', '[data-k="activities"]');
+  await appAct('seg', '[data-k="activities"]');
   await app(`A.startCx()`);
   await appState('actmine');
   await appAct('back');
@@ -1020,7 +1036,7 @@ let ws;
   await appState('chats');
   await appAct('tpInboxBack');
   await appState('discover');
-  await appAct('browseTab', '[data-k="locals"]');
+  await appAct('seg', '[data-k="locals"]');
   assert.equal(await app('S.seg'), 'locals');
 
   await jump('signup');
@@ -1047,7 +1063,7 @@ let ws;
   await appState('discover');
   assert.equal(await wallet('scen.refUsername'), '@mei.ling');
   assert.deepEqual(errors, []);
-  console.log('PASS Badge Verification deep link, Discover Hosts and Activities tabs and Inbox, and username referral onboarding');
+  console.log('PASS Badge Verification deep link, Discover Locals (Hosts, Activities) and Merchants, and Inbox, and username referral onboarding');
 })().catch(error => { console.error(error); process.exitCode = 1; }).finally(() => {
   ws?.close();
   browser?.kill();

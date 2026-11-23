@@ -11,7 +11,7 @@ This PRD defines the behavior of **Activity** (formerly Experience) in the YouAp
 - The automatic group of an Activity.
 - Request to Join, My Activities, and the applicant list.
 - Edit, leave, unlist, delete, and the locks during an active schedule.
-- Navigation and naming (Discover tabs Hosts and Activities).
+- Navigation and naming (Discover: Locals with Hosts / Activities, and Merchants).
 
 **Not covered (follow current system):**
 - Service creation, Service booking, and the Service fee (unchanged).
@@ -22,7 +22,7 @@ This PRD defines the behavior of **Activity** (formerly Experience) in the YouAp
 **Naming used in this PRD:**
 - **Activity** replaces Experience in the app.
 - **Owner** is the user who created the Activity.
-- Discover tabs are **Hosts / Activities**. Cashback is not a Discover tab. Internal keys do not change.
+- Discover top tabs are **Locals / Merchants**. Locals has a **Hosts / Activities** switch. Internal keys do not change.
 
 **Supersedes:** where it conflicts with this PRD, the paid Experience logic in earlier PRDs (Reserve-and-Pay booking, the Price step in Create Experience, refund to Booking Wallet) no longer applies to Activity.
 
@@ -58,7 +58,7 @@ This PRD defines the behavior of **Activity** (formerly Experience) in the YouAp
 ## 5. App Flow
 
 **Owner side**
-1. Discover > Activities > **Manage Activity** (floating button) > My Activities > **Create Activity**.
+1. Discover > Locals > Activities > **Manage Activity** (floating button) > My Activities > **Create Activity**.
 2. Guest goes to login. Logged-in user without approved KYC sees **Verify your identity first**. User with approved KYC opens the form.
 3. Fill the 7 steps and confirm on the last step. The Activity status becomes **In review**.
 4. Admin approves: the Activity becomes **Live** and its group is created automatically. Admin rejects: the status becomes **Rejected**.
@@ -75,7 +75,7 @@ This PRD defines the behavior of **Activity** (formerly Experience) in the YouAp
 ## 6. Functional Requirements & Acceptance Criteria
 
 ### 6.1 Access and Creation Entry
-1. The only way to create an Activity is **Discover > Activities > Manage Activity > My Activities > Create Activity**.
+1. The only way to create an Activity is **Discover > Locals > Activities > Manage Activity > My Activities > Create Activity**.
 2. The Create button on the Host dashboard is **Create Service**. It does not create Activities.
 3. A Guest who taps Create Activity is taken to login (Guest Mode rules).
 4. A logged-in user whose KYC is not approved sees the sheet **Verify your identity first** and is guided to Badge Verification.
@@ -150,7 +150,7 @@ This PRD defines the behavior of **Activity** (formerly Experience) in the YouAp
 4. If the group is kept: the `Activity:` prefix and the Activity link are removed from the group, and a system message explains that the group becomes a regular group.
 
 ### 6.9 Navigation and Naming
-1. The Discover tabs at the top of the screen are **Hosts / Activities**. Cashback is not a Discover tab. Internal keys do not change.
+1. The Discover tabs at the top of the screen are **Locals / Merchants**. Locals has a **Hosts / Activities** switch under the search. Merchants is the cashback merchant list. Internal keys do not change.
 2. The bottom navigation and the chat list title follow the Trips spec (**Trips** tab, **Inbox** title).
 3. "Experience" is replaced by "Activity" in the app (menus, buttons, and statuses).
 4. Review after the Activity is completed follows the existing review rules.
