@@ -4,7 +4,7 @@ This document defines Activity behavior in the prototype. Activities are free. S
 
 ## 1. Access and creation
 
-- Create an activity through **You tab → My Activities → Create Activity**. This is the only creation path.
+- Create an activity through **Discover → Activities → Manage Activity → My Activities → Create Activity**. This is the only creation path. The **Manage Activity** floating button shows on the Activities tab for logged-in users and is hidden for guests.
 - The Host dashboard shows **Create Service**.
 - Guests who try to create an activity are directed to log in. Signed-in users without approved KYC see the **Verify your identity first** sheet. Users with approved KYC enter the form.
 - The Create Activity form has 7 steps.
@@ -56,6 +56,6 @@ This document defines Activity behavior in the prototype. Activities are free. S
 
 ## 6. Navigation and naming
 
-- The Discover tabs are **Hosts / Activities / Cashback**. Internal keys stay the same.
-- The bottom navigation and chat title use **Hosts**.
+- The Discover tabs are **Hosts / Activities**. Cashback is not a Discover tab. Internal keys stay the same.
+- The bottom navigation and chat list title follow the Trips spec (**Trips**, **Inbox**).
 - Reviews after an activity ends follow the existing rules.

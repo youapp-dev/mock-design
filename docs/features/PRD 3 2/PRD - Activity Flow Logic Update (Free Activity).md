@@ -11,7 +11,7 @@ This PRD defines the behavior of **Activity** (formerly Experience) in the YouAp
 - The automatic group of an Activity.
 - Request to Join, My Activities, and the applicant list.
 - Edit, leave, unlist, delete, and the locks during an active schedule.
-- Navigation and naming (Hosts, Activities, Cashback).
+- Navigation and naming (Discover tabs Hosts and Activities).
 
 **Not covered (follow current system):**
 - Service creation, Service booking, and the Service fee (unchanged).
@@ -22,7 +22,7 @@ This PRD defines the behavior of **Activity** (formerly Experience) in the YouAp
 **Naming used in this PRD:**
 - **Activity** replaces Experience in the app.
 - **Owner** is the user who created the Activity.
-- Discover tabs are **Hosts / Activities / Cashback**. The bottom navigation and chat title use **Hosts**. Internal keys do not change.
+- Discover tabs are **Hosts / Activities**. Cashback is not a Discover tab. Internal keys do not change.
 
 **Supersedes:** where it conflicts with this PRD, the paid Experience logic in earlier PRDs (Reserve-and-Pay booking, the Price step in Create Experience, refund to Booking Wallet) no longer applies to Activity.
 
@@ -58,7 +58,7 @@ This PRD defines the behavior of **Activity** (formerly Experience) in the YouAp
 ## 5. App Flow
 
 **Owner side**
-1. You tab > My Activities > **Create Activity**.
+1. Discover > Activities > **Manage Activity** (floating button) > My Activities > **Create Activity**.
 2. Guest goes to login. Logged-in user without approved KYC sees **Verify your identity first**. User with approved KYC opens the form.
 3. Fill the 7 steps and confirm on the last step. The Activity status becomes **In review**.
 4. Admin approves: the Activity becomes **Live** and its group is created automatically. Admin rejects: the status becomes **Rejected**.
@@ -75,7 +75,7 @@ This PRD defines the behavior of **Activity** (formerly Experience) in the YouAp
 ## 6. Functional Requirements & Acceptance Criteria
 
 ### 6.1 Access and Creation Entry
-1. The only way to create an Activity is **You tab > My Activities > Create Activity**.
+1. The only way to create an Activity is **Discover > Activities > Manage Activity > My Activities > Create Activity**.
 2. The Create button on the Host dashboard is **Create Service**. It does not create Activities.
 3. A Guest who taps Create Activity is taken to login (Guest Mode rules).
 4. A logged-in user whose KYC is not approved sees the sheet **Verify your identity first** and is guided to Badge Verification.
@@ -125,7 +125,7 @@ This PRD defines the behavior of **Activity** (formerly Experience) in the YouAp
 
 ### 6.6 My Activities
 1. My Activities shows the Activities the user created and the requests the user sent.
-2. The entry point is the My Activities menu in the You tab.
+2. The entry point is the **Manage Activity** floating button on Discover > Activities. It is shown to logged-in users, with or without the Host role, and hidden for Guests. It is not shown on the Hosts tab.
 3. Create Activity is available from My Activities (6.1).
 
 ### 6.7 Applicant List, Capacity, and Group Rules
@@ -150,8 +150,8 @@ This PRD defines the behavior of **Activity** (formerly Experience) in the YouAp
 4. If the group is kept: the `Activity:` prefix and the Activity link are removed from the group, and a system message explains that the group becomes a regular group.
 
 ### 6.9 Navigation and Naming
-1. The Discover tabs are **Hosts / Activities / Cashback**. Internal keys do not change.
-2. The bottom navigation and the chat title use **Hosts**.
+1. The Discover tabs at the top of the screen are **Hosts / Activities**. Cashback is not a Discover tab. Internal keys do not change.
+2. The bottom navigation and the chat list title follow the Trips spec (**Trips** tab, **Inbox** title).
 3. "Experience" is replaced by "Activity" in the app (menus, buttons, and statuses).
 4. Review after the Activity is completed follows the existing review rules.
 
@@ -169,6 +169,7 @@ This PRD defines the behavior of **Activity** (formerly Experience) in the YouAp
 | Dialog | Delete Activity | Delete activity and group / Delete activity, keep the group / Cancel | Only for an Activity with a group |
 | System message ⚠️ | Group kept | This group is no longer linked to an Activity and is now a regular group. | Shown in the group |
 | Name | Group name | Activity: {Activity title} | Created on approval |
+| Button | Floating button | Manage Activity | Discover > Activities, logged-in users only. Opens My Activities |
 
 Wording marked ⚠️ was written by Claude for review. Wording for other languages follows Google Translate until localization is final.
 
@@ -211,9 +212,11 @@ Wording marked ⚠️ was written by Claude for review. Wording for other langua
 | 27 | Delete an Activity with a group outside the active schedule | Three options: delete both, delete the Activity and keep the group, cancel |
 | 28 | The group is kept after delete | The prefix and the Activity link are removed and a system message is shown |
 | 29 | Unlist an Activity that has a group | The group stays active and connected |
+| 30 | Guest opens Discover > Activities | The Manage Activity button is hidden |
+| 31 | The Manage Activity button overlaps the last card | The list has enough bottom space that the last card stays fully visible |
 
 ## 8. Open Items
 
 | # | Item | Owner | Status |
 |---|---|---|---|
-| 1 | No open items. All items have been confirmed. | | |
+| 1 | Keep or remove the My Activities row on the You page now that Manage Activity is the entry point | Product | Open |

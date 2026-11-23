@@ -448,3 +448,27 @@ try { render(); } catch(e) {}
       ${tab==='event' ? `<div class="cta">${btn('Create Activity','actCreate')}</div>` : ''}</div>`; };
   try { render(); } catch(e) {}
 })();
+
+/* ===== Activity V3 · Discover top tabs: Hosts | Activities (PRD 6.9). Cashback is not a Discover tab ===== */
+(function(){
+  const _disc = V.discover;
+  V.discover = () => {
+    if (S.seg !== 'activities') S.seg = 'locals';
+    if (S.htab === 'feed') S.htab = 'discover';
+    const act = S.seg === 'activities';
+    let h = _disc();
+    h = h.replace(/<div class="htabs" role="tablist">[\s\S]*?<\/div>/, `<div class="htabs" role="tablist" aria-label="Hosts or Activities"><button role="tab" aria-selected="${!act}" data-act="browseTab" data-k="locals">Hosts</button><button role="tab" aria-selected="${act}" data-act="browseTab" data-k="activities">Activities</button></div>`);
+    /* the in-page Hosts | Activities switch moved to the header */
+    h = h.replace(/<div class="seg" role="tablist">(?:<button[^>]*data-act="seg"[^>]*>[^<]*<\/button>)+<\/div>/, '');
+    if (act) {
+      /* Activities are free (PRD 6.5): no price on the cards, Activity naming in the empty state */
+      h = h.replace(/<span class="csub">From RM[\d.]+\/pax<\/span>/g, '<span class="csub act-free">Free · owner approves</span>')
+        .replace('No available experience', 'No activities yet')
+        .replace(/No available experiences yet in ([^<.]+)\./, 'There are no activities in $1 yet. Try another country.');
+    }
+    return h; };
+  /* a stale Merchants/Feed choice falls back to Hosts */
+  A.browseTab = (orig => el => { const k = el.dataset.k === 'activities' ? 'activities' : 'locals'; S.htab = 'discover'; S.seg = k; S.menu = false; render(); const sc = document.querySelector('#phone .scroll'); if (sc) sc.scrollTop = 0; })(A.browseTab);
+  META.discover = Object.assign({}, META.discover, {rules:['Top tabs: Hosts and Activities (PRD Activity V3 6.9). Cashback is not a Discover tab','Top-right Inbox button with unread badge, same as Trips','Activities: country picker, categories, activity cards (Free, Fully Booked)']});
+  try { render(); } catch(e) {}
+})();
