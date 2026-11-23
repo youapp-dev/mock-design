@@ -190,6 +190,8 @@
     return (c.convs || []).reduce((n, x) => n + (x.unread || 0), 0) + (scen.ann !== 'none' ? (C6().annUnread || 0) : 0); } catch(e) { return 0; } };
 
   /* ---------- Trips header ---------- */
+  const inboxBtn = () => { const u = inboxUnread();
+    return `<button class="tp-inbox" data-act="tpInbox" aria-label="Inbox${u?`, ${u} unread`:''}">${ti('inbox')}${u?`<i>${u > 99 ? '99+' : u}</i>`:''}</button>`; };
   const head = () => { const u = inboxUnread();
     return `<div class="appbar tp-appbar"><button class="avatar" data-act="youpage" aria-label="Open YouPage"><img src="${IMG.avatar}" alt=""></button>
       <div class="htabs" role="tablist" aria-label="Trips or Leaderboard"><button role="tab" aria-selected="${T.tab==='trips'}" data-act="tpTab" data-k="trips">Trips</button><button role="tab" aria-selected="${T.tab==='board'}" data-act="tpTab" data-k="board">Leaderboard</button></div>
@@ -364,13 +366,15 @@
   const _rTp = render;
   render = function(){ _rTp.apply(this, arguments); const ph = document.getElementById('phone'); if (!ph) return;
     ph.querySelectorAll('.bnav [data-to="locals"]').forEach(b => { b.innerHTML = `${ti('globe','tp-navi')}Trips`; });
+    /* Discover: the More options menu is replaced by the same Inbox button as Trips */
+    if (S.screen === 'discover') ph.querySelectorAll('.appbar [data-act="menu"]').forEach(b => { b.outerHTML = inboxBtn(); });
     if (S.screen === 'chats') { const scr = ph.querySelector('.screen'); const bar = scr && scr.querySelector('.topbar, .g7top');
       if (bar && !bar.dataset.tpInbox) { bar.dataset.tpInbox = '1'; bar.classList.add('tp-inboxbar');
-        bar.innerHTML = `<button class="iconbtn" data-act="tpInboxBack" aria-label="Back to Trips">${ic('back')}</button><span class="t-headline">Inbox</span><span class="tp-sp" aria-hidden="true"></span>`; }
+        bar.innerHTML = `<button class="iconbtn" data-act="tpInboxBack" aria-label="Back">${ic('back')}</button><span class="t-headline">Inbox</span><span class="tp-sp" aria-hidden="true"></span>`; }
       ph.querySelectorAll('[aria-label="Liked people"]').forEach(b => b.remove()); }
     if (S.tpGate && S.screen === S.tpGate) S.tpGate = null;
     ph.classList.toggle('tp-on', ['trips','trip','tripAdd'].includes(S.screen)); };
-  A.tpInboxBack = () => { if (S.hist[S.hist.length-1] === 'trips') back(); else goTrips(); };
+  A.tpInboxBack = () => { if (['trips','discover'].includes(S.hist[S.hist.length-1])) back(); else goTrips(); };
 
   /* scenario-panel notes for these screens */
   Object.assign(META, {

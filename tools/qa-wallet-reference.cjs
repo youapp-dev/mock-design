@@ -1000,9 +1000,11 @@ let ws;
   assert.equal(await app('S.mer'), 'px-salon');
   await appAct('back');
   await appState('discover');
-  await appAct('menu');
-  await appAct('htab', '[data-t="feed"]');
-  assert.equal(await app('S.htab'), 'feed');
+  assert.equal(await app(`!!document.querySelector('.appbar [data-act="menu"]')`), false);
+  await appAct('tpInbox');
+  await appState('chats');
+  await appAct('tpInboxBack');
+  await appState('discover');
   await appAct('browseTab', '[data-k="locals"]');
   assert.equal(await app('S.seg'), 'locals');
 
