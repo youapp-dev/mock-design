@@ -1611,6 +1611,12 @@ code.k{font-family:ui-monospace,SFMono-Regular,Menlo,monospace; font-size:12px; 
 .act-fab:focus-visible{outline:2px solid var(--a-primary,#6a2ad8); outline-offset:3px}
 #mainScroll.act-fabpad{padding-bottom:84px}
 .act-pax small.act-paxerr{display:block; color:#C0392B}
+.act-cfab{position:absolute; right:16px; bottom:calc(24px + env(safe-area-inset-bottom,0px)); z-index:5; display:inline-flex; align-items:center; gap:10px; min-height:52px; padding:0 22px 0 18px; border:0; border-radius:999px; background:var(--a-grad); color:#fff; font:600 15px/1 Inter, sans-serif; white-space:nowrap; box-shadow:0 8px 20px rgba(56,22,142,.32); cursor:pointer}
+.act-cfab .ico{width:22px; height:22px}
+.act-cfab:active{transform:scale(.97)}
+.act-cfab:focus-visible{outline:2px solid #6a2ad8; outline-offset:3px}
+.scroll.act-cfabpad{padding-bottom:96px!important}
+.gx-empty small{text-wrap:balance}
 .cbar{flex:none; border-top:1px solid var(--a-line); padding:10px 16px 30px; display:flex; gap:8px; align-items:center; background:#fff}
 .cinput{flex:1; min-width:0; height:44px; border:1px solid var(--a-line); border-radius:999px; padding:0 16px; font:inherit; font-size:15px; text-align:left; background:#fff; color:var(--a-ink-3)}
 input.cinput{color:var(--a-ink)}

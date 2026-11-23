@@ -515,3 +515,25 @@ try { render(); } catch(e) {}
   toast = function(m, ...r){ return _toast(typeof m === 'string' && !KEEP.test(m) ? swap(m) : m, ...r); };
   try { render(); } catch(e) {}
 })();
+
+/* ===== Activity V3 · My Activities: Create Activity as an extended FAB + empty scenario ===== */
+(function(){
+  const _mine = V.actmine;
+  V.actmine = () => {
+    /* scenario "Empty": no created activities and no requests, without touching the stored data */
+    const empty = scen.actMine === 'empty'; const keep = empty ? [AV.mine, AV.req] : null;
+    if (empty) { AV.mine = []; AV.req = {}; }
+    let h; try { h = _mine(); } finally { if (keep) { AV.mine = keep[0]; AV.req = keep[1]; } }
+    /* bottom-right extended FAB, stays put while the list scrolls (My Event only) */
+    h = h.replace(/<div class="cta"><button[^>]*data-act="actCreate"[^>]*>[\s\S]*?<\/button><\/div>/, `<button class="act-cfab" data-act="actCreate">${ic('plus')}<span>Create Activity</span></button>`);
+    if (h.includes('act-cfab')) h = h.replace('<div class="scroll" style="padding:12px 16px 24px">', '<div class="scroll act-cfabpad" style="padding:12px 16px 24px">');
+    return h; };
+  const _set = window.__set;
+  window.__set = (k, v) => { if (k === 'actMine') { scen.actMine = v === 'empty' ? 'empty' : 'has'; saveScen(); S.session = 'user'; S.sheet = null; S.dialog = null;
+      S.actTab = 'event'; if (S.screen !== 'actmine') { S.hist = ['discover']; S.seg = 'activities'; S.screen = 'actmine'; } render(); return; }
+    return _set ? _set(k, v) : undefined; };
+  const _st = window.__state;
+  window.__state = () => Object.assign(_st ? _st() : {}, {actMine: scen.actMine === 'empty' ? 'empty' : 'has'});
+  META.actmine = Object.assign({}, META.actmine, {rules:[...(META.actmine && META.actmine.rules || []).filter(r => !/^Create Activity button/.test(r)), 'Create Activity button: extended FAB fixed bottom-right, visible while the list scrolls, My Event tab only','Scenario My Activities › Empty: no created activities and no requests']});
+  try { render(); } catch(e) {}
+})();
