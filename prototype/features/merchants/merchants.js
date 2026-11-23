@@ -23,7 +23,8 @@ const SV = {
   close:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg>',
   plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>',
 };
-const GIFT = '<svg viewBox="0 0 80 80"><ellipse cx="40" cy="72" rx="26" ry="4" fill="#2A1466" opacity=".35"/><rect x="14" y="36" width="52" height="34" rx="6" fill="#B79BF0"/><rect x="14" y="36" width="52" height="8" fill="#9A6BBF" opacity=".55"/><rect x="9" y="26" width="62" height="14" rx="5" fill="#E9E0FB"/><rect x="35" y="26" width="10" height="44" fill="#F5B82E"/><rect x="35" y="26" width="4" height="44" fill="#FFD66B" opacity=".7"/><path d="M40 26c-5-10-17-14-19-7s10 8 19 7zM40 26c5-10 17-14 19-7s-10 8-19 7z" fill="#F5B82E" stroke="#D99A12" stroke-width="1.4" stroke-linejoin="round"/><circle cx="40" cy="26" r="4" fill="#E3A21A"/></svg>';
+const GIFT = '<svg viewBox="0 0 96 84"><g stroke="#F5B82E" stroke-width="4.5" stroke-linecap="round"><path d="M14 18l6 8M5 33l9 2M9 49l8-4M82 7l-4 9M91 20l-8 5M93 35l-9 1"/></g><g transform="rotate(-12 48 52)"><ellipse cx="48" cy="80" rx="24" ry="3.5" fill="#38168E" opacity=".18"/><rect x="23" y="40" width="50" height="36" rx="6" fill="#7F57E5"/><rect x="23" y="40" width="13" height="36" rx="6" fill="#5E35B8" opacity=".55"/><rect x="23" y="40" width="50" height="6" fill="#38168E" opacity=".22"/><rect x="18" y="29" width="60" height="14" rx="5" fill="#9B7BF0"/><rect x="18" y="29" width="60" height="5" rx="2.5" fill="#fff" opacity=".22"/><rect x="43" y="29" width="10" height="47" fill="#F5B82E"/><rect x="43" y="29" width="4" height="47" fill="#FFD66B"/><path d="M48 29c-6-12-20-15-21-7-1 7 12 8 21 7zM48 29c6-12 20-15 21-7 1 7-12 8-21 7z" fill="#F5B82E" stroke="#DE9E14" stroke-width="1.6" stroke-linejoin="round"/><circle cx="48" cy="28.5" r="3.4" fill="#DE9E14"/></g></svg>';
+const CBB_BG = '<svg class="mx-cbb-bg" viewBox="0 0 343 88" preserveAspectRatio="xMidYMid slice" aria-hidden="true"><path d="M122 6c46-14 128-10 168 10 34 17 26 58-18 68-52 12-128 10-162-6C74 64 78 20 122 6z" fill="#E6DCFD"/><path d="M0 52c22-8 48 2 60 20 6 9 4 16 0 16H0z" fill="#DCCDFA"/><path d="M14 88c4-14 22-20 40-14 12 4 22 10 26 14z" fill="#CFBDF7"/><path d="M262 88c8-18 30-26 50-18 14-14 30-12 31-10v28z" fill="#DCCDFA"/><path d="M300 10c14-10 34-8 40 4 2 10-12 18-26 16-14-2-22-12-14-20z" fill="#E6DCFD"/><circle cx="326" cy="48" r="5" fill="#C9B5F7"/></svg>';
 const GEN = g => `<span class="mx-g ${g}" aria-label="${g==='f'?'Female':'Male'}"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="7" r="3.6"/><path d="M5.5 21c.4-4.6 3-7.2 6.5-7.2s6.1 2.6 6.5 7.2z"/></svg></span>`;
 
 /* people (samples) */
@@ -139,7 +140,7 @@ V.mer = () => { const p = placeById(S.mer) || PLACES[0]; const a = PPL[p.amb]; c
       <span class="mx-cnt">1 / ${p.photos}</span></div>
     ${p.id === 'px-kopi' ? `<div class="mx-thumbs">${gal.map(([k, pos]) => `<button data-act="mxPhoto" aria-label="Open photo">${img(k, 'Photo of ' + p.name, '', pos ? `object-position:${pos}; transform:scale(1.6)` : '')}</button>`).join('')}<button class="more" data-act="mxPhoto" aria-label="See all ${p.photos} photos">+${Math.max(0, p.photos - 4)}</button></div>` : ''}
     <div class="mx-body">
-      ${p.cb ? `<div class="mx-cbb"><span class="mx-cbb-g" aria-hidden="true">${GIFT}</span><p class="mx-cbb-t"><small>Pay with YouApp and get</small><b>${p.cb}% Cashback!</b></p></div>` : ''}
+      ${p.cb ? `<div class="mx-cbb">${CBB_BG}<span class="mx-cbb-g" aria-hidden="true">${GIFT}</span><p class="mx-cbb-t"><small>Pay with YouApp and get</small><b>${p.cb}% Cashback!</b></p></div>` : ''}
       <div class="mx-info">
         <div class="mx-ir">${SV.pin}<span><span>${esc(p.full)}</span><small>${dist(p.m)} away</small></span><button class="mx-dir" data-act="mxDir" aria-label="Directions in Google Maps">${SV.nav}</button></div>
         <button class="mx-ir" data-act="mxHours" aria-expanded="${hoursOpen}">${SV.clock}<span><span>${p.open ? `<b class="mx-op on">Open</b>${p.close ? ` · Closes ${p.close}` : ''}` : `<b class="mx-op off">Closed</b>${p.opens ? ` · Opens ${p.opens}` : ''}`}</span>${hoursOpen ? `<span class="mx-hrs">${['Mon','Tue','Wed','Thu','Fri','Sat','Sun'].map(d => `<span><em>${d}</em>${d === 'Sun' ? 'Closed' : `8 AM – ${p.close || '9 PM'}`}</span>`).join('')}</span>` : ''}</span><i class="mx-chev">${hoursOpen ? SV.chevu : SV.chevd}</i></button>
@@ -316,13 +317,13 @@ document.head.insertAdjacentHTML('beforeend', `<style id="mx-css">
 .mx-thumbs .more{font:800 15px Inter, sans-serif; color:#4B2A9E}
 .mx-body{padding:12px 16px 0; display:grid; gap:12px; grid-template-columns:minmax(0,1fr)}
 .mx-pay{display:flex; align-items:center; justify-content:center; gap:8px; min-height:44px; padding:8px 12px; border:0; border-radius:12px; background:#E2F6EE; color:#0B6B4B; font:600 13.5px Inter, sans-serif; text-align:left} .mx-pay svg{width:16px; height:16px; flex:none}
-.mx-cbb{position:relative; overflow:hidden; display:flex; align-items:center; gap:12px; min-height:84px; padding:6px 16px 6px 8px; border-radius:18px; background:linear-gradient(100deg,#9A6BBF 0%,#5E35B8 55%,#3D1C96 100%); box-shadow:0 8px 20px -10px rgba(42,20,102,.55)}
-.mx-cbb::before{content:""; position:absolute; width:150px; height:150px; right:-46px; top:-80px; border-radius:50%; background:rgba(255,255,255,.08); pointer-events:none}
-.mx-cbb::after{content:""; position:absolute; width:120px; height:120px; left:-40px; bottom:-78px; border-radius:50%; background:rgba(42,20,102,.35); pointer-events:none}
-.mx-cbb-g{position:relative; z-index:1; flex:none; width:76px; height:76px} .mx-cbb-g svg{width:100%; height:100%; display:block}
-.mx-cbb-t{position:relative; z-index:1; flex:1; min-width:0; margin:0; display:grid; gap:2px}
-.mx-cbb-t small{font:600 13.5px/1.3 Inter, sans-serif; color:#E9E0FB}
-.mx-cbb-t b{font:800 26px/1.1 Inter, sans-serif; color:#fff; letter-spacing:-.5px}
+.mx-cbb{position:relative; overflow:hidden; isolation:isolate; display:flex; align-items:center; gap:10px; min-height:88px; padding:6px 16px 6px 6px; border-radius:20px; background:#F1EBFE; border:1px solid #E4DAFB}
+.mx-cbb-bg{position:absolute; inset:0; width:100%; height:100%; z-index:-1; pointer-events:none}
+.mx-cbb-g{flex:none; width:84px; height:74px} .mx-cbb-g svg{width:100%; height:100%; display:block; overflow:visible}
+.mx-cbb-t{flex:1; min-width:0; margin:0; display:grid; gap:1px}
+.mx-cbb-t small{font:700 15px/1.25 Inter, sans-serif; color:#5E35B8; letter-spacing:-.1px}
+.mx-cbb-t b{font:800 27px/1.1 Inter, sans-serif; color:#2A1466; letter-spacing:-.6px; white-space:nowrap}
+@media (max-width:340px){.mx-cbb-g{width:68px; height:60px} .mx-cbb-t small{font-size:13.5px} .mx-cbb-t b{font-size:23px}}
 .mx-info{border:1.5px solid #ECE7F7; border-radius:16px; overflow:hidden}
 .mx-ir{display:flex; align-items:flex-start; gap:10px; width:100%; padding:12px 14px; border:0; border-top:1px solid #ECE7F7; background:none; text-align:left; font:500 14px/1.4 Inter, sans-serif; color:#1E1050}
 .mx-info > .mx-ir:first-child{border-top:0} .mx-ir > svg{width:19px; height:19px; flex:none; color:#4B2A9E; margin-top:1px}
