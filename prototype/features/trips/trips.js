@@ -90,37 +90,49 @@
   const tripMiles = t => { const r = route(t); let m = 0; for (let i = 1; i < r.length; i++) m += miles(r[i-1], r[i]); return m; };
   const awayStops = t => t.stops.filter(s => s.city !== t.from && s.city !== HOME);
   const isPast = t => (t.end || t.start) < TODAY;
+  const tripPhotos = t => t.stops.flatMap(s => s.photos || []);
+  const ensureStop = s => { s.stays = s.stays || []; s.places = s.places || []; s.photos = s.photos || []; return s; };
   const tripEnd = t => t.end || t.stops[t.stops.length - 1].date;
 
   /* ---------- store ---------- */
+  const rep = (a, n) => Array.from({length:n}, (_, i) => a[i % a.length]);
   const seed = () => ({
-    tab:'trips', all:false, flash:null,
+    tab:'trips', all:false, flash:null, sheet:null, invite:'pending', lbMetric:'cities', lbScope:'friends', lbYear:false,
     list:[
-      {id:'t-japan', name:'Japan winter', privacy:'private', from:HOME, start:'2027-01-03', end:'2027-01-13', cover:'cover2', people:['meiling','hafiz'], invited:[], photos:[],
-        stops:[{city:'tokyo', date:'2027-01-04', mode:'plane', flight:'MH 88'}, {city:'sapporo', date:'2027-01-07', mode:'plane'}, {city:'shizuoka', date:'2027-01-10', mode:'train'}, {city:'kl', date:'2027-01-13', mode:'plane'}]},
-      {id:'t-seoul', name:'Seoul and Busan', privacy:'public', from:HOME, start:'2026-10-09', end:'2026-10-16', cover:'pSeoul1', people:['hafiz','meiling'], invited:[], photoCount:24, photos:['pSeoul1','pSeoul2','pSeoul3'],
-        stops:[{city:'seoul', date:'2026-10-09', mode:'plane'}, {city:'busan', date:'2026-10-13', mode:'train'}, {city:'kl', date:'2026-10-16', mode:'plane'}]},
-      {id:'t-bali', name:'Bali', privacy:'public', from:HOME, start:'2026-08-14', end:'2026-08-18', cover:'pBali1', people:['jason'], invited:[], photoCount:31, photos:['pBali1','pBali2','pBali3'],
-        stops:[{city:'bali', date:'2026-08-14', mode:'plane'}, {city:'kl', date:'2026-08-18', mode:'plane'}]},
-      {id:'t-bkk', name:'Bangkok food run', privacy:'public', from:HOME, start:'2026-06-05', end:'2026-06-08', cover:'cover1', people:[], invited:[], photoCount:12, photos:[],
-        stops:[{city:'bangkok', date:'2026-06-05', mode:'plane'}, {city:'kl', date:'2026-06-08', mode:'plane'}]},
-      {id:'t-tpe', name:'Taipei and Hong Kong', privacy:'private', from:HOME, start:'2026-02-12', end:'2026-02-19', cover:'cover1', people:['aiko'], invited:[], photoCount:40, photos:[],
-        stops:[{city:'taipei', date:'2026-02-12', mode:'plane'}, {city:'hk', date:'2026-02-16', mode:'plane'}, {city:'kl', date:'2026-02-19', mode:'plane'}]},
-      {id:'t-hanoi', name:'Hanoi', privacy:'public', from:HOME, start:'2025-11-20', end:'2025-11-24', cover:'cover1', people:[], invited:[], photoCount:9, photos:[],
-        stops:[{city:'hanoi', date:'2025-11-20', mode:'plane'}, {city:'kl', date:'2025-11-24', mode:'plane'}]},
-      {id:'t-osaka', name:'Osaka spring', privacy:'public', from:HOME, start:'2025-04-02', end:'2025-04-09', cover:'cover2', people:['meiling'], invited:[], photoCount:58, photos:[],
-        stops:[{city:'osaka', date:'2025-04-02', mode:'plane'}, {city:'kl', date:'2025-04-09', mode:'plane'}]},
-      {id:'t-syd', name:'Sydney', privacy:'public', from:HOME, start:'2025-01-08', end:'2025-01-15', cover:'cover1', people:[], invited:[], photoCount:22, photos:[],
-        stops:[{city:'sydney', date:'2025-01-08', mode:'plane'}, {city:'kl', date:'2025-01-15', mode:'plane'}]},
-      {id:'t-manila', name:'Manila work trip', privacy:'private', from:HOME, start:'2024-09-17', end:'2024-09-20', cover:'cover1', people:[], invited:[], photoCount:4, photos:[],
-        stops:[{city:'manila', date:'2024-09-17', mode:'plane'}, {city:'kl', date:'2024-09-20', mode:'plane'}]},
-      {id:'t-london', name:'London', privacy:'public', from:HOME, start:'2024-05-03', end:'2024-05-12', cover:'cover1', people:[], invited:[], photoCount:35, photos:[],
-        stops:[{city:'london', date:'2024-05-03', mode:'plane'}, {city:'kl', date:'2024-05-12', mode:'plane'}]},
+      {id:'t-japan', name:'Japan winter', privacy:'private', from:HOME, start:'2027-01-03', end:'2027-01-13', cover:'cover2', people:['meiling'], invited:['kenji'], joined:{meiling:true},
+        stops:[
+          {city:'tokyo', date:'2027-01-03', arrDate:'2027-01-04', mode:'plane', flight:'MH 88', dep:'23:30',
+            stays:[{name:'Hotel Sakura Shinjuku', area:'Shinjuku, Tokyo', in:'2027-01-04', out:'2027-01-05'}, {name:'Airbnb loft, Asakusa', area:'Taito City, Tokyo', in:'2027-01-05', out:'2027-01-07'}],
+            places:[{name:'Tsukiji Outer Market', area:'Chuo City, Tokyo', when:'2027-01-04', time:'9 AM', photos:['pSeoul2','pSeoul1'], with:['meiling']}, {name:'Senso-ji Temple', area:'Taito City, Tokyo', when:'2027-01-05', time:'4 PM', photos:['pBali3'], with:[]}],
+            photos:rep(['pSeoul2','pSeoul1','pBali3'], 9)},
+          {city:'sapporo', date:'2027-01-07', mode:'plane', flight:'JL 503', stays:[],
+            places:[{name:'Odori Park Snow Festival', area:'Chuo Ward, Sapporo', when:'2027-01-08', time:'', photos:['cover2'], with:['kenji']}], photos:rep(['cover2','cover2','pSeoul1'], 5)},
+          {city:'shizuoka', date:'2027-01-10', mode:'train', line:'Shinkansen', stays:[],
+            places:[{name:'Nihondaira, Mt Fuji view', area:'Shimizu, Shizuoka', when:'2027-01-11', time:'', photos:['cover1','pBali2'], with:[]}], photos:rep(['cover1','pBali2','cover1'], 4)},
+          {city:'kl', date:'2027-01-13', mode:'plane', flight:'MH 71', stays:[], places:[], photos:[]}]},
+      {id:'t-seoul', name:'Seoul and Busan', privacy:'public', from:HOME, start:'2026-10-09', end:'2026-10-16', cover:'pSeoul1', people:['hafiz','meiling'], invited:[], joined:{hafiz:true, meiling:true},
+        stops:[{city:'seoul', date:'2026-10-09', mode:'plane', stays:[{name:'L7 Myeongdong', area:'Jung-gu, Seoul', in:'2026-10-09', out:'2026-10-13'}],
+                places:[{name:'Myeongdong night market', area:'Jung-gu, Seoul', when:'2026-10-10', time:'8 PM', photos:['pSeoul1'], with:['hafiz','meiling']}, {name:'Gwangjang Market', area:'Jongno-gu, Seoul', when:'2026-10-11', time:'1 PM', photos:['pSeoul2'], with:['meiling']}], photos:rep(['pSeoul1','pSeoul2'], 16)},
+               {city:'busan', date:'2026-10-13', mode:'train', line:'KTX', stays:[], places:[{name:'Haeundae Beach', area:'Haeundae, Busan', when:'2026-10-14', time:'', photos:['pSeoul3'], with:['hafiz']}], photos:rep(['pSeoul3','pSeoul1'], 8)},
+               {city:'kl', date:'2026-10-16', mode:'plane', stays:[], places:[], photos:[]}]},
+      {id:'t-bali', name:'Bali', privacy:'public', from:HOME, start:'2026-08-14', end:'2026-08-18', cover:'pBali1', people:['jason'], invited:[], joined:{jason:true},
+        stops:[{city:'bali', date:'2026-08-14', mode:'plane', stays:[{name:'Alaya Resort Ubud', area:'Ubud, Bali', in:'2026-08-14', out:'2026-08-18'}],
+                places:[{name:'Kuta Beach', area:'Kuta, Bali', when:'2026-08-14', time:'6 PM', photos:['pBali1'], with:['jason']}, {name:'Tegallalang rice terraces', area:'Ubud, Bali', when:'2026-08-15', time:'9 AM', photos:['pBali2'], with:['jason']}, {name:'Pura Ulun Danu Bratan', area:'Tabanan, Bali', when:'2026-08-16', time:'', photos:['pBali3'], with:[]}], photos:rep(['pBali1','pBali2','pBali3'], 31)},
+               {city:'kl', date:'2026-08-18', mode:'plane', stays:[], places:[], photos:[]}]},
+      ...[['t-bkk','Bangkok food run','public',[['bangkok','2026-06-05']],'2026-06-08',12,[]],
+          ['t-tpe','Taipei and Hong Kong','private',[['taipei','2026-02-12'],['hk','2026-02-16']],'2026-02-19',40,['aiko']],
+          ['t-hanoi','Hanoi','public',[['hanoi','2025-11-20']],'2025-11-24',9,[]],
+          ['t-osaka','Osaka spring','public',[['osaka','2025-04-02']],'2025-04-09',58,['meiling']],
+          ['t-syd','Sydney','public',[['sydney','2025-01-08']],'2025-01-15',22,[]],
+          ['t-manila','Manila work trip','private',[['manila','2024-09-17']],'2024-09-20',4,[]],
+          ['t-london','London','public',[['london','2024-05-03']],'2024-05-12',35,[]]].map(([id, name, privacy, st, end, n, ppl]) => ({id, name, privacy, from:HOME, start:st[0][1], end, cover:'cover1', people:ppl, invited:[], joined:Object.fromEntries(ppl.map(p => [p, true])),
+          stops:[...st.map(([city, date], k) => ({city, date, mode:'plane', stays:[], places:[], photos:k ? [] : rep(['cover1','pSeoul1','pBali1'], n)})), {city:'kl', date:end, mode:'plane', stays:[], places:[], photos:[]}]})),
     ],
+    plans:{}, myPlans:{}, chats:{},
   });
   let T = seed();
   window.__trips = () => T;
-  const empty = () => scen.content === 'empty';
+  const empty = () => scen.content === 'empty' || scen.tpList === 'empty';
   const trips = () => empty() ? [] : T.list;
   const tripById = id => T.list.find(t => t.id === id);
   const upcoming = () => trips().filter(t => !isPast(t)).sort((a, b) => a.start.localeCompare(b.start));
@@ -135,7 +147,7 @@
     const pts = route(t).filter((c, i, a) => i === 0 || c !== a[i-1]);
     const uniq = [...new Set(pts)];
     const lat = uniq.map(c => CITY[c].lat), lon = uniq.map(c => CITY[c].lon);
-    const pad = {l:30, r:70, t:24, b:24}; if (opt.hero) { pad.t = 70; pad.b = 26; }
+    const pad = {l:30, r:70, t:24, b:24}; if (opt.hero) { pad.t = 70; pad.b = 26; } if (opt.padB) pad.b = opt.padB;
     const minLa = Math.min(...lat), maxLa = Math.max(...lat), minLo = Math.min(...lon), maxLo = Math.max(...lon);
     const sx = (W - pad.l - pad.r) / Math.max(maxLo - minLo, 1e-6), sy = (H - pad.t - pad.b) / Math.max(maxLa - minLa, 1e-6);
     const s = Math.min(sx, sy, 60);
@@ -189,7 +201,7 @@
     const sx = stats(), up = upcoming(), ps = past();
     const statCard = `<section class="tp-stats" aria-label="Your travels">${art('globe','tp-globe')}<div class="tp-stx"><small>Your travels</small>
       <div class="tp-nums"><span><b>${nf(sx.cities)}</b><em>${sx.cities === 1 ? 'city' : 'cities'}</em></span><span><b>${nf(sx.countries)}</b><em>${sx.countries === 1 ? 'country' : 'countries'}</em></span><span><b>${nf(sx.miles)}</b><em>miles</em></span></div>
-      ${sx.cities ? `<span class="tp-rank">${ti('trophy')}#12 among your friends</span>` : `<span class="tp-rank muted">Your first trip starts the count</span>`}</div></section>`;
+      ${sx.cities ? `<span class="tp-rank">${ti('trophy')}#${window.TP && TP.myRank ? TP.myRank() : 12} among your friends</span>` : `<span class="tp-rank muted">Your first trip starts the count</span>`}</div></section>`;
     const addBtn = `<button class="tp-add" data-act="tpNew">${ti('plus')}Add a trip</button>`;
     if (!up.length && !ps.length) return `<div class="screen tp-screen">${statusBar()}${head()}<div class="scroll tp-pad">${statCard}
       <div class="tp-empty">${art('suitcase','tp-emp-art')}<b>Where to next?</b><p>Add a trip to count your cities and miles, and keep the places and photos together.</p><button class="btn btn-primary tp-cta" data-act="tpNew">${ti('plus')}Add a trip</button></div></div>${bottomNav('locals')}</div>`;
@@ -197,14 +209,14 @@
       return `<button class="tp-card tp-up" data-act="tpOpen" data-id="${t.id}">${routeMap(t, 326, 120)}<span class="tp-cb"><b>${esc(t.name)}</b>
         <small>${esc(away.map(s => CITY[s.city].n).join(' → '))} · ${t.end ? fRange(away[0] ? away[0].date : t.start, t.end) : `From ${fDay(t.start)}`}</small>
         <span class="tp-chips"><em>${ti('pin')}${plural(away.length,'stop')}</em><em>${ti('plane')}${nf(tripMiles(t))} miles</em><em>${(d => d === 0 ? 'Today' : d === 1 ? 'Tomorrow' : `in ${d} days`)(daysUntil(t.start))}</em></span></span></button>`; };
-    const pastCard = t => { const away = awayStops(t); const ph = t.photos.length ? t.photos : [t.cover];
+    const pastCard = t => { const away = awayStops(t); const all = tripPhotos(t); const ph = all.length ? [...new Set(all)] : [t.cover];
       return `<button class="tp-card tp-past" data-act="tpOpen" data-id="${t.id}"><span class="tp-ph tp-ph${Math.min(ph.length,3)}">${ph.slice(0,3).map(k => art(k)).join('')}</span><span class="tp-cb"><b>${esc(t.name)}</b>
         <small>${fMonth(t.start)} · ${plural(away.length,'stop')} · ${nf(tripMiles(t))} miles</small>
-        <span class="tp-with">${t.people.length ? `<span class="tp-avs">${t.people.slice(0,3).map(id => av(id,'sm')).join('')}</span>with ${esc(names(t.people))} · ` : ''}${plural(t.photoCount || t.photos.length,'photo')}</span></span></button>`; };
+        <span class="tp-with">${t.people.length ? `<span class="tp-avs">${t.people.slice(0,3).map(id => av(id,'sm')).join('')}</span>with ${esc(names(t.people))} · ` : ''}${plural(all.length,'photo')}</span></span></button>`; };
     const pastRow = t => { const away = awayStops(t);
       return `<button class="tp-row" data-act="tpOpen" data-id="${t.id}"><span class="tp-flag">${ic(CITY[away[0].city].f)}</span><span class="tp-rx"><b>${esc(t.name)}</b><small>${fMonth(t.start)} · ${plural(away.length,'stop')} · ${nf(tripMiles(t))} miles</small></span>${ic('chev')}</button>`; };
     const shownPast = T.all ? ps : ps.slice(0, 2);
-    return `<div class="screen tp-screen">${statusBar()}${head()}<div class="scroll tp-pad">${statCard}${addBtn}
+    return `<div class="screen tp-screen">${statusBar()}${head()}<div class="scroll tp-pad">${window.TP && TP.inviteCard ? TP.inviteCard() : ''}${statCard}${addBtn}
       ${up.length ? `<h2 class="tp-h2">Coming up</h2>${up.map(upCard).join('')}` : ''}
       ${ps.length ? `<div class="tp-h2row"><h2 class="tp-h2">Past trips</h2>${ps.length > 2 ? `<button class="tp-link" data-act="tpAll">${T.all ? 'Show less' : `See all ${ps.length}`}</button>` : ''}</div>
         ${shownPast.map((t, i) => i < 2 ? pastCard(t) : pastRow(t)).join('')}` : ''}
@@ -278,37 +290,6 @@
     </div>${foot('Create trip','tpCreate',canNext(d))}</div>`;
   };
 
-  /* ---------- trip page ---------- */
-  V.trip = () => { const t = tripById(S.tpId); if (!t) return V.trips();
-    const away = awayStops(t), m = tripMiles(t), up = !isPast(t), noEnd = up && !t.end; const tab = S.tpTab || 'itin';
-    const ppl = [...t.people]; const count = 1 + ppl.length + t.invited.length;
-    const first = away[0] ? CITY[away[0].city].n : CITY[t.stops[0].city].n;
-    const flash = T.flash === t.id ? `<span class="tp-flash" role="status">${ti('check')}Trip created</span>` : '';
-    const s0 = t.stops[0];
-    const homeRow = `<div class="tp-stop home"><span class="tp-sn home">${ti('pin')}</span><b>${CITY[t.from].n}</b><small>${fDay(t.start)}${s0.dep ? `, ${s0.dep}` : ''}${s0.flight ? ` · ${esc(s0.flight)}` : ''}</small></div>`;
-    let legMi = 0; let prev = t.from;
-    const stopRows = t.stops.map((s, i) => { const mi = miles(prev, s.city); prev = s.city; legMi += mi; const back = s.city === t.from || s.city === HOME;
-      return `<div class="tp-stop"><span class="tp-sn ${back?'home':''}">${back ? ti('pin') : i + 1}</span><b>${CITY[s.city].n}</b><small>${back ? 'Back' : 'From'} ${fDay(s.arrDate || s.date)} · ${nf(mi)} miles</small></div>`; }).join('');
-    const itin = `<div class="tp-itin">${homeRow}${stopRows}</div>
-      ${up ? `<div class="tp-ecard">${art('suitcase','tp-emp-art')}<b>Your ${esc(first)} days start here</b><p>Add where you’re staying and the places you go. Photos and friends too.</p>
-        <div class="tp-two-btn"><button class="tp-obtn" data-act="tpLater" data-msg="Adding a stay arrives in Phase 3.">${ti('bed')}Add a stay</button><button class="tp-obtn" data-act="tpLater" data-msg="Adding a place arrives in Phase 3.">${ti('pin')}Add a place</button></div></div>` : ''}`;
-    const photos = t.photos.length ? `<div class="tp-pgrid">${t.photos.map(k => art(k)).join('')}</div><p class="tp-hint c">${plural(t.photoCount || t.photos.length,'photo')} on this trip. Showing a few.</p><button class="tp-obtn wide" data-act="tpLater" data-msg="Adding photos arrives in Phase 3.">${ti('camera')}Add photos</button>`
-      : `<div class="tp-ecard big">${art('photosEmpty','tp-emp-art')}<b>No photos yet</b><p>Add photos from this trip. Everyone on the trip can add theirs too.</p><button class="btn btn-primary tp-cta" data-act="tpLater" data-msg="Adding photos arrives in Phase 3.">${ti('camera')}Add photos</button></div>`;
-    const plans = `<div class="tp-ecard big">${art('plansEmpty','tp-emp-art')}<b>No plans in ${esc(first)} yet</b><p>Plans are small meetups on your dates: food, coffee, a walk, a game. Start one and people in ${esc(first)} can join.</p><button class="btn btn-primary tp-cta" data-act="tpLater" data-msg="Plans arrive in Phase 4.">${ti('plus')}Start a plan</button><small>Plans from others in ${esc(first)} show here once your dates are near.</small></div>`;
-    return `<div class="screen tp-screen tp-page">${statusBar()}<div class="scroll">
-      <div class="tp-hero">${routeMap(t, 390, 190, {hero:true})}<div class="tp-herobar"><button class="tp-hb" data-act="tpBackList" aria-label="Back to Trips">${ti('back')}</button><span style="flex:1"></span><button class="tp-edit" data-act="tpLater" data-msg="Edit trip arrives in Phase 3.">Edit</button><button class="tp-hb" data-act="tpLater" data-msg="Sharing a trip arrives in Phase 5." aria-label="Share trip">${ti('share')}</button></div>${flash}</div>
-      <div class="tp-pad tp-body">
-        <h1 class="tp-title">${esc(t.name)}</h1>
-        <p class="tp-meta">${up ? `From ${fDay(t.start)}` : fRange(t.start, tripEnd(t)) + ' ' + D(t.start).getFullYear()} · ${plural(away.length,'stop')} · ${nf(m)} miles</p>
-        <div class="tp-ppl"><span class="tp-avs">${meAv('sm')}${[...ppl, ...t.invited].slice(0,4).map(id => av(id, t.invited.includes(id) ? 'sm inv' : 'sm')).join('')}</span><small>${count} on this trip</small><em class="tp-privchip">${ti(t.privacy==='private'?'lock':'globe')}${t.privacy==='private'?'Private':'Public'}</em><span style="flex:1"></span><button class="tp-addp" data-act="tpLater" data-msg="Adding people arrives in Phase 3.">${ti('addp')}Add</button></div>
-        ${noEnd ? `<div class="tp-back"><div class="tp-back-h"><span class="tp-bi">${ti('cal')}</span><span><b>When are you coming back?</b><small>Add your way back or your next stop, so the trip has an end date.</small></span></div>
-          <div class="tp-lb"><span><small>Leave</small><b>${fDay(t.start)}</b></span>${ic('chev')}<span><small>Back</small><b class="no">Not added</b></span></div>
-          <div class="tp-two-btn"><button class="tp-obtn" data-act="tpLater" data-msg="Adding a stop arrives in Phase 3.">${ti('plus')}Next stop</button><button class="tp-gbtn" data-act="tpLater" data-msg="Adding the way back arrives in Phase 3.">${ti('plane')}Way back</button></div></div>` : ''}
-        <div class="tp-tabs" role="tablist">${[['itin','Itinerary'],['photos','Photos'],['plans','Plans']].map(([k,l]) => `<button role="tab" aria-selected="${tab===k}" data-act="tpPTab" data-k="${k}">${l}</button>`).join('')}</div>
-        ${tab === 'itin' ? itin : tab === 'photos' ? photos : plans}
-      </div></div>${bottomNav('locals')}</div>`;
-  };
-
   /* ---------- actions ---------- */
   const goTrips = () => { S.hist = ['discover']; go('trips', {replace:true}); };
   Object.assign(A, {
@@ -339,18 +320,22 @@
     tpCreate: () => { const d = draft(); d.nameTouched = true; if (!canNext(d)) { render(); return; }
       const L = d.mode === 'plane' && !d.noFlight && flightOk(d.flight) ? lookup(d) : null;
       const t = {id:'t-' + Date.now(), name:d.name.trim(), privacy:d.privacy, from:d.from, start:d.date, end:null, cover:d.cover,
-        people:Object.keys(d.who).filter(id => !friend(id).off), invited:Object.keys(d.who).filter(id => friend(id).off), photos:[],
-        stops:[{city:d.to, date:d.date, arrDate:L ? L.arrDate : d.date, mode:d.mode, flight:L ? L.code : '', dep:L ? L.dep : ''}]};
+        people:Object.keys(d.who).filter(id => !friend(id).off), invited:Object.keys(d.who).filter(id => friend(id).off), joined:{},
+        stops:[{city:d.to, date:d.date, arrDate:L ? L.arrDate : d.date, mode:d.mode, flight:L ? L.code : '', dep:L ? L.dep : '', stays:[], places:[], photos:[]}]};
       T.list.unshift(t); T.draft = null; T.flash = t.id; S.tpId = t.id; S.tpTab = 'itin';
       S.hist = ['discover', 'trips']; go('trip', {replace:true});
       clearTimeout(T._ft); T._ft = setTimeout(() => { if (T.flash === t.id) { T.flash = null; if (S.screen === 'trip') render(); } }, 3200); },
   });
 
+  window.TP = Object.assign(window.TP || {}, {get T(){ return T; }, TODAY, HOME, CITY, FRIENDS, FROM_OPTIONS, MODES, AIR, friend, ti, TI, art, av, meAv, names, plural, nf, routeMap, miles, tripMiles, route, awayStops, isPast, tripEnd, tripPhotos, ensureStop,
+    fDay, fMonth, fRange, addDays, daysUntil, stats, upcoming, past, trips, tripById, empty, head, top, foot, flightOk, normFlight, lookup, goTrips, keepFocus:null});
   /* text inputs: keep focus and caret while re-rendering */
   const _in = document.addEventListener.bind(document);
+  TP.inputs = TP.inputs || {};
   _in('input', e => { const k = e.target && e.target.dataset && e.target.dataset.in; if (!k || !k.startsWith('tp')) return;
     const d = draft(); const v = e.target.value;
-    if (k === 'tpQ') { d.q = v; if (d.to && v !== CITY[d.to].n) d.to = null; }
+    if (TP.inputs[k]) TP.inputs[k](v, e.target);
+    else if (k === 'tpQ') { d.q = v; if (d.to && v !== CITY[d.to].n) d.to = null; }
     else if (k === 'tpFl') d.flight = v.slice(0, 8);
     else if (k === 'tpDt') d.date = v;
     else if (k === 'tpPq') d.pq = v;
@@ -359,7 +344,10 @@
 
   /* kyc approved from the Trips gate lands on Trips */
   const _kyc = kycApproved;
-  kycApproved = function(silent){ if (S.gateFrom !== 'locals') return _kyc.apply(this, arguments);
+  kycApproved = function(silent){
+    if (S.tpGate && S.gateFrom === 'chat') { const back2 = S.tpGate; S.tpGate = null; scen.kyc = 'approved'; saveScen(); if (!silent) push('Identity Approved', 'Your badge verification has been approved. Enjoy verified benefits on YouApp.');
+      const i = S.hist.lastIndexOf('gate'); if (i >= 0) S.hist = S.hist.slice(0, i); if (S.hist[S.hist.length - 1] === back2) S.hist.pop(); go(back2, {replace:true}); return; }
+    if (S.gateFrom !== 'locals') return _kyc.apply(this, arguments);
     scen.kyc = 'approved'; saveScen(); if (!silent) push('Identity Approved', 'Your badge verification has been approved. Enjoy verified benefits on YouApp.');
     const i = S.hist.lastIndexOf('gate'); if (i >= 0) S.hist = S.hist.slice(0, i); S.hist = ['discover']; go('trips', {replace:true}); };
 
@@ -380,6 +368,7 @@
       if (bar && !bar.dataset.tpInbox) { bar.dataset.tpInbox = '1'; bar.classList.add('tp-inboxbar');
         bar.innerHTML = `<button class="iconbtn" data-act="tpInboxBack" aria-label="Back to Trips">${ic('back')}</button><span class="t-headline">Inbox</span><span class="tp-sp" aria-hidden="true"></span>`; }
       ph.querySelectorAll('[aria-label="Liked people"]').forEach(b => b.remove()); }
+    if (S.tpGate && S.screen === S.tpGate) S.tpGate = null;
     ph.classList.toggle('tp-on', ['trips','trip','tripAdd'].includes(S.screen)); };
   A.tpInboxBack = () => { if (S.hist[S.hist.length-1] === 'trips') back(); else goTrips(); };
 
