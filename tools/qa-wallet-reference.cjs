@@ -112,6 +112,7 @@ let ws;
         content.firstElementChild.matches('.wr-wallet-settings') &&
         Boolean(content.querySelector('[data-s="wDisc"]')) === ${id !== 'ya'} &&
         !content.querySelector('[data-act="xsOpen"], [data-act="wRecvOf"], [data-act="bills"], [data-msg*="Rename"]') &&
+        Boolean(document.querySelector('.wr-wallet-summary [data-act="ewCryptoRecv"]')) &&
         content.lastElementChild.matches('.wr-asset-wallet') &&
         !/Hidden tokens/i.test(content.textContent) &&
         Array.from(content.querySelectorAll('.wr-asset-pages button'), button => button.offsetWidth >= 44 && button.offsetHeight >= 44).every(Boolean);
@@ -493,6 +494,15 @@ let ws;
   assert.equal(await wallet(`document.querySelector('.wr-wallet-main').getAttribute('aria-disabled')`), 'true');
   await checkWalletAddress('ya');
   await screenshot('youapp-wallet-details.png');
+  const ewKeep = await wallet(`JSON.stringify({screen:S.screen, hist:S.hist, ew:scen.ew||'off', bal:scen.bal, cents:S.scanTopUpCents||0})`);
+  assert.equal(await wallet(`(scen.ew='off', scen.bal='enough', S.sheet=null, S.hist=['home'], S.screen='home', render(), A.bills(), S.sheet)`), 'ewGate');
+  assert.equal(await wallet(`(A.ewStart(), S.screen)`), 'ewConfirm');
+  await wallet(`(A.ewPay(), 1)`);
+  await until(() => wallet(`S.screen === 'ewDone'`), 'eWallet activated');
+  assert.equal(await wallet('scen.ew'), 'on');
+  assert.ok(await wallet(`walletScanHistory().some(t => t.id === 'ew-fee' && t.v === -50)`), 'Opening fee in history');
+  assert.equal(await wallet(`(A.ewResume(), S.screen)`), 'bills');
+  await wallet(`(() => { const k = ${ewKeep}; scen.ew = k.ew; scen.bal = k.bal; S.scanTopUpCents = k.cents; S.ewFeeAt = null; S.ewTx = []; S.sheet = null; S.hist = k.hist; S.screen = k.screen; saveScen(); render(); return 1; })()`);
   await act('back');
   await act('back');
   await act('nav', '[data-to="walletConnect"]');
