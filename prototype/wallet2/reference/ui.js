@@ -944,7 +944,7 @@
     topUpOptions(frame, Object.keys(topUpAssets), t.currency, 'walletTopUpCurrency', currencyTitle);
     $$(frame, '.mr').forEach((row, index) => {
       const method = methods[index][0];
-      if (t.currency !== 'MYR' && !['card', 'stable'].includes(method)) row.remove();
+      if (method === 'bank' || (t.currency !== 'MYR' && !['card', 'stable'].includes(method))) row.remove();
       else bind(row, 'walletTopUpMethod', {method});
     });
     const notice = $(frame, '.disc');

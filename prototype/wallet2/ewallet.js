@@ -105,7 +105,6 @@
 
   /* ---------- activation ---------- */
   V.ewConfirm = () => { const b = bal(); const short = Math.max(0, FEE - b); const low = short > 0; const busy = S.ewBusy;
-    const m = S.ewTm || 'duitnow';
     return `<div class="screen bz">${statusBar()}${topBar('Activate eWallet')}
     <div class="scroll" style="padding-bottom:16px"><div class="pad16 stack" style="gap:14px; padding-top:4px">
       <div class="ew-hero">${ART(184)}<b class="t-body-lg">Your ringgit eWallet</b><p>Opens instantly with the ID you already verified.</p></div>
@@ -119,11 +118,11 @@
         <div class="kv"><span>Pay from</span><b>YouWallet · MYRT ${myrt(b)}</b></div>
         ${low ? `<div class="kv"><span>Top up first</span><b>${RM(short)}</b></div>` : ''}
         <div class="kv total"><span>Total</span><b>${RM(FEE)}</b></div></div>
-      ${low ? `<div class="sp-short">${ic('alert')}<span><b>${RM(short)} short</b>Your MYRT covers ${RM(b)}. Choose how to top up the rest.</span></div>
-        <div class="bl-pm" role="radiogroup" aria-label="Top up with">${[['applepay','Apple Pay','Pay with Face ID'],['duitnow','DuitNow Transfer','Ringgit · from your bank'],['card','Debit or Credit Card','Visa, Mastercard']].map(([k,n,s]) => { const p = PM.find(x => x.k === k) || {k}; return `<button role="radio" aria-checked="${m===k}" class="${m===k?'on':''}" data-act="ewTm" data-k="${k}">${pmIcon(p)}<span><b>${n}</b><small>${s}</small></span><i class="rd"></i></button>`; }).join('')}</div>` : ''}
+      ${low ? `<div class="sp-short">${ic('alert')}<span><b>${RM(short)} short</b>Your MYRT covers ${RM(b)}. Top up the rest with your card.</span></div>
+        <div><p class="t-caption subtle" style="margin:0 0 6px">Top up with</p><div style="display:flex; align-items:center; gap:12px; padding:12px 14px; border:1.5px solid #ECE7F7; border-radius:16px">${pmIcon(PM.find(x => x.k === 'card'))}<span style="display:grid"><b>Debit or Credit Card</b><small class="subtle">Visa, Mastercard</small></span></div></div>` : ''}
       <p class="t-caption subtle" style="margin:0">One-time fee. It isn’t added to your eWallet balance and shows as −${RM(FEE)} in your history.</p>
     </div></div>
-    <div class="w2foot">${low && !busy ? `<p class="t-caption subtle" style="margin:0 0 8px; text-align:center">Uses MYRT ${myrt(b)} and tops up ${RM(short)} with ${({applepay:'Apple Pay',duitnow:'DuitNow Transfer',card:'card'})[m]}</p>` : ''}${btn(busy ? 'Opening your eWallet…' : low ? `Top up &amp; pay ${RM(FEE)}` : `Pay ${RM(FEE)} &amp; activate`, busy ? 'noop' : 'ewPay', {disabled:busy, loading:busy})}</div></div>`; };
+    <div class="w2foot">${low && !busy ? `<p class="t-caption subtle" style="margin:0 0 8px; text-align:center">Uses MYRT ${myrt(b)} and tops up ${RM(short)} with your card</p>` : ''}${btn(busy ? 'Opening your eWallet…' : low ? `Top up &amp; pay ${RM(FEE)}` : `Pay ${RM(FEE)} &amp; activate`, busy ? 'noop' : 'ewPay', {disabled:busy, loading:busy})}</div></div>`; };
 
   V.ewDone = () => { const n = NEXT[S.ewNext]; const r = S.ewRef || 'YA-EW-2611';
     return `<div class="screen bz">${statusBar()}${topBar('eWallet')}
@@ -189,8 +188,7 @@
     ewPay: () => { if (S.ewBusy) return; const short = Math.max(0, FEE - bal()); S.ewBusy = true; render();
       setTimeout(() => { S.ewBusy = false;
         if (scen.ew === 'fail') { go('ewFail', {replace:true}); return; }
-        const names = {applepay:'Apple Pay', duitnow:'DuitNow', card:'Card'};
-        if (short > 0) S.ewPaidWith = `MYRT ${myrt(FEE - short)} + ${names[S.ewTm || 'duitnow']} ${RM(short)}`;
+        if (short > 0) S.ewPaidWith = `MYRT ${myrt(FEE - short)} + Card ${RM(short)}`;
         else { S.ewPaidWith = 'YouWallet · MYRT'; S.scanTopUpCents = (S.scanTopUpCents || 0) - FEE * 100; }
         if (short > 0) S.scanTopUpCents = (S.scanTopUpCents || 0) - Math.round((FEE - short) * 100);
         S.ewAt = S.ewFeeAt = now(); S.ewRef = 'YA-EW-' + String(Date.now()).slice(-6);
@@ -207,7 +205,7 @@
   const _st = window.__state;
   window.__state = () => Object.assign(_st ? _st() : {}, {ew: scen.ew === 'on' ? 'on' : scen.ew === 'fail' ? 'fail' : 'off', bal: scen.bal === 'low' ? 'low' : 'enough'});
   Object.assign(META, {
-    ewConfirm:{name:'Activate eWallet', ph:1, rules:['Only needed for Receive (eWallet), Bill payment and Mobile reload. Scan to Pay does not need it','One-time RM50 account opening fee, not added to balance; shows as −RM50 in history','Paid from MYRT first; if short, top up the rest (Apple Pay, DuitNow, card)','Existing KYC covers it, no extra screens','⚠️ Assumption: opening is instant (pending Kevon)']},
+    ewConfirm:{name:'Activate eWallet', ph:1, rules:['Only needed for Receive (eWallet), Bill payment and Mobile reload. Scan to Pay does not need it','One-time RM50 account opening fee, not added to balance; shows as −RM50 in history','Paid from MYRT first; if short, top up the rest by debit or credit card','Existing KYC covers it, no extra screens','⚠️ Assumption: opening is instant (pending Kevon)']},
     ewDone:{name:'eWallet activated', ph:1, rules:['−RM50 account opening fee, account number, paid with, reference, date','Continue takes the user back into the flow they started (Bills, Reload or Receive)','⚠️ Assumption: account details are an account number + DuitNow QR']},
     ewFail:{name:'eWallet · opening failed', ph:1, rules:['Scenario eWallet › Fails next','⚠️ Assumption: a failed opening refunds the fee automatically']},
     ewDetail:{name:'eWallet', ph:1, rules:['Balance, account number and name, Receive and Pay bills, history incl. the opening fee','⚠️ Assumption: received MYR stays as eWallet balance and is used before MYRT']},

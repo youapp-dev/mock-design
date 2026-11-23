@@ -500,6 +500,7 @@ let ws;
   await wallet(`(A.ewPay(), 1)`);
   await until(() => wallet(`S.screen === 'ewDone'`), 'eWallet activated');
   assert.equal(await wallet('scen.ew'), 'on');
+  assert.ok(await wallet(`!PM.some(p => ['applepay', 'duitnow'].includes(p.k)) && PM.some(p => p.k === 'card')`), 'Card is the only bank or card method');
   assert.ok(await wallet(`walletScanHistory().some(t => t.id === 'ew-fee' && t.v === -50)`), 'Opening fee in history');
   assert.equal(await wallet(`(A.ewResume(), S.screen)`), 'bills');
   await wallet(`(() => { const k = ${ewKeep}; scen.ew = k.ew; scen.bal = k.bal; S.scanTopUpCents = k.cents; S.ewFeeAt = null; S.ewTx = []; S.sheet = null; S.hist = k.hist; S.screen = k.screen; saveScen(); render(); return 1; })()`);

@@ -62,9 +62,7 @@ V.subscribe = () => { const s = S.sub; const cur = scen.tier;
 
 const PM = [
   {k:'wallet', group:'In your wallet · ERC-20', name:'MYRT · YouWallet', sub:'Malaysian Ringgit', logo:'myrt'},
-  {k:'applepay', group:'Bank and Card', name:'Apple Pay', sub:'Pay with Face ID', logo:'apple'},
-  {k:'duitnow', group:'Bank and Card', name:'DuitNow Transfer', sub:'Ringgit · from your bank', logo:'duitnow'},
-  {k:'card', group:'Bank and Card', name:'Debit or Credit Card', sub:'Visa, Mastercard', logo:'card'},
+  {k:'card', group:'Card', name:'Debit or Credit Card', sub:'Visa, Mastercard', logo:'card'},
   {k:'myrt', group:'Stablecoins', name:'MYRT • Malaysian Ringgit', sub:'Send from any wallet or exchange', logo:'myrt'},
   {k:'usdt', group:'Stablecoins', name:'USDT • Tether USD', sub:'Send from any wallet', logo:'usdt'},
   {k:'usdc', group:'Stablecoins', name:'USDC • Circle USD', sub:'Send from any wallet', logo:'usdc'},

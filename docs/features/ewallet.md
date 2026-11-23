@@ -22,7 +22,7 @@ Receive (in ringgit), Bill payment and Mobile reload run on MYR rails. YouApp ne
 
 1. YouPage: **Bill payment** and **Mobile reload** tiles sit below Top up and Rewards.
 2. Tapping Bill payment, Mobile reload or eWallet Receive while the eWallet is not active opens the **Activate your eWallet** sheet: illustration, why, one-time RM50 opening fee, identity already verified. Below RM50 of MYRT it adds "Your MYRT is RM{x}. You can top up the rest on the next step." Buttons: Continue, Not now.
-3. **Activate eWallet** screen: illustration, the three things it unlocks, fee summary, Pay from YouWallet · MYRT. Button: "Pay RM50.00 & activate". If MYRT is below RM50, a "RM{x} short" warning and a top-up method picker (Apple Pay, DuitNow transfer, card) appear, a line above the button says "Uses MYRT {a} and tops up RM{x} with {method}", and the button reads **"Top up & pay RM50.00"**.
+3. **Activate eWallet** screen: illustration, the three things it unlocks, fee summary, Pay from YouWallet · MYRT. Button: "Pay RM50.00 & activate". If MYRT is below RM50, a "RM{x} short" warning and "Top up with: Debit or Credit Card" appear, a line above the button says "Uses MYRT {a} and tops up RM{x} with your card", and the button reads **"Top up & pay RM50.00"**.
 4. **eWallet activated**: −RM50.00 account opening fee, account number (copy), paid with, reference, date. The primary button continues into the flow the user started (Pay bills, Reload a number, Receive money). Done returns to where they were.
 5. Bills and Mobile reload follow the existing W6 flows (biller or network, number, fetched or chosen amount, PIN at RM100+, Paid, Receipt). The confirm screen and receipt show "Paid through eWallet, funded from YouWallet · MYRT".
 6. **My money** has an eWallet section under the currencies. Off: "Receive, pay bills and reload" with Activate. On: the eWallet balance, opening **eWallet** details (balance, account number and name, Receive, Pay bills, history).
@@ -36,7 +36,7 @@ Receive (in ringgit), Bill payment and Mobile reload run on MYR rails. YouApp ne
 | Activating | Button shows "Opening your eWallet…" and is disabled |
 | Active | Section shows the balance. Bills and Reload open directly |
 | Opening failed | "We couldn't open your eWallet". The fee goes back automatically. Try again or Not now |
-| MYRT short | Warning plus top-up method picker on the activation screen; Top Up & Pay on bills (existing) |
+| MYRT short | Warning plus card top-up on the activation screen; Top Up & Pay on bills (existing) |
 
 ## Edge cases
 
@@ -73,3 +73,7 @@ eWallet: Not activated / Active / Fails next. MYRT balance: RM50 or more / Below
 
 - `node tools/qa-wallet-reference.cjs` passes all 7 groups, including a new check: Bill payment opens the activation sheet, activation succeeds, the −RM50 fee appears in history, and Continue opens Bills.
 - Manual run at 375 and 320: YouPage tiles, activation sheet, activation (MYRT enough and short), activated, Bills confirm, PIN, paid, receipt, My money (off and on), eWallet details, Receive to eWallet, YouApp Wallet and MetaMask details with Receive, opening failed.
+
+## Payment methods (23 Nov 2026, app-wide)
+
+Apple Pay, DuitNow Transfer and Online Banking (FPX) are removed as payment and top-up methods in both renderers. Bank and card methods are **Debit or Credit Card** only. Stablecoins stay. E-wallet and Other ways stay on the Top up screen, and E-wallet stays on booking checkout, pending confirmation. DuitNow QR (Scan to Pay) and DuitNow receiving into the eWallet are rails, not payment methods, and stay.

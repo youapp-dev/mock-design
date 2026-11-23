@@ -1475,10 +1475,9 @@ V.pay = () => { const b = S.bk; const sm = bkSummary(b); const disc = b.promoApp
   const balOk = walletOn() && bal >= total;
   const methods = [
     ['balance','Balance', walletOn() ? `<b class="balamt">MYR ${money(bal)}</b><span class="t-caption subtle">Booking Balance</span>${bal<total?`<span class="t-caption" style="color:var(--a-error)">Not enough balance for this booking</span>`:''}` : `<span class="t-caption subtle">Activate your wallet to pay with your balance.</span>`, !balOk],
-    ['stripe','Stripe', `<span class="brands">${['VISA','Mastercard','AMEX','UnionPay','JCB','Apple Pay','Google Pay'].map(x=>`<i>${x}</i>`).join('')}</span><span class="t-caption subtle">Est. Price ≈ <b>${rm(total)}</b> · card fees may apply</span>`],
+    ['stripe','Stripe', `<span class="brands">${['VISA','Mastercard','AMEX','UnionPay','JCB','Google Pay'].map(x=>`<i>${x}</i>`).join('')}</span><span class="t-caption subtle">Est. Price ≈ <b>${rm(total)}</b> · card fees may apply</span>`],
     ['card','Card Payment', `<span class="brands">${['VISA','Mastercard','AMEX','UnionPay','JCB'].map(x=>`<i>${x}</i>`).join('')}</span><span class="t-caption subtle">Est. Price ≈ <b>${rm(total)}</b></span>`],
-    ['ewallet',"E-wallet", `<span class="brands">${['Touch ’n Go','GrabPay','Alipay+','Boost'].map(x=>`<i>${x}</i>`).join('')}</span><span class="t-caption subtle">Est. Price ≈ <b>${rm(total)}</b></span>`],
-    ['bank','Bank (FPX)', `<span class="brands">${['Maybank','CIMB','Public Bank','RHB'].map(x=>`<i>${x}</i>`).join('')}</span><span class="t-caption subtle">Est. Price ≈ <b>${rm(total)}</b></span>`]];
+    ['ewallet',"E-wallet", `<span class="brands">${['Touch ’n Go','GrabPay','Alipay+','Boost'].map(x=>`<i>${x}</i>`).join('')}</span><span class="t-caption subtle">Est. Price ≈ <b>${rm(total)}</b></span>`]];
   return `<div class="screen">${statusBar()}${topBar('Confirm and pay')}
   <div class="scroll pad16" style="padding-bottom:16px">
     <div class="boxcard" style="gap:12px">
@@ -2478,7 +2477,7 @@ function ov4(){ let h = '';
   const sheet = (inner, label) => `<div class="scrim ${S.sheetAnim?'anim':''}" data-act="closeSheet2"></div><div class="sheet ${S.sheetAnim?'anim':''}" role="dialog" aria-label="${label}"><div class="grab" aria-hidden="true"></div>${inner}</div>`;
   const mrow = (id, sel, actn) => { const g = tuMeth(id); const dis = g.card && g.card.st!=='active';
     return `<button role="radio" aria-checked="${sel===id}" class="mrow ${sel===id?'on':''}" ${dis?'aria-disabled="true"':''} data-act="${actn}" data-m="${id}">${g.group==='bank'?`<span class="tok tok-bank">${ic('card')}</span>`:tokenIc(g.cur)}<span style="flex:1; min-width:0; text-align:left"><b>${esc(g.label)}</b><small>${dis?(g.card.st==='expired'?'Expired':'Inactive'):esc(g.sub)}</small></span>${id==='usdt'?`<span style="text-align:right"><b style="color:var(--a-success)">${fmt2(W().stable[0].amt)}</b><small>USDT</small></span>`:''}<i></i></button>`; };
-  const bankGroup = (sel, actn) => (!inMY() || frozen()) ? '' : `<p class="kicker2 msec">Bank &amp; Card</p><div class="mgroup">${scen.cards==='on'?W().cards.filter(c=>c.st!=='deleted').sort((a,b)=>(b.quick?1:0)-(a.quick?1:0)).map(c=>mrow('saved:'+c.id, sel, actn)).join(''):''}${mrow('fpx',sel,actn)}${mrow('card',sel,actn)}</div>`;
+  const bankGroup = (sel, actn) => (!inMY() || frozen()) ? '' : `<p class="kicker2 msec">Debit or Credit Card</p><div class="mgroup">${scen.cards==='on'?W().cards.filter(c=>c.st!=='deleted').sort((a,b)=>(b.quick?1:0)-(a.quick?1:0)).map(c=>mrow('saved:'+c.id, sel, actn)).join(''):''}${mrow('card',sel,actn)}</div>`;
   if (S.sheet==='tuMethod') { const sel = S.tu.method; const cardsOk = inMY() && !frozen();
     h += sheet(`<h2 class="tu2-h">Top Up With</h2>
     <p class="tu2-sec">Stablecoins</p><div class="mgroup tu2-g">${['myrt','usdtx','usdc','xsgd'].map(m=>mrow(m,sel,'tuSetM')).join('')}</div>
@@ -2489,7 +2488,7 @@ function ov4(){ let h = '';
     h += sheet(`<h2 class="t-headline" style="margin:0 0 10px">Top Up and Pay</h2><div style="display:flex; gap:8px; flex-wrap:wrap">${chips.map(([v,l])=>`<button class="amtchip ${t.amt===v?'on':''}" data-act="tpChip" data-v="${v}">${l}</button>`).join('')}</div>
       ${scen.cards==='on' && inMY() && !frozen() && W().cards.some(c=>c.quick&&c.st==='active') ? `<p class="kicker2 msec">Quick Pay</p><div class="mgroup">${mrow('saved:'+W().cards.find(c=>c.quick).id, t.method,'tpSetM')}</div>` : ''}
       <p class="kicker2 msec">In your wallet · ERC-20</p><div class="mgroup">${mrow('usdt',t.method,'tpSetM')}</div>
-      ${(!inMY()||frozen())?'':`<p class="kicker2 msec">Bank &amp; Card</p><div class="mgroup">${mrow('fpx',t.method,'tpSetM')}${mrow('card',t.method,'tpSetM')}</div>`}
+      ${(!inMY()||frozen())?'':`<p class="kicker2 msec">Debit or Credit Card</p><div class="mgroup">${mrow('card',t.method,'tpSetM')}</div>`}
       <div style="margin-top:14px">${btn(`Top Up ${t.amt?RM(parseFloat(t.amt)):''}`,'tpGo',{disabled:!t.method||!t.amt})}</div>`, 'Top Up and Pay'); }
   if (S.sheet==='tuBank') h += sheet(`<h2 class="t-headline" style="margin:0 0 10px">Choose your bank</h2>${BANKS.map(([b,on])=>`<button class="radrow" ${on?'':'aria-disabled="true"'} data-act="tuSetBank" data-b="${b}"><span>${b}${on?'':' <small class="subtle">· Offline</small>'}</span><i class="${S.tu.bank===b?'on':''}"></i></button>`).join('')}`, 'Choose your bank');
   if (S.sheet==='qrsim') h += sheet(`<h2 class="t-headline" style="margin:0 0 4px">Simulate a scan</h2><p class="t-body muted" style="margin:0 0 8px">Pick what the camera sees.</p>${[['open','Merchant QR · you enter the amount'],['fixed','Merchant QR · fixed RM30.00'],['personal','Personal DuitNow QR'],['expired','Expired QR'],['paid','QR already paid']].map(([k,l])=>`<button class="menurow" data-act="qrPick" data-q="${k}">${ic('scan')}${l}</button>`).join('')}`, 'Simulate a scan');

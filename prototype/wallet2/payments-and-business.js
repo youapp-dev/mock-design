@@ -82,12 +82,12 @@ Object.assign(SHEETS, {
     return `<div class="grab"></div><div class="stack" style="gap:10px"><h2 class="t-title" style="margin:0">Top Up and Pay</h2>
       <div class="sp-chips">${opts.map(([v,l])=>`<button class="${tp.amt===v?'on':''}" data-act="tpAmt" data-v="${v}">${l}</button>`).join('')}<button class="${tp.custom?'on':''}" data-act="tpCustom">Custom</button></div>
       ${tp.custom?`<div class="field ${under||tp.amt<20?'err':''}"><div class="prefin"><span>RM</span><input id="tpIn" inputmode="decimal" data-in="tpAmt" value="${tp.amt||''}"></div><span class="helper ${under||tp.amt<20?'':'neutral'}">${tp.amt<20?'Minimum top-up is RM20.':under?'Top up at least '+RM(short)+' to cover this payment.':'Minimum top-up RM20'}</span></div>`:'<small class="subtle">Minimum top-up RM20</small>'}
-      ${['Bank and Card','Stablecoins'].map(g=>`<h3 class="sec" style="margin:4px 0 0; font-size:15px">${g}</h3><div class="pmlist">${PM.filter(x=>x.group===g).map(row).join('')}</div>`).join('')}
+      ${['Card','Stablecoins'].map(g=>`<h3 class="sec" style="margin:4px 0 0; font-size:15px">${g==='Card'?'Debit or Credit Card':g}</h3><div class="pmlist">${PM.filter(x=>x.group===g).map(row).join('')}</div>`).join('')}
       ${btn('Top Up '+RM(tp.amt||0)+' &amp; Pay '+RM(total), under||tp.amt<20?'noop':'tpGo', {disabled:under||tp.amt<20})}</div>`; },
 });
 Object.assign(META, {
   scan:{name:'Scan to Pay', ph:1, fb:['F4'], rules:['From the 3.0 Figma Scan flow (node 1837:49950): DuitNow Pay logo, camera with “Point at any DuitNow QR”, Flash · My QR · Gallery, illustration.','Gallery: pick a photo with a QR; any other photo shows Invalid QR image.','Before KYC: Verify to start paying · In review · Verification rejected (Re-submit).','Any DuitNow QR works, merchant or personal (personal is pay-out only).']},
-  confirm:{name:'Scan and Pay', ph:1, fb:['F4'], rules:['Figma layout: merchant, You Pay amount with the keypad (fixed-price QR: no keypad).','Gas Fee row replaced by the Wallet 2.0 Payment fee: tier % with RM1.50 minimum (Free/VIP) and a link to the next tier rate.','Button shows the total (amount + fee): Pay RMx.','Low balance: “RMx short” banner and Top Up & Pay, which opens the Top Up and Pay sheet (RMx exact / RM100 / RM500 / Custom, minimum top-up RM20, Bank and Card or Stablecoins).','Above the per-payment limit: amount turns red, Upgrade link, button off.','RM100 or more asks for the PIN. Stablecoin top-ups show Processing on Ethereum first.']},
+  confirm:{name:'Scan and Pay', ph:1, fb:['F4'], rules:['Figma layout: merchant, You Pay amount with the keypad (fixed-price QR: no keypad).','Gas Fee row replaced by the Wallet 2.0 Payment fee: tier % with RM1.50 minimum (Free/VIP) and a link to the next tier rate.','Button shows the total (amount + fee): Pay RMx.','Low balance: “RMx short” banner and Top Up & Pay, which opens the Top Up and Pay sheet (RMx exact / RM100 / RM500 / Custom, minimum top-up RM20, Debit or Credit Card or Stablecoins).','Above the per-payment limit: amount turns red, Upgrade link, button off.','RM100 or more asks for the PIN. Stablecoin top-ups show Processing on Ethereum first.']},
   pin:{name:'Enter PIN', ph:1, rules:['Payment threshold: RM100 or more needs the 6-digit PIN (Figma: Over payment threshold → PIN).','Wrong PIN shows the error and tries left.']},
   processing:{name:'Processing on Ethereum', ph:1, rules:['Shown when the top-up is a stablecoin sent from another wallet. Pays the merchant once it confirms.']},
   done:{name:'Paid', ph:1, rules:['Figma Paid screen with the leaf art. Receipt adds Wallet 2.0 rows: amount, payment fee (rate and tier), total, cashback (phase 4), updated balance, reference, date.','Done and Share this moment.']},
@@ -850,10 +850,10 @@ V.billConfirm = () => { const b = S.bill; const B = bl(b.id); const open = B.kin
     <p class="t-caption subtle" style="margin:0; text-align:center">${open?'The reload reaches your number within a minute.':'The biller receives ringgit instantly. You keep the cashback.'}</p></div>
   ${open&&!low?keypad('blAmt'):''}</div>`; };
 
-SHEETS.billTop = () => { const b = S.bill; const tu = blTopAmt(); const m = S.blTm||'applepay';
+SHEETS.billTop = () => { const b = S.bill; const tu = blTopAmt(); const m = S.blTm||'card';
   return `<div class="grab"></div><div class="stack" style="gap:14px">
     <div><h2 class="t-title" style="margin:0">Top Up &amp; Pay</h2><p class="t-body muted" style="margin:4px 0 0">We add RM${tu} to your wallet, then pay ${RM(+b.amt)} to ${bl(b.id).name}.</p></div>
-    <div class="bl-pm">${[['applepay','Apple Pay','Pay with Face ID'],['duitnow','DuitNow Transfer','Ringgit · from your bank'],['card','Debit or Credit Card','Visa, Mastercard']].map(([k,n,s])=>{const p=PM.find(x=>x.k===k)||{k}; return `<button class="${m===k?'on':''}" data-act="blTm" data-k="${k}">${pmIcon(p)}<span><b>${n}</b><small>${s}</small></span><i class="rd"></i></button>`;}).join('')}</div>
+    <div class="bl-pm"><p class="t-caption subtle" style="margin:0 0 6px">Top up with</p><div class="on" style="display:flex; align-items:center; gap:12px; padding:12px 14px; border:1.5px solid #ECE7F7; border-radius:16px">${pmIcon(PM.find(x=>x.k==='card'))}<span style="display:grid"><b>Debit or Credit Card</b><small class="subtle">Visa, Mastercard</small></span></div></div>
     <div class="kvbox"><div class="kv"><span>Top up</span><b>${RM(tu)}</b></div><div class="kv"><span>Bill</span><b>${RM(+b.amt)}</b></div><div class="kv"><span>Left in wallet after</span><b>${RM(bal()+tu-(+b.amt))}</b></div></div>
     ${btn(`Top Up RM${tu} &amp; Pay`,'blTopGo')}</div>`; };
 
@@ -880,7 +880,7 @@ V.billReceipt = () => { const b = S.bill; const B = bl(b.id); const amt = +b.amt
     <section><h2 class="bl-cap">Payment detail</h2><div class="kvbox sp-box">
       <div class="kv"><span>Payment</span><b>${RM(amt)}</b></div>
       <div class="kv"><span>YouApp fee</span><b>RM0.00</b></div>
-      ${b.topped?`<div class="kv"><span>Topped up first</span><b>${RM(b.topped)} · ${({applepay:'Apple Pay',duitnow:'DuitNow',card:'Card'})[S.blTm||'applepay']}</b></div>`:''}
+      ${b.topped?`<div class="kv"><span>Topped up first</span><b>${RM(b.topped)} · Card</b></div>`:''}
       <div class="kv"><span>Payment method</span><b>YouWallet · MYRT</b></div>
       <div class="kv total"><span>Total</span><b>${RM(amt)}</b></div></div></section>
     <div class="bl-rcact"><button data-act="toast" data-msg="Saves the receipt as a PDF.">${ic('download')}Download</button><button data-act="toast" data-msg="Opens the share sheet.">${ic('share')}Share</button></div>
@@ -1124,7 +1124,7 @@ Object.assign(A, {
     S.pay.amt = v; render(); },
   kpDel: () => { S.pay.amt = (S.pay.amt||'').slice(0,-1); render(); },
   spPay: () => { if (S.busy) return; S.tp=null; spGate(); },
-  spTopUp: () => { const short = Math.max(0, spTotal()-bal()); S.tp = {amt: [50,100,120,240].find(v=>v>=short) || Math.ceil(short), method:'applepay', custom:false}; S.sheet='topPay'; render(); },
+  spTopUp: () => { const short = Math.max(0, spTotal()-bal()); S.tp = {amt: [50,100,120,240].find(v=>v>=short) || Math.ceil(short), method:'card', custom:false}; S.sheet='topPay'; render(); },
   tpAmt: el => { S.tp.amt = +el.dataset.v; S.tp.custom=false; render(); },
   tpCustom: () => { S.tp.custom=true; render(); },
   tpPick: el => { S.tp.method = el.dataset.m; render(); },
