@@ -191,8 +191,8 @@
 
   /* ---------- Trips header ---------- */
   const head = () => { const u = inboxUnread();
-    return `<div class="tp-head"><button class="iconbtn av-btn tp-avbtn" data-act="youpage" aria-label="Open YouPage">${img('avatar','You','av32')}</button>
-      <div class="tp-toggle" role="tablist" aria-label="Trips or Leaderboard"><button role="tab" aria-selected="${T.tab==='trips'}" data-act="tpTab" data-k="trips">Trips</button><button role="tab" aria-selected="${T.tab==='board'}" data-act="tpTab" data-k="board">Leaderboard</button></div>
+    return `<div class="appbar tp-appbar"><button class="avatar" data-act="youpage" aria-label="Open YouPage"><img src="${IMG.avatar}" alt=""></button>
+      <div class="htabs" role="tablist" aria-label="Trips or Leaderboard"><button role="tab" aria-selected="${T.tab==='trips'}" data-act="tpTab" data-k="trips">Trips</button><button role="tab" aria-selected="${T.tab==='board'}" data-act="tpTab" data-k="board">Leaderboard</button></div>
       <button class="tp-inbox" data-act="tpInbox" aria-label="Inbox${u?`, ${u} unread`:''}">${ti('inbox')}${u?`<i>${u > 99 ? '99+' : u}</i>`:''}</button></div>`; };
 
   /* ---------- Trips list ---------- */

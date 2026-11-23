@@ -5,13 +5,7 @@
 .bnav .tp-navi{width:30px; height:30px}
 
 /* header */
-.tp-head{flex:none; height:56px; display:flex; align-items:center; gap:10px; padding:0 16px}
-.tp-avbtn{margin:0}
-.tp-toggle{flex:1; display:flex; justify-content:center}
-.tp-toggle{max-width:max-content; margin:0 auto; padding:4px; border-radius:999px; background:var(--tp-lav)}
-.tp-toggle button{min-width:96px; height:36px; padding:0 16px; border:0; border-radius:999px; background:none; color:var(--tp-deep); font:600 15px Inter,sans-serif}
-.tp-toggle button[aria-selected="true"]{background:var(--tp-grad); color:#fff; box-shadow:0 4px 10px -4px rgba(61,28,150,.5)}
-.tp-inbox{position:relative; display:grid; width:40px; height:40px; margin-right:-6px; place-items:center; border:0; border-radius:50%; background:none; color:var(--tp-deep)}
+.tp-inbox{position:relative; display:grid; width:36px; height:36px; margin-right:-6px; place-items:center; border:0; border-radius:50%; background:none; color:var(--tp-deep)}
 .tp-inbox .tp-i{width:24px; height:24px}
 .tp-inbox i{position:absolute; top:3px; right:1px; min-width:18px; height:18px; padding:0 5px; border:2px solid #fff; border-radius:999px; background:#C05CA8; color:#fff; font:700 10.5px/14px Inter,sans-serif; font-style:normal; text-align:center}
 .tp-pad{padding:4px 16px 24px}
@@ -216,11 +210,10 @@
   .tp-nums{gap:12px} .tp-nums b{font-size:23px}
   .tp-stop{flex-wrap:wrap; row-gap:0}
   .tp-stop small{flex-basis:100%; max-width:none; padding-left:38px; margin-top:-4px; text-align:left; font-size:11.5px}
-  .tp-toggle button{min-width:0; padding:0 12px; font-size:14px}
   .tp-globe{width:78px; height:78px}
   .tp-rank{white-space:nowrap; font-size:11.5px}
 }
-.tp-avbtn{flex:none}
+
 
 /* ===== Phase 3: trip page content ===== */
 .tp-itin2{display:flex; flex-direction:column}
