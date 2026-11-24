@@ -1306,7 +1306,8 @@ V.gate = () => { const g = GATE[S.gateFrom] || GATE.post; const rej = kyc()==='r
     <div style="margin-top:28px">${btn('Verify me · takes 2 minutes','kycStart')}</div>
     ${g.later?`<button class="link" style="display:block; margin:20px auto 0" data-act="gateLater">Maybe later</button>`:''}
     <button class="link subtle" style="display:block; margin:18px auto 0; font-weight:500; font-size:13px" data-act="toast" data-msg="Opens the Terms and Conditions.">Learn more about Terms and Conditions</button></div>`}`;
-  const nav = g.tab ? bottomNav(g.tab) : S.gateFrom==='wallet' && verifyIntro ? bottomNav('locals') : '';
+  /* opened from YouPage (Activate wallet / Get verified): a focused flow, so no bottom nav */
+  const nav = g.tab ? bottomNav(g.tab) : '';
   return `<div class="screen">${statusBar()}${top}<div class="scroll" style="padding-bottom:20px">${body}${scanArt}</div>${nav}</div>`; };
 
 /* ---------- Mobile number (only when missing) ---------- */
