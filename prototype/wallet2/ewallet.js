@@ -51,6 +51,16 @@
   .ew-art{display:block; margin:0 auto; max-width:100%; height:auto}
   .ew-intro{display:grid; justify-items:center; gap:6px; text-align:center}
   .ew-intro .t-title{margin:6px 0 0} .ew-intro p{margin:0}
+  .ew-ph{display:flex; gap:8px} .ew-ph .input{flex:1; min-width:0}
+  .ew-cc{display:flex; align-items:center; gap:4px; flex:none; height:48px; padding:0 10px 0 14px; border:1px solid var(--a-line); border-radius:12px; background:#fff; font:600 16px Inter, sans-serif; color:var(--a-ink)} .ew-cc svg{display:block; width:16px; height:16px; color:var(--a-ink-3)}
+  .field.err .input{border-color:var(--a-error)}
+  .ew-otp{position:relative; display:block} .ew-otp input{position:absolute; inset:0; width:100%; height:100%; opacity:0; border:0; font-size:16px; caret-color:transparent}
+  .ew-otp:focus-within .otp-boxes span.cur{box-shadow:0 0 0 2px var(--a-indigo-100)}
+  .ew-otph{margin:0; min-height:18px}
+  .ew-okph{display:inline-flex; align-items:center; gap:4px} .ew-okph svg{width:16px; height:16px; color:#2FA36B}
+  .ew-ccs{margin:0 0 6px!important; width:100%!important} .ew-ccs input{border:0; outline:0; flex:1; font:inherit; font-size:16px; background:none; min-width:0}
+  .ew-ccl{display:grid; align-content:start; height:50vh; overflow:auto}
+  .ew-ccr{display:flex; align-items:center; gap:12px} .ew-ccr small{font:500 14px Inter, sans-serif; color:var(--a-ink-3)}
   .ew-tools{display:grid; grid-template-columns:1fr 1fr; gap:10px}
   .ew-assume{font-size:12px; color:#8A6D00; background:#FFF6D6; border-radius:12px; padding:8px 10px; margin:0}
   .wr-quick-actions + .wr-quick-actions{margin-top:10px}
@@ -99,9 +109,54 @@
     return `<div class="grab"></div><div class="stack" style="gap:14px">
       <div class="ew-intro">${ART(152)}<h2 class="t-title">${n ? `Activate your eWallet to ${n[0].toLowerCase()}` : 'Activate your eWallet'}</h2>
         <p class="t-body muted">Bills, reloads and receiving ringgit run on your eWallet. Scan to Pay doesn’t need it.</p></div>
-      <div class="kvbox sp-box"><div class="kv"><span>One-time opening fee</span><b>${RM(FEE)}</b></div><div class="kv"><span>Identity check</span><b>Already done</b></div></div>
+      <div class="kvbox sp-box"><div class="kv"><span>One-time opening fee</span><b>${RM(FEE)}</b></div><div class="kv"><span>Identity check</span><b>Already done</b></div><div class="kv"><span>Phone number</span><b>Verify next</b></div></div>
       ${bal() < FEE ? `<p class="t-caption subtle" style="margin:0; text-align:center">Your MYRT is ${RM(bal())}. You can top up the rest on the next step.</p>` : ''}
       ${btn('Continue', 'ewStart')}${btn('Not now', 'closeSheet', {kind:'btn-tertiary'})}</div>`; };
+
+  /* ---------- activation step 1–2: phone number + SMS OTP (verify before paying) ---------- */
+  const CC = [['Malaysia','+60',[9,10]],['Indonesia','+62',[9,12]],['Singapore','+65',[8,8]],['Thailand','+66',[9,9]],['Philippines','+63',[10,10]],['Vietnam','+84',[9,10]],['Brunei','+673',[7,7]],['China','+86',[11,11]],['India','+91',[10,10]],['Japan','+81',[10,10]],['South Korea','+82',[9,10]],['Australia','+61',[9,9]],['United Kingdom','+44',[10,10]],['United States','+1',[10,10]]];
+  const ccOf = c => CC.find(x => x[1] === c) || CC[0];
+  const digits = v => (v || '').replace(/\D/g, '').replace(/^0+/, '');
+  const phoneOk = (cc, n) => { const [a, b] = ccOf(cc)[2]; const d = digits(n); return d.length >= a && d.length <= b; };
+  const fmtPh = (cc, n) => { const d = digits(n); return `${cc} ${cc === '+60' ? d.replace(/^(\d{2})(\d{3,4})(\d{4})$/, '$1-$2 $3') : d.replace(/(\d{3,4})(?=\d)/g, '$1 ')}`; };
+  const TAKEN = '123450000';
+  V.ewPhone = () => { const f = S.ewPh || (S.ewPh = {cc:'+60', num:'', err:''}); const ok = phoneOk(f.cc, f.num);
+    return `<div class="screen bz">${statusBar()}${topBar('Activate eWallet')}
+    <div class="scroll"><div class="pad16 stack" style="gap:14px; padding-top:8px">
+      <div><h1 class="t-title" style="margin:0 0 4px">What’s your phone number?</h1><p class="t-body muted" style="margin:0">We’ll text a 6-digit code to verify it. This number is linked to your eWallet.</p></div>
+      <div class="field ${f.err ? 'err' : ''}"><label class="t-body" style="font-weight:600" for="ewNum">Phone number</label>
+        <div class="ew-ph"><button class="ew-cc" data-act="ewCcOpen" aria-label="Country code ${esc(ccOf(f.cc)[0])} ${f.cc}">${f.cc}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg></button>
+          <input id="ewNum" class="input" type="tel" inputmode="tel" autocomplete="tel-national" value="${esc(f.num)}" placeholder="${f.cc === '+60' ? '12-345 6789' : 'Phone number'}" aria-describedby="ewNumH" ${f.busy ? 'disabled' : ''}></div>
+        <span class="helper ${f.err ? '' : 'neutral'}" id="ewNumH">${f.err ? esc(f.err) : 'Use a number that can receive SMS.'}</span></div>
+      <p class="t-caption subtle" style="margin:0">Demo: ${TAKEN.replace(/^(\d{2})(\d{3})(\d{4})$/, '$1-$2 $3')} is already linked to another eWallet.</p>
+    </div></div>
+    <div class="w2foot">${btn(f.busy ? 'Sending code…' : 'Send code', 'ewSend', {disabled: !ok || f.busy, loading: f.busy})}</div></div>`; };
+  SHEETS.ewCc = () => { const q = (S.ewCcQ || '').trim().toLowerCase(); const cur = (S.ewPh || {}).cc; const list = CC.filter(c => !q || (c[0] + ' ' + c[1]).toLowerCase().includes(q));
+    return `<div class="grab"></div><h2 class="t-title" style="margin:0 0 10px; text-align:center">Country code</h2>
+      <label class="search ew-ccs">${ic('search')}<input id="ewCcQ" value="${esc(S.ewCcQ || '')}" placeholder="Search country or code" aria-label="Search country or code"></label>
+      <div class="ew-ccl" role="radiogroup" aria-label="Country code">${list.map(c => `<button class="radrow" role="radio" aria-checked="${cur === c[1]}" data-act="ewCcPick" data-c="${c[1]}"><span><b>${esc(c[0])}</b></span><span class="ew-ccr"><small>${c[1]}</small><i class="${cur === c[1] ? 'on' : ''}"></i></span></button>`).join('') || '<p class="t-body subtle" style="text-align:center; margin:16px 0">No country found.</p>'}</div>`; };
+  V.ewOtp = () => { const f = S.ewPh; const v = f.otp || ''; const err = f.otpErr; const lock = f.tries >= 5; const t = f.t ?? 30;
+    return `<div class="screen bz">${statusBar()}${topBar('Verify phone number')}
+    <div class="scroll"><div class="pad16 stack" style="gap:14px; padding-top:8px; text-align:center">
+      <div><h1 class="t-title" style="margin:0 0 4px">Enter the 6-digit code</h1><p class="t-body muted" style="margin:0">Sent by SMS to <b style="color:var(--a-ink)">${esc(fmtPh(f.cc, f.num))}</b></p>
+        <button class="link" data-act="ewChangeNum" style="margin-top:4px">Change number</button></div>
+      <label class="ew-otp"><span class="sr" style="position:absolute; left:-9999px">Verification code</span>
+        <input id="ewOtpIn" inputmode="numeric" autocomplete="one-time-code" maxlength="6" value="${esc(v)}" ${lock || f.busy ? 'disabled' : ''} aria-describedby="ewOtpH">
+        <span class="otp-boxes ${err ? 'err' : ''}" aria-hidden="true">${[0,1,2,3,4,5].map(i => `<span class="${i === v.length && !err && !lock ? 'cur' : ''}">${v[i] || ''}</span>`).join('')}</span></label>
+      <p class="ew-otph" id="ewOtpH">${lock ? '<span class="err-text">Too many wrong codes. Try again in 10 minutes or change the number.</span>'
+        : err ? `<span class="err-text">That code isn’t right. ${5 - f.tries} ${5 - f.tries === 1 ? 'try' : 'tries'} left.</span>`
+        : f.busy ? '<span class="t-caption subtle">Checking…</span>' : '<span class="t-caption subtle">Demo code: 123456</span>'}</p>
+      ${lock ? '' : t > 0 ? `<p class="t-caption subtle" style="margin:0">Resend code in <b id="ewOtpT">0:${String(t).padStart(2, '0')}</b></p>` : `<button class="link" data-act="ewResend">Resend code</button>`}
+    </div></div>
+    <div class="w2foot">${btn(f.busy ? 'Verifying…' : 'Verify', 'ewVerify', {disabled: v.length < 6 || lock || f.busy, loading: f.busy})}</div></div>`; };
+  let ewTimer = null;
+  const ewTick = () => { clearInterval(ewTimer); ewTimer = setInterval(() => { const f = S.ewPh; if (S.screen !== 'ewOtp' || !f) { clearInterval(ewTimer); return; }
+    f.t = Math.max(0, (f.t ?? 30) - 1); const el = document.getElementById('ewOtpT'); if (f.t === 0) { clearInterval(ewTimer); render(); } else if (el) el.textContent = '0:' + String(f.t).padStart(2, '0'); }, 1000); };
+  const keepFocus = (id, pos) => { const el = document.getElementById(id); if (el) { el.focus(); try { if (pos != null) el.setSelectionRange(pos, pos); } catch(_){} } };
+  document.addEventListener('input', e => { const id = e.target.id, f = S.ewPh;
+    if (id === 'ewNum' && f) { f.num = e.target.value.replace(/[^\d\s-]/g, ''); f.err = ''; const pos = e.target.selectionStart; render(); keepFocus('ewNum', pos); }
+    if (id === 'ewCcQ') { S.ewCcQ = e.target.value; render(); keepFocus('ewCcQ', e.target.value.length); }
+    if (id === 'ewOtpIn' && f) { f.otp = e.target.value.replace(/\D/g, '').slice(0, 6); f.otpErr = false; render(); keepFocus('ewOtpIn'); if (f.otp.length === 6) A.ewVerify(); } });
 
   /* ---------- activation ---------- */
   V.ewConfirm = () => { const b = bal(); const short = Math.max(0, FEE - b); const low = short > 0; const busy = S.ewBusy; const m = PM.some(x => x.k === S.ewTm && x.k !== 'wallet') ? S.ewTm : 'card'; const mName = m === 'card' ? 'your card' : PM.find(x => x.k === m).name.split(' ')[0];
@@ -114,7 +169,7 @@
         <li><span>${ic('mreload')}</span><b>Mobile reload</b></li>
       </ul>
       <div class="kvbox sp-box">
-        <div class="kv"><span>Account opening fee</span><b>${RM(FEE)}</b></div>
+        ${S.ewPhoneOk ? `<div class="kv"><span>Phone number</span><b class="ew-okph">${esc(S.ewPhoneOk)} ${ic('check')}</b></div>` : ''}<div class="kv"><span>Account opening fee</span><b>${RM(FEE)}</b></div>
         <div class="kv"><span>Pay from</span><b>YouWallet · MYRT ${myrt(b)}</b></div>
         ${low ? `<div class="kv"><span>Top up first</span><b>${RM(short)}</b></div>` : ''}
         <div class="kv total"><span>Total</span><b>${RM(FEE)}</b></div></div>
@@ -129,7 +184,7 @@
     <div class="scroll"><div class="success" style="padding-top:4px">${cele()}<b class="bl-ok">eWallet activated</b><b class="sp-big">−${RM(FEE)}</b><span class="t-body subtle">Account opening fee</span></div>
     <div class="pad16 stack" style="padding-top:10px; gap:10px"><div class="kvbox sp-box">
       <div class="kv"><span>Account number</span><b>${ACCT} <button class="iconbtn sm" data-act="copy" data-v="${ACCT.replace(/ /g,'')}" aria-label="Copy account number">${ic('copy')}</button></b></div>
-      <div class="kv"><span>Paid with</span><b>${S.ewPaidWith || 'YouWallet · MYRT'}</b></div>
+      ${S.ewPhoneOk ? `<div class="kv"><span>Phone number</span><b>${esc(S.ewPhoneOk)}</b></div>` : ''}<div class="kv"><span>Paid with</span><b>${S.ewPaidWith || 'YouWallet · MYRT'}</b></div>
       <div class="kv"><span>Reference</span><b>${r}</b></div>
       <div class="kv"><span>Date</span><b>${fmtD(S.ewAt || now())}</b></div></div></div></div>
     <div class="w2foot">${n ? btn(n[0], 'ewResume') + btn('Done', 'ewFinish', {kind:'btn-secondary'}) : btn('Done', 'ewFinish')}</div></div>`; };
@@ -183,8 +238,20 @@
 
   Object.assign(A, {
     ewGate: el => { S.ewNext = el && el.dataset.n || null; S.sheet = 'ewGate'; render(); },
-    ewStart: () => { S.sheet = null; S.ewBusy = false; go('ewConfirm'); },
+    ewStart: () => { S.sheet = null; S.ewBusy = false; S.ewPh = {cc:'+60', num:'', err:'', busy:false}; go('ewPhone'); },
     ewTm: el => { S.ewTm = el.dataset.k; render(); },
+    ewCcOpen: () => { S.ewCcQ = ''; S.sheet = 'ewCc'; render(); },
+    ewCcPick: el => { const f = S.ewPh; if (f.cc !== el.dataset.c) { f.cc = el.dataset.c; f.err = ''; } S.sheet = null; render(); setTimeout(() => keepFocus('ewNum'), 50); },
+    ewSend: el => { const f = S.ewPh; if ((el && el.getAttribute && el.getAttribute('aria-disabled')) || f.busy) return;
+      if (f.cc === '+60' && digits(f.num) === TAKEN) { f.err = 'This number is linked to another eWallet. Use a different number.'; render(); return; }
+      f.busy = true; render(); setTimeout(() => { f.busy = false; f.otp = ''; f.otpErr = false; f.tries = 0; f.t = 30; go('ewOtp'); toast('Code sent to ' + fmtPh(f.cc, f.num) + '.'); ewTick(); }, 700); },
+    ewChangeNum: () => { clearInterval(ewTimer); back(); setTimeout(() => keepFocus('ewNum'), 50); },
+    ewResend: () => { const f = S.ewPh; f.otp = ''; f.otpErr = false; f.t = 30; render(); toast('New code sent.'); ewTick(); },
+    ewVerify: el => { const f = S.ewPh; if ((el && el.getAttribute && el.getAttribute('aria-disabled')) || f.busy || (f.otp || '').length < 6 || f.tries >= 5) return;
+      f.busy = true; render(); setTimeout(() => { f.busy = false;
+        if (f.otp !== '123456') { f.tries = (f.tries || 0) + 1; f.otpErr = true; f.otp = ''; render(); keepFocus('ewOtpIn'); return; }
+        clearInterval(ewTimer); S.ewPhoneOk = fmtPh(f.cc, f.num); const i = S.hist.lastIndexOf('ewPhone'); if (i >= 0) S.hist = S.hist.slice(0, i);
+        go('ewConfirm', {replace:true}); toast('Phone number verified.'); }, 600); },
     ewPay: () => { if (S.ewBusy) return; const short = Math.max(0, FEE - bal()); S.ewBusy = true; render();
       setTimeout(() => { S.ewBusy = false;
         if (scen.ew === 'fail') { go('ewFail', {replace:true}); return; }
@@ -205,6 +272,8 @@
   const _st = window.__state;
   window.__state = () => Object.assign(_st ? _st() : {}, {ew: scen.ew === 'on' ? 'on' : scen.ew === 'fail' ? 'fail' : 'off', bal: scen.bal === 'low' ? 'low' : 'enough'});
   Object.assign(META, {
+    ewPhone:{name:'eWallet · phone number', ph:1, rules:['Step 1 after Continue on the activation sheet. Verify the phone before paying, so a wrong code never costs money','Any country code (picker with search); +60 by default','Send code enabled once the number has the right length for that country','Number already linked to another eWallet: error under the field (demo 12-345 0000)']},
+    ewOtp:{name:'eWallet · verify phone', ph:1, rules:['6-digit SMS code, auto-checks when 6 digits are in','Wrong code: error with tries left; 5 wrong codes lock for 10 minutes','Resend after 30 s; Change number goes back to step 1','Correct code: goes to the RM50 payment step with the number shown as verified; Back from there closes the flow']},
     ewConfirm:{name:'Activate eWallet', ph:1, rules:['Only needed for Receive (eWallet), Bill payment and Mobile reload. Scan to Pay does not need it','One-time RM50 account opening fee, not added to balance; shows as −RM50 in history','Paid from MYRT first; if short, top up the rest by debit or credit card or stablecoins (MYRT, USDT, USDC)','Existing KYC covers it, no extra screens','⚠️ Assumption: opening is instant (pending Kevon)']},
     ewDone:{name:'eWallet activated', ph:1, rules:['−RM50 account opening fee, account number, paid with, reference, date','Continue takes the user back into the flow they started (Bills, Reload or Receive)','⚠️ Assumption: account details are an account number + DuitNow QR']},
     ewFail:{name:'eWallet · opening failed', ph:1, rules:['Scenario eWallet › Fails next','⚠️ Assumption: a failed opening refunds the fee automatically']},
