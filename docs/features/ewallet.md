@@ -17,16 +17,19 @@ Receive (in ringgit), Bill payment and Mobile reload run on MYR rails. YouApp ne
 | Receive | Every wallet detail screen has Receive. Crypto wallets (YouApp Wallet, connected MetaMask/OKX) show their address and QR with no eWallet needed. The eWallet shows its DuitNow QR and account number and needs activation | Maul |
 | KYC | Existing KYC covers the eWallet. No extra screens | Maul |
 | Name | eWallet | Maul |
+| Phone number | Activation verifies a phone number by SMS code **before** the RM50 is charged, so a wrong code never costs money. Any country code (default +60) | Maul, 24 Nov |
 
 ## Flow
 
 1. YouPage: **Bill payment** and **Mobile reload** tiles sit below Top up and Rewards.
-2. Tapping Bill payment, Mobile reload or eWallet Receive while the eWallet is not active opens the **Activate your eWallet** sheet: illustration, why, one-time RM50 opening fee, identity already verified. Below RM50 of MYRT it adds "Your MYRT is RM{x}. You can top up the rest on the next step." Buttons: Continue, Not now.
-3. **Activate eWallet** screen: illustration, the three things it unlocks, fee summary, Pay from YouWallet · MYRT. Button: "Pay RM50.00 & activate". If MYRT is below RM50, a "RM{x} short" warning and the top-up picker (Debit or Credit Card; Stablecoins MYRT, USDT, USDC) appear, a line above the button says "Uses MYRT {a} and tops up RM{x} with {method}", and the button reads **"Top up & pay RM50.00"**.
-4. **eWallet activated**: −RM50.00 account opening fee, account number (copy), paid with, reference, date. The primary button continues into the flow the user started (Pay bills, Reload a number, Receive money). Done returns to where they were.
-5. Bills and Mobile reload follow the existing W6 flows (biller or network, number, fetched or chosen amount, PIN at RM100+, Paid, Receipt). The confirm screen and receipt show "Paid through eWallet, funded from YouWallet · MYRT".
-6. **My money** has an eWallet section under the currencies. Off: "Receive, pay bills and reload" with Activate. On: the eWallet balance, opening **eWallet** details (balance, account number and name, Receive, Pay bills, history).
-7. **Receive to eWallet**: DuitNow QR, account number with Copy, Share QR.
+2. Tapping Bill payment, Mobile reload or eWallet Receive while the eWallet is not active opens the **Activate your eWallet** sheet: illustration, why, one-time RM50 opening fee, identity already verified, phone number verified next. Below RM50 of MYRT it adds "Your MYRT is RM{x}. You can top up the rest on the next step." Buttons: Continue, Not now.
+3. **Phone number**: country code picker (search, any country, +60 default) and number. Send code is enabled once the length fits that country. A number already linked to another eWallet shows an error under the field.
+4. **Verify phone number**: 6-digit SMS code, checks automatically at 6 digits. Wrong code shows tries left; 5 wrong codes lock for 10 minutes. Resend after 30 s, Change number goes back. A correct code opens the payment step.
+5. **Activate eWallet** screen: the verified phone number, illustration, the three things it unlocks, fee summary, Pay from YouWallet · MYRT. Button: "Pay RM50.00 & activate". If MYRT is below RM50, a "RM{x} short" warning and the top-up picker (Debit or Credit Card; Stablecoins MYRT, USDT, USDC) appear, a line above the button says "Uses MYRT {a} and tops up RM{x} with {method}", and the button reads **"Top up & pay RM50.00"**.
+6. **eWallet activated**: −RM50.00 account opening fee, account number (copy), phone number, paid with, reference, date. The primary button continues into the flow the user started (Pay bills, Reload a number, Receive money). Done returns to where they were.
+7. Bills and Mobile reload follow the existing W6 flows (biller or network, number, fetched or chosen amount, PIN at RM100+, Paid, Receipt). The confirm screen and receipt show "Paid through eWallet, funded from YouWallet · MYRT".
+8. **My money** has an eWallet section under the currencies. Off: "Receive, pay bills and reload" with Activate. On: the eWallet balance, opening **eWallet** details (balance, account number and name, Receive, Pay bills, history).
+9. **Receive to eWallet**: DuitNow QR, account number with Copy, Share QR.
 
 ## States
 
@@ -49,6 +52,9 @@ Receive (in ringgit), Bill payment and Mobile reload run on MYR rails. YouApp ne
 | 5 | Activation started from Bills | After success, Pay bills opens the biller list |
 | 6 | Receive from a crypto wallet | Opens that wallet's address QR, no eWallet gate |
 | 7 | Rapid taps on Pay & activate | Only one activation runs |
+| 9 | Phone number already linked to another eWallet | Error under the field, no code sent |
+| 10 | Wrong SMS code | Error with tries left, boxes clear; 5 wrong codes lock for 10 minutes |
+| 11 | Back from the payment step after verifying | Closes the activation flow; starting again asks for the phone again |
 | 8 | User outside Malaysia | Not built yet. W6 says Bills and Reload are Malaysia only; the eWallet section and tiles should follow |
 
 ## Open questions (Kevon) — prototype assumptions
