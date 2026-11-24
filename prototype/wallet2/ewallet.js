@@ -51,16 +51,30 @@
   .ew-art{display:block; margin:0 auto; max-width:100%; height:auto}
   .ew-intro{display:grid; justify-items:center; gap:6px; text-align:center}
   .ew-intro .t-title{margin:6px 0 0} .ew-intro p{margin:0}
-  .ew-ph{display:flex; gap:8px} .ew-ph .input{flex:1; min-width:0}
-  .ew-cc{display:flex; align-items:center; gap:4px; flex:none; height:48px; padding:0 10px 0 14px; border:1px solid var(--a-line); border-radius:12px; background:#fff; font:600 16px Inter, sans-serif; color:var(--a-ink)} .ew-cc svg{display:block; width:16px; height:16px; color:var(--a-ink-3)}
-  .field.err .input{border-color:var(--a-error)}
+  .ew-phw{display:grid; grid-template-columns:minmax(0,1fr); padding-top:20px}
+  .ew-phh{text-align:center; margin:0 0 24px} .ew-phh .t-title{margin:0 0 6px} .ew-phh p{margin:0; text-wrap:balance}
+  .ew-fl{position:relative; display:flex; align-items:center; gap:12px; width:100%; min-height:56px; padding:0 14px; border:1px solid var(--a-line); border-radius:12px; background:#fff; text-align:left; font:inherit; box-sizing:border-box}
+  .ew-fll{position:absolute; left:12px; top:0; transform:translateY(-50%); padding:0 4px; background:#fff; font:500 12px/16px Inter, sans-serif; color:var(--a-ink-3)}
+  .ew-ctry{margin-bottom:20px; cursor:pointer} .ew-ctry b{flex:1; font:500 16px Inter, sans-serif; color:var(--a-ink)} .ew-ctry > svg{width:18px; height:18px; color:var(--a-ink-3); flex:none}
+  .ew-num{cursor:text} .ew-num:focus-within{border:1.5px solid var(--a-indigo); padding:0 13.5px} .ew-num:focus-within .ew-fll{color:var(--a-indigo)}
+  .ew-num.err, .ew-num.err:focus-within{border:1.5px solid var(--a-error); padding:0 13.5px} .ew-num.err .ew-fll{color:var(--a-error)}
+  .ew-dial{flex:none; padding-right:12px; border-right:1px solid var(--a-line); font:500 16px/24px Inter, sans-serif; color:var(--a-ink)}
+  .ew-num input{flex:1; min-width:0; height:54px; border:0; outline:0; background:none; font:400 16px Inter, sans-serif; color:var(--a-ink); padding:0}
+  .ew-num input::placeholder{color:var(--a-ink-3)}
+  .ew-flh{margin:6px 2px 0; font-size:12px; line-height:16px; color:var(--a-ink-3)} .ew-flh.err{color:var(--a-error)}
+  .ew-demo{margin:14px 2px 0}
+  .ew-flag{display:block; width:28px; height:28px; border-radius:50%; overflow:hidden; flex:none; box-shadow:0 0 0 1px rgba(9,20,26,.08)} .ew-flag svg{display:block; width:100%; height:100%}
+  .ew-ccl{display:grid; align-content:start}
+  .ew-ccrow{display:flex; align-items:center; gap:14px; width:100%; min-height:56px; padding:0 16px; border:0; border-bottom:1px solid var(--a-line); background:#fff; text-align:left; font:inherit; cursor:pointer}
+  .ew-ccrow b{flex:1; font:500 16px Inter, sans-serif; color:var(--a-ink)} .ew-ccrow > span:last-child{font:600 15px Inter, sans-serif; color:var(--a-indigo)}
+  .ew-ccrow.on{background:var(--a-indigo-100)} .ew-ccrow.on b{font-weight:700}
+  .ew-ccrow:focus-visible, .ew-ctry:focus-visible{outline:2px solid var(--a-indigo); outline-offset:-2px}
+  .ew-cch{gap:4px} .ew-cch input{flex:1; min-width:0; height:40px; border:0; outline:0; background:none; font:400 16px Inter, sans-serif; color:var(--a-ink)}
+  .ew-ccnone{display:grid; justify-items:center; gap:4px; padding:48px 24px; text-align:center} .ew-ccnone b{color:var(--a-ink)} .ew-ccnone span{color:var(--a-ink-3); font-size:14px}
   .ew-otp{position:relative; display:block} .ew-otp input{position:absolute; inset:0; width:100%; height:100%; opacity:0; border:0; font-size:16px; caret-color:transparent}
   .ew-otp:focus-within .otp-boxes span.cur{box-shadow:0 0 0 2px var(--a-indigo-100)}
   .ew-otph{margin:0; min-height:18px}
   .ew-okph{display:inline-flex; align-items:center; gap:4px} .ew-okph svg{width:16px; height:16px; color:#2FA36B}
-  .ew-ccs{margin:0 0 6px!important; width:100%!important} .ew-ccs input{border:0; outline:0; flex:1; font:inherit; font-size:16px; background:none; min-width:0}
-  .ew-ccl{display:grid; align-content:start; height:50vh; overflow:auto}
-  .ew-ccr{display:flex; align-items:center; gap:12px} .ew-ccr small{font:500 14px Inter, sans-serif; color:var(--a-ink-3)}
   .ew-tools{display:grid; grid-template-columns:1fr 1fr; gap:10px}
   .ew-assume{font-size:12px; color:#8A6D00; background:#FFF6D6; border-radius:12px; padding:8px 10px; margin:0}
   .wr-quick-actions + .wr-quick-actions{margin-top:10px}
@@ -114,27 +128,35 @@
       ${btn('Continue', 'ewStart')}${btn('Not now', 'closeSheet', {kind:'btn-tertiary'})}</div>`; };
 
   /* ---------- activation step 1–2: phone number + SMS OTP (verify before paying) ---------- */
-  const CC = [['Malaysia','+60',[9,10]],['Indonesia','+62',[9,12]],['Singapore','+65',[8,8]],['Thailand','+66',[9,9]],['Philippines','+63',[10,10]],['Vietnam','+84',[9,10]],['Brunei','+673',[7,7]],['China','+86',[11,11]],['India','+91',[10,10]],['Japan','+81',[10,10]],['South Korea','+82',[9,10]],['Australia','+61',[9,9]],['United Kingdom','+44',[10,10]],['United States','+1',[10,10]]];
-  const ccOf = c => CC.find(x => x[1] === c) || CC[0];
+  /* countries: [iso, name, dial code, [min, max] national digits, flag key in SVG] — A–Z like the system country picker */
+  const CC = [['AU','Australia','+61',[9,9],'flag_au'],['CN','China','+86',[11,11],'flag_zh'],['HK','Hong Kong','+852',[8,8],'flag_hk'],['ID','Indonesia','+62',[9,12],'flag_id'],
+    ['JP','Japan','+81',[10,10],'flag_ja'],['MY','Malaysia','+60',[9,10],'flag_ms'],['MM','Myanmar','+95',[8,10],'flag_my_mm'],['NL','Netherlands','+31',[9,9],'flag_nl'],
+    ['PH','Philippines','+63',[10,10],'flag_ph'],['PT','Portugal','+351',[9,9],'flag_pt'],['SG','Singapore','+65',[8,8],'flag_sg'],['KR','South Korea','+82',[9,10],'flag_ko'],
+    ['TW','Taiwan','+886',[9,9],'flag_tw'],['TH','Thailand','+66',[9,9],'flag_th'],['GB','United Kingdom','+44',[10,10],'flag_gb'],['US','United States','+1',[10,10],'flag_en'],['VN','Vietnam','+84',[9,10],'flag_vi']];
+  const ccOf = c => CC.find(x => x[0] === c) || CC.find(x => x[0] === 'MY');
+  const flagOf = c => `<span class="ew-flag" aria-hidden="true">${SVG[ccOf(c)[4]] || SVG.flag_globe || ''}</span>`;
   const digits = v => (v || '').replace(/\D/g, '').replace(/^0+/, '');
-  const phoneOk = (cc, n) => { const [a, b] = ccOf(cc)[2]; const d = digits(n); return d.length >= a && d.length <= b; };
-  const fmtPh = (cc, n) => { const d = digits(n); return `${cc} ${cc === '+60' ? d.replace(/^(\d{2})(\d{3,4})(\d{4})$/, '$1-$2 $3') : d.replace(/(\d{3,4})(?=\d)/g, '$1 ')}`; };
+  const phoneOk = (cc, n) => { const [a, b] = ccOf(cc)[3]; const d = digits(n); return d.length >= a && d.length <= b; };
+  const fmtPh = (cc, n) => { const d = digits(n), dial = ccOf(cc)[2]; return `${dial} ${cc === 'MY' ? d.replace(/^(\d{2})(\d{3,4})(\d{4})$/, '$1-$2 $3') : d.replace(/(\d{3,4})(?=\d)/g, '$1 ')}`; };
   const TAKEN = '123450000';
-  V.ewPhone = () => { const f = S.ewPh || (S.ewPh = {cc:'+60', num:'', err:''}); const ok = phoneOk(f.cc, f.num);
+  V.ewPhone = () => { const f = S.ewPh || (S.ewPh = {cc:'MY', num:'', err:''}); if (!CC.some(x => x[0] === f.cc)) f.cc = 'MY'; const c = ccOf(f.cc); const ok = phoneOk(f.cc, f.num);
     return `<div class="screen bz">${statusBar()}${topBar('Activate eWallet')}
-    <div class="scroll"><div class="pad16 stack" style="gap:14px; padding-top:8px">
-      <div><h1 class="t-title" style="margin:0 0 4px">What’s your phone number?</h1><p class="t-body muted" style="margin:0">We’ll text a 6-digit code to verify it. This number is linked to your eWallet.</p></div>
-      <div class="field ${f.err ? 'err' : ''}"><label class="t-body" style="font-weight:600" for="ewNum">Phone number</label>
-        <div class="ew-ph"><button class="ew-cc" data-act="ewCcOpen" aria-label="Country code ${esc(ccOf(f.cc)[0])} ${f.cc}">${f.cc}<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9.5l6 6 6-6"/></svg></button>
-          <input id="ewNum" class="input" type="tel" inputmode="tel" autocomplete="tel-national" value="${esc(f.num)}" placeholder="${f.cc === '+60' ? '12-345 6789' : 'Phone number'}" aria-describedby="ewNumH" ${f.busy ? 'disabled' : ''}></div>
-        <span class="helper ${f.err ? '' : 'neutral'}" id="ewNumH">${f.err ? esc(f.err) : 'Use a number that can receive SMS.'}</span></div>
-      <p class="t-caption subtle" style="margin:0">Demo: ${TAKEN.replace(/^(\d{2})(\d{3})(\d{4})$/, '$1-$2 $3')} is already linked to another eWallet.</p>
+    <div class="scroll"><div class="pad16 ew-phw">
+      <div class="ew-phh"><h1 class="t-title">Your phone number</h1><p class="t-body muted">Confirm your country code and enter your phone number. We’ll text you a 6-digit code.</p></div>
+      <button class="ew-fl ew-ctry" data-act="ewCcOpen" aria-label="Country: ${esc(c[1])}, ${c[2]}. Change"><span class="ew-fll">Country</span>${flagOf(f.cc)}<b>${esc(c[1])}</b>${ic('chev')}</button>
+      <label class="ew-fl ew-num ${f.err ? 'err' : ''}" for="ewNum"><span class="ew-fll">Phone number</span><span class="ew-dial">${c[2]}</span>
+        <input id="ewNum" type="tel" inputmode="tel" autocomplete="tel-national" value="${esc(f.num)}" placeholder="${f.cc === 'MY' ? '12-345 6789' : 'Phone number'}" aria-describedby="ewNumH" ${f.busy ? 'disabled' : ''}></label>
+      <p class="ew-flh ${f.err ? 'err' : ''}" id="ewNumH">${f.err ? esc(f.err) : 'Use a number that can receive SMS.'}</p>
+      <p class="t-caption subtle ew-demo">Demo: ${TAKEN.replace(/^(\d{2})(\d{3})(\d{4})$/, '$1-$2 $3')} (Malaysia) is already linked to another eWallet.</p>
     </div></div>
     <div class="w2foot">${btn(f.busy ? 'Sending code…' : 'Send code', 'ewSend', {disabled: !ok || f.busy, loading: f.busy})}</div></div>`; };
-  SHEETS.ewCc = () => { const q = (S.ewCcQ || '').trim().toLowerCase(); const cur = (S.ewPh || {}).cc; const list = CC.filter(c => !q || (c[0] + ' ' + c[1]).toLowerCase().includes(q));
-    return `<div class="grab"></div><h2 class="t-title" style="margin:0 0 10px; text-align:center">Country code</h2>
-      <label class="search ew-ccs">${ic('search')}<input id="ewCcQ" value="${esc(S.ewCcQ || '')}" placeholder="Search country or code" aria-label="Search country or code"></label>
-      <div class="ew-ccl" role="radiogroup" aria-label="Country code">${list.map(c => `<button class="radrow" role="radio" aria-checked="${cur === c[1]}" data-act="ewCcPick" data-c="${c[1]}"><span><b>${esc(c[0])}</b></span><span class="ew-ccr"><small>${c[1]}</small><i class="${cur === c[1] ? 'on' : ''}"></i></span></button>`).join('') || '<p class="t-body subtle" style="text-align:center; margin:16px 0">No country found.</p>'}</div>`; };
+  V.ewCountry = () => { const q = (S.ewCcQ || '').trim().toLowerCase(); const cur = (S.ewPh || {}).cc; const srch = S.ewCcSearch;
+    const list = CC.filter(c => !q || (c[1] + ' ' + c[2]).toLowerCase().includes(q));
+    const head = srch ? `<div class="topbar ew-cch"><button class="iconbtn" data-act="ewCcSearchX" aria-label="Close search">${ic('back')}</button><input id="ewCcQ" value="${esc(S.ewCcQ || '')}" placeholder="Search country or code" aria-label="Search country or code" autocomplete="off">${q ? `<button class="iconbtn" data-act="ewCcClear" aria-label="Clear search">${ic('close')}</button>` : ''}</div>`
+      : `<div class="topbar"><button class="iconbtn" data-act="back" aria-label="Back">${ic('back')}</button><span class="t-headline" style="flex:1; text-align:center">Choose country</span><button class="iconbtn" data-act="ewCcSearch" aria-label="Search">${ic('search')}</button></div>`;
+    return `<div class="screen bz">${statusBar()}${head}
+    <div class="scroll"><div class="ew-ccl" role="radiogroup" aria-label="Country">${list.map(c => `<button class="ew-ccrow ${cur === c[0] ? 'on' : ''}" role="radio" aria-checked="${cur === c[0]}" data-act="ewCcPick" data-c="${c[0]}">${flagOf(c[0])}<b>${esc(c[1])}</b><span>${c[2]}</span></button>`).join('')
+      || `<div class="ew-ccnone"><b>No country found</b><span>Try another name or code.</span></div>`}</div></div></div>`; };
   V.ewOtp = () => { const f = S.ewPh; const v = f.otp || ''; const err = f.otpErr; const lock = f.tries >= 5; const t = f.t ?? 30;
     return `<div class="screen bz">${statusBar()}${topBar('Verify phone number')}
     <div class="scroll"><div class="pad16 stack" style="gap:14px; padding-top:8px; text-align:center">
@@ -155,7 +177,7 @@
   const keepFocus = (id, pos) => { const el = document.getElementById(id); if (el) { el.focus(); try { if (pos != null) el.setSelectionRange(pos, pos); } catch(_){} } };
   document.addEventListener('input', e => { const id = e.target.id, f = S.ewPh;
     if (id === 'ewNum' && f) { f.num = e.target.value.replace(/[^\d\s-]/g, ''); f.err = ''; const pos = e.target.selectionStart; render(); keepFocus('ewNum', pos); }
-    if (id === 'ewCcQ') { S.ewCcQ = e.target.value; render(); keepFocus('ewCcQ', e.target.value.length); }
+    if (id === 'ewCcQ') { S.ewCcQ = e.target.value; const pos = e.target.selectionStart; render(); keepFocus('ewCcQ', pos); }
     if (id === 'ewOtpIn' && f) { f.otp = e.target.value.replace(/\D/g, '').slice(0, 6); f.otpErr = false; render(); keepFocus('ewOtpIn'); if (f.otp.length === 6) A.ewVerify(); } });
 
   /* ---------- activation ---------- */
@@ -238,12 +260,15 @@
 
   Object.assign(A, {
     ewGate: el => { S.ewNext = el && el.dataset.n || null; S.sheet = 'ewGate'; render(); },
-    ewStart: () => { S.sheet = null; S.ewBusy = false; S.ewPh = {cc:'+60', num:'', err:'', busy:false}; go('ewPhone'); },
+    ewStart: () => { S.sheet = null; S.ewBusy = false; S.ewPh = {cc:'MY', num:'', err:'', busy:false}; go('ewPhone'); },
     ewTm: el => { S.ewTm = el.dataset.k; render(); },
-    ewCcOpen: () => { S.ewCcQ = ''; S.sheet = 'ewCc'; render(); },
-    ewCcPick: el => { const f = S.ewPh; if (f.cc !== el.dataset.c) { f.cc = el.dataset.c; f.err = ''; } S.sheet = null; render(); setTimeout(() => keepFocus('ewNum'), 50); },
+    ewCcOpen: () => { S.ewCcQ = ''; S.ewCcSearch = false; go('ewCountry'); },
+    ewCcSearch: () => { S.ewCcSearch = true; render(); keepFocus('ewCcQ'); },
+    ewCcSearchX: () => { S.ewCcSearch = false; S.ewCcQ = ''; render(); },
+    ewCcClear: () => { S.ewCcQ = ''; render(); keepFocus('ewCcQ'); },
+    ewCcPick: el => { const f = S.ewPh; if (f.cc !== el.dataset.c) { f.cc = el.dataset.c; f.err = ''; } S.ewCcSearch = false; S.ewCcQ = ''; back(); setTimeout(() => keepFocus('ewNum'), 50); },
     ewSend: el => { const f = S.ewPh; if ((el && el.getAttribute && el.getAttribute('aria-disabled')) || f.busy) return;
-      if (f.cc === '+60' && digits(f.num) === TAKEN) { f.err = 'This number is linked to another eWallet. Use a different number.'; render(); return; }
+      if (f.cc === 'MY' && digits(f.num) === TAKEN) { f.err = 'This number is linked to another eWallet. Use a different number.'; render(); return; }
       f.busy = true; render(); setTimeout(() => { f.busy = false; f.otp = ''; f.otpErr = false; f.tries = 0; f.t = 30; go('ewOtp'); toast('Code sent to ' + fmtPh(f.cc, f.num) + '.'); ewTick(); }, 700); },
     ewChangeNum: () => { clearInterval(ewTimer); back(); setTimeout(() => keepFocus('ewNum'), 50); },
     ewResend: () => { const f = S.ewPh; f.otp = ''; f.otpErr = false; f.t = 30; render(); toast('New code sent.'); ewTick(); },
@@ -272,7 +297,8 @@
   const _st = window.__state;
   window.__state = () => Object.assign(_st ? _st() : {}, {ew: scen.ew === 'on' ? 'on' : scen.ew === 'fail' ? 'fail' : 'off', bal: scen.bal === 'low' ? 'low' : 'enough'});
   Object.assign(META, {
-    ewPhone:{name:'eWallet · phone number', ph:1, rules:['Step 1 after Continue on the activation sheet. Verify the phone before paying, so a wrong code never costs money','Any country code (picker with search); +60 by default','Send code enabled once the number has the right length for that country','Number already linked to another eWallet: error under the field (demo 12-345 0000)']},
+    ewPhone:{name:'eWallet · phone number', ph:1, rules:['Step 1 after Continue on the activation sheet. Verify the phone before paying, so a wrong code never costs money','Country field (flag, name) opens Choose country: full screen, A–Z, flag, name and dial code, search from the header; Malaysia by default','Phone number field shows the dial code before the number','Send code enabled once the number has the right length for that country','Number already linked to another eWallet: error under the field (demo 12-345 0000)']},
+    ewCountry:{name:'eWallet · choose country', ph:1, rules:['A–Z list with flag, name and dial code; the current country is highlighted','Search icon turns the header into a search field (name or code); no match shows No country found','Tap a country to go back with it selected']},
     ewOtp:{name:'eWallet · verify phone', ph:1, rules:['6-digit SMS code, auto-checks when 6 digits are in','Wrong code: error with tries left; 5 wrong codes lock for 10 minutes','Resend after 30 s; Change number goes back to step 1','Correct code: goes to the RM50 payment step with the number shown as verified; Back from there closes the flow']},
     ewConfirm:{name:'Activate eWallet', ph:1, rules:['Only needed for Receive (eWallet), Bill payment and Mobile reload. Scan to Pay does not need it','One-time RM50 account opening fee, not added to balance; shows as −RM50 in history','Paid from MYRT first; if short, top up the rest by debit or credit card or stablecoins (MYRT, USDT, USDC)','Existing KYC covers it, no extra screens','⚠️ Assumption: opening is instant (pending Kevon)']},
     ewDone:{name:'eWallet activated', ph:1, rules:['−RM50 account opening fee, account number, paid with, reference, date','Continue takes the user back into the flow they started (Bills, Reload or Receive)','⚠️ Assumption: account details are an account number + DuitNow QR']},

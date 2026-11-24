@@ -17,7 +17,7 @@ Receive (in ringgit), Bill payment and Mobile reload run on MYR rails. YouApp ne
 | Receive | Every wallet detail screen has Receive. Crypto wallets (YouApp Wallet, connected MetaMask/OKX) show their address and QR with no eWallet needed. The eWallet shows its DuitNow QR and account number and needs activation | Maul |
 | KYC | Existing KYC covers the eWallet. No extra screens | Maul |
 | Name | eWallet | Maul |
-| Phone number | Activation verifies a phone number by SMS code **before** the RM50 is charged, so a wrong code never costs money. Any country code (default +60) | Maul, 24 Nov |
+| Phone number | Activation verifies a phone number by SMS code **before** the RM50 is charged, so a wrong code never costs money. Any country (default Malaysia +60): a Country field opens a full-screen Choose country list (flag, name, dial code, search), like the system phone setup | Maul, 24 Nov |
 
 ## Flow
 
