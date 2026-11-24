@@ -222,7 +222,7 @@ V.merDone = () => { const p = placeById(S.mer) || PLACES[0]; const mine = mineOf
       <h1>Checked in at ${esc(p.name)}</h1><p>That’s your <b>${ord(mine)}</b> check-in here</p>
       <div class="mx-dst"><div><small>Your rank here</small><b>${r.before && r.before !== r.after ? `#${r.before} → #${r.after}` : `#${r.after || rankOf(p)}`}</b></div><div><small>${r.passed ? 'You passed' : 'Next to pass'}</small><b>${esc(r.passed || r.next || '—')}</b></div><div><small>To ambassador</small><b>${toAmb ? `${toAmb} more` : 'You’re it'}</b></div></div>
       <p class="mx-next">${SV.clock}<span>Next check-in from <b>${nextAt}</b> · once an hour</span></p>
-      <div class="mx-dact"><button data-act="mxAddPhoto">${SV.cam}Add a photo</button>${p.cb ? `<button data-act="cbScan">${SV.qr}Pay · ${p.cb}% back</button>` : `<button data-act="mxReview" class="rv">${STAR}Write a review</button>`}</div></div>
+      <div class="mx-dact">${p.cb ? `<button data-act="cbScan">${SV.qr}Pay · ${p.cb}% back</button>` : `<button data-act="mxReview" class="rv">${STAR}Write a review</button>`}</div></div>
     <div class="cta">${btn('Done', 'mxDoneX', {cls:'btn-block'})}</div></div>`; };
 
 /* ---------- 4. Place leaderboard ---------- */
@@ -372,7 +372,6 @@ Object.assign(A, {
     const p = placeById(S.mer) || PLACES[0];
     SHR.open({placeName:p.name, caption:p.name + ' on YouApp', url:'https://youapp.ai/share/demo'});
   }),
-  mxAddPhoto: () => toast('Opens the camera and gallery to add a photo of this place.'),
   mxView: el => { if (MX.dragged) return; MX.vi = +el.dataset.i || 0; go('merPhotos'); },
   mxViewClose: () => { MX.hi = MX.vi || 0; back(); },
   mxViewGo: el => { slideTo(document.getElementById('mxVcar'), +el.dataset.i); },
@@ -422,7 +421,7 @@ document.addEventListener('input', e => { if (e.target.id === 'mxText' && MX.rf)
 Object.assign(META, {
   merArea:{name:'Choose area', group:'Discover · Merchants', rules:['Opened from the area chip on Merchants; applies to Merchants only, not Locals','Search areas, tap the location button or a row; the map and the card update','Distance 1, 3 or 5 km (default 3); card shows how many merchants are inside','Show merchants here applies and goes back; Back changes nothing','Picked area shows on the chip with × to go back to Near you; next app open resets to Near you','Outside Malaysia: button disabled. Location off: prompt to turn it on']},
   mer:{name:'Merchant page', group:'Discover · Merchants', rules:['Photos from Google: swipe the hero left/right in place (counter updates); tap a photo to open the viewer','Name, rating, type and price on the photo; Share top right','No big button row: Directions is the icon next to the address, tap the phone number to call','Order: info, check in, ambassador, reviews, people, who checks in here','Reviews: YouApp (name, age, gender, visits) and Google (small Google label) in one list; Rate your visit right there','Who checks in here: last 90 days, totals only, shown once a place has 50+ check-ins']},
-  merDone:{name:'Checked in', group:'Discover · Merchants', rules:['Only at the place (GPS ~100 m), once an hour per place, ID-verified users','Shows your count here, new rank, who you passed and how many more to become ambassador','Next check-in time, Add a photo, Pay (cashback merchants) or Write a review']},
+  merDone:{name:'Checked in', group:'Discover · Merchants', rules:['Only at the place (GPS ~100 m), once an hour per place, ID-verified users','Shows your count here, new rank, who you passed and how many more to become ambassador','Next check-in time, then one button: Pay (cashback merchants) or Write a review. Add a photo was removed until we decide where photos live']},
   merBoard:{name:'Place leaderboard', group:'Discover · Merchants', rules:['Scenario Merchant leaderboard: Has check-ins, None in 30 days (30-day tab empty, all-time still there) or None yet (both empty)','Empty tab: No check-ins in the last 30 days / No check-ins yet with Check in; checking in makes you #1 and the ambassador','Ambassador = most check-ins in the last 30 days, ties go to who got there first','Full list with your row highlighted; switch to All time']},
   merPhotos:{name:'Photo viewer', group:'Discover · Merchants', rules:['Opens from the hero photo, a thumbnail or +N, on the photo that was tapped','Swipe left/right (drag with the mouse on desktop, arrow keys too); counter and thumbnail strip follow','Tap a thumbnail to jump; swipe down or × to close, back on the same photo in the hero','Share top right']},
   merReviews:{name:'All reviews', group:'Discover · Merchants', rules:['From See all reviews on the merchant page','Rating summary, filters All · YouApp · Google · With photos, sort Newest / Highest / Lowest','Your own review sits on top; 12 at a time with Show more; empty filter shows No reviews here yet','Write a review (or Edit your review) stays at the bottom']},
@@ -621,7 +620,7 @@ document.head.insertAdjacentHTML('beforeend', `<style id="mx-css">
 .mx-dst{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px; margin-top:18px} .mx-dst div{padding:10px 6px; border:1.5px solid #ECE7F7; border-radius:14px; background:#fff; display:grid; gap:3px}
 .mx-dst small{font:500 11.5px Inter, sans-serif; color:#6E6688} .mx-dst b{font:800 14.5px Inter, sans-serif; color:#4B2A9E; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
 .mx-next{display:flex; align-items:center; justify-content:center; gap:6px; margin:16px 0 0; font:500 13px Inter, sans-serif; color:#6E6688} .mx-next svg{width:16px; height:16px; flex:none} .mx-next b{color:#1E1050}
-.mx-dact{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:16px} .mx-dact button{display:flex; align-items:center; justify-content:center; gap:8px; height:46px; border:0; border-radius:14px; background:#F4EFFF; color:#4B2A9E; font:700 14px Inter, sans-serif} .mx-dact svg{width:18px; height:18px; fill:none}
+.mx-dact{display:grid; grid-template-columns:1fr; gap:8px; margin-top:16px} .mx-dact button{display:flex; align-items:center; justify-content:center; gap:8px; height:46px; border:0; border-radius:14px; background:#F4EFFF; color:#4B2A9E; font:700 14px Inter, sans-serif} .mx-dact svg{width:18px; height:18px; fill:none}
 .mx-dact button.rv svg{fill:currentColor}
 .mx-rvp1{display:flex; align-items:center; gap:12px} .mx-rvp1 img{width:52px; height:52px; border-radius:12px; object-fit:cover} .mx-rvp1 span{display:grid} .mx-rvp1 b{font:800 16px Inter, sans-serif; color:#1E1050} .mx-rvp1 small{font:500 13px Inter, sans-serif; color:#6E6688}
 .mx-big{display:flex; justify-content:center; gap:8px; margin-top:20px} .mx-big button{display:grid; place-items:center; width:44px; height:44px; border:0; background:none; padding:0; cursor:pointer} .mx-big svg{width:36px; height:36px; display:block} .mx-big button:active svg{transform:scale(.92)}
