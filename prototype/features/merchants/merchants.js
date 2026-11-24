@@ -162,7 +162,7 @@ V.mer = () => { const p = placeById(S.mer) || PLACES[0]; const a = PPL[p.amb]; c
       ${p.total >= 50 ? `<div class="mx-sh"><h2>Who checks in here</h2><small class="mx-sub">Last 90 days</small></div>
       <div class="mx-who">${summary3}<div class="mx-dns">${donut('Age', AGE)}${donut('Gender', GENDER)}</div><button class="mx-all in" data-act="mxWho">Show all${SV.chevd}</button></div>` : ''}
       <p class="mx-attr">Places and reviews from Google</p>
-    </div></div></div>`; };
+    </div></div>${p.cb ? `<div class="mx-paybar"><button class="mx-paybtn" data-act="cbScan" aria-label="Pay ${esc(p.name)}, ${p.open ? `${p.cb}% cashback` : 'closed now'}">${SV.qr}<span><b>Pay</b><small>${p.open ? `${p.cb}% cashback` : 'Closed now'}</small></span></button></div>` : ''}</div>`; };
 
 /* ---------- 3. Checked in ---------- */
 V.merDone = () => { const p = placeById(S.mer) || PLACES[0]; const mine = mineOf(p); const r = MX.rankAfter || {}; const amb = board(p)[0];
@@ -307,6 +307,15 @@ document.head.insertAdjacentHTML('beforeend', `<style id="mx-css">
 .mx-rm:focus-visible, .mx-flt button:focus-visible, .mx-sort:focus-visible, .mx-area:focus-visible{outline:2px solid #5E35B8; outline-offset:2px}
 /* merchant page */
 .screen.mxp{background:#fff} .mx-scroll{padding-bottom:12px}
+/* sticky Pay bar: only for merchants that accept YouApp (cashback); wins over the check-in card */
+.mx-paybar{flex:none; padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px)); background:#fff; box-shadow:0 -1px 0 #EEEAF5}
+.mx-paybtn{display:flex; align-items:center; justify-content:center; gap:10px; width:100%; min-height:54px; padding:0 20px; border:0; border-radius:999px; background:#38168E; color:#fff; box-shadow:0 8px 20px rgba(56,22,142,.38); cursor:pointer}
+.mx-paybtn svg{width:22px; height:22px; flex:none}
+.mx-paybtn span{display:flex; align-items:baseline; gap:8px}
+.mx-paybtn b{font:700 17px/1 Inter,sans-serif}
+.mx-paybtn small{font:500 13px/1 Inter,sans-serif; opacity:.82}
+.mx-paybtn:active{transform:scale(.98)}
+.mx-paybtn:focus-visible{outline:2px solid #6A2AD8; outline-offset:3px}
 .mx-hero{position:relative; height:290px; overflow:hidden; background:#2A1466} .mx-hero > img{width:100%; height:100%; object-fit:cover; display:block}
 .mx-hshade{position:absolute; inset:0; background:linear-gradient(180deg,rgba(0,0,0,.35) 0%,rgba(0,0,0,0) 30%,rgba(0,0,0,.1) 55%,rgba(10,6,30,.78) 100%)}
 .mx-htop{position:absolute; left:0; right:0; top:0; color:#fff} .mx-htop .status, .mx-htop .status *{color:#fff!important}
