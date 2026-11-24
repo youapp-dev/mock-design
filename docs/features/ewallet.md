@@ -18,7 +18,7 @@ Receive (in ringgit), Bill payment and Mobile reload run on MYR rails. YouApp ne
 | KYC | Existing KYC covers the Fiat Wallet. No extra screens | Maul |
 | Product name | **Fiat Wallet** across the feature. The activation page is **Activate Fiat Wallet** | Leadership feedback, confirmed by Maul |
 | Automatic opening | In both versions, cumulative successful MYRT activity over RM100 waives the fee. Failed, refunded, and pending activity is excluded. Use the existing verified identity and phone details without a prompt or SMS | Leadership feedback and Maul, 24 Nov 2026 |
-| Phone number | Paid activation verifies a phone number by SMS code **before** the RM50 is charged, so a wrong code never costs money. Any country (default Malaysia +60): a Country field opens a full-screen Choose country list (flag, name, dial code, search), like the system phone setup | Maul, 24 Nov |
+| Phone number | Paid activation verifies a phone number by SMS code **before** the RM50 is charged, so a wrong code never costs money. Any country (default Malaysia +60): a Country field opens a full-screen Choose country list (flag, name, dial code, search), like the system phone setup. Profile and Fiat Wallet share the saved verified number. Later paid activation reuses it. Change it in Edit profile › Mobile Number with a new SMS code | Maul, 24 Nov |
 
 ## Automatic opening
 
@@ -29,11 +29,11 @@ The prototype sums its simulated history and available Wallet 2.0 MYRT Scan to P
 ## Paid activation and follow-on flow
 
 1. YouPage: **Bill payment** and **Mobile reload** tiles sit below Top up and Rewards.
-2. Tapping Bill payment, Mobile reload or Fiat Wallet Receive while the Fiat Wallet is not active opens the **Activate Fiat Wallet** sheet: illustration, why, one-time RM50 opening fee, identity already verified, phone number verified next. Below RM50 of MYRT it adds "Your MYRT is RM{x}. You can top up the rest on the next step." Buttons: Continue, Not now.
+2. Tapping Bill payment, Mobile reload or Fiat Wallet Receive while the Fiat Wallet is not active opens the **Activate Fiat Wallet** sheet: illustration, why, one-time RM50 opening fee, identity already verified, phone number verified next. Below RM50 of MYRT it adds "Your MYRT is RM{x}. You can top up the rest on the next step." Buttons: Continue, Not now. Continue opens payment directly when the profile already has a verified number.
 3. **Phone number**: country code picker (search, any country, +60 default) and number. Send code is enabled once the length fits that country. A number already linked to another Fiat Wallet shows an error under the field.
 4. **Verify phone number**: 6-digit SMS code typed on the number keypad (same as the login OTP), checks automatically at 6 digits, no Verify button. Wrong code shows tries left; 5 wrong codes lock for 10 minutes. Resend after 30 s, Change number goes back. A correct code opens the payment step.
 5. **Activate Fiat Wallet** screen: the verified phone number, illustration, the three things it unlocks, fee summary, Pay from YouWallet · MYRT. Button: "Pay RM50.00 & activate". If MYRT is below RM50, a "RM{x} short" warning and the top-up picker (Debit or Credit Card; Stablecoins MYRT, USDT, USDC) appear, a line above the button says "Uses MYRT {a} and tops up RM{x} with {method}", and the button reads **"Top up & pay RM50.00"**.
-6. **Fiat Wallet activated**: −RM50.00 account opening fee, account number (copy), phone number, paid with, reference, date. The primary button continues into the flow the user started (Pay bills, Reload a number, Receive money). Done returns to where they were.
+6. **Fiat Wallet activated**: RM50.00 with “Account opening fee paid.” History shows the −RM50.00 debit. Details include account number (copy), phone number, paid with, reference, date. The primary button continues into the flow the user started (Pay bills, Reload a number, Receive money). Done returns to where they were.
 7. Bills and Mobile reload follow the existing W6 flows (biller or network, number, fetched or chosen amount, PIN at RM100+, Paid, Receipt). The confirm screen and receipt show "Paid through Fiat Wallet, funded from YouWallet · MYRT".
 8. **My money** has a Fiat Wallet section under the currencies. Off: "Receive, pay bills and reload" with Activate. On: the Fiat Wallet balance, opening **Fiat Wallet** details (balance, account number and name, Receive, Pay bills, history).
 9. **Receive to Fiat Wallet**: DuitNow QR, account number with Copy, Share QR.
@@ -61,7 +61,8 @@ The prototype sums its simulated history and available Wallet 2.0 MYRT Scan to P
 | 7 | Rapid taps on Pay & activate | Only one activation runs |
 | 9 | Phone number already linked to another Fiat Wallet | Error under the field, no code sent |
 | 10 | Wrong SMS code | Error with tries left, boxes clear; 5 wrong codes lock for 10 minutes |
-| 11 | Back from the payment step after verifying | Closes the activation flow; starting again asks for the phone again |
+| 11 | Back from the payment step after verifying | Closes activation and keeps the verified number. Reopening paid activation goes straight to payment |
+| 12 | Change the verified phone number | Edit profile › Mobile Number saves the new number after SMS verification. Fiat Wallet uses the updated number |
 | 8 | User outside Malaysia | Not built yet. W6 says Bills and Reload are Malaysia only; the Fiat Wallet section and tiles should follow |
 
 ## Open questions (Kevon) — prototype assumptions
@@ -80,9 +81,13 @@ The prototype sums its simulated history and available Wallet 2.0 MYRT Scan to P
 
 ## Prototype controls
 
+Fiat Wallet › Not activated clears the shared verified phone so the first-time verification flow can be tested again.
+
 Fiat Wallet: Not activated / Active / Fails next. MYRT balance: RM50 or more / Below RM50 (RM12.40). Prior successful MYRT activity: None / RM100 (includes unsuccessful records to exercise exclusions) / RM100.01. Jumps: Mobile reload, Activate Fiat Wallet (paid screen preview).
 
 ## QA
+
+- Merge verification passed in local Windows Chrome at 430 px on 3.2.0 and 3.3.0. Covered invalid and valid SMS codes, verified-number reuse after backing out, changing the shared number from Edit profile, the RM50.00 paid confirmation and single negative history debit, and free opening with no additional charge.
 
 - 24 Nov 2026, local static server at `/mock-design/`, headless Chrome on Windows at 1440 × 1024. Passed on both 3.2.0 and 3.3.0: RM100 boundary with refunded, failed and pending activity excluded, paid phone and SMS flow, the new title, a single RM50 paid opening charge, free opening with no deduction or history entry, automatic return to Bills, failed free opening and retry into Mobile reload, and wallet details and DuitNow Receive after qualification from simulated transaction records. Provider and native iOS and Android verification are pending.
 
