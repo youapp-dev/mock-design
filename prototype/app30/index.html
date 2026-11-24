@@ -1771,6 +1771,9 @@ button.sec-title{border:0; background:none; width:100%; text-align:left}
 .gatehero{display:grid; place-items:center; margin:16px 0 8px}
 .gatehero img{width:195px; max-width:60%}
 .verify-intro-bar{position:relative; justify-content:center}
+/* title centred on the screen, not between uneven side items */
+.verify-intro-bar .verify-intro-back{position:absolute; left:12px; top:50%; transform:translateY(-50%)}
+.verify-intro-bar > span:last-child:not(.wv-title){display:none}
 .verify-intro-bar .wv-title{font-size:17px; font-weight:700; color:#21144e}
 .verify-intro-back{position:absolute; left:16px; margin:0}
 .verify-intro-content{display:flex; flex-direction:column; padding:8px 16px 6px}

@@ -187,14 +187,16 @@ V.merBoard = () => { const p = placeById(S.mer) || PLACES[0]; const all = MX.lbA
 /* ---------- 5. Write a review ---------- */
 const RTXT = ['', 'Poor', 'Okay', 'Good', 'Really good', 'Excellent'];
 const TAGS = ['Good coffee','Good for work','Friendly staff','Worth the price','Quiet','Busy'];
+/* Figma 3.0 rating star (icon/action 3545:75099): gradient outline; picked stars are filled with the same gradient */
+const RSTAR = (i, on) => `<svg width="36" height="36" viewBox="0 0 36 36" fill="none" aria-hidden="true"><path ${on ? `fill="url(#mxRs${i})" ` : ''}d="M20.5951 5.26499L23.2351 10.545C23.5951 11.28 24.5551 11.985 25.3651 12.12L30.1501 12.915C33.2101 13.425 33.9301 15.645 31.7251 17.835L28.0051 21.555C27.3751 22.185 27.0301 23.4 27.2251 24.27L28.2901 28.875C29.1301 32.52 27.1951 33.93 23.9701 32.025L19.4851 29.37C18.6751 28.89 17.3401 28.89 16.5151 29.37L12.0301 32.025C8.82011 33.93 6.87011 32.505 7.71011 28.875L8.77511 24.27C8.97011 23.4 8.62511 22.185 7.99511 21.555L4.27511 17.835C2.08511 15.645 2.79011 13.425 5.85011 12.915L10.6351 12.12C11.4301 11.985 12.3901 11.28 12.7501 10.545L15.3901 5.26499C16.8301 2.39999 19.1701 2.39999 20.5951 5.26499Z" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" stroke="url(#mxRs${i})"/><defs><linearGradient id="mxRs${i}" x1="3.00171" y1="3.11624" x2="33.369" y2="3.49238" gradientUnits="userSpaceOnUse"><stop stop-color="#996CB7"/><stop offset="1" stop-color="#38168E"/></linearGradient></defs></svg>`;
 V.merRev = () => { const p = placeById(S.mer) || PLACES[0]; const f = MX.rf; const mine = mineOf(p);
   return `<div class="screen mxr">${statusBar()}<div class="topbar"><button class="iconbtn" data-act="back" aria-label="Close">${SV.close}</button><span class="t-headline" style="flex:1; text-align:center; margin-right:32px">${f.edit ? 'Edit review' : 'Write a review'}</span></div>
     <div class="scroll mx-pad">
       <div class="mx-rvp1">${img(p.img, p.name)}<span><b>${esc(p.name)}</b><small>You’ve checked in ${mine} time${mine === 1 ? '' : 's'}</small></span></div>
-      <div class="mx-big" role="radiogroup" aria-label="Your rating">${[1,2,3,4,5].map(i => `<button role="radio" aria-checked="${f.r === i}" aria-label="${i} star${i > 1 ? 's' : ''}" class="${f.r >= i ? 'on' : ''}" data-act="mxStar" data-v="${i}">${STAR}</button>`).join('')}</div>
+      <div class="mx-big" role="radiogroup" aria-label="Your rating">${[1,2,3,4,5].map(i => `<button role="radio" aria-checked="${f.r === i}" aria-label="${i} star${i > 1 ? 's' : ''}" class="${f.r >= i ? 'on' : ''}" data-act="mxStar" data-v="${i}">${RSTAR(i, f.r >= i)}</button>`).join('')}</div>
       <p class="mx-rl">${f.r ? RTXT[f.r] : 'Tap to rate'}</p>
       <div class="mx-tags">${TAGS.map(t => `<button aria-pressed="${f.tags.includes(t)}" data-act="mxTag" data-t="${esc(t)}">${esc(t)}</button>`).join('')}</div>
-      <label class="mx-ta"><span class="sr-only">Your review</span><textarea id="mxText" rows="4" maxlength="500" placeholder="What was it like? Coffee, wifi, how busy it gets…">${esc(f.t)}</textarea></label>
+      <label class="mx-ta"><span class="mx-tal">Tell us more</span><textarea id="mxText" rows="4" maxlength="500" placeholder="What was it like? Coffee, wifi, how busy it gets…">${esc(f.t)}</textarea></label>
       <p class="mx-phl"><b>Photos</b> <small>optional</small></p>
       <div class="mx-phs">${f.ph.map((k, i) => `<span>${img(k, 'Your photo')}<button data-act="mxPhDel" data-i="${i}" aria-label="Remove photo">${SV.close}</button></span>`).join('')}${f.ph.length < 4 ? `<button class="add" data-act="mxPhAdd">${SV.cam}Add</button>` : ''}</div>
     </div>
@@ -420,12 +422,13 @@ document.head.insertAdjacentHTML('beforeend', `<style id="mx-css">
 .mx-dact{display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:16px} .mx-dact button{display:flex; align-items:center; justify-content:center; gap:8px; height:46px; border:0; border-radius:14px; background:#F4EFFF; color:#4B2A9E; font:700 14px Inter, sans-serif} .mx-dact svg{width:18px; height:18px; fill:none}
 .mx-dact button.rv svg{fill:currentColor}
 .mx-rvp1{display:flex; align-items:center; gap:12px} .mx-rvp1 img{width:52px; height:52px; border-radius:12px; object-fit:cover} .mx-rvp1 span{display:grid} .mx-rvp1 b{font:800 16px Inter, sans-serif; color:#1E1050} .mx-rvp1 small{font:500 13px Inter, sans-serif; color:#6E6688}
-.mx-big{display:flex; justify-content:center; gap:6px; margin-top:20px} .mx-big button{width:48px; height:48px; border:0; background:none; padding:4px} .mx-big svg{width:100%; height:100%; fill:none; stroke:#C9C3D6; stroke-width:1.4} .mx-big button.on svg{fill:#F5B82E; stroke:#F5B82E}
+.mx-big{display:flex; justify-content:center; gap:8px; margin-top:20px} .mx-big button{display:grid; place-items:center; width:44px; height:44px; border:0; background:none; padding:0; cursor:pointer} .mx-big svg{width:36px; height:36px; display:block} .mx-big button:active svg{transform:scale(.92)}
 .mx-big button:focus-visible, .mx-tags button:focus-visible, .mx-phs button:focus-visible, .mx-chips button:focus-visible, .mx-seg button:focus-visible{outline:2px solid #5E35B8; outline-offset:2px; border-radius:10px}
-.mx-rl{margin:4px 0 0; text-align:center; font:700 15px Inter, sans-serif; color:#A26C00; min-height:20px}
+.mx-rl{margin:4px 0 0; text-align:center; font:700 15px Inter, sans-serif; color:#38168E; min-height:20px}
 .mx-tags{display:flex; flex-wrap:wrap; justify-content:center; gap:8px; margin-top:14px} .mx-tags button{height:34px; padding:0 13px; border:1.5px solid transparent; border-radius:999px; background:#F4EFFF; font:600 13.5px Inter, sans-serif; color:#4B2A9E}
 .mx-tags button[aria-pressed="true"]{border-color:#5E35B8; background:#fff}
-.mx-ta{display:block; margin-top:16px} .mx-ta textarea{width:100%; min-height:100px; padding:12px 14px; border:1.5px solid #ECE7F7; border-radius:16px; font:500 15px/1.45 Inter, sans-serif; color:#1E1050; resize:none; box-sizing:border-box} .mx-ta textarea:focus{outline:none; border-color:#5E35B8}
+.mx-ta{display:grid; gap:4px; margin-top:16px} .mx-tal{font:600 14px/20px Inter, sans-serif; color:#09141A}
+.mx-ta textarea{width:100%; min-height:120px; padding:12px; border:1px solid rgba(9,20,26,.12)!important; border-radius:8px!important; background:#fff!important; font:400 14px/20px Inter, sans-serif; color:#09141A!important; resize:none; box-sizing:border-box; box-shadow:none!important} .mx-ta textarea::placeholder{color:#74787A} .mx-ta textarea:focus{outline:none; border-color:#38168E!important}
 .sr-only{position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0 0 0 0)}
 .mx-phl{margin:16px 0 8px} .mx-phl b{font:700 14px Inter, sans-serif; color:#1E1050} .mx-phl small{font:500 12.5px Inter, sans-serif; color:#6E6688}
 .mx-phs{display:flex; gap:10px; flex-wrap:wrap} .mx-phs > span{position:relative; width:80px; height:80px} .mx-phs > span img{width:100%; height:100%; border-radius:14px; object-fit:cover}
