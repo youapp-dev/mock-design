@@ -58,7 +58,7 @@ const fromOld = m => ({id:m.id, name:m.name, type:m.cat||(m.tags||[])[0]||'Merch
 const placeById = id => PLACES.find(p => p.id === id) || (typeof merById === 'function' && merById(id) ? (MX.oldMap[id] = MX.oldMap[id] || fromOld(merById(id))) : null);
 
 /* our own state: check-ins, reviews */
-const MX = window.MX = {mine:{}, last:{}, reviews:{}, oldMap:{}, flt:'all', sort:'near'};
+const MX = window.MX = {mine:{}, last:{}, reviews:{}, oldMap:{}, flt:'all', sort:'near', area:'near', km:3};
 PLACES.forEach(p => { MX.mine[p.id] = p.mine; });
 const mineOf = p => MX.mine[p.id] ?? p.mine ?? 0;
 const dist = m => m < 1000 ? `${m} m` : `${(m/1000).toFixed(1)} km`;
@@ -74,16 +74,18 @@ const rankOf = p => { const b = board(p); const i = b.findIndex(r => r.k === 'me
 /* ---------- 1. Merchants list ---------- */
 const FLT = [['all','All'],['food','Food'],['cafe','Café'],['shopping','Shopping'],['beauty','Beauty'],['cb','% Cashback'],['hot','Most check-ins']];
 merchantBody = function(c){
-  const f = MX.flt, srt = MX.sort;
-  let list = PLACES.filter(p => f === 'all' || f === 'hot' || (f === 'cb' ? p.cb > 0 : p.cat === f));
+  const f = MX.flt, srt = MX.sort, ar = AREA(MX.area), km = MX.km;
+  let list = ar.cnt[km] ? PLACES.map(p => ({...p, m: p.m + ar.off})).filter(p => p.m <= km * 1000) : [];
+  list = list.filter(p => f === 'all' || f === 'hot' || (f === 'cb' ? p.cb > 0 : p.cat === f));
   list = f === 'hot' ? [...list].sort((a, b) => b.today - a.today) : srt === 'top' ? [...list].sort((a, b) => b.rating - a.rating) : [...list].sort((a, b) => a.m - b.m);
   const head = `<button class="search mx-search" data-act="openSearch" data-k="merchants">${ic('search')}Search shops, food and places</button>
-    <div class="mx-near"><button class="mx-area" data-act="mxArea">${SV.pin}<span>Near you · <b>Bangsar, KL</b></span>${SV.chevd}</button>
+    <div class="mx-near"><span class="mx-areaw"><button class="mx-area" data-act="mxArea" aria-label="Change area: ${ar.gps ? 'Near you, ' : ''}${esc(ar.short)}">${SV.pin}<span>${ar.gps ? '<i class="mx-ny">Near you · </i>' : ''}<b>${esc(ar.short)}</b></span>${SV.chevd}</button>${ar.gps ? '' : `<button class="mx-areax" data-act="mxAreaReset" aria-label="Back to near you">${SV.close}</button>`}</span>
       <button class="mx-sort" data-act="mxSort" aria-label="Sort: ${srt === 'top' ? 'Top rated' : 'Nearest'}">${SV.sort}${srt === 'top' ? 'Top rated' : 'Nearest'}</button></div>
     <div class="mx-flt" role="tablist" aria-label="Filter places">${FLT.map(([k, t]) => `<button role="tab" aria-selected="${f === k}" data-act="mxFlt" data-k="${k}">${k === 'hot' ? SV.flame : ''}${t}</button>`).join('')}</div>`;
   if (c === 'loading') return head + skeletonList();
   if (c === 'error') return head + errorBlock();
-  if (c === 'empty' || !list.length) return head + stateBlock('emptycal', 'No places here yet', f === 'cb' ? 'No cashback merchants near you. Try All.' : 'Try another filter or area.');
+  if (c !== 'empty' && !ar.cnt[km]) return head + stateBlock('emptycal', 'No merchants around here yet', 'Try a wider distance or a nearby area.', `<button class="btn btn-secondary btn-sm" data-act="mxArea">Change area</button>`);
+  if (c === 'empty' || !list.length) return head + stateBlock('emptycal', 'No places here yet', f === 'cb' ? `No cashback merchants ${ar.gps ? 'near you' : 'in this area'}. Try All.` : 'Try another filter or area.');
   return head + `<div class="mx-list">${list.map(p => { const a = PPL[p.amb];
     return `<article class="mx-row"><button class="mx-rm" data-act="mxOpen" data-id="${p.id}" aria-label="Open ${esc(p.name)}">
       <span class="mx-ph">${img(p.img, p.name)}</span>
@@ -95,6 +97,42 @@ merchantBody = function(c){
       <div class="mx-amb"><span class="mx-av">${img(a.img, a.n)}<i>${CROWN}</i></span><span class="mx-at"><b>${esc(a.n)}</b> is the ambassador</span><small>${p.today} here today</small></div></article>`; }).join('')}</div>
     <p class="mx-attr">Places and reviews from Google</p>`;
 };
+
+
+/* ---------- 1b. Choose area (Merchants only; resets to Near you next app open) ---------- */
+const AREAS = [
+  {id:'near', gps:true, name:'Bangsar', short:'Bangsar, KL', addr:'Your current location', off:0, cnt:{1:7, 3:48, 5:112}},
+  {id:'midv', name:'Mid Valley', short:'Mid Valley, KL', addr:'Lingkaran Syed Putra, 59200 Kuala Lumpur', off:350, cnt:{1:12, 3:64, 5:130}},
+  {id:'klcc', name:'KLCC', short:'KLCC, KL', addr:'Kuala Lumpur City Centre, 50088 Kuala Lumpur', off:150, cnt:{1:20, 3:96, 5:180}},
+  {id:'petaling', name:'Petaling Street', short:'Petaling St, KL', addr:'Jalan Petaling, City Centre, 50000 Kuala Lumpur', off:200, cnt:{1:15, 3:70, 5:150}},
+  {id:'cyber', name:'Cyberjaya', short:'Cyberjaya', addr:'Persiaran Multimedia, 63000 Cyberjaya, Selangor', off:900, cnt:{1:0, 3:3, 5:9}},
+  {id:'orchard', name:'Orchard Road', short:'Orchard Rd, SG', addr:'Orchard Road, Singapore 238839', off:0, cnt:{1:0, 3:0, 5:0}, out:true},
+];
+const AREA = id => AREAS.find(a => a.id === id) || AREAS[0];
+V.merArea = () => { const d = MX.ad; const a = AREA(d.id); const n = a.cnt[d.km]; const q = (d.q || '').trim().toLowerCase();
+  const list = AREAS.filter(x => !x.gps && (!q || (x.name + ' ' + x.addr).toLowerCase().includes(q)));
+  const card = a.out ? `<p class="mx-acn"><b>YouApp merchants aren’t available here yet</b><small>Choose an area in Malaysia.</small></p>`
+    : `<p class="mx-acn"><small>Showing merchants around</small><b>${a.gps ? 'Near you · ' : ''}${esc(a.short)}</b><small>${n ? `${n} merchant${n === 1 ? '' : 's'} within ${d.km} km` : `No merchants within ${d.km} km. Try a wider distance.`}</small></p>`;
+  return `<div class="screen mxa">${statusBar()}${topBar('Choose area')}
+  <div class="scroll pad16"><p class="t-body" style="font-weight:600; margin:0">Where do you want to explore?</p><p class="t-caption subtle" style="margin:2px 0 10px">Pick an area and we’ll show merchants around it.</p>
+    <label class="search" style="margin:0 0 10px; width:100%">${ic('search')}<input id="mxAq" value="${esc(d.q || '')}" placeholder="Search area, mall or street" aria-label="Search area" style="border:0; outline:0; flex:1; font:inherit; font-size:16px; background:none"></label>
+    <div class="mapbox mx-amap">${img('map', 'Map of ' + a.name)}<span class="mx-arad r${d.km}" aria-hidden="true"></span>
+      <button class="mx-agps" data-act="mxAreaGps" aria-label="Use my current location">${SV.nav}</button></div>
+    ${card}
+    <p class="mx-akl">Distance</p>
+    <div class="mx-akm" role="radiogroup" aria-label="Distance">${[1,3,5].map(k => `<button class="amtchip ${d.km === k ? 'on' : ''}" role="radio" aria-checked="${d.km === k}" data-act="mxAreaKm" data-k="${k}">${k} km</button>`).join('')}</div>
+    <div class="mx-alist">
+      ${q ? '' : `<button class="radrow" data-act="mxAreaPick" data-id="near"><span class="mx-arow">${SV.nav}<span><b>Use my current location</b><small class="subtle">${MX.gpsOff ? 'Location is off' : 'Bangsar, Kuala Lumpur'}</small></span></span><i class="${d.id === 'near' ? 'on' : ''}"></i></button>`}
+      ${list.map(x => `<button class="radrow" data-act="mxAreaPick" data-id="${x.id}"><span><b>${esc(x.name)}</b><small class="subtle" style="display:block">${esc(x.addr)}</small></span><i class="${d.id === x.id ? 'on' : ''}"></i></button>`).join('')}
+      ${q && !list.length ? `<p class="t-body subtle" style="margin:12px 0">No area found. Try “KLCC”.</p>` : ''}
+    </div></div>
+  <div class="cta">${btn(a.out ? 'Not available here' : 'Show merchants here', 'mxAreaApply', {cls:'btn-block', disabled:!!a.out})}</div></div>`; };
+const _mxOv = overlayHTML;
+overlayHTML = () => _mxOv() + (S.sheet === 'mxGps' ? `<div class="scrim ${S.sheetAnim ? 'anim' : ''}" data-act="mxGpsLater"></div><div class="sheet ${S.sheetAnim ? 'anim' : ''}" role="dialog" aria-label="Turn on location"><div class="grab" aria-hidden="true"></div>
+  <div class="mx-gps"><span class="mx-gpsi">${SV.nav}</span><h2 class="t-title" style="margin:0">Turn on location</h2><p class="t-body muted" style="margin:0">Allow location to see merchants near you. You can still search for an area.</p>
+  <div style="display:grid; gap:8px; width:100%; margin-top:8px">${btn('Open settings', 'mxGpsOn', {cls:'btn-block'})}${btn('Not now', 'mxGpsLater', {cls:'btn-block', kind:'btn-secondary'})}</div></div></div>` : '');
+document.addEventListener('input', e => { if (e.target.id !== 'mxAq' || !MX.ad) return; const pos = e.target.selectionStart; MX.ad.q = e.target.value; render();
+  const el = document.getElementById('mxAq'); if (el) { el.focus(); try { el.setSelectionRange(pos, pos); } catch(_){} } });
 
 /* ---------- 2. Merchant page ---------- */
 const AGE = [['25–30',512,'#5B7FD6'],['18–24',301,'#C2557F'],['31–40',268,'#5FB58A'],['41–50',132,'#F2A65A'],['Other',71,'#E35B6B']];
@@ -223,7 +261,14 @@ Object.assign(A, {
   mxOpen: el => { S.mer = el.dataset.id; MX.hours = null; go('mer'); },
   mxFlt: el => { MX.flt = el.dataset.k; render(); },
   mxSort: () => { MX.sort = MX.sort === 'top' ? 'near' : 'top'; render(); toast(MX.sort === 'top' ? 'Sorted by top rated.' : 'Sorted by nearest.'); },
-  mxArea: () => toast('Change area opens a map picker. This prototype stays in Bangsar.'),
+  mxArea: () => { MX.ad = {id:MX.area, km:MX.km, q:''}; go('merArea'); },
+  mxAreaReset: () => { MX.area = 'near'; MX.km = 3; render(); toast('Showing merchants near you.'); },
+  mxAreaPick: el => { const id = el.dataset.id; if (id === 'near' && MX.gpsOff) return A.mxAreaGps(); MX.ad.id = id; MX.ad.q = ''; render(); },
+  mxAreaGps: () => { if (MX.gpsOff) { openSheet('mxGps'); return; } MX.ad.id = 'near'; MX.ad.q = ''; render(); },
+  mxGpsOn: () => { MX.gpsOff = false; if (MX.ad) MX.ad.id = 'near'; closeSheet(); toast('Location turned on.'); },
+  mxGpsLater: () => closeSheet(),
+  mxAreaKm: el => { MX.ad.km = +el.dataset.k; render(); },
+  mxAreaApply: el => { if (el && el.getAttribute && el.getAttribute('aria-disabled')) return; const a = AREA(MX.ad.id); MX.area = a.id; MX.km = MX.ad.km; back(); toast(a.gps ? 'Showing merchants near you.' : `Showing merchants around ${a.name}.`); },
   mxHours: () => { MX.hours = MX.hours === S.mer ? null : S.mer; render(); },
   mxDir: () => toast('Opens this place in Google Maps.'),
   mxCall: () => { const p = placeById(S.mer); toast(`Calls ${p ? p.phone : 'the shop'}.`); },
@@ -268,6 +313,7 @@ document.addEventListener('input', e => { if (e.target.id === 'mxText' && MX.rf)
 
 /* scenario panel notes */
 Object.assign(META, {
+  merArea:{name:'Choose area', group:'Discover · Merchants', rules:['Opened from the area chip on Merchants; applies to Merchants only, not Locals','Search areas, tap the location button or a row; the map and the card update','Distance 1, 3 or 5 km (default 3); card shows how many merchants are inside','Show merchants here applies and goes back; Back changes nothing','Picked area shows on the chip with × to go back to Near you; next app open resets to Near you','Outside Malaysia: button disabled. Location off: prompt to turn it on']},
   mer:{name:'Merchant page', group:'Discover · Merchants', rules:['Photos from Google (swipe), name, rating, type and price on the photo; Share top right','No big button row: Directions is the icon next to the address, tap the phone number to call','Order: info, check in, ambassador, reviews, people, who checks in here','Reviews: YouApp (name, age, gender, visits) and Google (small Google label) in one list; Rate your visit right there','Who checks in here: last 90 days, totals only, shown once a place has 50+ check-ins']},
   merDone:{name:'Checked in', group:'Discover · Merchants', rules:['Only at the place (GPS ~100 m), once an hour per place, ID-verified users','Shows your count here, new rank, who you passed and how many more to become ambassador','Next check-in time, Add a photo, Pay (cashback merchants) or Write a review']},
   merBoard:{name:'Place leaderboard', group:'Discover · Merchants', rules:['Ambassador = most check-ins in the last 30 days, ties go to who got there first','Full list with your row highlighted; switch to All time']},
@@ -279,6 +325,20 @@ Object.assign(META, {
 /* styles */
 document.head.insertAdjacentHTML('beforeend', `<style id="mx-css">
 .mx-search{margin-top:6px}
+.mx-areaw{display:flex; align-items:center; gap:2px; min-width:0}
+.mx-area{min-width:0} .mx-ny{font-style:normal} @media (max-width:340px){.mx-ny{display:none}} .mx-sort{flex:none} .mx-area span{white-space:nowrap; overflow:hidden; text-overflow:ellipsis; min-width:0}
+.mx-areax{display:grid; place-items:center; width:32px; height:32px; border:0; background:none; color:#6E6688; padding:0; flex:none} .mx-areax svg{width:16px; height:16px}
+.mx-amap{height:220px} .mx-amap img{display:block}
+.mx-arad{position:absolute; left:50%; top:58%; border-radius:50%; transform:translate(-50%,-50%); border:1.5px dashed var(--a-indigo); background:rgba(94,53,184,.10); pointer-events:none; transition:width .2s, height .2s}
+.mx-arad.r1{width:90px; height:90px} .mx-arad.r3{width:160px; height:160px} .mx-arad.r5{width:230px; height:230px}
+.mx-agps{position:absolute; right:10px; bottom:10px; width:44px; height:44px; border-radius:50%; border:1px solid var(--a-line); background:#fff; color:var(--a-indigo); display:grid; place-items:center; box-shadow:0 2px 8px rgba(30,16,80,.12)} .mx-agps svg{width:20px; height:20px}
+.mx-acn{display:grid; gap:2px; margin:12px 0 0} .mx-acn b{font:700 16px/22px Inter, sans-serif; color:var(--a-ink)} .mx-acn small{font:400 13px/18px Inter, sans-serif; color:var(--a-ink-3)}
+.mx-akl{margin:14px 0 6px; font:600 14px/20px Inter, sans-serif; color:var(--a-ink)}
+.mx-akm{display:flex; gap:8px} .mx-akm .amtchip.on{background:var(--a-grad); color:#fff; border-color:transparent}
+.mx-alist{display:grid; margin-top:8px}
+.mx-arow{display:flex; align-items:center; gap:10px} .mx-arow > svg{width:20px; height:20px; color:var(--a-indigo); flex:none} .mx-arow small{display:block}
+.mx-gps{display:flex; flex-direction:column; align-items:center; gap:8px; text-align:center; padding:4px 0 8px}
+.mx-gpsi{display:grid; place-items:center; width:56px; height:56px; border-radius:50%; background:#F4EFFF; color:var(--a-indigo)} .mx-gpsi svg{width:26px; height:26px}
 .mx-near{display:flex; align-items:center; justify-content:space-between; gap:8px; padding:8px 16px 4px}
 .mx-area{display:flex; align-items:center; gap:6px; min-height:36px; border:0; background:none; padding:0; font:500 14px Inter, sans-serif; color:#6E6688}
 .mx-area b{color:#1E1050; font-weight:700} .mx-area svg{width:16px; height:16px; color:#C2557F; flex:none} .mx-area svg:last-child{color:#4B2A9E}
