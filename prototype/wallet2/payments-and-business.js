@@ -771,10 +771,12 @@ const wdDone = () => {
   const rb = rfBal();
   if (S.sheet !== 'wdSheet' || rb < 100) return;
   const v = Math.min(1000, rb);
-  S.rfWd = [{v, d:'29 Oct 2026, 14:52', m:'Oct 2026'}, ...(S.rfWd||[])];
-  S.walletRewardCents = (S.walletRewardCents || 0) + Math.round(v * 100);
-  S.sheet = null;
-  go('wdDone',{replace:true});
+  runTransactionPreview('Processing withdrawal', () => {
+    S.rfWd = [{v, d:'29 Oct 2026, 14:52', m:'Oct 2026'}, ...(S.rfWd||[])];
+    S.walletRewardCents = (S.walletRewardCents || 0) + Math.round(v * 100);
+    S.sheet = null;
+    go('wdDone',{replace:true});
+  });
 };
 document.addEventListener('pointerdown', e => { const k = e.target.closest && e.target.closest('#wdKnob'); if (!k) return; const tr = document.getElementById('wdSlide'); const x0 = e.clientX; const max = tr.clientWidth - k.offsetWidth - 8;
   const mv = ev => { const d = Math.max(0, Math.min(max, ev.clientX - x0)); k.style.transform = `translateX(${d}px)`; if (d>=max-2) { up(); wdDone(); } };
@@ -890,7 +892,7 @@ let blTimer = null;
 const blTick = () => { clearInterval(blTimer); blTimer = setInterval(() => { if (S.screen!=='billConfirm') { clearInterval(blTimer); return; }
   S.blQt = (S.blQt??25) - 1; if (S.blQt < 0) { S.blQt = 30; toast('Quote refreshed. The amount hasn’t changed.'); }
   const el = document.getElementById('blq'); if (el) el.textContent = '00:'+String(S.blQt).padStart(2,'0'); }, 1000); };
-const blPayGo = (topped=0) => { const b = S.bill; b.busy = true; render();
+const blPayGo = (topped=0) => { const b = S.bill; if (b.busy) return; b.busy = true; render();
   setTimeout(() => { b.busy = false; b.topped = topped; b.after = Math.max(0, bal() + topped - (+b.amt)); go('billDone',{replace:true}); }, 1100); };
 let PIN_NEXT = null;
 
@@ -1079,6 +1081,8 @@ function spProceed(){
   const needsTopUpConfirmation = topUp && ['myrt','usdt','usdc'].includes(topUp.method);
   const cashback = P() >= 4 && merchant.cbRate ? amount * merchant.cbRate / 100 * tier.cb / 100 : 0;
   if (outcome !== 'ok') { scen.scanResult = 'ok'; saveScen(); }
+  const duration = needsTopUpConfirmation ? 3600 : 2400;
+  S.scanPresentationDuration = duration;
   S.busy = true;
   if (needsTopUpConfirmation) go('processing', {replace:true});
   else render();
@@ -1100,7 +1104,7 @@ function spProceed(){
     S.txId = tx.id;
     S.scanReceiptFrom = 'payment';
     go(status === 'Completed' ? 'done' : 'scanReceipt', {replace:true});
-  }, needsTopUpConfirmation ? 2200 : 800);
+  }, duration);
 }
 function settleWalletScan(tx){
   tx.status = 'Completed';

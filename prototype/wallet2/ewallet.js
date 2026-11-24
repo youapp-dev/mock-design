@@ -1,12 +1,20 @@
-/* ===== eWallet (MYR e-money account) · 23 Nov 2026 =====
-   Needed only for Receive (via eWallet), Bill payment and Mobile reload. Scan to Pay and the
-   crypto wallets do not need it. Opening costs a one-time RM50 account opening fee, paid from
-   MYRT first (burned), otherwise from a top-up method. Existing KYC covers it.
+/* ===== Fiat Wallet (MYR e-money account) · 23 Nov 2026 =====
+   Needed only for Receive (via Fiat Wallet), Bill payment and Mobile reload. Scan to Pay and the
+   crypto wallets do not need it. Verified users with more than RM100 in successful MYRT
+   activity get free automatic opening. The paid path uses MYRT first, then top-up.
    Assumptions pending Kevon (marked ⚠️ in META): opening is instant, account details are a
-   DuitNow QR + account number, a failed opening refunds the fee, received MYR stays as eWallet
+   DuitNow QR + account number, a failed opening refunds the fee, received MYR stays as Fiat Wallet
    balance and is used before MYRT. */
 (function(){
   const FEE = 50;
+  const FREE_OPENING_THRESHOLD_CENTS = 10000;
+  const ACTIVATION_TITLE = 'Activate Fiat Wallet';
+  const MYRT_ACTIVITY_OPTIONS = [['none','None'], ['threshold','RM100'], ['eligible','RM100.01']];
+  const SAMPLE_MYRT_ACTIVITY = {
+    threshold: [{status:'Completed', cents:6000}, {status:'Completed', cents:4000},
+      {status:'Refunded', cents:5000}, {status:'Failed', cents:5000}, {status:'Pending', cents:5000}],
+    eligible: [{status:'Completed', cents:6000}, {status:'Completed', cents:4001}],
+  };
   const ACCT = '8812 0045 7731';
   const on = () => scen.ew === 'on';
   const NEXT = {bills:['Pay bills', 'bills'], mreload:['Reload a number', 'mreload'], ewRecv:['Receive money', 'ewRecv']};
@@ -39,18 +47,20 @@
   css.textContent = `
   .ew-ic{display:grid; place-items:center; color:#4B2A9E; background:#F4EFFF}
   .ew-ic svg{width:20px; height:20px}
-  .cr.ew-row .rt a{font-weight:700; color:#5E35B8; text-decoration:none}
+  .cr.ew-row .ew-activate{font-weight:700; color:#5E35B8}
   .cr.ew-row small.ew-sub{display:block; font-weight:500; color:#6E6688; margin-top:2px}
   .ew-unlock{display:grid; grid-template-columns:repeat(3,1fr); gap:8px; margin:0; padding:0; list-style:none}
   .ew-unlock li{display:grid; justify-items:center; gap:6px; padding:12px 6px; border-radius:16px; background:#F8F5FF; text-align:center}
   .ew-unlock li > span{display:grid; place-items:center; width:36px; height:36px; border-radius:12px; background:#fff; color:#4B2A9E}
   .ew-unlock li > span svg{width:20px; height:20px}
-  .ew-unlock b{font-size:12.5px; line-height:1.25; color:#1E1050}
+  .ew-unlock b{font-size:13px; line-height:18px; color:var(--a-ink); text-wrap:balance}
   .ew-hero{display:grid; justify-items:center; gap:4px; text-align:center; padding:0 0 2px}
-  .ew-hero p{margin:0; color:#6E6688}
+  .ew-hero .t-title{margin:0; max-inline-size:22ch}
+  .ew-hero p{margin:0; color:var(--a-ink-2); text-wrap:pretty}
   .ew-art{display:block; margin:0 auto; max-width:100%; height:auto}
   .ew-intro{display:grid; justify-items:center; gap:6px; text-align:center}
-  .ew-intro .t-title{margin:6px 0 0} .ew-intro p{margin:0}
+  .ew-intro .t-title{margin:6px 0 0}
+  .ew-intro p{margin:0; max-inline-size:30ch; text-wrap:pretty}
   .ew-phw{display:grid; grid-template-columns:minmax(0,1fr); padding-top:20px}
   .ew-phh{text-align:center; margin:0 0 24px} .ew-phh .t-title{margin:0 0 6px} .ew-phh p{margin:0; text-wrap:balance}
   .ew-fl{position:relative; display:flex; align-items:center; gap:12px; width:100%; min-height:56px; padding:0 14px; border:1px solid var(--a-line); border-radius:12px; background:#fff; text-align:left; font:inherit; box-sizing:border-box}
@@ -97,14 +107,14 @@
     }
     return t.innerHTML; };
 
-  /* ---------- My money: eWallet section ---------- */
+  /* ---------- My money: Fiat Wallet section ---------- */
   const _wallets = V.wallets;
   V.wallets = () => { const h = _wallets(); const t = document.createElement('template'); t.innerHTML = h;
     const list = t.content.querySelector('.lst'); if (!list) return h;
     const row = on()
-      ? `<div class="cr ew-row" data-act="nav" data-to="ewDetail" role="button" tabindex="0" aria-label="eWallet, ${S.balHide ? 'balance hidden' : RM(ewBal())}">${ewIc()}<div><b>eWallet</b><small class="ew-sub">Ringgit · DuitNow</small></div><div class="rt"><b>${S.balHide ? '••••' : RM(ewBal())}</b></div>${ic('chev')}</div>`
-      : `<div class="cr ew-row" data-act="ewGate" data-n="" role="button" tabindex="0" aria-label="eWallet, not activated. Activate">${ewIc()}<div><b>eWallet</b><small class="ew-sub">Receive, pay bills and reload</small></div><div class="rt"><a>Activate</a></div>${ic('chev')}</div>`;
-    list.insertAdjacentHTML('afterend', `<div class="lst ew-lst"><div class="grp">eWallet</div>${row}</div>`);
+      ? `<div class="cr ew-row" data-act="nav" data-to="ewDetail" role="button" tabindex="0" aria-label="Fiat Wallet, ${S.balHide ? 'balance hidden' : RM(ewBal())}">${ewIc()}<div><b>Fiat Wallet</b><small class="ew-sub">Ringgit · DuitNow</small></div><div class="rt"><b>${S.balHide ? '••••' : RM(ewBal())}</b></div>${ic('chev')}</div>`
+      : `<div class="cr ew-row" data-act="ewGate" data-n="" role="button" tabindex="0" aria-label="Fiat Wallet, not activated. Activate">${ewIc()}<div><b>Fiat Wallet</b><small class="ew-sub">Receive, pay bills and reload</small></div><div class="rt"><span class="ew-activate">Activate</span></div>${ic('chev')}</div>`;
+    list.insertAdjacentHTML('afterend', `<div class="lst ew-lst"><div class="grp">Fiat Wallet</div>${row}</div>`);
     return t.innerHTML; };
 
   /* ---------- wallet detail (crypto wallets): Receive ---------- */
@@ -113,16 +123,75 @@
     /* Receive sits inside the balance card so the asset list still follows it directly */
     return h.replace(/(<section class="wr-asset-summary wr-wallet-summary"[\s\S]*?)(<\/section>)/, `$1<button type="button" class="ew-recv" data-act="ewCryptoRecv" data-id="${w.id}">${ic('xsDown')}Receive</button>$2`); };
 
-  /* ---------- gate: Bills, Mobile reload, eWallet Receive ---------- */
-  const gate = (n, go_) => { if (on()) return go_(); S.ewNext = n; S.sheet = 'ewGate'; render(); };
-  const _bills = A.bills, _mr = A.mreload;
-  A.bills = el => gate('bills', () => _bills(el));
-  A.mreload = el => gate('mreload', () => _mr(el));
+  /* ---------- gate: Bills, Mobile reload, Fiat Wallet Receive ---------- */
+  const openingActions = {
+    bills: A.bills,
+    mreload: A.mreload,
+    ewRecv: () => go('ewRecv'),
+    ewDetail: () => go('ewDetail'),
+  };
+
+  const qualifyingMyrtCents = () => {
+    const history = [
+      ...(SAMPLE_MYRT_ACTIVITY[scen.ewMyrtActivity] || []),
+      ...(S.scanPayments || []).map(tx => ({
+        status:tx.status,
+        cents:tx.funding
+          ? tx.funding.parts.reduce((sum, part) => sum + (part.token === 'MYRT' ? Math.round(part.units * 100) : 0), 0)
+          : tx.totalCents,
+      })),
+      ...(S.walletTopUps || []).filter(tx => tx.key === 'MYR')
+        .map(tx => ({status:tx.status ?? 'Completed', cents:Math.round(tx.value * 100)})),
+    ];
+    return history.reduce((sum, tx) => tx.status === 'Completed' ? sum + tx.cents : sum, 0);
+  };
+
+  let openingAttempt;
+  const continueAfterFreeOpening = () => {
+    const next = S.ewNext || 'ewDetail';
+    S.ewNext = null;
+    // Replace the transient opening screen with the original navigation destination.
+    S.screen = S.hist.pop() || 'home';
+    openingActions[next]();
+    toast('Fiat Wallet activated. No opening fee.');
+  };
+
+  const openWithoutFee = (retry = false) => {
+    const attempt = {session:S};
+    openingAttempt = attempt;
+    go('ewOpening', {replace:retry});
+    setTimeout(() => {
+      if (openingAttempt !== attempt || S !== attempt.session || S.screen !== 'ewOpening') return;
+      openingAttempt = null;
+      if (scen.ew === 'fail') {
+        scen.ew = 'off';
+        saveScen();
+        go('ewAutoFail', {replace:true});
+        return;
+      }
+      scen.ew = 'on';
+      saveScen();
+      continueAfterFreeOpening();
+    }, 600);
+  };
+
+  const gate = next => {
+    if (S.screen === 'ewOpening') return;
+    if (on()) return openingActions[next || 'ewDetail']();
+    S.ewNext = next;
+    if (kycOk() && qualifyingMyrtCents() > FREE_OPENING_THRESHOLD_CENTS) return openWithoutFee();
+    S.sheet = 'ewGate';
+    render();
+  };
+  A.bills = () => gate('bills');
+  A.mreload = () => gate('mreload');
+  const nav = A.nav;
+  A.nav = el => el.dataset.to === 'ewRecv' ? gate('ewRecv') : nav(el);
 
   SHEETS.ewGate = () => { const n = NEXT[S.ewNext];
     return `<div class="grab"></div><div class="stack" style="gap:14px">
-      <div class="ew-intro">${ART(152)}<h2 class="t-title">${n ? `Activate your eWallet to ${n[0].toLowerCase()}` : 'Activate your eWallet'}</h2>
-        <p class="t-body muted">Bills, reloads and receiving ringgit run on your eWallet. Scan to Pay doesn’t need it.</p></div>
+      <div class="ew-intro">${ART(152)}<h2 class="t-title">${ACTIVATION_TITLE}</h2>
+        <p class="t-body muted">${n ? `Use your Fiat Wallet to ${n[0].toLowerCase()}.` : 'Receive ringgit, pay bills and reload your mobile number.'}</p></div>
       <div class="kvbox sp-box"><div class="kv"><span>One-time opening fee</span><b>${RM(FEE)}</b></div><div class="kv"><span>Identity check</span><b>Already done</b></div><div class="kv"><span>Phone number</span><b>${phSaved() ? esc(phSaved()) : 'Verify next'}</b></div></div>
       ${bal() < FEE ? `<p class="t-caption subtle" style="margin:0; text-align:center">Your MYRT is ${RM(bal())}. You can top up the rest on the next step.</p>` : ''}
       ${btn('Continue', 'ewStart')}${btn('Not now', 'closeSheet', {kind:'btn-tertiary'})}</div>`; };
@@ -132,14 +201,14 @@
   const P = window.YA_PHONE; const CC = P.list; const ccOf = P.get; const flagOf = P.flag; const digits = P.digits; const phoneOk = P.ok; const fmtPh = P.fmt; const TAKEN = P.TAKEN;
   const phSaved = () => { const v = P.load(); return v && v.disp ? v.disp : ''; };
   V.ewPhone = () => { const f = S.ewPh || (S.ewPh = {cc:'MY', num:'', err:''}); if (!CC.some(x => x[0] === f.cc)) f.cc = 'MY'; const c = ccOf(f.cc); const ok = phoneOk(f.cc, f.num);
-    return `<div class="screen bz">${statusBar()}${topBar('Activate eWallet')}
+    return `<div class="screen bz">${statusBar()}${topBar(ACTIVATION_TITLE)}
     <div class="scroll"><div class="pad16 ew-phw">
       <div class="ew-phh"><h1 class="t-title">Your phone number</h1><p class="t-body muted">Confirm your country code and enter your phone number. We’ll text you a 6-digit code.</p></div>
       <button class="ew-fl ew-ctry" data-act="ewCcOpen" aria-label="Country: ${esc(c[1])}, ${c[2]}. Change"><span class="ew-fll">Country</span>${flagOf(f.cc)}<b>${esc(c[1])}</b>${ic('chev')}</button>
       <label class="ew-fl ew-num ${f.err ? 'err' : ''}" for="ewNum"><span class="ew-fll">Phone number</span><span class="ew-dial">${c[2]}</span>
         <input id="ewNum" type="tel" inputmode="tel" autocomplete="tel-national" value="${esc(f.num)}" placeholder="${f.cc === 'MY' ? '12-345 6789' : 'Phone number'}" aria-describedby="ewNumH" ${f.busy ? 'disabled' : ''}></label>
       <p class="ew-flh ${f.err ? 'err' : ''}" id="ewNumH">${f.err ? esc(f.err) : 'Use a number that can receive SMS.'}</p>
-      <p class="t-caption subtle ew-demo">Demo: ${TAKEN.replace(/^(\d{2})(\d{3})(\d{4})$/, '$1-$2 $3')} (Malaysia) is already linked to another eWallet.</p>
+      <p class="t-caption subtle ew-demo">Demo: ${TAKEN.replace(/^(\d{2})(\d{3})(\d{4})$/, '$1-$2 $3')} (Malaysia) is already linked to another Fiat Wallet.</p>
     </div></div>
     <div class="w2foot">${btn(f.busy ? 'Sending code…' : 'Send code', 'ewSend', {disabled: !ok || f.busy, loading: f.busy})}</div></div>`; };
   V.ewCountry = () => { const q = (S.ewCcQ || '').trim().toLowerCase(); const cur = (S.ewPh || {}).cc; const srch = S.ewCcSearch;
@@ -174,28 +243,28 @@
 
   /* ---------- activation ---------- */
   V.ewConfirm = () => { const b = bal(); const short = Math.max(0, FEE - b); const low = short > 0; const busy = S.ewBusy; const m = PM.some(x => x.k === S.ewTm && x.k !== 'wallet') ? S.ewTm : 'card'; const mName = m === 'card' ? 'your card' : PM.find(x => x.k === m).name.split(' ')[0];
-    return `<div class="screen bz">${statusBar()}${topBar('Activate eWallet')}
+    return `<div class="screen bz">${statusBar()}${topBar(ACTIVATION_TITLE)}
     <div class="scroll" style="padding-bottom:16px"><div class="pad16 stack" style="gap:14px; padding-top:4px">
-      <div class="ew-hero">${ART(184)}<b class="t-body-lg">Your ringgit eWallet</b><p>Opens instantly with the ID you already verified.</p></div>
+      <div class="ew-hero">${ART(184)}<h1 class="t-title">Receive and pay in ringgit</h1><p>Opens instantly with the ID you already verified.</p></div>
       <ul class="ew-unlock" aria-label="What you can do with it">
         <li><span>${ic('xsDown')}</span><b>Receive ringgit</b></li>
         <li><span>${ic('bill')}</span><b>Pay bills</b></li>
         <li><span>${ic('mreload')}</span><b>Mobile reload</b></li>
       </ul>
       <div class="kvbox sp-box">
-        ${phSaved() ? `<div class="kv"><span>Phone number</span><b class="ew-okph">${esc(phSaved())} ${ic('check')}</b></div>` : ''}<div class="kv"><span>Account opening fee</span><b>${RM(FEE)}</b></div>
+        ${phSaved() ? `<div class="kv"><span>Phone number</span><b class="ew-okph">${esc(phSaved())} ${ic('check')}</b></div>` : ''}<div class="kv"><span>Opening fee</span><b>${RM(FEE)}</b></div>
         <div class="kv"><span>Pay from</span><b>YouWallet · MYRT ${myrt(b)}</b></div>
         ${low ? `<div class="kv"><span>Top up first</span><b>${RM(short)}</b></div>` : ''}
         <div class="kv total"><span>Total</span><b>${RM(FEE)}</b></div></div>
       ${low ? `<div class="sp-short">${ic('alert')}<span><b>${RM(short)} short</b>Your MYRT covers ${RM(b)}. Choose how to top up the rest.</span></div>
         ${['Card','Stablecoins'].map(g => `<h3 class="sec" style="margin:4px 0 0; font-size:15px">${g === 'Card' ? 'Debit or Credit Card' : g}</h3><div class="pmlist" role="radiogroup" aria-label="Top up with: ${g === 'Card' ? 'debit or credit card' : 'stablecoins'}">${PM.filter(x => x.group === g).map(x => `<button class="pmrow pm2 ${m === x.k ? 'on' : ''}" role="radio" aria-checked="${m === x.k}" data-act="ewTm" data-k="${x.k}">${pmIcon(x)}<span><b>${x.name}</b><small>${x.sub}</small></span><i></i></button>`).join('')}</div>`).join('')}` : ''}
-      <p class="t-caption subtle" style="margin:0">One-time fee. It isn’t added to your eWallet balance and shows as −${RM(FEE)} in your history.</p>
+      <p class="t-caption subtle" style="margin:0">One-time fee. It isn’t added to your Fiat Wallet balance and shows as −${RM(FEE)} in your history.</p>
     </div></div>
-    <div class="w2foot">${low && !busy ? `<p class="t-caption subtle" style="margin:0 0 8px; text-align:center">Uses MYRT ${myrt(b)} and tops up ${RM(short)} with ${mName}</p>` : ''}${btn(busy ? 'Opening your eWallet…' : low ? `Top up &amp; pay ${RM(FEE)}` : `Pay ${RM(FEE)} &amp; activate`, busy ? 'noop' : 'ewPay', {disabled:busy, loading:busy})}</div></div>`; };
+    <div class="w2foot">${low && !busy ? `<p class="t-caption subtle" style="margin:0 0 8px; text-align:center">Uses MYRT ${myrt(b)} and tops up ${RM(short)} with ${mName}</p>` : ''}${btn(busy ? 'Opening your Fiat Wallet…' : low ? `Top up &amp; pay ${RM(FEE)}` : `Pay ${RM(FEE)} &amp; activate`, busy ? 'noop' : 'ewPay', {disabled:busy, loading:busy})}</div></div>`; };
 
   V.ewDone = () => { const n = NEXT[S.ewNext]; const r = S.ewRef || 'YA-EW-2611';
-    return `<div class="screen bz">${statusBar()}${topBar('eWallet')}
-    <div class="scroll"><div class="success" style="padding-top:4px">${cele()}<b class="bl-ok">eWallet activated</b><b class="sp-big">${RM(FEE)}</b><span class="t-body subtle">Account opening fee paid</span></div>
+    return `<div class="screen bz">${statusBar()}${topBar('Fiat Wallet')}
+    <div class="scroll"><div class="success" style="padding-top:4px">${cele()}<b class="bl-ok">Fiat Wallet activated</b><b class="sp-big">${RM(FEE)}</b><span class="t-body subtle">Account opening fee paid</span></div>
     <div class="pad16 stack" style="padding-top:10px; gap:10px"><div class="kvbox sp-box">
       <div class="kv"><span>Account number</span><b>${ACCT} <button class="iconbtn sm" data-act="copy" data-v="${ACCT.replace(/ /g,'')}" aria-label="Copy account number">${ic('copy')}</button></b></div>
       ${phSaved() ? `<div class="kv"><span>Phone number</span><b>${esc(phSaved())}</b></div>` : ''}<div class="kv"><span>Paid with</span><b>${S.ewPaidWith || 'YouWallet · MYRT'}</b></div>
@@ -203,36 +272,42 @@
       <div class="kv"><span>Date</span><b>${fmtD(S.ewAt || now())}</b></div></div></div></div>
     <div class="w2foot">${n ? btn(n[0], 'ewResume') + btn('Done', 'ewFinish', {kind:'btn-secondary'}) : btn('Done', 'ewFinish')}</div></div>`; };
 
-  V.ewFail = () => `<div class="screen bz">${statusBar()}${topBar('eWallet')}<div class="scroll">${stateBlock('alert', 'We couldn’t open your eWallet', `If the ${RM(FEE)} opening fee was taken, it goes back to your YouWallet automatically within a few minutes.`, `<div class="stack" style="gap:10px; width:100%">${btn('Try again', 'ewRetry')}${btn('Not now', 'ewFinish', {kind:'btn-tertiary'})}</div>`)}</div></div>`;
+  V.ewOpening = () => `<div class="screen bz">${statusBar()}${topBar(ACTIVATION_TITLE)}
+    <div class="scroll"><div role="status">${stateBlock('wallet2', 'Opening your Fiat Wallet…', 'There’s no opening fee.')}</div></div></div>`;
 
-  /* ---------- eWallet detail + Receive ---------- */
+  V.ewAutoFail = () => `<div class="screen bz">${statusBar()}${topBar(ACTIVATION_TITLE)}
+    <div class="scroll">${stateBlock('alert', 'We couldn’t open your Fiat Wallet', 'No fee was charged.', `<div class="stack" style="gap:10px; width:100%">${btn('Try again', 'ewAutoRetry')}${btn('Back', 'ewFinish', {kind:'btn-tertiary'})}</div>`)}</div></div>`;
+
+  V.ewFail = () => `<div class="screen bz">${statusBar()}${topBar('Fiat Wallet')}<div class="scroll">${stateBlock('alert', 'We couldn’t open your Fiat Wallet', `If the ${RM(FEE)} opening fee was taken, it goes back to your YouWallet automatically within a few minutes.`, `<div class="stack" style="gap:10px; width:100%">${btn('Try again', 'ewRetry')}${btn('Not now', 'ewFinish', {kind:'btn-tertiary'})}</div>`)}</div></div>`;
+
+  /* ---------- Fiat Wallet detail + Receive ---------- */
   V.ewDetail = () => { if (!on()) return V.wallets();
     const tx = ewTx();
-    return `<div class="screen bz">${statusBar()}${topBar('eWallet')}
+    return `<div class="screen bz">${statusBar()}${topBar('Fiat Wallet')}
     <div class="scroll" style="padding-bottom:20px"><div class="pad16 stack" style="gap:14px; padding-top:4px">
       <div class="kvbox sp-box"><div class="kv"><span>Balance</span><b class="t-body-lg">${S.balHide ? '••••' : RM(ewBal())}</b></div>
         <div class="kv"><span>Account number</span><b>${ACCT} <button class="iconbtn sm" data-act="copy" data-v="${ACCT.replace(/ /g,'')}" aria-label="Copy account number">${ic('copy')}</button></b></div>
         <div class="kv"><span>Account name</span><b>${esc(XS_ME.n)}</b></div></div>
       <div class="ew-tools">${btn(ic('xsDown') + 'Receive', 'nav', {kind:'btn-secondary', data:'data-to="ewRecv"'})}${btn(ic('bill') + 'Pay bills', 'bills', {kind:'btn-secondary'})}</div>
       <section><h2 class="bl-cap">History</h2><div class="kvbox sp-box">${tx.length ? tx.map(x => `<div class="kv"><span>${esc(x.t)}<small class="subtle" style="display:block">${fmtD(x.at)}</small></span><b>${x.v < 0 ? '−' : '+'}${RM(Math.abs(x.v))}</b></div>`).join('') : '<p class="t-body subtle" style="margin:0">No activity yet.</p>'}</div></section>
-      <p class="t-caption subtle" style="margin:0">Bills and reloads use your eWallet balance first, then convert MYRT 1:1.</p>
+      <p class="t-caption subtle" style="margin:0">Bills and reloads use your Fiat Wallet balance first, then convert MYRT 1:1.</p>
     </div></div></div>`; };
 
   V.ewRecv = () => { if (!on()) return V.wallets();
-    return `<div class="screen bz">${statusBar()}${topBar('Receive to eWallet')}
+    return `<div class="screen bz">${statusBar()}${topBar('Receive to Fiat Wallet')}
     <div class="scroll"><div class="pad16 stack" style="gap:14px; padding-top:8px; padding-bottom:20px">
       <section class="xs-qr"><div class="xs-qrb">${qrSvg(523)}<span class="xs-qrav">${img('avatar','Elsa')}</span></div>
-        <b>${esc(XS_ME.n)}</b><small>DuitNow QR · Scan with any banking or eWallet app</small></section>
-      <div class="xs-addr"><small>eWallet account number</small><b class="mono">${ACCT}</b>
+        <b>${esc(XS_ME.n)}</b><small>DuitNow QR · Scan with a banking or payment app</small></section>
+      <div class="xs-addr"><small>Fiat Wallet account number</small><b class="mono">${ACCT}</b>
         <button data-act="copy" data-v="${ACCT.replace(/ /g,'')}">${ic('copy')}Copy number</button></div>
-      <div class="xs-acc"><span><b>Ringgit only, by DuitNow</b><small>Money arrives in your eWallet balance. YouApp fee 0%.</small></span></div>
+      <div class="xs-acc"><span><b>Ringgit only, by DuitNow</b><small>Money arrives in your Fiat Wallet balance. YouApp fee 0%.</small></span></div>
     </div></div>
     <div class="w2foot">${btn(ic('share') + 'Share QR', 'toast', {kind:'btn-secondary', data:'data-msg="Opens the share sheet with your DuitNow QR."'})}</div></div>`; };
 
-  /* ---------- bills / reload: paid through the eWallet ---------- */
-  const viaEw = h => h.replace('<div class="kv"><span>Pay from</span><b>YouWallet · MYRT', '<div class="kv"><span>Paid through</span><b>eWallet</b></div><div class="kv"><span>Funded from</span><b>YouWallet · MYRT')
-    .replace('<b>YouWallet · MYRT</b></div>\n      <div class="kv total">', '<b>eWallet · from MYRT</b></div>\n      <div class="kv total">')
-    .replace('Paid from your YouWallet.', 'Paid through your eWallet.');
+  /* ---------- bills / reload: paid through the Fiat Wallet ---------- */
+  const viaEw = h => h.replace('<div class="kv"><span>Pay from</span><b>YouWallet · MYRT', '<div class="kv"><span>Paid through</span><b>Fiat Wallet</b></div><div class="kv"><span>Funded from</span><b>YouWallet · MYRT')
+    .replace('<b>YouWallet · MYRT</b></div>\n      <div class="kv total">', '<b>Fiat Wallet · from MYRT</b></div>\n      <div class="kv total">')
+    .replace('Paid from your YouWallet.', 'Paid through your Fiat Wallet.');
   ['billConfirm', 'billReceipt', 'mreload'].forEach(k => { const o = V[k]; V[k] = () => viaEw(o()); });
   const _done = V.billDone;
   V.billDone = () => { const b = S.bill; if (b && !b.ewLogged) { b.ewLogged = true; const B = bl(b.id);
@@ -244,15 +319,22 @@
   const _hist = walletScanHistory;
   walletScanHistory = function(){ const list = _hist.apply(this, arguments);
     if (S.ewFeeAt) list.push({id:'ew-fee', m:S.ewFeeAt.toLocaleDateString('en-MY', {month:'short', year:'numeric'}), at:S.ewFeeAt,
-      t:'eWallet account opening fee', d:fmtD(S.ewFeeAt), st:'Completed', v:-FEE, ic:'wallet2', kind:'ew'});
+      t:'Fiat Wallet opening fee', d:fmtD(S.ewFeeAt), st:'Completed', v:-FEE, ic:'wallet2', kind:'ew'});
     return list.sort((a, b) => b.at - a.at); };
   window.__walletScanHistory = walletScanHistory;
   const _tx = A.walletReferenceTx;
   A.walletReferenceTx = el => { if ((el.dataset.id || '').startsWith('ew-')) { go(on() ? 'ewDetail' : 'wallets'); return; } return _tx ? _tx(el) : undefined; };
 
   Object.assign(A, {
-    ewGate: el => { S.ewNext = el && el.dataset.n || null; S.sheet = 'ewGate'; render(); },
-    ewStart: () => { S.sheet = null; S.ewBusy = false; if (phSaved()) { go('ewConfirm'); return; } S.ewPh = {cc:'MY', num:'', err:'', busy:false}; go('ewPhone'); },
+    ewGate: el => gate(el?.dataset.n || null),
+    ewAutoRetry: () => { if (S.screen === 'ewAutoFail') openWithoutFee(true); },
+    ewStart: () => {
+      S.sheet = null;
+      S.ewBusy = false;
+      if (phSaved()) return go('ewConfirm');
+      S.ewPh = {cc:'MY', num:'', err:'', busy:false};
+      go('ewPhone');
+    },
     ewTm: el => { S.ewTm = el.dataset.k; render(); },
     ewCcOpen: () => { S.ewCcQ = ''; S.ewCcSearch = false; go('ewCountry'); },
     ewCcSearch: () => { S.ewCcSearch = true; render(); keepFocus('ewCcQ'); },
@@ -260,7 +342,7 @@
     ewCcClear: () => { S.ewCcQ = ''; render(); keepFocus('ewCcQ'); },
     ewCcPick: el => { const f = S.ewPh; if (f.cc !== el.dataset.c) { f.cc = el.dataset.c; f.err = ''; } S.ewCcSearch = false; S.ewCcQ = ''; back(); setTimeout(() => keepFocus('ewNum'), 50); },
     ewSend: el => { const f = S.ewPh; if ((el && el.getAttribute && el.getAttribute('aria-disabled')) || f.busy) return;
-      if (f.cc === 'MY' && digits(f.num) === TAKEN) { f.err = 'This number is linked to another eWallet. Use a different number.'; render(); return; }
+      if (f.cc === 'MY' && digits(f.num) === TAKEN) { f.err = 'This number is linked to another Fiat Wallet. Use a different number.'; render(); return; }
       f.busy = true; render(); setTimeout(() => { f.busy = false; f.otp = ''; f.otpErr = false; f.tries = 0; f.t = 30; go('ewOtp'); toast('Code sent to ' + fmtPh(f.cc, f.num) + '.'); ewTick(); }, 700); },
     ewk: el => { const f = S.ewPh; if (!f || f.busy || f.tries >= 5) return; if (f.otpErr) { f.otp = ''; f.otpErr = false; } if ((f.otp || '').length >= 6) return;
       f.otp = (f.otp || '') + el.dataset.k; render(); if (f.otp.length === 6) A.ewVerify(); },
@@ -288,22 +370,31 @@
     ewCryptoRecv: el => { S.wRecv = el.dataset.id; A.xsRecv(); },
   });
 
-  /* scenario panel: eWallet › Not activated also forgets the verified phone, so the phone step can be tested again */
+  /* scenario panel: Fiat Wallet › Not activated also forgets the verified phone, so the phone step can be tested again */
   const _set = window.__set; window.__set = (k, v) => { if (k === 'ew' && v === 'off') P.clear(); return _set ? _set(k, v) : undefined; };
   /* panel state + META */
   const _st = window.__state;
-  window.__state = () => Object.assign(_st ? _st() : {}, {ew: scen.ew === 'on' ? 'on' : scen.ew === 'fail' ? 'fail' : 'off', bal: scen.bal === 'low' ? 'low' : 'enough'});
+  window.__state = () => Object.assign(_st ? _st() : {}, {ew: scen.ew === 'on' ? 'on' : scen.ew === 'fail' ? 'fail' : 'off', bal: scen.bal === 'low' ? 'low' : 'enough', ewMyrtActivity:scen.ewMyrtActivity || 'none'});
   Object.assign(META, {
-    ewPhone:{name:'eWallet · phone number', ph:1, rules:['Step 1 after Continue on the activation sheet. Verify the phone before paying, so a wrong code never costs money','Country field (flag, name) opens Choose country: full screen, A–Z, flag, name and dial code, search from the header; Malaysia by default','Phone number field shows the dial code before the number','Send code enabled once the number has the right length for that country','Number already linked to another eWallet: error under the field (demo 12-345 0000)']},
-    ewCountry:{name:'eWallet · choose country', ph:1, rules:['A–Z list with flag, name and dial code; the current country is highlighted','Search icon turns the header into a search field (name or code); no match shows No country found','Tap a country to go back with it selected']},
-    ewOtp:{name:'eWallet · verify phone', ph:1, rules:['6-digit SMS code typed on the number keypad (same as the login OTP); checks automatically when 6 digits are in, no Verify button','Wrong code: error with tries left; 5 wrong codes lock for 10 minutes','Resend after 30 s; Change number goes back to step 1','Correct code: saves the number (shared with Edit profile › Mobile Number) and goes to the RM50 payment step; Back from there closes the flow','Next Activate goes straight to payment with the saved number; it can only be changed in Edit profile › Mobile Number (asks for a new code)','Scenario eWallet › Not activated also clears the saved number']},
-    ewConfirm:{name:'Activate eWallet', ph:1, rules:['Only needed for Receive (eWallet), Bill payment and Mobile reload. Scan to Pay does not need it','One-time RM50 account opening fee, not added to balance; shows as −RM50 in history','Paid from MYRT first; if short, top up the rest by debit or credit card or stablecoins (MYRT, USDT, USDC)','Existing KYC covers it, no extra screens','⚠️ Assumption: opening is instant (pending Kevon)']},
-    ewDone:{name:'eWallet activated', ph:1, rules:['RM50.00 with “Account opening fee paid” (no minus on the success screen; history keeps −RM50.00), account number, paid with, reference, date','Continue takes the user back into the flow they started (Bills, Reload or Receive)','⚠️ Assumption: account details are an account number + DuitNow QR']},
-    ewFail:{name:'eWallet · opening failed', ph:1, rules:['Scenario eWallet › Fails next','⚠️ Assumption: a failed opening refunds the fee automatically']},
-    ewDetail:{name:'eWallet', ph:1, rules:['Balance, account number and name, Receive and Pay bills, history incl. the opening fee','⚠️ Assumption: received MYR stays as eWallet balance and is used before MYRT']},
-    ewRecv:{name:'Receive to eWallet', ph:1, rules:['DuitNow QR and account number with Copy and Share','Crypto wallets keep their own Receive (address QR) without the eWallet']},
+    ewPhone:{name:'Fiat Wallet · phone number', ph:1, rules:['Shown when paid activation has no saved verified number. Verify the phone before paying','Country field (flag, name) opens Choose country: full screen, A–Z, flag, name and dial code, search from the header; Malaysia by default','Phone number field shows the dial code before the number','Send code enabled once the number has the right length for that country','Number already linked to another Fiat Wallet: error under the field (demo 12-345 0000)']},
+    ewCountry:{name:'Fiat Wallet · choose country', ph:1, rules:['A–Z list with flag, name and dial code; the current country is highlighted','Search icon turns the header into a search field (name or code); no match shows No country found','Tap a country to go back with it selected']},
+    ewOtp:{name:'Fiat Wallet · verify phone', ph:1, rules:['6-digit SMS code typed on the number keypad (same as the login OTP); checks automatically when 6 digits are in, no Verify button','Wrong code: error with tries left; 5 wrong codes lock for 10 minutes','Resend after 30 s; Change number goes back to step 1','Correct code: saves the shared number and opens the RM50 payment step. Later activation uses the saved number. Edit profile › Mobile Number verifies any change']},
+    ewOpening:{name:'Opening Fiat Wallet', ph:1, rules:['Existing verified details are used. No opening fee, phone prompt or SMS.']},
+    ewAutoFail:{name:'Fiat Wallet · opening failed', ph:1, rules:['No fee was charged. Try again resumes automatic opening.']},
+    ewConfirm:{name:ACTIVATION_TITLE, ph:1, rules:['Only needed for Receive (Fiat Wallet), Bill payment and Mobile reload. Scan to Pay does not need it','One-time RM50 account opening fee, not added to balance; shows as −RM50 in history','Paid from MYRT first; if short, top up the rest by debit or credit card or stablecoins (MYRT, USDT, USDC)','Existing KYC covers it, no extra screens','⚠️ Assumption: opening is instant (pending Kevon)']},
+    ewDone:{name:'Fiat Wallet activated', ph:1, rules:['RM50.00 account opening fee paid; history keeps the −RM50.00 debit. Details show the account number, payment method, reference and date','Continue takes the user back into the flow they started (Bills, Reload or Receive)','⚠️ Assumption: account details are an account number + DuitNow QR']},
+    ewFail:{name:'Fiat Wallet · opening failed', ph:1, rules:['Scenario Fiat Wallet › Fails next','⚠️ Assumption: a failed opening refunds the fee automatically']},
+    ewDetail:{name:'Fiat Wallet', ph:1, rules:['Balance, account number and name, Receive and Pay bills, history incl. the opening fee','⚠️ Assumption: received MYR stays as Fiat Wallet balance and is used before MYRT']},
+    ewRecv:{name:'Receive to Fiat Wallet', ph:1, rules:['DuitNow QR and account number with Copy and Share','Crypto wallets keep their own Receive (address QR) without the Fiat Wallet']},
   });
-  if (META.home && META.home.rules) META.home.rules.push('Bill payment and Mobile reload tiles sit below Top up and Rewards. Both need the eWallet; if it is not active, the activation sheet opens first.');
-  if (META.wallets && META.wallets.rules) META.wallets.rules.push('eWallet section under the currencies: Activate when off, balance when on (opens eWallet details).');
+  if (META.home && META.home.rules) META.home.rules.push('Bill payment and Mobile reload tiles sit below Top up and Rewards. Both need the Fiat Wallet. Verified users with more than RM100 in successful MYRT activity get automatic free opening. Other users see the activation sheet.');
+  if (META.wallets && META.wallets.rules) META.wallets.rules.push('Fiat Wallet section under the currencies: Activate when off, balance when on (opens Fiat Wallet details).');
+  const walletPanel = renderPanel;
+  renderPanel = function(){
+    walletPanel();
+    const panel = document.getElementById('panel');
+    panel?.querySelector('.pgroup')?.insertAdjacentHTML('afterend', `<div class="pgroup"><h2>Fiat Wallet eligibility</h2>
+      ${segCtl('Prior successful MYRT activity', 'ewMyrtActivity', MYRT_ACTIVITY_OPTIONS, 'RM100.01 qualifies for free opening. The RM100 scenario also includes refunded, failed and pending activity.')}</div>`);
+  };
   try { render(); } catch(e) {}
 })();

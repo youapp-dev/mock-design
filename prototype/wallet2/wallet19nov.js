@@ -174,6 +174,7 @@
       const tx = walletScanRecord();
       if (tx?.status !== 'Pending') return;
       settleWalletScan(tx);
+      S.scanReceiptChecked = tx.id;
       render();
     },
     walletScanRetry: () => {

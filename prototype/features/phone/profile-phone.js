@@ -1,6 +1,6 @@
 /* ===== Edit profile › Mobile Number: change the number with an SMS code · 24 Nov 2026 =====
-   The verified number is shared with the Wallet eWallet (features/phone/countries.js, localStorage).
-   Changing it here asks for a new 6-digit code; the eWallet then uses the new number. */
+   The verified number is shared with the Fiat Wallet (features/phone/countries.js, localStorage).
+   Changing it here asks for a new 6-digit code; the Fiat Wallet then uses the new number. */
 (function(){
   const P = window.YA_PHONE; if (!P) return;
   const KEYS = ['1','2','3','4','5','6','7','8','9','','0','del'];
@@ -25,7 +25,7 @@
       <button class="ya-fl ya-ctry" data-act="pphCc" aria-label="Country: ${esc(c[1])}, ${c[2]}. Change"><span class="ya-fll">Country</span>${P.flag(f.cc)}<b>${esc(c[1])}</b>${ic('chev')}</button>
       <label class="ya-fl ya-num ${f.err ? 'err' : ''}" for="pphNum"><span class="ya-fll">New mobile number</span><span class="ya-dial">${c[2]}</span>
         <input id="pphNum" type="tel" inputmode="tel" autocomplete="tel-national" value="${esc(f.num)}" placeholder="${f.cc === 'MY' ? '12-345 6789' : 'Phone number'}" aria-describedby="pphH" ${f.busy ? 'disabled' : ''}></label>
-      <p class="ya-flh ${f.err ? 'err' : ''}" id="pphH">${f.err ? esc(f.err) : 'This number is also used for your eWallet.'}</p>
+      <p class="ya-flh ${f.err ? 'err' : ''}" id="pphH">${f.err ? esc(f.err) : 'This number is also used for your Fiat Wallet.'}</p>
       <p class="t-caption subtle ya-demo">Demo: 12-345 0000 (Malaysia) is already linked to another account.</p>
     </div></div>
     <div class="cta">${btn(f.busy ? 'Sending code…' : 'Send code', 'pphSend', {disabled: !ok || f.busy, loading: f.busy})}</div></div>`; };
@@ -81,7 +81,7 @@
   document.addEventListener('keydown', e => { if (S.screen !== 'pfPhoneOtp') return; if (/^\d$/.test(e.key)) A.pphK({dataset:{k:e.key}}); else if (e.key === 'Backspace') A.pphKDel(); });
 
   Object.assign(META, {
-    pfPhone:{name:'Change mobile number', group:'You · Edit profile', rules:['Opened from Edit profile › Mobile Number','Country field (full-screen list with search) and the new number with its dial code','Same number as now or a number linked to another account shows an error','The verified number is shared with the eWallet']},
+    pfPhone:{name:'Change mobile number', group:'You · Edit profile', rules:['Opened from Edit profile › Mobile Number','Country field (full-screen list with search) and the new number with its dial code','Same number as now or a number linked to another account shows an error','The verified number is shared with the Fiat Wallet']},
     pfCountry:{name:'Choose country', group:'You · Edit profile', rules:['A–Z with flag, name and dial code; search from the header']},
     pfPhoneOtp:{name:'Verify new number', group:'You · Edit profile', rules:['6-digit SMS code on the number keypad, checks at 6 digits','Wrong code shows tries left; 5 wrong codes lock for 10 minutes; resend after 30 s','Correct code saves the number right away (no need to tap Save Changes) and goes back to Edit profile']},
   });
