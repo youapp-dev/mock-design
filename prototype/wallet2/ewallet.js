@@ -63,7 +63,7 @@
   .ew-num input::placeholder{color:var(--a-ink-3)}
   .ew-flh{margin:6px 2px 0; font-size:12px; line-height:16px; color:var(--a-ink-3)} .ew-flh.err{color:var(--a-error)}
   .ew-demo{margin:14px 2px 0}
-  .ew-flag{display:block; width:28px; height:28px; border-radius:50%; overflow:hidden; flex:none; box-shadow:0 0 0 1px rgba(9,20,26,.08)} .ew-flag svg{display:block; width:100%; height:100%}
+  .ya-flag, .ew-flag{display:block; width:28px; height:28px; border-radius:50%; overflow:hidden; flex:none; box-shadow:0 0 0 1px rgba(9,20,26,.08)} .ya-flag svg, .ew-flag svg{display:block; width:100%; height:100%}
   .ew-ccl{display:grid; align-content:start}
   .ew-ccrow{display:flex; align-items:center; gap:14px; width:100%; min-height:56px; padding:0 16px; border:0; border-bottom:1px solid var(--a-line); background:#fff; text-align:left; font:inherit; cursor:pointer}
   .ew-ccrow b{flex:1; font:500 16px Inter, sans-serif; color:var(--a-ink)} .ew-ccrow > span:last-child{font:600 15px Inter, sans-serif; color:var(--a-indigo)}
@@ -123,22 +123,14 @@
     return `<div class="grab"></div><div class="stack" style="gap:14px">
       <div class="ew-intro">${ART(152)}<h2 class="t-title">${n ? `Activate your eWallet to ${n[0].toLowerCase()}` : 'Activate your eWallet'}</h2>
         <p class="t-body muted">Bills, reloads and receiving ringgit run on your eWallet. Scan to Pay doesn’t need it.</p></div>
-      <div class="kvbox sp-box"><div class="kv"><span>One-time opening fee</span><b>${RM(FEE)}</b></div><div class="kv"><span>Identity check</span><b>Already done</b></div><div class="kv"><span>Phone number</span><b>Verify next</b></div></div>
+      <div class="kvbox sp-box"><div class="kv"><span>One-time opening fee</span><b>${RM(FEE)}</b></div><div class="kv"><span>Identity check</span><b>Already done</b></div><div class="kv"><span>Phone number</span><b>${phSaved() ? esc(phSaved()) : 'Verify next'}</b></div></div>
       ${bal() < FEE ? `<p class="t-caption subtle" style="margin:0; text-align:center">Your MYRT is ${RM(bal())}. You can top up the rest on the next step.</p>` : ''}
       ${btn('Continue', 'ewStart')}${btn('Not now', 'closeSheet', {kind:'btn-tertiary'})}</div>`; };
 
   /* ---------- activation step 1–2: phone number + SMS OTP (verify before paying) ---------- */
-  /* countries: [iso, name, dial code, [min, max] national digits, flag key in SVG] — A–Z like the system country picker */
-  const CC = [['AU','Australia','+61',[9,9],'flag_au'],['CN','China','+86',[11,11],'flag_zh'],['HK','Hong Kong','+852',[8,8],'flag_hk'],['ID','Indonesia','+62',[9,12],'flag_id'],
-    ['JP','Japan','+81',[10,10],'flag_ja'],['MY','Malaysia','+60',[9,10],'flag_ms'],['MM','Myanmar','+95',[8,10],'flag_my_mm'],['NL','Netherlands','+31',[9,9],'flag_nl'],
-    ['PH','Philippines','+63',[10,10],'flag_ph'],['PT','Portugal','+351',[9,9],'flag_pt'],['SG','Singapore','+65',[8,8],'flag_sg'],['KR','South Korea','+82',[9,10],'flag_ko'],
-    ['TW','Taiwan','+886',[9,9],'flag_tw'],['TH','Thailand','+66',[9,9],'flag_th'],['GB','United Kingdom','+44',[10,10],'flag_gb'],['US','United States','+1',[10,10],'flag_en'],['VN','Vietnam','+84',[9,10],'flag_vi']];
-  const ccOf = c => CC.find(x => x[0] === c) || CC.find(x => x[0] === 'MY');
-  const flagOf = c => `<span class="ew-flag" aria-hidden="true">${SVG[ccOf(c)[4]] || SVG.flag_globe || ''}</span>`;
-  const digits = v => (v || '').replace(/\D/g, '').replace(/^0+/, '');
-  const phoneOk = (cc, n) => { const [a, b] = ccOf(cc)[3]; const d = digits(n); return d.length >= a && d.length <= b; };
-  const fmtPh = (cc, n) => { const d = digits(n), dial = ccOf(cc)[2]; return `${dial} ${cc === 'MY' ? d.replace(/^(\d{2})(\d{3,4})(\d{4})$/, '$1-$2 $3') : d.replace(/(\d{3,4})(?=\d)/g, '$1 ')}`; };
-  const TAKEN = '123450000';
+  /* countries, formatting and the verified phone live in features/phone/countries.js (shared with App 3.0 Edit profile) */
+  const P = window.YA_PHONE; const CC = P.list; const ccOf = P.get; const flagOf = P.flag; const digits = P.digits; const phoneOk = P.ok; const fmtPh = P.fmt; const TAKEN = P.TAKEN;
+  const phSaved = () => { const v = P.load(); return v && v.disp ? v.disp : ''; };
   V.ewPhone = () => { const f = S.ewPh || (S.ewPh = {cc:'MY', num:'', err:''}); if (!CC.some(x => x[0] === f.cc)) f.cc = 'MY'; const c = ccOf(f.cc); const ok = phoneOk(f.cc, f.num);
     return `<div class="screen bz">${statusBar()}${topBar('Activate eWallet')}
     <div class="scroll"><div class="pad16 ew-phw">
@@ -191,7 +183,7 @@
         <li><span>${ic('mreload')}</span><b>Mobile reload</b></li>
       </ul>
       <div class="kvbox sp-box">
-        ${S.ewPhoneOk ? `<div class="kv"><span>Phone number</span><b class="ew-okph">${esc(S.ewPhoneOk)} ${ic('check')}</b></div>` : ''}<div class="kv"><span>Account opening fee</span><b>${RM(FEE)}</b></div>
+        ${phSaved() ? `<div class="kv"><span>Phone number</span><b class="ew-okph">${esc(phSaved())} ${ic('check')}</b></div>` : ''}<div class="kv"><span>Account opening fee</span><b>${RM(FEE)}</b></div>
         <div class="kv"><span>Pay from</span><b>YouWallet · MYRT ${myrt(b)}</b></div>
         ${low ? `<div class="kv"><span>Top up first</span><b>${RM(short)}</b></div>` : ''}
         <div class="kv total"><span>Total</span><b>${RM(FEE)}</b></div></div>
@@ -206,7 +198,7 @@
     <div class="scroll"><div class="success" style="padding-top:4px">${cele()}<b class="bl-ok">eWallet activated</b><b class="sp-big">−${RM(FEE)}</b><span class="t-body subtle">Account opening fee</span></div>
     <div class="pad16 stack" style="padding-top:10px; gap:10px"><div class="kvbox sp-box">
       <div class="kv"><span>Account number</span><b>${ACCT} <button class="iconbtn sm" data-act="copy" data-v="${ACCT.replace(/ /g,'')}" aria-label="Copy account number">${ic('copy')}</button></b></div>
-      ${S.ewPhoneOk ? `<div class="kv"><span>Phone number</span><b>${esc(S.ewPhoneOk)}</b></div>` : ''}<div class="kv"><span>Paid with</span><b>${S.ewPaidWith || 'YouWallet · MYRT'}</b></div>
+      ${phSaved() ? `<div class="kv"><span>Phone number</span><b>${esc(phSaved())}</b></div>` : ''}<div class="kv"><span>Paid with</span><b>${S.ewPaidWith || 'YouWallet · MYRT'}</b></div>
       <div class="kv"><span>Reference</span><b>${r}</b></div>
       <div class="kv"><span>Date</span><b>${fmtD(S.ewAt || now())}</b></div></div></div></div>
     <div class="w2foot">${n ? btn(n[0], 'ewResume') + btn('Done', 'ewFinish', {kind:'btn-secondary'}) : btn('Done', 'ewFinish')}</div></div>`; };
@@ -260,7 +252,7 @@
 
   Object.assign(A, {
     ewGate: el => { S.ewNext = el && el.dataset.n || null; S.sheet = 'ewGate'; render(); },
-    ewStart: () => { S.sheet = null; S.ewBusy = false; S.ewPh = {cc:'MY', num:'', err:'', busy:false}; go('ewPhone'); },
+    ewStart: () => { S.sheet = null; S.ewBusy = false; if (phSaved()) { go('ewConfirm'); return; } S.ewPh = {cc:'MY', num:'', err:'', busy:false}; go('ewPhone'); },
     ewTm: el => { S.ewTm = el.dataset.k; render(); },
     ewCcOpen: () => { S.ewCcQ = ''; S.ewCcSearch = false; go('ewCountry'); },
     ewCcSearch: () => { S.ewCcSearch = true; render(); keepFocus('ewCcQ'); },
@@ -278,7 +270,7 @@
     ewVerify: el => { const f = S.ewPh; if ((el && el.getAttribute && el.getAttribute('aria-disabled')) || f.busy || (f.otp || '').length < 6 || f.tries >= 5) return;
       f.busy = true; render(); setTimeout(() => { f.busy = false;
         if (f.otp !== '123456') { f.tries = (f.tries || 0) + 1; f.otpErr = true; f.otp = ''; render(); keepFocus('ewOtpIn'); return; }
-        clearInterval(ewTimer); S.ewPhoneOk = fmtPh(f.cc, f.num); const i = S.hist.lastIndexOf('ewPhone'); if (i >= 0) S.hist = S.hist.slice(0, i);
+        clearInterval(ewTimer); P.save(f.cc, f.num); const i = S.hist.lastIndexOf('ewPhone'); if (i >= 0) S.hist = S.hist.slice(0, i);
         go('ewConfirm', {replace:true}); toast('Phone number verified.'); }, 600); },
     ewPay: () => { if (S.ewBusy) return; const short = Math.max(0, FEE - bal()); S.ewBusy = true; render();
       setTimeout(() => { S.ewBusy = false;
@@ -296,13 +288,15 @@
     ewCryptoRecv: el => { S.wRecv = el.dataset.id; A.xsRecv(); },
   });
 
+  /* scenario panel: eWallet › Not activated also forgets the verified phone, so the phone step can be tested again */
+  const _set = window.__set; window.__set = (k, v) => { if (k === 'ew' && v === 'off') P.clear(); return _set ? _set(k, v) : undefined; };
   /* panel state + META */
   const _st = window.__state;
   window.__state = () => Object.assign(_st ? _st() : {}, {ew: scen.ew === 'on' ? 'on' : scen.ew === 'fail' ? 'fail' : 'off', bal: scen.bal === 'low' ? 'low' : 'enough'});
   Object.assign(META, {
     ewPhone:{name:'eWallet · phone number', ph:1, rules:['Step 1 after Continue on the activation sheet. Verify the phone before paying, so a wrong code never costs money','Country field (flag, name) opens Choose country: full screen, A–Z, flag, name and dial code, search from the header; Malaysia by default','Phone number field shows the dial code before the number','Send code enabled once the number has the right length for that country','Number already linked to another eWallet: error under the field (demo 12-345 0000)']},
     ewCountry:{name:'eWallet · choose country', ph:1, rules:['A–Z list with flag, name and dial code; the current country is highlighted','Search icon turns the header into a search field (name or code); no match shows No country found','Tap a country to go back with it selected']},
-    ewOtp:{name:'eWallet · verify phone', ph:1, rules:['6-digit SMS code typed on the number keypad (same as the login OTP); checks automatically when 6 digits are in, no Verify button','Wrong code: error with tries left; 5 wrong codes lock for 10 minutes','Resend after 30 s; Change number goes back to step 1','Correct code: goes to the RM50 payment step with the number shown as verified; Back from there closes the flow']},
+    ewOtp:{name:'eWallet · verify phone', ph:1, rules:['6-digit SMS code typed on the number keypad (same as the login OTP); checks automatically when 6 digits are in, no Verify button','Wrong code: error with tries left; 5 wrong codes lock for 10 minutes','Resend after 30 s; Change number goes back to step 1','Correct code: saves the number (shared with Edit profile › Mobile Number) and goes to the RM50 payment step; Back from there closes the flow','Next Activate goes straight to payment with the saved number; it can only be changed in Edit profile › Mobile Number (asks for a new code)','Scenario eWallet › Not activated also clears the saved number']},
     ewConfirm:{name:'Activate eWallet', ph:1, rules:['Only needed for Receive (eWallet), Bill payment and Mobile reload. Scan to Pay does not need it','One-time RM50 account opening fee, not added to balance; shows as −RM50 in history','Paid from MYRT first; if short, top up the rest by debit or credit card or stablecoins (MYRT, USDT, USDC)','Existing KYC covers it, no extra screens','⚠️ Assumption: opening is instant (pending Kevon)']},
     ewDone:{name:'eWallet activated', ph:1, rules:['−RM50 account opening fee, account number, paid with, reference, date','Continue takes the user back into the flow they started (Bills, Reload or Receive)','⚠️ Assumption: account details are an account number + DuitNow QR']},
     ewFail:{name:'eWallet · opening failed', ph:1, rules:['Scenario eWallet › Fails next','⚠️ Assumption: a failed opening refunds the fee automatically']},

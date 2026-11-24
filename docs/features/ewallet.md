@@ -17,7 +17,7 @@ Receive (in ringgit), Bill payment and Mobile reload run on MYR rails. YouApp ne
 | Receive | Every wallet detail screen has Receive. Crypto wallets (YouApp Wallet, connected MetaMask/OKX) show their address and QR with no eWallet needed. The eWallet shows its DuitNow QR and account number and needs activation | Maul |
 | KYC | Existing KYC covers the eWallet. No extra screens | Maul |
 | Name | eWallet | Maul |
-| Phone number | Activation verifies a phone number by SMS code **before** the RM50 is charged, so a wrong code never costs money. Any country (default Malaysia +60): a Country field opens a full-screen Choose country list (flag, name, dial code, search), like the system phone setup | Maul, 24 Nov |
+| Phone number | Activation verifies a phone number by SMS code **before** the RM50 is charged, so a wrong code never costs money. Any country (default Malaysia +60): a Country field opens a full-screen Choose country list (flag, name, dial code, search), like the system phone setup. Once verified the number is saved: going back and tapping Activate again goes straight to payment, with no option to change it there. It is changed only in Edit profile › Mobile Number, which asks for a new code. Profile and eWallet share one number Maul, 24 Nov |
 
 ## Flow
 
@@ -54,7 +54,8 @@ Receive (in ringgit), Bill payment and Mobile reload run on MYR rails. YouApp ne
 | 7 | Rapid taps on Pay & activate | Only one activation runs |
 | 9 | Phone number already linked to another eWallet | Error under the field, no code sent |
 | 10 | Wrong SMS code | Error with tries left, boxes clear; 5 wrong codes lock for 10 minutes |
-| 11 | Back from the payment step after verifying | Closes the activation flow; starting again asks for the phone again |
+| 11 | Back from the payment step after verifying | Closes the activation flow and keeps the verified number. Activate again opens payment directly |
+| 12 | User wants another number for the eWallet | Edit profile › Mobile Number: new number, 6-digit code, saved right away; the eWallet uses it |
 | 8 | User outside Malaysia | Not built yet. W6 says Bills and Reload are Malaysia only; the eWallet section and tiles should follow |
 
 ## Open questions (Kevon) — prototype assumptions
@@ -72,6 +73,9 @@ Receive (in ringgit), Bill payment and Mobile reload run on MYR rails. YouApp ne
 - Wallet 2.0 T3 Receive MYRT is unchanged for crypto wallets. Receiving ringgit is new and needs the eWallet.
 
 ## Prototype controls
+
+- The verified number is shared between App 3.0 and the Wallet through `prototype/features/phone/countries.js` (browser storage). Scenario eWallet › Not activated clears it so the phone step can be tested again.
+
 
 eWallet: Not activated / Active / Fails next. MYRT balance: RM50 or more / Below RM50 (RM12.40). Jumps: Mobile reload, eWallet (activation screen).
 
