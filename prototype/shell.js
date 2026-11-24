@@ -50,7 +50,7 @@
   document.querySelectorAll('[data-s]').forEach(b => b.addEventListener('click', () => {
     if (!(ready('a30') && ready('w2'))) return; const k = b.dataset.s, v = b.dataset.v;
     if (k==='gList') { win('a30').__set(k, v); show('a30'); status(); return; }
-    if (k==='tpList' || k==='tpLb' || k==='actMine') { win('a30').__set(k, v); show('a30'); status(); return; }
+    if (k==='tpList' || k==='tpLb' || k==='actMine' || k==='mxLb') { win('a30').__set(k, v); show('a30'); status(); return; }
     if (k==='kyc' || k==='wallet' || k==='host') {
       win('a30').__set(k, v);
       const a = ctxOf('a30');
@@ -82,7 +82,7 @@
     document.getElementById('nowTag').classList.toggle('w2', active==='w2');
     document.getElementById('nowName').textContent = st.screen==='activate' && st.wallet==='reconnect' ? 'Reconnect Wallet' : YouAppPrototypeRoutes.label(st.screen, st.tripsEnabled);
     const a = ctxOf('a30'), w = ctxOf('w2');
-    const cur = {ew:w.ew||'off', bal:w.bal||'enough', actMine:a.actMine||'has', tpList:a.tpList||'has', tpLb:a.tpLb||'friends', gList:a.gList||'empty', mreq:w.mreq||'none', fph:w.fph||'1', lvl:w.lvl||'0', elChk:w.elChk||'first90', kyc:a.kyc, wallet:a.wallet, host:a.hostSt, tier:w.tier, vipEnd:w.vipEnd, sh:w.sh, ref:w.ref==='none'?'none':'scarlette', paid:w.paid||'no', criteria:w.criteria, biz:w.biz, merch:w.merch||'has', pz:w.pz||'won'};
+    const cur = {ew:w.ew||'off', bal:w.bal||'enough', actMine:a.actMine||'has', tpList:a.tpList||'has', tpLb:a.tpLb||'friends', mxLb:a.mxLb||'has', gList:a.gList||'empty', mreq:w.mreq||'none', fph:w.fph||'1', lvl:w.lvl||'0', elChk:w.elChk||'first90', kyc:a.kyc, wallet:a.wallet, host:a.hostSt, tier:w.tier, vipEnd:w.vipEnd, sh:w.sh, ref:w.ref==='none'?'none':'scarlette', paid:w.paid||'no', criteria:w.criteria, biz:w.biz, merch:w.merch||'has', pz:w.pz||'won'};
     document.querySelectorAll('[data-s]').forEach(b => b.setAttribute('aria-pressed', String(cur[b.dataset.s]===b.dataset.v)));
   }
   const hookFrame = installPrototypeForms({win, activeRenderer: () => active, status});

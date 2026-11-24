@@ -60,14 +60,18 @@ const placeById = id => PLACES.find(p => p.id === id) || (typeof merById === 'fu
 /* our own state: check-ins, reviews */
 const MX = window.MX = {mine:{}, last:{}, reviews:{}, oldMap:{}, flt:'all', sort:'near', area:'near', km:3};
 PLACES.forEach(p => { MX.mine[p.id] = p.mine; });
-const mineOf = p => MX.mine[p.id] ?? p.mine ?? 0;
+const lbScen = () => (typeof scen !== 'undefined' && scen.mxLb) || 'has';  /* has | none30 (nobody in the last 30 days) | none (nobody ever) */
+const fresh = p => (MX.fresh || {})[p.id] || 0;  /* check-ins made after the scenario was picked */
+const mineOf = p => lbScen() === 'none' ? fresh(p) : (MX.mine[p.id] ?? p.mine ?? 0);
 const dist = m => m < 1000 ? `${m} m` : `${(m/1000).toFixed(1)} km`;
 const openTxt = p => p.open ? `<b class="mx-op on">Open</b>${p.close?` · till ${p.close}`:''}` : `<b class="mx-op off">Closed</b>${p.opens?` · ${p.opens}`:''}`;
 const fmt = n => n.toLocaleString('en-US');
 const starRow = (r, cls='') => `<span class="mx-stars ${cls}" aria-label="${r} out of 5">${[1,2,3,4,5].map(i => `<i class="${r >= i - .25 ? 'on' : ''}">${STAR}</i>`).join('')}</span>`;
 const ord = n => n + (['th','st','nd','rd'][((n % 100) - 20) % 10] || ['th','st','nd','rd'][n % 100] || 'th');
-const board = (p, all) => { const rows = p.board.map(([k, n]) => ({k, n: all ? Math.round(n * 3.4) : n})); const mine = mineOf(p);
+const board = (p, all) => { const sc = lbScen(); if (sc === 'none' || (sc === 'none30' && !all)) { const n = fresh(p); return n ? [{k:'me', n: all ? n : n}] : []; }
+  const rows = p.board.map(([k, n]) => ({k, n: all ? Math.round(n * 3.4) : n})); const mine = mineOf(p);
   if (mine > 0) rows.push({k:'me', n: all ? mine + 4 : mine}); return rows.sort((a, b) => b.n - a.n || (a.k === 'me' ? 1 : -1)); };
+const ambOf = p => { const b = board(p); return b.length ? b[0] : null; };
 const who = k => k === 'me' ? {n:'You', img:'avatar', from:'Local · Bangsar', g:'m', age:29} : PPL[k];
 const rankOf = p => { const b = board(p); const i = b.findIndex(r => r.k === 'me'); return i < 0 ? null : i + 1; };
 
@@ -86,7 +90,7 @@ merchantBody = function(c){
   if (c === 'error') return head + errorBlock();
   if (c !== 'empty' && !ar.cnt[km]) return head + stateBlock('emptycal', 'No merchants around here yet', 'Try a wider distance or a nearby area.', `<button class="btn btn-secondary btn-sm" data-act="mxArea">Change area</button>`);
   if (c === 'empty' || !list.length) return head + stateBlock('emptycal', 'No places here yet', f === 'cb' ? `No cashback merchants ${ar.gps ? 'near you' : 'in this area'}. Try All.` : 'Try another filter or area.');
-  return head + `<div class="mx-list">${list.map(p => { const a = PPL[p.amb];
+  return head + `<div class="mx-list">${list.map(p => {
     return `<article class="mx-row"><button class="mx-rm" data-act="mxOpen" data-id="${p.id}" aria-label="Open ${esc(p.name)}">
       <span class="mx-ph">${img(p.img, p.name)}</span>
       <span class="mx-ri"><span class="mx-nm"><b>${esc(p.name)}</b>${p.cb ? `<em class="mx-cb">${p.cb}% back</em>` : ''}</span>
@@ -94,7 +98,9 @@ merchantBody = function(c){
         <span class="mx-ty">${esc(p.type)}${p.price ? ` · ${esc(p.price)}` : ''}</span>
         <span class="mx-ad">${SV.pin}<span>${esc(p.addr)}</span></span>
         <span class="mx-ds"><b>${dist(p.m)}</b> · ${openTxt(p)}</span></span></button>
-      <div class="mx-amb"><span class="mx-av">${img(a.img, a.n)}<i>${CROWN}</i></span><span class="mx-at"><b>${esc(a.n)}</b> is the ambassador</span><small>${p.today} here today</small></div></article>`; }).join('')}</div>
+      ${(() => { const am = ambOf(p); const u = am && who(am.k); const today = lbScen() === 'none' ? fresh(p) : p.today;
+        return u ? `<div class="mx-amb"><span class="mx-av">${img(u.img, u.n)}<i>${CROWN}</i></span><span class="mx-at"><b>${esc(u.n)}</b> ${am.k === 'me' ? 'are' : 'is'} the ambassador</span><small>${today} here today</small></div>`
+          : `<div class="mx-amb none"><span class="mx-av none">${CROWN}</span><span class="mx-at">No ambassador yet · <b>be the first</b></span>${today ? `<small>${today} here today</small>` : ''}</div>`; })()}</article>`; }).join('')}</div>
     <p class="mx-attr">Places and reviews from Google</p>`;
 };
 
@@ -192,17 +198,18 @@ V.mer = () => { const p = placeById(S.mer) || PLACES[0]; if (MX.hiFor !== p.id) 
       <div class="mx-ci"><span><b>Check in here</b><small>${mine ? `${mine} check-in${mine === 1 ? '' : 's'}${rank ? ` · <b>#${rank}</b> here` : ''}` : 'Not checked in yet'}</small></span>
         <button data-act="mxCheckIn" ${wait ? 'aria-disabled="true"' : ''}>${wait ? `${SV.check}Next at ${nextAt}` : `${SV.pin}Check in`}</button></div>
       <div class="mx-sh"><h2>Ambassador</h2><button class="mx-link" data-act="mxBoard">See leaderboard</button></div>
-      <div class="mx-ambc"><span class="mx-avl">${img(a.img, a.n)}<i>${CROWN}</i></span><span class="mx-amt"><b>${esc(a.n)}</b><span>${top.n} check-ins in the last 30 days</span><small>${esc(a.from)} regular</small></span><button class="mx-chat" data-act="mxChat" data-k="${p.amb}" aria-label="Chat with ${esc(a.n)}">${SV.chat}</button></div>
-      <div class="mx-lb">${rest.map(r => { const u = who(r.k); const i = b.indexOf(r) + 1; return `<div class="mx-lbr ${r.k === 'me' ? 'me' : ''}"><em>${i}</em>${img(u.img, u.n)}<b>${esc(u.n)}</b><strong>${r.n}</strong></div>`; }).join('')}
-        ${ahead && meRow ? `<p class="mx-gap">${SV.chevu}<span>${gap} more check-in${gap === 1 ? '' : 's'} to pass ${esc(who(ahead.k).n)}</span></p>` : !meRow ? `<p class="mx-gap">${SV.chevu}<span>Check in to join the leaderboard</span></p>` : ''}</div>
+      ${top ? (() => { const u = who(top.k); return `<div class="mx-ambc"><span class="mx-avl">${img(u.img, u.n)}<i>${CROWN}</i></span><span class="mx-amt"><b>${esc(u.n)}</b><span>${top.n} check-in${top.n === 1 ? '' : 's'} in the last 30 days</span><small>${top.k === 'me' ? 'That’s you' : `${esc(u.from)} regular`}</small></span>${top.k === 'me' ? '' : `<button class="mx-chat" data-act="mxChat" data-k="${top.k}" aria-label="Chat with ${esc(u.n)}">${SV.chat}</button>`}</div>`; })()
+        : `<div class="mx-ambc none"><span class="mx-avl none">${CROWN}</span><span class="mx-amt"><b>No ambassador yet</b><span>${lbScen() === 'none30' ? 'Nobody has checked in here in the last 30 days.' : 'Nobody has checked in here yet.'}</span><small>Check in to become the first ambassador.</small></span></div>`}
+      ${rest.length ? `<div class="mx-lb">${rest.map(r => { const u = who(r.k); const i = b.indexOf(r) + 1; return `<div class="mx-lbr ${r.k === 'me' ? 'me' : ''}"><em>${i}</em>${img(u.img, u.n)}<b>${esc(u.n)}</b><strong>${r.n}</strong></div>`; }).join('')}
+        ${ahead && meRow ? `<p class="mx-gap">${SV.chevu}<span>${gap} more check-in${gap === 1 ? '' : 's'} to pass ${esc(who(ahead.k).n)}</span></p>` : !meRow ? `<p class="mx-gap">${SV.chevu}<span>Check in to join the leaderboard</span></p>` : ''}</div>` : ''}
       <div class="mx-sh"><h2>Reviews</h2></div>
-      <div class="mx-rate">${img('avatar', 'You', 'mx-rva')}<span><b>Rate your visit</b>${starRow(MX.reviews[p.id] ? MX.reviews[p.id].r : 0, 'em')}</span><button data-act="mxReview">${MX.reviews[p.id] ? 'Edit review' : 'Write a review'}</button></div>
+      <div class="mx-rate">${img('avatar', 'You', 'mx-rva')}<span><b>Rate your visit</b><span class="mx-stars em mx-rstars" role="group" aria-label="Rate your visit">${[1,2,3,4,5].map(i => `<button class="${(MX.reviews[p.id] ? MX.reviews[p.id].r : 0) >= i ? 'on' : ''}" data-act="mxRateStar" data-v="${i}" aria-label="Rate ${i} star${i > 1 ? 's' : ''}">${STAR}</button>`).join('')}</span></span><button data-act="mxReview">${MX.reviews[p.id] ? 'Edit review' : 'Write a review'}</button></div>
       <div class="mx-rsum"><div><b>${p.rating}</b>${starRow(p.rating, 'sm')}<small>${fmt(p.rev + 86)} reviews</small></div><div class="mx-bars">${ratings.map(([s, v]) => `<span><em>${s}</em><i><b style="width:${v * 100}%"></b></i></span>`).join('')}</div></div>
       ${revs.map(revCard).join('')}
       <button class="mx-all" data-act="mxAllRev">See all ${fmt(p.rev + 86)} reviews</button>
-      <div class="mx-sh"><h2>${fmt(p.total + (mine > p.mine ? mine - p.mine : 0))} people checked in here</h2><button class="mx-link" data-act="mxPeople">See all</button></div>
-      <div class="mx-pp">${ppl.map(k => { const u = PPL[k]; return `<button data-act="mxPerson" data-k="${k}"><span>${img(u.img, u.n)}</span><b>${esc(u.n)}</b><small>${u.age}${GEN(u.g)}</small></button>`; }).join('')}</div>
-      ${p.total >= 50 ? `<div class="mx-sh"><h2>Who checks in here</h2><small class="mx-sub">Last 90 days</small></div>
+      ${lbScen() === 'none' ? `<div class="mx-sh"><h2>${mine ? 'You checked in here' : 'No one has checked in here yet'}</h2></div>` : `<div class="mx-sh"><h2>${fmt(p.total + (mine > p.mine ? mine - p.mine : 0))} people checked in here</h2><button class="mx-link" data-act="mxPeople">See all</button></div>
+      <div class="mx-pp">${ppl.map(k => { const u = PPL[k]; return `<button data-act="mxPerson" data-k="${k}"><span>${img(u.img, u.n)}</span><b>${esc(u.n)}</b><small>${u.age}${GEN(u.g)}</small></button>`; }).join('')}</div>`}
+      ${p.total >= 50 && lbScen() !== 'none' ? `<div class="mx-sh"><h2>Who checks in here</h2><small class="mx-sub">Last 90 days</small></div>
       <div class="mx-who">${summary3}<div class="mx-dns">${donut('Age', AGE)}${donut('Gender', GENDER)}</div><button class="mx-all in" data-act="mxWho">Show all${SV.chevd}</button></div>` : ''}
       <p class="mx-attr">Places and reviews from Google</p>
     </div></div>${p.cb ? `<div class="mx-paybar"><button class="mx-paybtn" data-act="cbScan" aria-label="Pay ${esc(p.name)}, ${p.open ? `${p.cb}% cashback` : 'closed now'}">${SV.qr}<span><b>Pay</b><small>${p.open ? `${p.cb}% cashback` : 'Closed now'}</small></span></button></div>` : ''}</div>`; };
@@ -219,13 +226,49 @@ V.merDone = () => { const p = placeById(S.mer) || PLACES[0]; const mine = mineOf
     <div class="cta">${btn('Done', 'mxDoneX', {cls:'btn-block'})}</div></div>`; };
 
 /* ---------- 4. Place leaderboard ---------- */
-V.merBoard = () => { const p = placeById(S.mer) || PLACES[0]; const all = MX.lbAll; const b = board(p, all); const top = who(b[0].k);
-  return `<div class="screen mxb">${statusBar()}${topBar(p.name)}<div class="scroll mx-pad">
-    <div class="mx-seg" role="tablist">${[['30','Last 30 days'],['all','All time']].map(([k, t]) => `<button role="tab" aria-selected="${(k === 'all') === !!all}" data-act="mxLb" data-k="${k}">${t}</button>`).join('')}</div>
-    <div class="mx-crown"><span class="mx-avb">${img(top.img, top.n)}<i>${CROWN}</i></span><b>${esc(top.n)}</b><span>${all ? 'Most check-ins of all time' : 'Ambassador'} · ${b[0].n} check-ins</span><small>Most check-ins in the last 30 days becomes the ambassador.</small></div>
+V.merBoard = () => { const p = placeById(S.mer) || PLACES[0]; const all = MX.lbAll; const b = board(p, all); const sc = lbScen();
+  const tabs = `<div class="mx-seg" role="tablist">${[['30','Last 30 days'],['all','All time']].map(([k, t]) => `<button role="tab" aria-selected="${(k === 'all') === !!all}" data-act="mxLb" data-k="${k}">${t}</button>`).join('')}</div>`;
+  if (!b.length) { const allHas = !all && sc === 'none30';
+    return `<div class="screen mxb">${statusBar()}${topBar(p.name)}<div class="scroll mx-pad">${tabs}
+      <div class="mx-lbe"><span class="mx-lbei">${CROWN}</span>
+        <b>${allHas ? 'No check-ins in the last 30 days' : 'No check-ins yet'}</b>
+        <p>${allHas ? 'The ambassador spot is open. Check in here to take it.' : `Be the first to check in at ${esc(p.name)} and become its ambassador.`}</p>
+        <button class="btn btn-primary" data-act="mxCheckIn">${SV.pin}Check in</button>
+        ${allHas ? '<button class="link" data-act="mxLb" data-k="all">See the all-time leaderboard</button>' : ''}</div>
+      <p class="mx-fine">Most check-ins in the last 30 days becomes the ambassador. Check in once an hour. You must be at the place.</p></div></div>`; }
+  const top = who(b[0].k);
+  return `<div class="screen mxb">${statusBar()}${topBar(p.name)}<div class="scroll mx-pad">${tabs}
+    <div class="mx-crown"><span class="mx-avb">${img(top.img, top.n)}<i>${CROWN}</i></span><b>${esc(top.n)}</b><span>${all ? 'Most check-ins of all time' : 'Ambassador'} · ${b[0].n} check-in${b[0].n === 1 ? '' : 's'}</span><small>Most check-ins in the last 30 days becomes the ambassador.</small></div>
     <div class="mx-tbl" role="table" aria-label="Leaderboard"><div class="mx-th" role="row"><span role="columnheader">#</span><span role="columnheader">Person</span><span role="columnheader">Check-ins</span></div>
       ${b.map((r, i) => { const u = who(r.k); return `<div class="mx-tr ${r.k === 'me' ? 'me' : ''}" role="row"><em role="cell">${i + 1}</em><span role="cell">${img(u.img, u.n)}<span><b>${esc(u.n)}${i === 0 ? `<i>${CROWN}</i>` : ''}</b><small>${esc(u.from)}</small></span></span><strong role="cell">${r.n}</strong></div>`; }).join('')}</div>
     <p class="mx-fine">Check in once an hour. You must be at the place.</p></div></div>`; };
+
+/* ---------- 4b. All reviews (YouApp + Google) ---------- */
+const GNAMES = ['Aaron Lim','Nur Aisyah','Daniel Tan','Siti Rahman','Kevin Wong','Farah Idris','Marcus Lee','Hui Min','Arjun Nair','Liyana Zain','Jonathan Ho','Mei Chen'];
+const GTEXT = [['Great kopi and kaya toast. Gets busy around 9 AM on weekends, come early.',5],['Friendly staff and quick service. Seats fill up at lunch.',4],['Nice place to sit with a laptop for an hour or two.',4],['Coffee was a bit too sweet for me, ask for less sugar.',3],['Love the old-school feel. Prices are fair.',5],['Waited 20 minutes for a table on Sunday.',2],['The kaya toast is the best in Bangsar.',5],['Decent coffee, nothing special.',3]];
+const YTEXT = [['Came on a Saturday morning, buzzing but we got a table fast.',5,['mx_bakery']],['Good spot to meet locals. Ask for the house blend.',4],['Cosy and clean. Wifi was slow when it got busy.',4,['mx_rest','mx_coffee']],['A bit loud at lunch, mornings are calmer.',3]];
+const AGOS = ['3 days ago','5 days ago','1 week ago','1 week ago','2 weeks ago','2 weeks ago','3 weeks ago','1 month ago','1 month ago','2 months ago','3 months ago','4 months ago'];
+const allRevs = p => { const base = REVS(p); const yk = ['hafiz','mei','jason','ravi'];
+  const more = Array.from({length:36}, (_, i) => i % 3 === 1 ? (([t, r, ph]) => ({k:yk[i % 4], sub:`${2 + (i * 7) % 20} check-ins`, r, t, ph, ago:AGOS[Math.min(11, 2 + (i >> 2))]}))(YTEXT[i % YTEXT.length])
+    : (([t, r]) => ({g:GNAMES[(i + 1) % GNAMES.length], r, t, ago:AGOS[Math.min(11, 2 + (i >> 2))]}))(GTEXT[i % GTEXT.length]));
+  return base.concat(more).map((v, i) => ({...v, _i:i})); };
+const RVF = [['all','All'],['ya','YouApp'],['g','Google'],['ph','With photos']];
+const RVS = [['new','Newest'],['high','Highest'],['low','Lowest']];
+V.merReviews = () => { const p = placeById(S.mer) || PLACES[0]; const f = MX.rvf || 'all', so = MX.rvs || 'new', n = MX.rvn || 12; const total = p.rev + 86;
+  let list = allRevs(p).filter(v => f === 'all' || (f === 'ya' ? !v.g : f === 'g' ? !!v.g : v.ph && v.ph.length));
+  if (so !== 'new') list = [...list].sort((a, b) => so === 'high' ? b.r - a.r || a._i - b._i : a.r - b.r || a._i - b._i);
+  const mineV = MX.reviews[p.id]; if (mineV && f !== 'g') list = [list.find(v => v.k === 'me') || mineV, ...list.filter(v => v.k !== 'me')];
+  const shown = list.slice(0, n); const count = f === 'all' ? total : f === 'ya' ? 86 + (mineV ? 1 : 0) : f === 'g' ? p.rev : 214;
+  const ratings = [[5,.78],[4,.14],[3,.04],[2,.02],[1,.02]];
+  return `<div class="screen mxrl">${statusBar()}${topBar('Reviews')}<div class="scroll mx-pad">
+    <div class="mx-rsum"><div><b>${p.rating}</b>${starRow(p.rating, 'sm')}<small>${fmt(total)} reviews</small></div><div class="mx-bars">${ratings.map(([s2, v]) => `<span><em>${s2}</em><i><b style="width:${v * 100}%"></b></i></span>`).join('')}</div></div>
+    <div class="mx-flt mx-rvflt" role="tablist" aria-label="Filter reviews">${RVF.map(([k, t]) => `<button role="tab" aria-selected="${f === k}" data-act="mxRvF" data-k="${k}">${t}</button>`).join('')}</div>
+    <div class="mx-rvbar"><p class="mx-rvcnt">${list.length ? `${fmt(count)} review${count === 1 ? '' : 's'}${f === 'g' ? ' from Google' : f === 'ya' ? ' from YouApp' : f === 'ph' ? ' with photos' : ''}` : ''}</p>
+      <button class="mx-sort" data-act="mxRvS" aria-label="Sort: ${RVS.find(x => x[0] === so)[1]}. Change">${SV.sort}${RVS.find(x => x[0] === so)[1]}</button></div>
+    ${shown.length ? shown.map(revCard).join('') : `<div class="mx-rve"><b>No reviews here yet</b><span>Try another filter.</span></div>`}
+    ${list.length > n ? `<button class="mx-all" data-act="mxRvMore">Show more reviews</button>` : shown.length ? '<p class="mx-fine">That’s all for now.</p>' : ''}
+    <p class="mx-attr">Google reviews are shown as written. YouApp reviews come from people who checked in.</p></div>
+    <div class="cta">${btn(mineV ? 'Edit your review' : 'Write a review', 'mxReview', {cls:'btn-block'})}</div></div>`; };
 
 /* ---------- 2b. Photo viewer (full screen, swipe left/right, swipe down or × to close) ---------- */
 V.merPhotos = () => { const p = placeById(S.mer) || PLACES[0]; const ph = photosOf(p); const i = Math.min(MX.vi || 0, ph.length - 1);
@@ -335,7 +378,10 @@ Object.assign(A, {
   mxViewGo: el => { slideTo(document.getElementById('mxVcar'), +el.dataset.i); },
   mxChat: guard(el => { const u = PPL[el.dataset.k]; toast(`Opens a chat with ${u ? u.n : 'the ambassador'}.`); }),
   mxPerson: el => { const u = PPL[el.dataset.k]; toast(`Opens ${u ? u.n : 'their'} profile. Say hi from there.`); },
-  mxAllRev: () => toast('Opens all reviews, YouApp and Google, newest first.'),
+  mxAllRev: () => { MX.rvf = 'all'; MX.rvs = 'new'; MX.rvn = 12; go('merReviews'); },
+  mxRvF: el => { MX.rvf = el.dataset.k; MX.rvn = 12; render(); },
+  mxRvS: () => { const i = RVS.findIndex(x => x[0] === (MX.rvs || 'new')); MX.rvs = RVS[(i + 1) % RVS.length][0]; MX.rvn = 12; render(); toast(`Sorted by ${RVS.find(x => x[0] === MX.rvs)[1].toLowerCase()}.`); },
+  mxRvMore: () => { MX.rvn = (MX.rvn || 12) + 12; render(); },
   mxBoard: () => { MX.lbAll = false; go('merBoard'); },
   mxLb: el => { MX.lbAll = el.dataset.k === 'all'; render(); },
   mxPeople: () => { MX.pt = 'today'; go('merPeople'); },
@@ -345,7 +391,7 @@ Object.assign(A, {
     if (el && el.getAttribute && el.getAttribute('aria-disabled')) { toast('You can check in here once an hour.'); return; }
     if (scen.network === 'offline') { toast('No internet connection. Check your connection and try again.', 'err'); return; }
     const before = rankOf(p); const bBefore = board(p);
-    MX.mine[p.id] = mineOf(p) + 1; MX.last[p.id] = Date.now(); if (MX.mine[p.id] === 1 && !p.old) p.today += 1;
+    MX.fresh = MX.fresh || {}; MX.fresh[p.id] = fresh(p) + 1; if (lbScen() !== 'none') MX.mine[p.id] = (MX.mine[p.id] ?? p.mine ?? 0) + 1; MX.last[p.id] = Date.now(); if (MX.mine[p.id] === 1 && !p.old) p.today += 1;
     const after = rankOf(p); const bAfter = board(p);
     const passedK = before && after < before ? bBefore[after - 1] && bBefore[after - 1].k : null;
     const nextK = after > 1 ? bAfter[after - 2].k : null;
@@ -356,6 +402,7 @@ Object.assign(A, {
   mxReview: guard(() => { const p = placeById(S.mer); if (!p) return;
     if (!mineOf(p)) { toast('Check in here first. Only people who visited can review.'); return; }
     const old = MX.reviews[p.id]; MX.rf = old ? {r:old.r, tags:[...(old.tags || [])], t:old.t, ph:[...(old.ph || [])], edit:true} : {r:0, tags:[], t:'', ph:[], edit:false}; go('merRev'); }),
+  mxRateStar: el => { const v = +el.dataset.v; A.mxReview(); if (S.screen === 'merRev' && MX.rf) { MX.rf.r = v; render(); } },
   mxStar: el => { MX.rf.r = +el.dataset.v; keepText(); render(); },
   mxTag: el => { const t = el.dataset.t, a = MX.rf.tags; const i = a.indexOf(t); if (i >= 0) a.splice(i, 1); else a.push(t); keepText(); render(); },
   mxPhAdd: () => { const pool = ['mx_coffee','mx_cafe','mx_rest','mx_bakery']; keepText(); MX.rf.ph.push(pool[MX.rf.ph.length % pool.length]); render(); },
@@ -367,13 +414,18 @@ Object.assign(A, {
 const keepText = () => { const t = document.getElementById('mxText'); if (t && MX.rf) MX.rf.t = t.value; };
 document.addEventListener('input', e => { if (e.target.id === 'mxText' && MX.rf) MX.rf.t = e.target.value; });
 
+/* scenario panel: Merchant leaderboard (has | none30 | none) */
+{ const _set = window.__set; window.__set = (k, v) => { if (k === 'mxLb') { scen.mxLb = v; try { saveScen(); } catch(e) {} MX.fresh = {}; MX.lbAll = false; S.sheet = null;
+    if (!['mer', 'merBoard', 'discover'].includes(S.screen)) { S.mer = S.mer || PLACES[0].id; S.hist = ['discover', 'mer']; S.screen = 'merBoard'; } render(); return; } return _set ? _set(k, v) : undefined; };
+  const _st = window.__state; window.__state = () => Object.assign(_st ? _st() : {}, {mxLb: lbScen()}); }
 /* scenario panel notes */
 Object.assign(META, {
   merArea:{name:'Choose area', group:'Discover · Merchants', rules:['Opened from the area chip on Merchants; applies to Merchants only, not Locals','Search areas, tap the location button or a row; the map and the card update','Distance 1, 3 or 5 km (default 3); card shows how many merchants are inside','Show merchants here applies and goes back; Back changes nothing','Picked area shows on the chip with × to go back to Near you; next app open resets to Near you','Outside Malaysia: button disabled. Location off: prompt to turn it on']},
   mer:{name:'Merchant page', group:'Discover · Merchants', rules:['Photos from Google: swipe the hero left/right in place (counter updates); tap a photo to open the viewer','Name, rating, type and price on the photo; Share top right','No big button row: Directions is the icon next to the address, tap the phone number to call','Order: info, check in, ambassador, reviews, people, who checks in here','Reviews: YouApp (name, age, gender, visits) and Google (small Google label) in one list; Rate your visit right there','Who checks in here: last 90 days, totals only, shown once a place has 50+ check-ins']},
   merDone:{name:'Checked in', group:'Discover · Merchants', rules:['Only at the place (GPS ~100 m), once an hour per place, ID-verified users','Shows your count here, new rank, who you passed and how many more to become ambassador','Next check-in time, Add a photo, Pay (cashback merchants) or Write a review']},
-  merBoard:{name:'Place leaderboard', group:'Discover · Merchants', rules:['Ambassador = most check-ins in the last 30 days, ties go to who got there first','Full list with your row highlighted; switch to All time']},
+  merBoard:{name:'Place leaderboard', group:'Discover · Merchants', rules:['Scenario Merchant leaderboard: Has check-ins, None in 30 days (30-day tab empty, all-time still there) or None yet (both empty)','Empty tab: No check-ins in the last 30 days / No check-ins yet with Check in; checking in makes you #1 and the ambassador','Ambassador = most check-ins in the last 30 days, ties go to who got there first','Full list with your row highlighted; switch to All time']},
   merPhotos:{name:'Photo viewer', group:'Discover · Merchants', rules:['Opens from the hero photo, a thumbnail or +N, on the photo that was tapped','Swipe left/right (drag with the mouse on desktop, arrow keys too); counter and thumbnail strip follow','Tap a thumbnail to jump; swipe down or × to close, back on the same photo in the hero','Share top right']},
+  merReviews:{name:'All reviews', group:'Discover · Merchants', rules:['From See all reviews on the merchant page','Rating summary, filters All · YouApp · Google · With photos, sort Newest / Highest / Lowest','Your own review sits on top; 12 at a time with Show more; empty filter shows No reviews here yet','Write a review (or Edit your review) stays at the bottom']},
   merRev:{name:'Write a review', group:'Discover · Merchants', rules:['Only people who checked in can review; one review per place, can edit','Stars, quick tags, a few words and up to 4 photos']},
   merPeople:{name:'People who checked in', group:'Discover · Merchants', rules:['Today, this week or all. Photo cards with name, age and gender. Tap to open the profile']},
   merWho:{name:'Who checks in here · all', group:'Discover · Merchants', rules:['Donuts: Age, Gender, From, Profession, Interest, Skill, Zodiac, Chinese zodiac, Personality','Always the last 90 days, totals only; uses “From” (country), not ethnicity (PDPA)']},
@@ -533,6 +585,20 @@ document.head.insertAdjacentHTML('beforeend', `<style id="mx-css">
 .mx-ir:focus-visible, .mx-dir:focus-visible, .mx-ci button:focus-visible, .mx-link:focus-visible, .mx-chat:focus-visible, .mx-rate button:focus-visible, .mx-all:focus-visible, .mx-pp button:focus-visible, .mx-pg button:focus-visible, .mx-thumbs button:focus-visible, .mx-glass:focus-visible, .mx-pay:focus-visible{outline:2px solid #5E35B8; outline-offset:2px}
 /* sub screens */
 .mx-pad{padding:6px 16px 24px}
+.mx-amb.none{background:#F8F5FF; border-top-color:#ECE7F7} .mx-amb.none .mx-at{color:#6E6688} .mx-amb.none .mx-at b{color:#4B2A9E}
+.mx-av.none{display:grid; place-items:center; background:#fff; border:1.5px dashed #C9B6F5} .mx-av.none svg{width:14px; height:14px; position:static}
+.mx-ambc.none{background:#F8F5FF; border:1.5px dashed #D9CCF5} .mx-avl.none{display:grid; place-items:center; background:#fff; border:1.5px dashed #C9B6F5} .mx-avl.none svg{position:static; width:24px; height:24px; transform:none}
+.mx-lbe{display:grid; justify-items:center; gap:8px; text-align:center; padding:32px 16px 12px} .mx-lbe b{font:700 17px Inter, sans-serif; color:#1E1050} .mx-lbe p{margin:0; font:500 14px/1.45 Inter, sans-serif; color:#6E6688; max-width:280px; text-wrap:balance}
+.mx-lbei{display:grid; place-items:center; width:72px; height:72px; border-radius:50%; background:#FFF3D1; border:1.5px dashed #F6DD95} .mx-lbei svg{width:34px; height:34px}
+.mx-lbe .btn{margin-top:8px; display:inline-flex; align-items:center; gap:6px; padding:0 22px} .mx-lbe .btn svg{width:18px; height:18px} .mx-lbe .link{min-height:44px}
+.mx-rstars{gap:2px} .mx-rstars button{width:26px; height:30px; margin:-5px 0; padding:5px 3px; border:0; background:none; display:grid; place-items:center; cursor:pointer} .mx-rstars button svg{width:20px; height:20px; display:block; fill:none; stroke:#C9C3D6; stroke-width:1.5}
+.mx-rstars button.on svg, .mx-rstars button:hover svg{fill:#F5B82E; stroke:#F5B82E} .mx-rstars button:focus-visible{outline:2px solid #5E35B8; outline-offset:0; border-radius:6px}
+.mx-rate .mx-rstars button{width:26px; height:30px; padding:5px 3px; background:none; border-radius:0}
+@media (max-width:360px){.mx-rate{flex-wrap:wrap} .mx-rate > button{flex:1 1 100%}}
+.mx-ambc.none .mx-amt b{color:#1E1050} .mx-ambc.none .mx-amt span{color:#4B2A9E} .mx-ambc.none .mx-amt small{color:#6E6688}
+.mx-rvflt{margin:2px -16px 0; padding:4px 16px} .mx-rvbar{display:flex; align-items:center; justify-content:space-between; gap:8px} .mxrl .mx-all{width:100%}
+.mx-rvcnt{margin:0; font:600 13px Inter, sans-serif; color:#6E6688}
+.mx-rve{display:grid; justify-items:center; gap:4px; padding:32px 16px; text-align:center} .mx-rve b{color:#1E1050} .mx-rve span{color:#6E6688; font-size:14px}
 .mx-seg{display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:4px; border-radius:16px; background:#F4EFFF}
 .mx-seg button{height:42px; border:0; border-radius:12px; background:none; font:700 14px Inter, sans-serif; color:#6E6688} .mx-seg button[aria-selected="true"]{background:linear-gradient(100deg,#9A6BBF,#3D1C96); color:#fff}
 .mx-crown{display:grid; justify-items:center; gap:3px; margin:30px 0 14px; padding:56px 16px 16px; border-radius:20px; background:linear-gradient(180deg,#FFF3D1,#FFE9B0); text-align:center; position:relative}
