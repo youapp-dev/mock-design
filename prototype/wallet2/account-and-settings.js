@@ -828,7 +828,7 @@ function renderPanel(){ const m = META[S.screen] || META.home;
   <div class="pgroup"><h2>Jump to screen</h2><div class="jump">
     ${ORDER.map(([g,ks])=>`<h3>${g}</h3>${ks.map(k=>`<button data-act="jump" data-to="${k}" aria-current="${S.screen===k}" class="${META[k].ph>P()?'off':''}"><span>${META[k].name}</span><small>${META[k].ph>P()?'turns on release '+META[k].ph:(META[k].fb||[]).join(' ')}</small></button>`).join('')}`).join('')}
   </div></div>
-  <div class="pgroup"><h2>Still open</h2><p class="later" style="margin:0">Overflow fee above the normal e-wallet limit (1.5%?) · where the 25% superhost share goes for a host with no superhost · scheme pool unlock rules · SVIP review time · store review risk on paid tiers outside In-App Purchase.</p></div>`;
+  <div class="pgroup"><h2>Still open</h2><p class="later" style="margin:0">Overflow fee above the normal Fiat Wallet limit (1.5%?) · where the 25% superhost share goes for a host with no superhost · scheme pool unlock rules · SVIP review time · store review risk on paid tiers outside In-App Purchase.</p></div>`;
 }
 function closePanel(){ document.getElementById('panel').classList.remove('open'); }
 
@@ -940,6 +940,7 @@ Object.assign(A, {
   const OPEN = {
     subscribe: () => A.upgrade(),
     bills: () => A.bills(),
+    mreload: () => A.mreload(),
     signup: () => { S.su = Object.assign(fresh().su, {code:'', from:''}); S.ob = null; S.otp = ''; S.otpErr = false; go('signup'); },
   };
   window.__open = function(screen, c){

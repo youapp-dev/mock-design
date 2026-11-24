@@ -1051,12 +1051,15 @@
       const t = topUp();
       const quote = topUpQuote();
       if (quote.subtotal < 20 || !quote.value) return;
-      const token = topUpAssets[t.currency];
-      if (token === 'MYRT') S.scanTopUpCents = (S.scanTopUpCents || 0) + Math.round(quote.value * 100);
-      else { const credits = S.walletTopUpAssets ||= {}; credits[token] = (credits[token] || 0) + quote.value; }
-      (S.walletTopUps ||= []).unshift({key:t.currency, units:quote.value, method:quote.method[1], at:new Date(), value:quote.subtotal,
-        id:`scan-topup-${Date.now()}`});
-      go('walletTopUpDone', {replace:true});
+      const currency = t.currency;
+      runTransactionPreview('Processing top up', () => {
+        const token = topUpAssets[currency];
+        if (token === 'MYRT') S.scanTopUpCents = (S.scanTopUpCents || 0) + Math.round(quote.value * 100);
+        else { const credits = S.walletTopUpAssets ||= {}; credits[token] = (credits[token] || 0) + quote.value; }
+        (S.walletTopUps ||= []).unshift({key:currency, units:quote.value, method:quote.method[1], at:new Date(), value:quote.subtotal,
+          id:`scan-topup-${Date.now()}`});
+        go('walletTopUpDone', {replace:true});
+      });
     },
     walletReferenceTopUpDone: () => { if (S.hist.at(-1) === 'walletTopUp') S.hist.pop(); back(); },
   });
