@@ -27,7 +27,8 @@ const YouAppPrototypeRoutes = (() => {
       if (wallet) return {renderer:'w2', ...wallet};
       return {renderer:'a30', screen:appAliases.get(name) ?? name};
     },
-    label(screen) {
+    label(screen, tripsEnabled) {
+      if (screen === 'chats' && tripsEnabled === false) return 'Locals';
       return Object.hasOwn(screenNames, screen) ? screenNames[screen] : screen || '…';
     },
   };

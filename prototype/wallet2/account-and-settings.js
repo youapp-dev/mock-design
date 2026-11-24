@@ -824,6 +824,7 @@ function renderPanel(){ const m = META[S.screen] || META.home;
     <button class="pbtn" data-act="invOpen">${ic('link')}Open Scarlette’s invite link</button>
     <button class="pbtn" data-act="reset">${ic('refresh')}Reset demo</button></div></div>
   <div class="pgroup"><h2>Douglas feedback applied</h2><ul class="fblist">${Object.entries(FB).map(([k,v])=>`<li><b>${k}</b> ${esc(v)}</li>`).join('')}</ul></div>
+  ${renderPrototypeVersionLinks()}
   <div class="pgroup"><h2>Jump to screen</h2><div class="jump">
     ${ORDER.map(([g,ks])=>`<h3>${g}</h3>${ks.map(k=>`<button data-act="jump" data-to="${k}" aria-current="${S.screen===k}" class="${META[k].ph>P()?'off':''}"><span>${META[k].name}</span><small>${META[k].ph>P()?'turns on release '+META[k].ph:(META[k].fb||[]).join(' ')}</small></button>`).join('')}`).join('')}
   </div></div>

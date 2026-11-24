@@ -2,6 +2,23 @@
 
 Source: the "YouApp Trips tab" design board (31 screens). Prototype code: [`prototype/features/trips/`](../../prototype/features/trips/) — `trips.js` (Phases 1–2 and shared helpers), `trips-stops.js` (Phase 3), `trips-plans.js` (Phase 4), `trips-board.js` (Phase 5), `trips.css`, `art.js`.
 
+## Version decision
+
+3.2.0 is the default prototype. Its bottom **Locals** tab opens messages, and Discover has no top-right Inbox shortcut. The Discover **Locals** browse tab remains available.
+
+3.3.0 preserves the Trips prototype below. Use [the 3.3.0 entry point](../../3.3.0/index.html) to review Trips, Leaderboard, Plans, and the Inbox shortcuts.
+
+## Prototype verification
+
+Passed in headless Chrome on Windows at 1440 × 1024 using a local static server mounted at `/mock-design/`.
+
+- 3.2.0: root redirect preserves the deep link and fragment. Locals opens messages, conversation Back returns to Locals, Group scenarios work, and Trips jumps fall back to Discover. Unverified users can continue via Maybe later, and guests see the Locals login page.
+- 3.3.0: Trips and Leaderboard open, and the Inbox Back button returns to the screen that opened it from Discover or Trips.
+
+## Claude artifact handoff
+
+Use the repository versions as the behavior reference for the Claude prototype. In Claude, keep the current Trips build as 3.3.0, then apply the 3.2.0 navigation and access rules in the version decision above. Repeat the browser scenarios in the edited artifact before sharing it.
+
 ## Status
 
 | Phase | Scope | Status |

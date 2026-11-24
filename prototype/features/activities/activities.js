@@ -353,7 +353,7 @@ V.ginfo = () => { let h = _gi(); const g = grp(); if (!g || !(g.actId || g.expId
 const _rgAct = render;
 render = function(){ _rgAct(); const ph = document.getElementById('phone'); if (!ph) return;
   ph.querySelectorAll('.seg [data-act="seg"]').forEach(b => { if (b.dataset.k==='locals') b.textContent = 'Hosts'; if (b.dataset.k==='merchants') b.textContent = 'Cashback'; });
-  if (S.screen === 'chats') ph.querySelectorAll('.topbar .t-headline, .g7top .t-headline').forEach(t => { if (t.textContent.trim()==='Locals') t.textContent = 'Hosts'; });
+  if (tripsEnabled && S.screen === 'chats') ph.querySelectorAll('.topbar .t-headline, .g7top .t-headline').forEach(t => { if (t.textContent.trim()==='Locals') t.textContent = 'Hosts'; });
   if (S.screen === 'chats') ph.querySelectorAll('.kicker3').forEach(k => { if (k.textContent.trim()==='Locals' || k.textContent.trim()==='Hosts') k.remove(); });
   if (S.screen === 'discover') ph.querySelectorAll('[data-act="openSearch"]').forEach(b => { if (S.seg==='locals' || !S.seg) b.innerHTML = b.innerHTML.replace('Search locals','Search hosts'); });
   ph.classList.toggle('gxs', ph.classList.contains('gxs') || ['actmine','actd','actedit','actappl','cexp'].includes(S.screen));

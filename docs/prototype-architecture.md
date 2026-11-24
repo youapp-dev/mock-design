@@ -1,6 +1,6 @@
 # YouApp prototype architecture
 
-Run the prototype through `index.html` on a static HTTP server. The same entry point is served at `/mock-design/` on GitHub Pages. The root `index.html` opens the App 3.0 and Wallet 2.0 pages under `prototype/`. Each page loads its classic scripts in script-tag order. Script and asset URLs are relative to the HTML document.
+Run the prototype through `index.html` on a static HTTP server. The GitHub Pages entry point at `/mock-design/` redirects to the default version at `/mock-design/3.2.0/`, preserving query parameters and fragments. The [3.2.0 shell](../3.2.0/index.html) opens the App 3.0 and Wallet 2.0 pages under `prototype/`. The [3.3.0 shell](../3.3.0/index.html) preserves Trips and Inbox. The 3.2.0 shell selects the original Locals messaging flow through the App 3.0 iframe URL. Both shells resolve shared scripts and renderer URLs from the repository base. The Version section above Jump to in the main controls and both screen scenario helpers switches the whole prototype between versions. Each renderer resolves its own scripts and assets relative to its HTML document.
 
 ## Ownership
 

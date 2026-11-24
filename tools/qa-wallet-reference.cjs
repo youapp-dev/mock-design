@@ -16,7 +16,7 @@ const server = http.createServer((request, response) => {
     response.writeHead(404).end();
     return;
   }
-  const file = path.resolve(root, name.slice(mount.length) || 'index.html');
+  const file = path.resolve(root, name.slice(mount.length) + (name.endsWith('/') ? 'index.html' : ''));
   if (!file.startsWith(root + path.sep) || !fs.existsSync(file) || !fs.statSync(file).isFile()) {
     response.writeHead(404).end();
     return;
@@ -992,7 +992,7 @@ let ws;
   console.log('PASS standalone Elite and Merchant registration');
 
   await cdp('Emulation.clearDeviceMetricsOverride');
-  await cdp('Page.navigate', {url:address + '?app=app30&jump=gate'});
+  await cdp('Page.navigate', {url:address + '3.3.0/?app=app30&jump=gate'});
   await ready();
   await appState('gate');
   assert.equal(await app('__state().kyc'), 'none');

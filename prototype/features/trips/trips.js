@@ -4,6 +4,7 @@
    Phase 2: Trips list (stats, Coming up, Past), Add a trip in 4 steps, the trip page.
    Data lives in memory for the session, like the rest of the prototype. ===== */
 (function(){
+  if (!tripsEnabled) return;
   const TODAY = '2026-11-23';
   const HOME = 'kl';
 
