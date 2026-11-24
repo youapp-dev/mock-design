@@ -163,14 +163,14 @@
       <div><h1 class="t-title" style="margin:0 0 4px">Enter the 6-digit code</h1><p class="t-body muted" style="margin:0">Sent by SMS to <b style="color:var(--a-ink)">${esc(fmtPh(f.cc, f.num))}</b></p>
         <button class="link" data-act="ewChangeNum" style="margin-top:4px">Change number</button></div>
       <label class="ew-otp"><span class="sr" style="position:absolute; left:-9999px">Verification code</span>
-        <input id="ewOtpIn" inputmode="numeric" autocomplete="one-time-code" maxlength="6" value="${esc(v)}" ${lock || f.busy ? 'disabled' : ''} aria-describedby="ewOtpH">
+        <input id="ewOtpIn" inputmode="none" autocomplete="one-time-code" maxlength="6" value="${esc(v)}" ${lock || f.busy ? 'disabled' : ''} aria-describedby="ewOtpH">
         <span class="otp-boxes ${err ? 'err' : ''}" aria-hidden="true">${[0,1,2,3,4,5].map(i => `<span class="${i === v.length && !err && !lock ? 'cur' : ''}">${v[i] || ''}</span>`).join('')}</span></label>
       <p class="ew-otph" id="ewOtpH">${lock ? '<span class="err-text">Too many wrong codes. Try again in 10 minutes or change the number.</span>'
         : err ? `<span class="err-text">That code isn’t right. ${5 - f.tries} ${5 - f.tries === 1 ? 'try' : 'tries'} left.</span>`
         : f.busy ? '<span class="t-caption subtle">Checking…</span>' : '<span class="t-caption subtle">Demo code: 123456</span>'}</p>
       ${lock ? '' : t > 0 ? `<p class="t-caption subtle" style="margin:0">Resend code in <b id="ewOtpT">0:${String(t).padStart(2, '0')}</b></p>` : `<button class="link" data-act="ewResend">Resend code</button>`}
     </div></div>
-    <div class="w2foot">${btn(f.busy ? 'Verifying…' : 'Verify', 'ewVerify', {disabled: v.length < 6 || lock || f.busy, loading: f.busy})}</div></div>`; };
+    ${keypad('ewk')}</div>`; };
   let ewTimer = null;
   const ewTick = () => { clearInterval(ewTimer); ewTimer = setInterval(() => { const f = S.ewPh; if (S.screen !== 'ewOtp' || !f) { clearInterval(ewTimer); return; }
     f.t = Math.max(0, (f.t ?? 30) - 1); const el = document.getElementById('ewOtpT'); if (f.t === 0) { clearInterval(ewTimer); render(); } else if (el) el.textContent = '0:' + String(f.t).padStart(2, '0'); }, 1000); };
@@ -270,6 +270,9 @@
     ewSend: el => { const f = S.ewPh; if ((el && el.getAttribute && el.getAttribute('aria-disabled')) || f.busy) return;
       if (f.cc === 'MY' && digits(f.num) === TAKEN) { f.err = 'This number is linked to another eWallet. Use a different number.'; render(); return; }
       f.busy = true; render(); setTimeout(() => { f.busy = false; f.otp = ''; f.otpErr = false; f.tries = 0; f.t = 30; go('ewOtp'); toast('Code sent to ' + fmtPh(f.cc, f.num) + '.'); ewTick(); }, 700); },
+    ewk: el => { const f = S.ewPh; if (!f || f.busy || f.tries >= 5) return; if (f.otpErr) { f.otp = ''; f.otpErr = false; } if ((f.otp || '').length >= 6) return;
+      f.otp = (f.otp || '') + el.dataset.k; render(); if (f.otp.length === 6) A.ewVerify(); },
+    ewkDel: () => { const f = S.ewPh; if (!f || f.busy) return; f.otp = (f.otp || '').slice(0, -1); f.otpErr = false; render(); },
     ewChangeNum: () => { clearInterval(ewTimer); back(); setTimeout(() => keepFocus('ewNum'), 50); },
     ewResend: () => { const f = S.ewPh; f.otp = ''; f.otpErr = false; f.t = 30; render(); toast('New code sent.'); ewTick(); },
     ewVerify: el => { const f = S.ewPh; if ((el && el.getAttribute && el.getAttribute('aria-disabled')) || f.busy || (f.otp || '').length < 6 || f.tries >= 5) return;
@@ -299,7 +302,7 @@
   Object.assign(META, {
     ewPhone:{name:'eWallet · phone number', ph:1, rules:['Step 1 after Continue on the activation sheet. Verify the phone before paying, so a wrong code never costs money','Country field (flag, name) opens Choose country: full screen, A–Z, flag, name and dial code, search from the header; Malaysia by default','Phone number field shows the dial code before the number','Send code enabled once the number has the right length for that country','Number already linked to another eWallet: error under the field (demo 12-345 0000)']},
     ewCountry:{name:'eWallet · choose country', ph:1, rules:['A–Z list with flag, name and dial code; the current country is highlighted','Search icon turns the header into a search field (name or code); no match shows No country found','Tap a country to go back with it selected']},
-    ewOtp:{name:'eWallet · verify phone', ph:1, rules:['6-digit SMS code, auto-checks when 6 digits are in','Wrong code: error with tries left; 5 wrong codes lock for 10 minutes','Resend after 30 s; Change number goes back to step 1','Correct code: goes to the RM50 payment step with the number shown as verified; Back from there closes the flow']},
+    ewOtp:{name:'eWallet · verify phone', ph:1, rules:['6-digit SMS code typed on the number keypad (same as the login OTP); checks automatically when 6 digits are in, no Verify button','Wrong code: error with tries left; 5 wrong codes lock for 10 minutes','Resend after 30 s; Change number goes back to step 1','Correct code: goes to the RM50 payment step with the number shown as verified; Back from there closes the flow']},
     ewConfirm:{name:'Activate eWallet', ph:1, rules:['Only needed for Receive (eWallet), Bill payment and Mobile reload. Scan to Pay does not need it','One-time RM50 account opening fee, not added to balance; shows as −RM50 in history','Paid from MYRT first; if short, top up the rest by debit or credit card or stablecoins (MYRT, USDT, USDC)','Existing KYC covers it, no extra screens','⚠️ Assumption: opening is instant (pending Kevon)']},
     ewDone:{name:'eWallet activated', ph:1, rules:['−RM50 account opening fee, account number, paid with, reference, date','Continue takes the user back into the flow they started (Bills, Reload or Receive)','⚠️ Assumption: account details are an account number + DuitNow QR']},
     ewFail:{name:'eWallet · opening failed', ph:1, rules:['Scenario eWallet › Fails next','⚠️ Assumption: a failed opening refunds the fee automatically']},
