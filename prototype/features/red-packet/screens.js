@@ -67,11 +67,14 @@ function apSeed(){
   redPackets.create({token:'apLaraFull', theme:'deepavali', creator:'lara', type:'equal', per:300, count:3, msg:'All claimed!', claimed:['catherine','daniel','fionna']});
   const laraExpired = redPackets.create({token:'apLaraExpired', theme:'birthday', creator:'lara', type:'random', total:2400, count:4, msg:'Weekend treat', expiresAt:NOW()-3600e3, expLbl:'24 hours'}); redPackets.settle(laraExpired);
   const laraCancelled = redPackets.create({token:'apLaraCancelled', theme:'youapp', creator:'lara', type:'random', total:1800, count:3, msg:'Plans changed'}); redPackets.close(laraCancelled, 'CANCELLED');
-  redPackets.create({token:'apMineActive', creator:'me', type:'random', total:4000, count:4, msg:'Best wishes!', claimed:['lara']});
+  redPackets.create({token:'apHistoryDeepavali', theme:'deepavali', creator:'catherine', type:'equal', per:600, count:1, msg:'Happy Deepavali!', claimed:['me'], historical:true});
+  redPackets.create({token:'apHistoryBirthday', theme:'birthday', creator:'lara', type:'equal', per:800, count:1, msg:'Happy birthday!', claimed:['me'], historical:true});
+  redPackets.create({token:'apHistoryYouApp', theme:'youapp', creator:'maulaura', type:'equal', per:300, count:1, msg:'Thanks for joining us!', claimed:['me'], historical:true});
+  redPackets.create({token:'apMineActive', theme:'raya', creator:'me', type:'random', total:4000, count:4, msg:'Best wishes!', claimed:['lara']});
   redPackets.create({token:'apMineRandomFull', creator:'me', type:'random', total:8800, count:4, msg:'Happy New Year!', theme:'red', claimed:['lara','catherine','daniel','fionna'], historical:true});
-  redPackets.create({token:'apMineFull', creator:'me', type:'equal', per:500, count:3, msg:'Enjoy!', claimed:['lara','catherine','daniel']});
-  const mineExpired = redPackets.create({token:'apMineExpired', creator:'me', type:'random', total:2100, count:3, msg:'Yesterday’s treat', expiresAt:NOW()-3600e3, expLbl:'6 hours', historical:true}); redPackets.settle(mineExpired);
-  const mineCancelled = redPackets.create({token:'apMineCancelled', creator:'me', type:'random', total:1600, count:2, msg:'Cancelled packet', historical:true}); redPackets.close(mineCancelled, 'CANCELLED');
+  redPackets.create({token:'apMineFull', theme:'deepavali', creator:'me', type:'equal', per:500, count:3, msg:'Enjoy!', claimed:['lara','catherine','daniel']});
+  const mineExpired = redPackets.create({token:'apMineExpired', theme:'birthday', creator:'me', type:'random', total:2100, count:3, msg:'Yesterday’s treat', expiresAt:NOW()-3600e3, expLbl:'6 hours', historical:true}); redPackets.settle(mineExpired);
+  const mineCancelled = redPackets.create({token:'apMineCancelled', theme:'youapp', creator:'me', type:'random', total:1600, count:2, msg:'Cancelled packet', historical:true}); redPackets.close(mineCancelled, 'CANCELLED');
   apHistorySamples = new Set(redPackets.packets.slice(first).filter(a => a.creator === 'me' || a.slots.some(slot => slot.by === 'me')).map(a => a.token));
 }
 const _C6ap = C6;
@@ -286,7 +289,7 @@ function apReceivePanel(a, claim) {
   const stage = `<div class="rp20-scene-stage ${claim ? (celebrate ? 'is-celebrating' : 'is-open') : opening ? 'is-opening' : 'is-ready'}">
     ${redPacketArt(a.theme, claim ? 'opened' : opening ? 'opening' : 'packet', claim || opening ? 'rp20-opened' : 'rp20-closed')}
     ${burst ? `<div class="rp20-burst" aria-hidden="true">${burst}</div>` : ''}
-    ${claim ? '' : `<button type="button" class="rp20-open" data-act="apOpenIt"${opening ? ' disabled aria-busy="true"' : ''}>${opening ? 'Opening…' : 'Open'}</button>`}
+    ${claim ? '' : `<button type="button" class="rp20-open" data-act="apOpenIt"${opening ? ' disabled aria-busy="true"' : ''}>${opening ? 'Opening…' : a.theme === 'youapp' ? '<span class="rp20-open-brand"><img src="../../design-system/assets/Logos/youapp-mark.svg" alt="">Open</span>' : 'Open'}</button>`}
   </div>`;
   if (claim) return stage + apOpenResult(a, claim, sender);
   return `<header class="rp20-sender">${img(sender.av, '')}<h1>${esc(sender.n)} sent you a red packet</h1>
@@ -340,6 +343,7 @@ function apCompletedRecap(a) {
   if (!winner) return `<section class="rp20-recap-neutral">${redPacketArt(a.theme, 'packet', 'rp20-detail-thumb')}<h1>Red packet complete</h1>${summary}</section>`;
   return `<section class="rp20-winner">
     <div class="rp20-winner-art"><img src="../features/red-packet/art/winner.svg" alt="Luckiest" width="358" height="230">${img(winner.av, '', 'rp20-winner-avatar')}</div>
+    ${redPacketArt(a.theme, 'packet', 'rp20-detail-thumb')}
     <h1>${esc(winner.n)} got the most!</h1>
     <p><strong>${MY_(t.luck.amt)}</strong> from your ${MY_(a.total)} red packet</p>
     ${winnerChat ? `<button type="button" class="rp20-secondary" data-act="apCongratulate" data-id="${esc(winnerChat.id)}">Congratulate ${esc(winner.n)}</button>` : ''}
@@ -360,7 +364,7 @@ V.apdet = () => {
   if (a.fee) rows.push(['Fee', MY_(a.fee)]);
   const refundNote = lucky ? 'Unused budget returned to your wallet.'
     : `Returned to your wallet from ${unclaimed} unclaimed ${unclaimed === 1 ? 'packet' : 'packets'}.`;
-  return `<div class="screen apdetail">${statusBar()}${topBar(complete ? 'Your red packet' : 'Red Packet details')}<div class="scroll"><div class="aphist-content">
+  return `<div class="screen apdetail" style="${redPacketThemeStyle(a.theme)}">${statusBar()}${topBar(complete ? 'Your red packet' : 'Red Packet details')}<div class="scroll"><div class="aphist-content">
     ${complete ? apCompletedRecap(a) : `<section class="aphist-hero apdetail-hero"><span class="apst ${tone}">${status}</span><h1>${esc(a.msg || 'Best wishes!')}</h1>
       <small>${lucky ? 'Packet budget' : 'Packet total'}</small><strong class="apdetail-total">${MY_(a.total)}</strong>${apHistoryArt(a.theme)}</section>`}
     ${a.refunded && !complete ? `<section class="apdetail-refund"><span class="apdetail-refund-icon">${ic('check')}</span><div><h2><strong>${MY_(a.refunded)}</strong> refunded</h2><p>${refundNote}</p></div></section>` : ''}
@@ -386,9 +390,11 @@ V.aplist = () => {
   const rows = history.map(({a, claim}) => {
     const [status, tone] = STL[a.status];
     const sender = who(a.creator);
+    const theme = redPacketTheme(a.theme);
+    const themeName = redPacketThemes[theme].name;
     return `<li><button type="button" class="aphist-row" data-side="${tab}" data-state="${a.status}" data-act="${sent ? 'apDetail' : 'apOpenTok'}" data-tok="${esc(a.token)}">
-      <span class="aphist-row-icon" aria-hidden="true">${redPacketArt(a.theme, 'packet', 'rp20-history-thumb')}</span>
-      <span class="aphist-row-copy"><b>${esc(a.msg || 'Best wishes!')}</b><small>${sent ? apOpenedLabel(a) : `From ${esc(sender.n)}`}</small></span>
+      <span class="aphist-row-icon" style="${redPacketThemeStyle(theme)}" aria-hidden="true">${redPacketArt(theme, 'packet', 'rp20-history-thumb')}</span>
+      <span class="aphist-row-copy"><b>${esc(a.msg || 'Best wishes!')}</b><small>${themeName} &middot; ${sent ? apOpenedLabel(a) : `From ${esc(sender.n)}`}</small></span>
       <span class="aphist-row-value"><b>${sent ? `−${MY_(a.total + a.fee)}` : `${claim.amt ? '+' : ''}${MY_(claim.amt)}`}</b>${sent ? `<span class="apst ${tone}">${status}</span>` : ''}</span>${ic('chev')}</button></li>`;
   }).join('');
   const count = history.length;

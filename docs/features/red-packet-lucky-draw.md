@@ -23,6 +23,16 @@ Source **Cing, November 19, 2026**, relaying Florence's request
 - The form shows the amount input and the YouWallet balance in RM. **Change** opens the wallet picker. YouWallet funds Red Packets, and connected wallets appear as unavailable in the picker. Random distributes its configured total across the chosen slots. The compact leftover-money row opens the expiry controls and shows the applicable refund timing.
 - **Write a message** opens an optional editor with a live 50-character count. **Done** keeps the note visible in the form, and **Edit message** reopens it. Choosing a preset replaces the current note.
 
+### History theme coverage
+
+My Red Packet shows each packet's theme name and artwork on both Sent and Received. The prototype includes sample entries for Red, Raya, Deepavali, Birthday, and YouApp on both tabs.
+
+Opening a history entry carries the packet theme into the detail screen. Sent details use the theme for the header or completion recap, artwork, and progress accents. Received details use the theme for the claim result, artwork, and payout amount.
+
+Windows Chrome passed the detail theme checks at an 828 × 928 browser window in 3.2.0 and 3.3.0. Every sample entry on both tabs loaded matching artwork and a matching detail gradient. Received payouts used the corresponding theme accent. Back returned to the originating history tab.
+
+Windows Chrome passed the History checks in 3.2.0 at 778 px and in 3.3.0 at 375 px. All five thumbnails loaded on both tabs. Every Sent row opened its details, every Received row opened its themed claim result, and the empty-history scenario remained empty on both tabs.
+
 ### November 20 browser verification
 
 Passed the Chrome prototype suite through `/mock-design/` on Windows at desktop widths and at 390, 375, and 320 px. The suite exercised all five themes, the three mode layouts, custom messaging, both expiry units, the PIN summary, delivery to a group chat, repeat-claim protection, a cancellation refund, and reduced-motion opening. It also checked the invalid, expired, and fully claimed receive screens. The 390 px Random creation and receive captures were compared with the supplied reference.

@@ -11,7 +11,9 @@ function redPacketTheme(value) {
 }
 
 function redPacketArt(theme, part, className = '') {
-  return `<img class="${className}" src="../features/red-packet/art/${redPacketTheme(theme)}-${part}.svg" alt="" aria-hidden="true" draggable="false">`;
+  const design = redPacketTheme(theme);
+  const revision = design === 'youapp' && part === 'packet' ? '?v=seal-logo' : '';
+  return `<img class="${className}" src="../features/red-packet/art/${design}-${part}.svg${revision}" alt="" aria-hidden="true" draggable="false">`;
 }
 
 function redPacketThemeStyle(value) {
