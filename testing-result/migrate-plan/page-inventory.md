@@ -7,7 +7,7 @@
 | App 3.0 registered renderer keys | 152 | 165 | |
 | Wallet 2.0 registered renderer keys | 127 | 127 | |
 | Total registered renderer keys | 279 | 292 | |
-| Distinct product screens verified in emulator | | | 14 |
+| Distinct product screens verified in emulator | | | 31 |
 | Distinct typed Compose destination expressions found in main source | | | 126 |
 | Final distinct product screen total | Pending | Pending | Pending |
 
@@ -55,6 +55,72 @@ Confirmed logout in Settings, returned to Welcome, then signed in with the appro
 | Reconnect Wallet | App 3.0 activate or Wallet 2.0 YouPage reconnect state | Discover ? profile avatar ? YouPage ? Reconnect Wallet. The screen asked to verify email. Tapping Reconnect Wallet showed ?Wallet connection isn't available in this build yet.? The flow remained on the same screen. |
 
 Reconnect Wallet adds one screen to the emulator count. The logout confirmation is an overlay under Settings. The user session remained signed in.
+
+## Android wallet and Discover follow-up
+
+After leaving Reconnect Wallet, YouPage displayed an active balance and wallet actions. The earlier reconnect message still applies to that attempt. The following destinations were opened through the existing verified account in the same installed build.
+
+| Android screen | HTML candidate | Verified entry path |
+| --- | --- | --- |
+| Transaction History | Wallet 2.0 scanHistory or App 3.0 whist | YouPage ? History. |
+| Receipt | Wallet 2.0 scanArchiveReceipt or App 3.0 wrcpt | Transaction History ? completed incoming MYRT record. |
+| Bank Account List | App 3.0 hbanks, candidate pending scope check | Transaction History ? Bank Account icon. |
+| My money | Wallet 2.0 wallets | YouPage ? See All. |
+| Currency details | Wallet 2.0 walletCurrency | My money ? US dollar. |
+| Connect Wallet | Wallet 2.0 walletConnect | My money ? Connect. Provider choices were displayed. |
+| Top Up | Wallet 2.0 walletTopUp | YouPage ? Top Up. The Pay With sheet was also opened. |
+| Search Service Hosts | App 3.0 search | Discover ? Search locals. |
+| Rewards | Wallet 2.0 rewards | YouPage ? Rewards. |
+
+Scan and Pay opened the live scanner. It is counted under the existing Scan to Pay destination, alongside the earlier unverified state. No QR was submitted. On this pass, tapping bottom Locals from signed-in Discover left Discover visible. Chatroom access remains unverified. No wallet provider was opened and no payment or top-up was submitted.
+
+## Android control checks
+
+These checks ran on the installed 3.1.0 staging build with the existing verified account. Invite friends and Choose your plan add two full-screen destinations. The share chooser and membership tier tabs are recorded under their parent screens.
+
+| Screen | Control exercised | Observed result |
+| --- | --- | --- |
+| Rewards | Referrals | Empty history message appeared. |
+| Rewards | Cashback | Cashback availability message appeared. |
+| Rewards | Other | Empty history message appeared. |
+| Rewards | All | Existing reward history returned. |
+| Rewards | Back | Returned to YouPage. |
+| YouPage | Referral QR | Opened Invite friends. HTML candidate is Wallet 2.0 invite. |
+| Invite friends | Copy referral code | Tapped. Clipboard contents remain unverified. |
+| Invite friends | Share link | Opened Android share chooser. Back returned to Invite friends. |
+| Invite friends | See plans | Opened Choose your plan. HTML candidate is Wallet 2.0 subscribe. |
+| Choose your plan | VIP and SVIP | Both plan cards rendered with their respective terms. |
+
+Pending on these screens are the remaining share and referral controls, the billing-period selection, and membership checkout. Other route groups still need a full control inventory. Record device gates, disabled controls, and actions awaiting a dedicated test scenario separately from exercised controls.
+
+## Android Discover and main menu follow-up
+
+| Entry or control | Observed result | HTML candidate |
+| --- | --- | --- |
+| Discover ? Activities | The browse tab reported no experiences available in this country. | App 3.0 discover, Activities state |
+| Activities ? Search activities | Opened Search Experience Hosts. Counted under the existing host search destination with different copy. | App 3.0 search |
+| Activities ? Experiences | Opened Experiences. Applied showed the Pending empty state and a record under Fully Booked. My Event showed upcoming events. | App 3.0 actmine |
+| My Event ? View Details | Opened an owned experience detail with Edit Experience. | App 3.0 actd or exp |
+| My Event ? Applicant List on an event with zero applicants | Tapped and remained on My Event. Recheck with an event that has applicants. | App 3.0 actappl |
+| Discover ? Merchant ? first listing | Opened merchant details. About appeared initially. Check-in showed existing visitors and Summary showed demographic information. | App 3.0 mer, candidate pending view-level mapping |
+| Discover ? main menu ? Manage Activities | Opened Your Experiences with Listed status and existing records. | App 3.0 hexps or actmine, pending task-level mapping |
+| Discover ? main menu ? Host Settings | An Important Notice appeared. Close returned to Discover. Agreement and downstream settings remain unverified. | App 3.0 hset or Wallet 2.0 hostSet |
+| Discover ? main menu ? Create Activity | Opened the create sheet with Create Service and Create Experience. | App 3.0 cexp and hsvcform entry candidates |
+
+Four new full-screen destinations were observed. Merchant detail tabs and the main menu, host notice, and create sheet are recorded as states. Merchant Pay, actual Check in, and publishing or editing an experience remain unverified.
+
+## Android service booking
+
+| Android entry or control | Observed result | HTML candidate |
+| --- | --- | --- |
+| Discover → Locals → Featured Hosts | Opened Meet with Erica, with bookable services and hourly prices. | App 3.0 svc |
+| Host detail → Reserve | Opened Schedule with one guest. The initial date had no availability, with RM0 and Reserve disabled. | App 3.0 schedule |
+| Schedule → Go to next available date | Available services and time slots appeared. | App 3.0 schedule availability state |
+| Select the second service at 12:00 PM | The two-hour selection showed RM300 at RM150/hour. | App 3.0 schedule price state |
+| Increase guests from one to two | Guest count changed to two. The total stayed at RM300. | App 3.0 schedule guest state |
+| Increase duration from two to three hours | The total increased to RM450. | App 3.0 schedule duration state |
+
+Host detail and Schedule add two screens to the emulator count. The emulator is on Schedule with the RM450 selection. The Android source calls the booking creation endpoint directly from Schedule → Reserve after validation, whereas the HTML renderer contains a separate booking payment view. This is a source-level mapping difference. The installed build's post-submit behavior, any charge, and the booking chat or confirmation remain unverified. Complete the submit test with an approved staging host and slot.
 
 ## Registered HTML keys
 

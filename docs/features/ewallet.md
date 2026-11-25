@@ -1,6 +1,6 @@
 # Fiat Wallet (MYR e-money account)
 
-**Status:** Automatic opening and paid activation are implemented in the 3.2.0 and 3.3.0 browser prototypes. Existing provider details remain under Open questions.
+**Status:** Automatic opening and paid activation are available in the 3.3.0 browser prototype. Version 3.2.0 keeps Scan to Pay and crypto Send/Receive. Existing provider details remain under Open questions.
 **Renderer:** Wallet 2.0, `prototype/wallet2/ewallet.js`.
 
 ## Problem
@@ -17,7 +17,7 @@ Receive (in ringgit), Bill payment and Mobile reload run on MYR rails. YouApp ne
 | Receive | Every wallet detail screen has Receive. Crypto wallets (YouApp Wallet, connected MetaMask/OKX) show their address and QR with no Fiat Wallet needed. The Fiat Wallet shows its DuitNow QR and account number and needs activation | Maul |
 | KYC | Existing KYC covers the Fiat Wallet. No extra screens | Maul |
 | Product name | **Fiat Wallet** across the feature. The activation page is **Activate Fiat Wallet** | Leadership feedback, confirmed by Maul |
-| Automatic opening | In both versions, cumulative successful MYRT activity over RM100 waives the fee. Failed, refunded, and pending activity is excluded. Use the existing verified identity and phone details without a prompt or SMS | Leadership feedback and Maul, 24 Nov 2026 |
+| Automatic opening | In 3.3.0, cumulative successful MYRT activity over RM100 waives the fee. Failed, refunded, and pending activity is excluded. Use the existing verified identity and phone details without a prompt or SMS | Leadership feedback and Maul, 24 Nov 2026 |
 | Phone number | Paid activation verifies a phone number by SMS code **before** the RM50 is charged, so a wrong code never costs money. Any country (default Malaysia +60): a Country field opens a full-screen Choose country list (flag, name, dial code, search), like the system phone setup. Profile and Fiat Wallet share the saved verified number. Later paid activation reuses it. Change it in Edit profile › Mobile Number with a new SMS code | Maul, 24 Nov |
 
 ## Automatic opening

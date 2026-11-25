@@ -3,13 +3,12 @@
   --rp-muted:#6e658b;
   --rp-line:#e9e1f6;
   --rp-lavender:#f3edfd;
-  --rp-primary:linear-gradient(110deg,#ed3f4d,#b5122b);
 }
 
 .rp20-form {
+  --rp-form-gutter:16px;
   --rp-accent-tint:color-mix(in srgb, var(--rp-accent) 8%, white);
   --rp-accent-shadow:color-mix(in srgb, var(--rp-accent) 24%, transparent);
-  --rp-primary:linear-gradient(110deg, color-mix(in srgb, var(--rp-accent-start) 55%, var(--rp-accent)), var(--rp-accent));
 }
 .rp20-form > .status { height:42px; padding-top:1px; }
 .rp20-form .topbar { height:44px; color:var(--rp-ink); }
@@ -26,7 +25,7 @@
 }
 .ap2-pin-e img { display:block; width:100%; height:100%; object-fit:contain; }
 .ap2-pin small { overflow-wrap:anywhere; }
-.rp20-fields { display:grid; gap:11px; padding:6px 16px 16px; color:var(--rp-ink); }
+.rp20-fields { display:grid; gap:11px; padding:6px var(--rp-form-gutter) 16px; color:var(--rp-ink); }
 .rp20-preview {
   position:relative; display:grid; place-items:center; overflow:hidden; isolation:isolate;
   height:190px; border-radius:24px; background:var(--rp-preview);
@@ -47,7 +46,7 @@
 #phone .rp20-fields .apseg.ap-modes button[aria-pressed=true] { background:var(--rp-primary); color:#fff; box-shadow:0 4px 12px var(--rp-accent-shadow); }
 .rp20-box { border:1px solid var(--rp-line); border-radius:19px; padding:12px 13px; background:#fff; }
 .rp20-box label { color:var(--rp-muted); font-size:13px; font-weight:650; }
-.rp20-amount-line { display:flex; gap:7px; align-items:center; margin:2px 0 9px; color:#4b2a9e; font-weight:800; }
+.rp20-amount-line { display:flex; gap:7px; align-items:center; margin:2px 0 9px; color:var(--rp-accent); font-weight:800; }
 .rp20-amount-field { position:relative; flex:1; min-width:0; }
 .rp20-amount-field input, .rp20-amount-display { min-width:0; width:100%; padding:0; border:0; background:transparent; color:var(--rp-ink); font:800 42px/1.15 Inter,sans-serif; letter-spacing:-.035em; font-variant-numeric:tabular-nums; }
 .rp20-amount-display { position:absolute; inset:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; pointer-events:none; }
@@ -60,7 +59,7 @@
 .rp20-wallet-flag { flex:none; width:21px; height:21px; object-fit:cover; border-radius:50%; }
 .rp20-wallet-change {
   display:inline-flex; flex:none; align-items:center; gap:4px; min-height:44px; margin-left:auto; padding:0;
-  border:0; background:none; color:#4b2a9e; font:inherit; cursor:pointer;
+  border:0; background:none; color:var(--rp-accent); font:inherit; cursor:pointer;
 }
 .rp20-wallet-change .ico { width:13px; height:13px; }
 .rp20-wallet-heading { margin:0 0 8px; }
@@ -70,7 +69,7 @@
 .rp20-help { color:var(--rp-muted); font-size:12px; margin:0 3px; line-height:1.4; }
 .rp20-error { color:#a71231; font-size:12px; display:block; margin:7px 0 0; }
 .rp20-people { position:relative; display:grid; grid-template-columns:auto minmax(0,1fr) auto; align-items:center; gap:9px; padding:5px 9px 5px 12px; }
-.rp20-people > svg { width:19px; height:19px; color:#4b2a9e; }
+.rp20-people > svg { width:19px; height:19px; color:var(--rp-accent); }
 .rp20-people label { display:block; }
 .rp20-people input { width:100%; border:0; padding:0; background:transparent; color:var(--rp-ink); font:800 16px Inter,sans-serif; }
 .rp20-people .ap2-step { width:auto; height:auto; gap:6px; padding:0; border:0; background:none; }
@@ -99,14 +98,14 @@
   display:grid; grid-template-columns:19px minmax(0,1fr) 14px; align-items:center; gap:10px; width:100%; min-height:53px;
   border:0; border-radius:inherit; background:transparent; padding:8px 12px; color:var(--rp-ink); text-align:left;
 }
-.rp20-exp > button > .ico { width:19px; height:19px; color:#4b2a9e; }
+.rp20-exp > button > .ico { width:19px; height:19px; color:var(--rp-accent); }
 .rp20-exp > button > .ico:last-child { width:14px; height:14px; color:#6e658b; }
 .rp20-exp > button[aria-expanded=true] > .ico:last-child { transform:rotate(180deg); }
 .rp20-exp-copy > :is(small,b) { display:block; }
 .rp20-exp-copy small { margin-bottom:2px; color:var(--rp-muted); font-size:12px; line-height:16px; }
 .rp20-exp-copy b { font-size:13px; line-height:1.3; }
 .rp20-exp .apexp { border:0; border-top:1px solid var(--rp-line); border-radius:0 0 18px 18px; }
-.rp20-footer { padding:8px 16px 18px; }
+.rp20-footer { padding:8px var(--rp-form-gutter) max(18px, env(safe-area-inset-bottom)); }
 .rp20-primary {
   display:inline-flex; justify-content:center; align-items:center; gap:6px; min-height:48px;
   border:0; border-radius:999px; background:var(--rp-primary,linear-gradient(110deg,#ed3f4d,#b5122b));
@@ -115,7 +114,18 @@
 .rp20-footer .rp20-primary { width:100%; min-height:52px; box-shadow:0 8px 20px var(--rp-accent-shadow); }
 .rp20-primary:is(:disabled,[aria-disabled=true]) { background:#e9e4f1; color:#7f748f; box-shadow:none; }
 .rp20-form :focus-visible, .rp20-receive :focus-visible, .rp20-sending :focus-visible { outline:2px solid #8f6ac8; outline-offset:2px; }
-.rp20-form :focus-visible { outline-color:var(--rp-accent); }
+.rp20-form :focus-visible, .rp20-receive :focus-visible, .apdetail :focus-visible, .rp20-share :focus-visible { outline-color:var(--rp-accent); }
+
+.rp20-share .apd { padding-bottom:calc(24px + env(safe-area-inset-bottom)); }
+.rp20-share :is(.apd-amt span,.apd-ad button,.apd-det,.apd-b2) { color:var(--rp-accent); }
+.rp20-share :is(.apd-ad button,.apd-b2) { background:var(--rp-preview); }
+.rp20-share .apd-b1 { background:var(--rp-primary); box-shadow:none; }
+.rp20-share .apd-b { min-width:0; min-height:48px; height:auto; padding:8px; }
+.rp20-share .apd-b .ico { flex:none; }
+.rp20-share :is(.apd-ad button,.apd-det) { min-height:44px; }
+.rp20-share .apd-ad button { width:44px; }
+.rp20-share .apd-env { width:40px; height:auto; background:none; }
+.rp20-share .apd-env img { width:100%; }
 
 .rp20-receive, .rp20-sending { position:absolute; inset:0; isolation:isolate; background:var(--rp-scene); color:#fff; }
 .rp20-scene { position:absolute; z-index:-1; inset:0; width:100%; height:100%; object-fit:fill; pointer-events:none; }
@@ -221,7 +231,7 @@
 @keyframes rp20SendTrail { 0%,100% { opacity:0; } 30%,65% { opacity:1; } }
 @keyframes rp20SentMark { from { transform:scale(.6); opacity:0; } to { transform:none; opacity:1; } }
 @media (max-width:360px) {
-  .rp20-fields { padding-inline:12px; }
+  .rp20-form { --rp-form-gutter:12px; }
   .rp20-preview { height:168px; }
   .rp20-preview .rp20-packet { width:104px; }
   .rp20-people { gap:5px; }

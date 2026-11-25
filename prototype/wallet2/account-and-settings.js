@@ -231,7 +231,7 @@ V.tuProc = () => { const t = tuInit(); const m = TU_M[t.m]; const a = +t.amt||0;
   return `<div class="screen bz">${statusBar()}${topBar('Top Up')}
   <div class="scroll"><div class="pad16 stack" style="gap:12px; padding-top:4px">
     ${done?`<div class="success" style="padding:0">${cele()}<b class="bl-ok">Landed</b><b class="sp-big">RM${myrt(recv)}</b><span class="t-body subtle">MYRT ${myrt(recv)} is in your wallet.</span></div>`
-      :`<div class="success" style="padding:0"><div class="tu-ring"><span>${LEAF}</span></div><b class="t-headline">Processing on Ethereum</b><span class="t-body subtle">Usually under a minute. It can take longer when the network is busy.</span></div>`}
+      :`<div class="success" style="padding:0"><div class="tu-ring"><span>${WALLET_BRAND_MARK}</span></div><b class="t-headline">Processing on Ethereum</b><span class="t-body subtle">Usually under a minute. It can take longer when the network is busy.</span></div>`}
     <div class="kvbox sp-box">${v3row('You Sent',`${m.cur} ${myrt(a)}`)}${v3row('You Receive',`MYRT ${myrt(recv)}`)}${m.cur!=='MYRT'?v3row('Rate',`1 USDT = ${m.rate} MYRT`):''}${v3row('Converted by','Sera')}
       <div class="kv tot"><span>Confirmation <em class="subtle" style="font-style:normal; font-weight:400">${conf} of 12</em></span>${done?'<span class="tag act">Completed</span>':`<span class="tu-pb"><i style="width:${conf/12*100}%"></i></span>`}</div></div>
     <p class="t-caption subtle" style="margin:0">We'll notify you the moment it lands. Your wallet loads with MYRT automatically, and you can keep using the app while you wait.</p>
@@ -559,7 +559,7 @@ V.kycPhotos = () => { const n = S.kyN||0;
     ${n?`<div class="ky-grid">${['avEmma','fh2','fh3'].slice(0,n).map(k=>`<span>${img(k)}</span>`).join('')}</div><small class="subtle">${n} of 3 photos</small>`:`<div class="ky-ph0">${ic('person')}</div>`}
   </div></div>${n<3?`<button class="ky-fab" data-act="kyAdd" aria-label="Add photo">${ic('plus')}</button>`:''}
   <div class="w2foot">${btn('Continue', n>=3?'kyGo':'noop',{disabled:n<3})}</div></div>`; };
-V.kycVerifying = () => `<div class="screen ky-load">${statusBar()}<div class="ky-c"><b>Verifying</b><span class="gs-lotus">${LEAF}</span></div></div>`;
+V.kycVerifying = () => `<div class="screen ky-load">${statusBar()}<div class="ky-c"><b>Verifying</b><span class="gs-lotus">${WALLET_BRAND_MARK}</span></div></div>`;
 V.kycConfirmed = () => `<div class="screen bz">${statusBar()}${topBar('Verify Identity')}
   <div class="scroll"><div class="pad16 stack" style="gap:12px; padding-top:10px; align-items:center; text-align:center">
     <img src="${IMG.kycIdentity||V3.topIll}" alt="" style="width:300px; max-width:100%"><h2 class="ky-h" style="color:var(--a-ink); font-size:28px">Identity Confirmed!</h2>
@@ -686,7 +686,7 @@ const GUEST = () => !!S.guest;
 const GM_COPY = `<b class="gm-h">Experience life like a local</b><p class="gm-p">Sign in to discover more local experiences and unlock more features with YouApp.</p>`;
 V.splash = () => `<div class="screen gm-splash">${statusBar()}
   <div class="gm-lang"><button data-act="toast" data-msg="Pick a language: English, Bahasa Melayu, 中文.">🇺🇸 English ${ic('chev')}</button></div>
-  <span class="gm-lotus">${LEAF}</span>
+  <span class="gm-lotus">${WALLET_BRAND_MARK}</span>
   <h1><em>Dance</em> like a local</h1>
   <p>One tap to pay, cashback on YouApp Merchants, activities and experiences. Like a local before you clear immigration.</p>
   <img class="gm-city" src="${GM_IMG.splash}" alt="">
@@ -827,9 +827,9 @@ function renderPanel(){ const m = META[S.screen] || META.home;
   <div class="pgroup"><h2>Douglas feedback applied</h2><ul class="fblist">${Object.entries(FB).map(([k,v])=>`<li><b>${k}</b> ${esc(v)}</li>`).join('')}</ul></div>
   ${renderPrototypeVersionLinks()}
   <div class="pgroup"><h2>Jump to screen</h2><div class="jump">
-    ${ORDER.map(([g,ks])=>`<h3>${g}</h3>${ks.map(k=>`<button data-act="jump" data-to="${k}" aria-current="${S.screen===k}" class="${META[k].ph>P()?'off':''}"><span>${META[k].name}</span><small>${META[k].ph>P()?'turns on release '+META[k].ph:(META[k].fb||[]).join(' ')}</small></button>`).join('')}`).join('')}
+    ${ORDER.map(([g,ks]) => [g, fiatWalletEnabled ? ks : ks.filter(k => !isFiatWalletScreen(k))]).map(([g,ks])=>`<h3>${g}</h3>${ks.map(k=>`<button data-act="jump" data-to="${k}" aria-current="${S.screen===k}" class="${META[k].ph>P()?'off':''}"><span>${META[k].name}</span><small>${META[k].ph>P()?'turns on release '+META[k].ph:(META[k].fb||[]).join(' ')}</small></button>`).join('')}`).join('')}
   </div></div>
-  <div class="pgroup"><h2>Still open</h2><p class="later" style="margin:0">Overflow fee above the normal Fiat Wallet limit (1.5%?) · where the 25% superhost share goes for a host with no superhost · scheme pool unlock rules · SVIP review time · store review risk on paid tiers outside In-App Purchase.</p></div>`;
+  <div class="pgroup"><h2>Still open</h2><p class="later" style="margin:0">${fiatWalletEnabled ? 'Overflow fee above the normal Fiat Wallet limit (1.5%?) · ' : ''}where the 25% superhost share goes for a host with no superhost · scheme pool unlock rules · SVIP review time · store review risk on paid tiers outside In-App Purchase.</p></div>`;
 }
 function closePanel(){ document.getElementById('panel').classList.remove('open'); }
 
@@ -841,7 +841,7 @@ function render(){
   const ph = document.getElementById('phone');
   const v = V[S.screen] || V.home;
   let html = v();
-  if (S.sheet && SHEETS[S.sheet]) html += `<div class="scrim anim" data-act="closeSheet"></div><div class="sheet anim ${typeof MODALS!=='undefined'&&MODALS.has(S.sheet)?'tm'+(S.sheet==='tierInfo'?' tmc '+scen.tier:S.sheet==='shInfo'?' tmc shm':''):''}" role="dialog" aria-modal="true">${SHEETS[S.sheet]()}</div>`;
+  if (S.sheet && SHEETS[S.sheet]) html += `<div class="scrim anim" data-act="closeSheet"></div><div class="sheet anim ${typeof MODALS!=='undefined'&&MODALS.has(S.sheet)?'tm'+(S.sheet==='tierInfo'?' tmc '+scen.tier:S.sheet==='shInfo'?' tmc shm':''):''}${S.sheet==='xsReview'?' xs-review-sheet':''}" role="dialog" aria-modal="true"${S.sheet==='xsReview'?' aria-labelledby="xs-review-title"':''}>${SHEETS[S.sheet]()}</div>`;
   ph.innerHTML = html + '<div class="home-ind"></div>';
   renderToast(); renderPanel(); syncCar();
 }
@@ -947,6 +947,7 @@ Object.assign(A, {
   window.__open = function(screen, c){
     c = c || {};
     screen = walletEntryRoutes[screen]?.(c) ?? screen;
+    if (!fiatWalletEnabled && isFiatWalletScreen(screen)) screen = 'home';
     if (c.kyc) { scen.kyc = c.kyc === 'approved' && c.wallet === 'active' ? 'passed' : c.kyc === 'rejected' ? 'rejected' : 'none'; saveScen(); }
     if (screen === 'scanReceipt' && c.txId) { S.txId = c.txId; S.scanReceiptFrom = 'history'; }
     S.sheet = null; S.toast = null;

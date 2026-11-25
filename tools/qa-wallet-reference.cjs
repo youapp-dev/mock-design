@@ -440,7 +440,7 @@ let ws;
   }
   console.log('PASS startup, routing, chat and Activity checks, five Red Packet themes, custom expiry, group delivery, claim and refund');
 
-  await cdp('Page.navigate', {url:address});
+  await cdp('Page.navigate', {url:address + '3.3.0/'});
   await ready();
   await appState('welcome');
   await click('[data-s="kyc"][data-v="approved"]', 'shell');

@@ -32,35 +32,72 @@ const tokAmt = (k,v) => `${k} ${(+v).toLocaleString('en-MY',{minimumFractionDigi
 function xsFromW(){ const x = S.xs||{}; const l = wList(); return l.find(w=>w.id===x.from) || wMain(); }
 function xsFromExt(){ return !!xsFromW().ext; }
 function xsTokSym(){ const x = S.xs||{}; const w = xsFromW(); if (x.tok && w.tok[x.tok]>0) return x.tok; return (wToks(w)[0]||['MYRT'])[0]; }
-function xsFromBal(){ return xsFromW().tok[xsTokSym()]||0; }
-function mwSendRows(){ const w = xsFromW(); const k = xsTokSym();
-  return `<div class="mw-pick"><button data-act="sheet" data-s="mwFrom"><small>From</small><b>${wBadge(w,'sm')}${esc(w.name)}${w.id===wMain().id?' <em>Main</em>':''}</b>${ic('chevdown')}</button>
-    <button data-act="sheet" data-s="mwTok"><small>Token</small><b><span class="mw-tk">${k[0]}</span>${k} <em>${tokAmt('',w.tok[k]||0).trim()}</em></b>${ic('chevdown')}</button></div>
-    ${w.ext ? `<div class="xs-note">${ic('info')}<span>You’ll confirm in ${esc(w.app)}. The network fee is paid in ETH from ${esc(w.app)}.</span></div>` : ''}`; }
+function xsFromBal(){ return wToks(xsFromW()).find(([symbol]) => symbol === xsTokSym())?.[1] || 0; }
+const SEND_TOKEN_LOGOS = new Set(['DAI', 'EURC', 'JPYC', 'PYUSD', 'TGBP', 'USDC', 'USDT']);
+function sendTokenIcon(symbol){
+  const source = window.XS_TOKW?.[symbol] || (SEND_TOKEN_LOGOS.has(symbol) ? `token-icons/${symbol}.svg` : '');
+  return `<span class="xs-token-icon" aria-hidden="true">${source ? `<img src="${source}" alt="">` : ic('wallet2')}</span>`;
+}
+function mwSendRows(){
+  const wallet = xsFromW();
+  const token = xsTokSym();
+  return `<div class="xs-source" role="group" aria-label="Wallet and token">
+    <button type="button" class="xs-source-row" data-act="sheet" data-s="mwFrom" aria-haspopup="dialog">
+      ${wBadge(wallet, 'sm')}
+      <span class="xs-source-copy"><small>From</small><strong>${esc(wallet.name)}</strong></span>
+      ${ic('chevdown')}
+    </button>
+    <button type="button" class="xs-source-row" data-act="mwTokOpen">
+      ${sendTokenIcon(token)}
+      <span class="xs-source-copy"><small>Token · Ethereum</small><strong>${token}</strong></span>
+      ${ic('chevdown')}
+    </button>
+  </div>
+  ${wallet.ext ? `<div class="xs-note">${ic('info')}<span>Confirm in ${esc(wallet.app)} and pay the network fee in ETH.</span></div>` : ''}`;
+}
 SHEETS.mwFrom = () => { const cur = xsFromW().id;
   return `<div class="grab"></div><h2 class="t-title" style="margin:0 0 12px">Send from</h2><div class="mw-list">${wList().map(w=>`<button class="mw-row ${cur===w.id?'on':''}" data-act="mwFromPick" data-id="${w.id}">${wBadge(w)}<span class="m"><b>${esc(w.name)}</b><small>${RM(wRM(w))} · ${w.ext?'confirm in '+esc(w.app):'confirm with PIN'}</small></span>${w.id===wMain().id?wMainTag:''}</button>`).join('')}</div>`; };
-SHEETS.mwTok = () => { const w = xsFromW(); const cur = xsTokSym(); const all = Object.keys(RATE);
-  const held = all.filter(k=>(w.tok[k]||0)>0).sort((a,b)=>w.tok[b]*RATE[b]-w.tok[a]*RATE[a]); const rest = all.filter(k=>!((w.tok[k]||0)>0)).sort((a,b)=>a.localeCompare(b,'en',{sensitivity:'base'}));
-  const row = k => { const v = w.tok[k]||0; return `<button class="mw-row ${cur===k?'on':''} ${v>0?'':'off'}" data-q="${(k+' '+TOKN[k]).toLowerCase()}" ${v>0?`data-act="mwTokPick" data-k="${k}"`:'disabled'}><span class="mw-tk lg">${k[0].toUpperCase()}</span><span class="m"><b>${k}</b><small>${TOKN[k]}</small></span><span class="r"><b>${tokAmt('',v).trim()}</b><small>${RM(v*RATE[k])}</small></span></button>`; };
-  return `<div class="grab"></div><h2 class="t-title" style="margin:0 0 4px">Choose a token</h2><p class="t-caption subtle" style="margin:0 0 10px">In ${esc(w.name)} · ${all.length} verified stablecoins</p>
-  <label class="mw-search">${ic('search')}<input id="mwTokQ" type="search" placeholder="Search name or symbol" aria-label="Search tokens" autocomplete="off"></label>
-  <div class="mw-tscroll"><small class="mw-grp" data-g="held">In your wallet · ${held.length}</small><div class="mw-list">${held.map(row).join('')}</div>
-  <small class="mw-grp" data-g="rest">Other supported tokens · ${rest.length}</small><div class="mw-list">${rest.map(row).join('')}</div>
-  <p class="mw-none" hidden>No token matches “<span></span>”.</p></div>
-  ${w.hidden?`<p class="t-caption subtle" style="margin:10px 0 0">${w.hidden} unverified tokens are hidden and can’t be sent.</p>`:''}`; };
-document.addEventListener('input', ev => { if (ev.target.id !== 'mwTokQ') return; const q = ev.target.value.trim().toLowerCase(); const box = ev.target.closest('.sheet') || document;
-  let n = 0; box.querySelectorAll('.mw-tscroll .mw-row').forEach(r => { const hit = !q || r.dataset.q.includes(q); r.hidden = !hit; if (hit) n++; });
-  box.querySelectorAll('.mw-tscroll .mw-list').forEach(l => { const g = l.previousElementSibling; if (g) g.hidden = ![...l.children].some(c=>!c.hidden); });
-  const none = box.querySelector('.mw-none'); if (none) { none.hidden = n>0; none.querySelector('span').textContent = ev.target.value.trim(); } });
+V.mwTok = () => {
+  const wallet = xsFromW();
+  const selected = xsTokSym();
+  const tokens = wToks(wallet);
+  const rows = tokens.map(([symbol, balance]) => `<li>
+    <button type="button" class="xs-token-option" data-act="mwTokPick" data-k="${symbol}"
+      data-query="${esc(`${symbol} ${TOKN[symbol] || ''}`.toLowerCase())}" aria-pressed="${selected === symbol}">
+      ${sendTokenIcon(symbol)}
+      <span class="xs-token-name"><strong>${symbol}</strong><small>${esc(TOKN[symbol] || symbol)}</small></span>
+      <span class="xs-token-balance"><strong>${tokAmt('', balance).trim()}</strong><small>≈ ${RM(balance * RATE[symbol])}</small></span>
+      <span class="xs-token-tick" aria-hidden="true">${selected === symbol ? ic('check') : ''}</span>
+    </button>
+  </li>`).join('');
+  return `<div class="screen bz xs-token-picker">${statusBar()}${topBar('Choose a token')}
+    <div class="xs-token-search">
+      <p>In ${esc(wallet.name)} · Ethereum</p>
+      <label class="mw-search">${ic('search')}<input id="mwTokQ" type="search" placeholder="Search tokens" aria-label="Search by token name or symbol" autocomplete="off"></label>
+    </div>
+    <div class="scroll xs-token-scroll">
+      ${tokens.length ? `<ul aria-label="Tokens available to send">${rows}</ul>
+        <p class="xs-token-empty" role="status" hidden>No tokens match your search.</p>`
+        : '<p class="xs-token-empty" role="status">This wallet has no tokens available to send.</p>'}
+    </div>
+  </div>`;
+};
+META.mwTok = {name:'Choose a token', ph:1, rules:['Full-screen picker for Ethereum tokens with an available balance. Search by name or symbol. Back keeps the send draft.']};
 
-/* review sheet: From row, ETH network fee, confirm in the wallet app, not enough ETH */
-const _xsReview = SHEETS.xsReview;
-SHEETS.xsReview = () => { let h = _xsReview(); const w = xsFromW();
-  h = h.replace('<div class="kv"><span>Network</span><b>Ethereum · ERC-20</b></div>', `<div class="kv"><span>From</span><b>${esc(w.name)}</b></div><div class="kv"><span>Network</span><b>Ethereum · ERC-20</b></div>${w.ext?'<div class="kv"><span>Network fee</span><b>≈ 0.0006 ETH (RM 7.80)</b></div>':''}`);
-  if (!w.ext) return h;
-  h = h.replace(/<div class="kv"><span>Gas fee<\/span><b>0\.00<\/b><\/div>/, '');
-  if (scen.eth==='low') return h.replace(/<button class="btn btn-primary[^"]*"[^>]*data-act="(xsConfirm|noop)"[\s\S]*?<\/button>/, `<div class="hint warn">${ic('alert')}<span><b>Not enough ETH for the network fee.</b> ${esc(w.app)} has 0.0001 ETH. Add ETH to ${esc(w.app)}${wHasYa()?', or send from your YouApp wallet':''}.</span></div>${wHasYa()?btn('Send from YouApp wallet','mwUseYa'):''}`);
-  return h.replace('data-act="xsConfirm"', 'data-act="mwSendExt"').replace(/>Send ([A-Z]{4} [\d,.]+)</, `>Confirm in ${esc(w.app)}<`); };
+document.addEventListener('input', event => {
+  if (event.target.id !== 'mwTokQ') return;
+  const view = event.target.closest('.xs-token-picker');
+  const query = event.target.value.trim().toLowerCase();
+  let matches = 0;
+  for (const option of view.querySelectorAll('.xs-token-option')) {
+    const match = option.dataset.query.includes(query);
+    option.closest('li').hidden = !match;
+    matches += Number(match);
+  }
+  const empty = view.querySelector('.xs-token-empty');
+  if (view.querySelector('ul')) empty.hidden = matches > 0;
+  view.querySelector('.xs-token-scroll').scrollTop = 0;
+});
 
 /* waiting for the external wallet app (send, pay, top up, connect, sign) */
 V.mwWait = () => { const k = S.mwWait||{}; const app = k.app||'MetaMask';
@@ -203,9 +240,19 @@ walletEntryRoutes.walletReconnect = () => {
 };
 Object.assign(A, {
   mwFromPick: el => { const x = xsInit(); x.from = el.dataset.id; x.tok = null; x.amt=''; S.sheet = null; render(); },
-  mwTokPick: el => { const x = xsInit(); x.tok = el.dataset.k; x.amt=''; S.sheet = null; render(); },
+  mwTokOpen: () => go('mwTok'),
+  mwTokPick: el => {
+    const token = el.dataset.k;
+    if (S.screen !== 'mwTok' || !wToks(xsFromW()).some(([symbol]) => symbol === token)) return;
+    if (token !== xsTokSym()) {
+      const draft = xsInit();
+      draft.tok = token;
+      draft.amt = '';
+    }
+    back();
+  },
   mwUseYa: () => { const x = xsInit(); x.from = 'ya'; x.tok = null; S.sheet = null; render(); toast('Switched to your YouApp wallet. Check the amount again.'); },
-  mwSendExt: () => { const w = xsFromW(); mwStart('send', w.app, 'Send', 'send'); },
+  mwSendExt: () => { if (!xsReviewReady()) return; const w = xsFromW(); mwStart('send', w.app, 'Send', 'send'); },
   mwPayExt: () => { const m = wMain(); S.payYa = false; mwStart('pay', m.app, 'Scan and Pay', 'pay'); },
   mwPayYa: () => { S.payYa = true; S.mwWait = null; S.hist = S.hist.filter(k=>k!=='mwWait' && k!=='mwCancelled' && k!=='confirm'); go('confirm'); toast('Paying from your YouApp wallet.'); },
   mwReconnect: () => { scen.extSess = 'on'; saveScen(); render(); toast(`${wMain().app} reconnected.`); },

@@ -1,7 +1,7 @@
 /* ---------- Scan to Pay (3.0 Figma node 1837:49950 + Wallet 2.0 fee) ---------- */
 const SP_MERCH_SUB = m => m.kind==='personal' ? 'Personal DuitNow QR' : 'DuitNow merchant · YouApp partner';
 const KPL = {'2':'ABC','3':'DEF','4':'GHI','5':'JKL','6':'MNO','7':'PQRS','8':'TUV','9':'WXYZ'};
-const keypad = (act='kp') => `<div class="kpad" aria-label="Keypad">${['1','2','3','4','5','6','7','8','9','','0','del'].map(k=>k===''?'<span></span>':`<button data-act="${k==='del'?act+'Del':act}" data-k="${k}" aria-label="${k==='del'?'Delete':k}">${k==='del'?ic('del'):`<b>${k}</b>${KPL[k]?`<small>${KPL[k]}</small>`:''}`}</button>`).join('')}</div>`;
+const keypad = (act='kp') => `<div class="kpad" aria-label="Keypad">${['1','2','3','4','5','6','7','8','9',act==='xk'?'.':'','0','del'].map(k=>k===''?'<span></span>':`<button data-act="${k==='del'?act+'Del':act}" data-k="${k}" aria-label="${k==='del'?'Delete':k==='.'?'Decimal point':k}">${k==='del'?ic('del'):`<b>${k}</b>${act!=='xk'&&KPL[k]?`<small>${KPL[k]}</small>`:''}`}</button>`).join('')}</div>`;
 const spLogo = `<div class="sp-dn"><em class="pml dn">D</em><small>DuitNow Pay</small></div>`;
 
 V.scan = () => { const k = scen.kyc;
@@ -51,7 +51,7 @@ V.pin = () => { const n = (S.pinV||'').length;
   ${keypad('pk')}</div>`; };
 
 V.processing = () => `<div class="screen">${statusBar()}${topBar('Scan and Pay')}
-  <div class="scroll"><div class="success" style="padding-top:24px"><div class="cele doc" aria-hidden="true"><span class="cele-ring"><span class="cele-art">${LEAF}</span></span></div>
+  <div class="scroll"><div class="success" style="padding-top:24px"><div class="cele doc" aria-hidden="true"><span class="cele-ring"><span class="cele-art">${WALLET_BRAND_MARK}</span></span></div>
     <b class="t-headline">Processing on Ethereum</b><span class="t-body muted">Waiting for your ${(S.tp&&S.tp.method||'usdt').toUpperCase()} top-up to confirm. We'll pay ${MERCH[S.pay.id].name} as soon as it arrives.</span>
     <div class="sp-prog"><i></i></div><small class="subtle">Confirmations 1 of 12 · about a minute</small></div></div>
   <div class="w2foot">${btn('Back to Wallet','home',{kind:'btn-tertiary'})}</div></div>`;
@@ -207,7 +207,7 @@ V.business = () => { const sh = shActive(); const hide = S.hsHide; const ms = hs
   <div class="scroll" style="padding-bottom:28px">
     <div class="hs-pad hs-me"><img class="hs-av" src="${HS_IMG.cat}" alt=""><span class="hs-nm"><b>Catherine Lee <span class="hs-bdg">${ic('verify')}</span><span class="hs-bdg">${ic('crown')}</span></b><small>@catcan</small></span>${sh?`<button class="hs-sh" data-act="nav" data-to="superhost" aria-label="Open Elite page">Elite <span>${ic('crown')}</span></button>`:''}</div>
     <div class="hs-pad">
-      <section class="hs-earn"><span class="hs-leaf">${LEAF}</span><i class="hs-orb"></i>
+      <section class="hs-earn"><span class="hs-leaf">${WALLET_BRAND_MARK}</span><i class="hs-orb"></i>
         <div class="hs-er"><span>Host earnings</span><button class="hs-eye" data-act="hsEye" aria-label="${hide?'Show':'Hide'} earnings">${ic(hide?'eyeoff':'eye')}</button></div>
         <small>RM</small><b>${hide?'••••':'0.00'}</b>
         <em>12 sessions · 4.9 ★ from 86 guests</em></section>
@@ -579,12 +579,12 @@ const ybCard = (t, ok) => { const hide = S.balHide; const nx = t.key!=='svip' ? 
     : t.key==='free' ? ctaRow('','upgrade','Unlock more with VIP','Lower fees, more rewards','Upgrade')
     : ctaRow('svip','upgrade','Go SVIP, one time payment','Lowest fees, most benefits','Upgrade');
   const myrt = (window.XS_TOKW && window.XS_TOKW.MYRT) ? `<img class="yb-tk" src="${window.XS_TOKW.MYRT}" alt="">` : '';
-  const book = ok ? `<div class="yb-slide"><section class="yb-card book"><span class="yb-leaf">${LEAF}</span><i class="yb-orb"></i>
+  const book = ok ? `<div class="yb-slide"><section class="yb-card book"><span class="yb-leaf">${WALLET_BRAND_MARK}</span><i class="yb-orb"></i>
     <div class="yb-top"><span>Booking Balance <button class="yb-info" data-act="toast" data-msg="Booking Balance holds what you pay for bookings until the session is done. It isn’t used for Scan to Pay." aria-label="About Booking Balance">${ic('info')}</button></span><button class="yb-eye yb-eye-top" data-act="balEye" aria-label="${S.balHide?'Show':'Hide'} balance">${ic(S.balHide?'eyeoff':'eye')}</button></div>
     <small class="yb-cur" style="margin-top:auto">${myrt}MYRT</small>
     <div class="yb-amt"><b>${S.balHide?'••••':'0.00'}</b></div>
     <span class="yb-foot"><b>1 MYRT = 1 MYR.</b> reserve held at trustee</span></section></div>` : '';
-  return `<div class="yb-car"><div class="yb-slide"><div class="yb-wrap ${strip?'has':''}"><section class="yb-card ${t.key}"><span class="yb-leaf">${LEAF}</span><i class="yb-orb"></i>
+  return `<div class="yb-car"><div class="yb-slide"><div class="yb-wrap ${strip?'has':''}"><section class="yb-card ${t.key}"><span class="yb-leaf">${WALLET_BRAND_MARK}</span><i class="yb-orb"></i>
     <div class="yb-top"><span>YouWallet Balance</span>${ok?`<button class="yb-badge" data-act="tierInfo" aria-label="${t.name} tier benefits">${ic('crown')}${t.key==='free'?'Free Tier':t.name}</button>`:''}</div>
     <small class="yb-cur">${myrt}MYRT</small>
     <div class="yb-amt"><b>${!ok?'0.00':hide?'••••':bal().toLocaleString('en-MY',{minimumFractionDigits:2,maximumFractionDigits:2})}</b>${ok?`<button class="yb-eye" data-act="balEye" aria-label="${hide?'Show':'Hide'} balance">${ic(hide?'eyeoff':'eye')}</button>`:''}</div>

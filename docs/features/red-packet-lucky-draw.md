@@ -29,6 +29,10 @@ My Red Packet shows each packet's theme name and artwork on both Sent and Receiv
 
 Opening a history entry carries the packet theme into the detail screen. Sent details use the theme for the header or completion recap, artwork, and progress accents. Received details use the theme for the claim result, artwork, and payout amount.
 
+For visual QA, verify matching left and right edges for cards, content, and footers. Check that the primary action uses the selected packet theme, that sharing actions have visible separation, and that the last action scrolls fully clear of the bottom edge. An active Sent detail uses the packet's own first destination for its direct resend action when that chat is still available.
+
+Local Windows Chrome verification covered 390 px phone viewports in 3.2.0 and 3.3.0, plus 320 px in 3.2.0 and 375 px in 3.3.0. The checks covered Create and its wallet, expiry, and message controls, PIN, Ready to share, sharing, Sent detail and cancellation refund, all five themes on both history tabs, opening and claiming, the fully claimed state, and the chat card.
+
 Windows Chrome passed the detail theme checks at an 828 × 928 browser window in 3.2.0 and 3.3.0. Every sample entry on both tabs loaded matching artwork and a matching detail gradient. Received payouts used the corresponding theme accent. Back returned to the originating history tab.
 
 Windows Chrome passed the History checks in 3.2.0 at 778 px and in 3.3.0 at 375 px. All five thumbnails loaded on both tabs. Every Sent row opened its details, every Received row opened its themed claim result, and the empty-history scenario remained empty on both tabs.

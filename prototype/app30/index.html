@@ -450,6 +450,7 @@ button.actc{cursor:pointer}
 .aphist-empty p{max-width:26ch; margin:0; font-size:14px; line-height:1.45; color:#765b61}
 .aphist-empty .btn{width:min(100%,248px); margin-top:7px}
 .apdetail .scroll{background:var(--rp-preview)}
+.apdetail .aphist-content{gap:14px;padding-block:12px calc(24px + env(safe-area-inset-bottom))}
 .apdetail-hero{min-height:142px; gap:5px; background:var(--rp-card); box-shadow:0 8px 19px color-mix(in srgb,var(--rp-accent) 17%,transparent)}
 .apdetail-hero small{color:#fff}
 .apdetail-hero .apst{justify-self:start; padding:4px 8px; background:#fff; color:var(--rp-accent)}
@@ -462,13 +463,13 @@ button.actc{cursor:pointer}
 .apdetail-refund h2,.apdetail-section > h2,.apdetail-activity > h2{margin:0;font-size:15px;line-height:1.3}
 .apdetail-refund p{margin:4px 0 0;font-size:12.5px;line-height:1.4;color:#356354}
 .apdetail-refund strong{font-variant-numeric:tabular-nums}
-.apdetail-section{padding:13px 14px}
+.apdetail-section{padding:13px}
 .apdetail-section dl{margin:5px 0 0}
 .apdetail-section dl > div{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.6fr);gap:12px;padding:10px 0;color:#69545d;font-size:13px}
 .apdetail-section dl > div + div{border-top:1px solid #f3e8e3}
 .apdetail-section dd{margin:0;text-align:right;color:#342431;font-weight:700;overflow-wrap:anywhere}
-.apdetail .apdetail-activity{margin:0;padding:13px 12px;background:#fff;border:1px solid #f0e3dc;border-radius:18px}
-.apdetail-activity > h2{margin:0 1px 10px}
+.apdetail .apdetail-activity{margin:0;padding:13px;background:#fff;border:1px solid #f0e3dc;border-radius:18px}
+.apdetail-activity > h2{margin:0 0 10px}
 .apdetail .apstat{margin:0;grid-template-columns:minmax(0,.87fr) minmax(0,1.13fr);transform:none;box-shadow:none;padding:10px 8px;gap:9px;background:var(--rp-sheet);border-radius:12px}
 .apdetail .apstat > div{gap:7px;min-width:0}
 .apdetail .apstat-i{width:29px;height:29px;flex:none;background:#fff;color:var(--rp-accent)}
@@ -483,10 +484,14 @@ button.actc{cursor:pointer}
 .apdetail .apw-av{width:32px;height:32px}
 .apdetail .apw-a{font-size:13px;text-align:right}
 .apdetail-no-openers{margin:0;padding:9px 8px;color:#785f68;font-size:13px;text-align:center}
-.apdetail .apcancel{width:100%;color:#a92a45}
-.apdetail .apdetail-share .apshare{margin:0}
-#phone .apdetail-share .apshare button{background:var(--rp-sheet);color:var(--rp-accent)}
-#phone .apdetail-share .apshare span{color:var(--rp-accent)}
+.apdetail .apcancel{width:100%;min-height:48px;margin:0;color:#a92a45}
+.apdetail-share{display:grid;gap:8px}
+.apdetail-share .rp20-primary{width:100%;min-height:52px}
+#phone .apdetail .apdetail-share .apshare{grid-template-columns:repeat(3,minmax(0,1fr));gap:8px;margin:0}
+#phone .apdetail .apdetail-share .apshare button{min-width:0;min-height:64px;align-content:start;padding:8px 4px;gap:4px;background:var(--rp-sheet);color:var(--rp-accent)}
+#phone .apdetail .apdetail-share .apshare span{width:32px;height:32px;background:#fff;color:inherit}
+#phone .apdetail .apdetail-share .apshare .ico{width:18px;height:18px}
+.apdetail .rp20-result-actions{margin:0}
 .aphist :is(button,[role="tab"]):focus-visible{outline:2px solid #963046; outline-offset:2px}
 @media(max-width:340px){.aphist-row{grid-template-columns:36px minmax(0,1fr) minmax(0,auto) 12px; gap:7px; padding-inline:9px}.aphist-row-icon{width:36px;height:36px}.aphist-row-value .apst{padding-inline:5px}}
 .apbest{font-style:normal; font-size:11px; font-weight:700; color:#b54708; background:#fef0c7; border-radius:999px; padding:1px 8px}
@@ -2911,9 +2916,9 @@ p.kicker3.pad16{margin:18px 0 6px; color:var(--a-ink-3)}
 </div>
 <button class="fab-panel" id="fabPanel" aria-label="Open scenario panel"><span class="ico" aria-hidden="true"><svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none'><path d='M4 7h10M18 7h2M4 17h4M12 17h8' stroke='currentColor' stroke-width='1.8' stroke-linecap='round'/><circle cx='16' cy='7' r='2.2' stroke='currentColor' stroke-width='1.8'/><circle cx='10' cy='17' r='2.2' stroke='currentColor' stroke-width='1.8'/></svg></span></button>
 
-<link rel="stylesheet" href="../features/red-packet/design.css?v=history-theme">
+<link rel="stylesheet" href="../features/red-packet/design.css?v=packet-layout">
 <script src="../features/red-packet/rates.js"></script>
-<script src="../features/red-packet/themes.js?v=seal-logo"></script>
+<script src="../features/red-packet/themes.js?v=packet-layout"></script>
 <script src="../features/red-packet/store.js"></script>
 <link rel="stylesheet" href="../version-links.css">
 <script src="../version-links.js"></script>
@@ -2922,7 +2927,7 @@ p.kicker3.pad16{margin:18px 0 6px; color:var(--a-ink-3)}
 <script src="../transaction-scenes.js"></script>
 <script src="runtime.js"></script>
 <script src="../features/group-chat/groups.js"></script>
-<script src="../features/red-packet/screens.js?v=history-theme"></script>
+<script src="../features/red-packet/screens.js?v=packet-layout"></script>
 <script src="../features/group-chat/layout.js"></script>
 <script src="../features/activities/activities.js"></script>
 <script src="../features/group-chat/messaging.js"></script>
