@@ -280,7 +280,7 @@
     </div></div>
     <div class="w2foot">${low && !busy ? `<p class="t-caption subtle" style="margin:0 0 8px; text-align:center">Uses MYRT ${myrt(b)} and tops up ${RM(short)} with ${mName}</p>` : ''}${btn(busy ? 'Opening your Fiat Wallet…' : low ? `Top up &amp; pay ${RM(FEE)}` : `Pay ${RM(FEE)} &amp; activate`, busy ? 'noop' : 'ewPay', {disabled:busy, loading:busy})}</div></div>`; };
 
-  V.ewDone = () => { const n = NEXT[S.ewNext]; const r = S.ewRef || 'YA-EW-2611';
+  V.ewDone = () => { const r = S.ewRef || 'YA-EW-2611';
     return `<div class="screen bz">${statusBar()}${topBar('Fiat Wallet')}
     <div class="scroll"><div class="success" style="padding-top:4px">${cele()}<b class="bl-ok">Fiat Wallet activated</b><b class="sp-big">${RM(FEE)}</b><span class="t-body subtle">Account opening fee paid</span></div>
     <div class="pad16 stack" style="padding-top:10px; gap:10px"><div class="kvbox sp-box">
@@ -288,7 +288,7 @@
       ${phSaved() ? `<div class="kv"><span>Phone number</span><b>${esc(phSaved())}</b></div>` : ''}<div class="kv"><span>Paid with</span><b>${S.ewPaidWith || 'YouWallet · MYRT'}</b></div>
       <div class="kv"><span>Reference</span><b>${r}</b></div>
       <div class="kv"><span>Date</span><b>${fmtD(S.ewAt || now())}</b></div></div></div></div>
-    <div class="w2foot">${n ? btn(n[0], 'ewResume') + btn('Done', 'ewFinish', {kind:'btn-secondary'}) : btn('Done', 'ewFinish')}</div></div>`; };
+    <div class="w2foot">${btn('Done', 'ewFinish')}</div></div>`; };
 
   V.ewOpening = () => `<div class="screen bz">${statusBar()}${topBar(ACTIVATION_TITLE)}
     <div class="scroll"><div role="status">${stateBlock('wallet2', 'Opening your Fiat Wallet…', 'There’s no opening fee.')}</div></div></div>`;
@@ -401,7 +401,7 @@
     ewOpening:{name:'Opening Fiat Wallet', ph:1, rules:['Existing verified details are used. No opening fee, phone prompt or SMS.']},
     ewAutoFail:{name:'Fiat Wallet · opening failed', ph:1, rules:['No fee was charged. Try again resumes automatic opening.']},
     ewConfirm:{name:ACTIVATION_TITLE, ph:1, rules:['Only needed for Receive (Fiat Wallet), Bill payment and Mobile reload. Scan to Pay does not need it','One-time RM50 account opening fee, not added to balance; shows as −RM50 in history','Paid from MYRT first; if short, top up the rest by debit or credit card or stablecoins (MYRT, USDT, USDC)','Existing KYC covers it, no extra screens','⚠️ Assumption: opening is instant (pending Kevon)']},
-    ewDone:{name:'Fiat Wallet activated', ph:1, rules:['RM50.00 account opening fee paid; history keeps the −RM50.00 debit. Details show the account number, payment method, reference and date','Continue takes the user back into the flow they started (Bills, Reload or Receive)','⚠️ Assumption: account details are an account number + DuitNow QR']},
+    ewDone:{name:'Fiat Wallet activated', ph:1, rules:['RM50.00 account opening fee paid; history keeps the −RM50.00 debit. Details show the account number, payment method, reference and date','One button: Done, back to where the user started. Pay bills / Reload / Receive shortcuts were removed (25 Nov)','⚠️ Assumption: account details are an account number + DuitNow QR']},
     ewFail:{name:'Fiat Wallet · opening failed', ph:1, rules:['Scenario Fiat Wallet › Fails next','⚠️ Assumption: a failed opening refunds the fee automatically']},
     ewDetail:{name:'Fiat Wallet', ph:1, rules:['Balance, account number and name, Receive and Pay bills, history incl. the opening fee','⚠️ Assumption: received MYR stays as Fiat Wallet balance and is used before MYRT']},
     ewRecv:{name:'Receive to Fiat Wallet', ph:1, rules:['DuitNow QR and account number with Copy and Share','Crypto wallets keep their own Receive (address QR) without the Fiat Wallet']},

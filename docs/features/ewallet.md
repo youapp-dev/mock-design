@@ -33,7 +33,7 @@ The prototype sums its simulated history and available Wallet 2.0 MYRT Scan to P
 3. **Phone number**: country code picker (search, any country, +60 default) and number. Send code is enabled once the length fits that country. A number already linked to another Fiat Wallet shows an error under the field.
 4. **Verify phone number**: a modal card over the phone-number screen, like the login OTP: "Code sent" toast, 6 boxes on the number keypad, Resend Again after 30 s, Cancel back to the number. Checks automatically at 6 digits. Wrong code shows tries left; 5 wrong codes lock for 10 minutes. Resend after 30 s, Change number goes back. A correct code opens the payment step.
 5. **Activate Fiat Wallet** screen: the verified phone number, illustration, the three things it unlocks, fee summary, Pay from YouWallet · MYRT. Button: "Pay RM50.00 & activate". If MYRT is below RM50, a "RM{x} short" warning and the top-up picker (Debit or Credit Card; Stablecoins MYRT, USDT, USDC) appear, a line above the button says "Uses MYRT {a} and tops up RM{x} with {method}", and the button reads **"Top up & pay RM50.00"**.
-6. **Fiat Wallet activated**: RM50.00 with “Account opening fee paid.” History shows the −RM50.00 debit. Details include account number (copy), phone number, paid with, reference, date. The primary button continues into the flow the user started (Pay bills, Reload a number, Receive money). Done returns to where they were.
+6. **Fiat Wallet activated**: RM50.00 with “Account opening fee paid.” History shows the −RM50.00 debit. Details include account number (copy), phone number, paid with, reference, date. One button: Done, which returns to where the user started (the Pay bills, Reload a number and Receive money shortcuts were removed on 25 Nov).
 7. Bills and Mobile reload follow the existing W6 flows (biller or network, number, fetched or chosen amount, PIN at RM100+, Paid, Receipt). The confirm screen and receipt show "Paid through Fiat Wallet, funded from YouWallet · MYRT".
 8. **My money** has a Fiat Wallet section under the currencies. Off: "Receive, pay bills and reload" with Activate. On: the Fiat Wallet balance, opening **Fiat Wallet** details (balance, account number and name, Receive, Pay bills, history).
 9. **Receive to Fiat Wallet**: DuitNow QR, account number with Copy, Share QR.
@@ -56,7 +56,7 @@ The prototype sums its simulated history and available Wallet 2.0 MYRT Scan to P
 | 2 | User taps Not now | Sheet closes, nothing charged, stays on the same screen |
 | 3 | MYRT below RM50 | Short amount shown, user chooses a top-up method, then activates |
 | 4 | Opening fails | No Fiat Wallet, fee refunded, retry available |
-| 5 | Activation started from Bills | After success, Pay bills opens the biller list |
+| 5 | Activation started from Bills | After success the screen has Done only; it returns to where the user started (25 Nov: the Pay bills shortcut was removed) |
 | 6 | Receive from a crypto wallet | Opens that wallet's address QR, no Fiat Wallet gate |
 | 7 | Rapid taps on Pay & activate | Only one activation runs |
 | 9 | Phone number already linked to another Fiat Wallet | Error under the field, no code sent |
