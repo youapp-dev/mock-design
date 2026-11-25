@@ -86,7 +86,6 @@
   .ew-num input{flex:1; min-width:0; height:54px; border:0; outline:0; background:none; font:400 16px Inter, sans-serif; color:var(--a-ink); padding:0}
   .ew-num input::placeholder{color:var(--a-ink-3)}
   .ew-flh{margin:6px 2px 0; font-size:12px; line-height:16px; color:var(--a-ink-3)} .ew-flh.err{color:var(--a-error)}
-  .ew-demo{margin:14px 2px 0}
   .ya-flag, .ew-flag{display:block; width:28px; height:28px; border-radius:50%; overflow:hidden; flex:none; box-shadow:0 0 0 1px rgba(9,20,26,.08)} .ya-flag svg, .ew-flag svg{display:block; width:100%; height:100%}
   .ew-ccl{display:grid; align-content:start}
   .ew-ccrow{display:flex; align-items:center; gap:14px; width:100%; min-height:56px; padding:0 16px; border:0; border-bottom:1px solid var(--a-line); background:#fff; text-align:left; font:inherit; cursor:pointer}
@@ -222,7 +221,7 @@
       <label class="ew-fl ew-num ${f.err ? 'err' : ''}" for="ewNum"><span class="ew-fll">Phone number</span><span class="ew-dial">${c[2]}</span>
         <input id="ewNum" type="tel" inputmode="tel" autocomplete="tel-national" value="${esc(f.num)}" placeholder="${f.cc === 'MY' ? '12-345 6789' : 'Phone number'}" aria-describedby="ewNumH" ${f.busy ? 'disabled' : ''}></label>
       <p class="ew-flh ${f.err ? 'err' : ''}" id="ewNumH">${f.err ? esc(f.err) : 'Use a number that can receive SMS.'}</p>
-      <p class="t-caption subtle ew-demo">Demo: ${TAKEN.replace(/^(\d{2})(\d{3})(\d{4})$/, '$1-$2 $3')} (Malaysia) is already linked to another Fiat Wallet.</p>
+      <template data-demo-input>${TAKEN.replace(/^(\d{2})(\d{3})(\d{4})$/, '$1-$2 $3')} (Malaysia) is already linked to another Fiat Wallet.</template>
     </div></div>
     <div class="w2foot">${btn(f.busy ? 'Sending code…' : 'Send code', 'ewSend', {disabled: !ok || f.busy, loading: f.busy})}</div></div>`; };
   V.ewCountry = () => { const q = (S.ewCcQ || '').trim().toLowerCase(); const cur = (S.ewPh || {}).cc; const srch = S.ewCcSearch;
@@ -246,7 +245,7 @@
       ${lock ? '' : t > 0 && !err ? `<small class="otp-rs off">Resend Again</small><b class="otp-t" id="ewOtpT">00:${String(t).padStart(2, '0')}</b>` : '<button class="otp-rs" data-act="ewResend">Resend Again</button>'}
       <small class="otp-hint">Didn’t get it? Check the number is right and your phone has signal.</small>
       <button class="otp-cancel" data-act="ewChangeNum">Cancel</button>
-      <small class="otp-demo">Demo code: 123456</small>
+      ${lock ? '' : '<template data-demo-input>SMS OTP: 123456</template>'}
     </div>
     ${keypad('ewk')}`;
     return base.replace(/<\/div>\s*$/, modal + '</div>'); };

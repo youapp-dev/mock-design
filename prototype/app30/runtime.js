@@ -166,7 +166,7 @@ V.otp = () => { const d = S.otp.padEnd(6,' ').split('');
       <p class="t-caption subtle" style="margin:6px 0 0; max-width:230px">If you have not received the OTP, try checking your spam/junk folder</p>
       <button class="link" data-act="changeEmail" style="font-size:12px; margin-top:6px">Change email</button>
     </div>
-    <input id="otpInput" inputmode="numeric" autocomplete="one-time-code" maxlength="6" aria-label="OTP code" value="${S.otp}" style="position:absolute; opacity:0; pointer-events:none; width:1px; height:1px" data-model="otp">
+    <template data-demo-input>Email OTP: ${DEMO_OTP}</template><input id="otpInput" inputmode="numeric" autocomplete="one-time-code" maxlength="6" aria-label="OTP code" value="${S.otp}" style="position:absolute; opacity:0; pointer-events:none; width:1px; height:1px" data-model="otp">
   </div>
   <div class="pad" role="group" aria-label="Number pad">
     ${[['1',''],['2','ABC'],['3','DEF'],['4','GHI'],['5','JKL'],['6','MNO'],['7','PQRS'],['8','TUV'],['9','WXYZ']].map(([n,l])=>`<button class="key" data-act="key" data-k="${n}">${n}${l?`<small>${l}</small>`:'<small>&nbsp;</small>'}</button>`).join('')}
@@ -484,7 +484,6 @@ function renderPanel(){
     ${segCtl('Connect account result','connRes',[['ok','Success'],['fail','Fails']],'Settings › Connected Account: what happens when the user taps Connect.')}
     ${segCtl('Content','content',[['normal','Normal'],['empty','Empty'],['loading','Loading'],['error','Error']],'Applies to Discover lists, Feed, reviews and check-ins.')}
     ${segCtl('You are a host','host',[['no','No'],['yes','Yes']],'Yes hides the Become Host banner.')}
-    <div class="later">Demo OTP code: <code class="k">${DEMO_OTP}</code> · any other code shows the error state.</div>
   </div>
   <div class="pgroup"><h2>Actions</h2><div class="pbtns">
     <button class="pbtn" data-act="restart">${ic('refresh')}Restart app</button>
@@ -1494,7 +1493,7 @@ V.pay = () => { const b = S.bk; const sm = bkSummary(b); const disc = b.promoApp
     <h2 class="t-headline" style="font-size:16px; margin:20px 0 10px">Promo Code</h2>
     <div class="field ${b.promoErr?'err':''}"><div style="display:flex; gap:8px"><input class="input" id="promoIn" data-model="promo" placeholder="Enter promo code" value="${esc(b.promo||'')}" autocapitalize="characters" style="flex:1; min-width:0">
       ${disc?`<button class="btn btn-tertiary btn-sm" style="width:auto; padding:0 16px; height:48px" data-act="removePromo">Remove</button>`:`<button class="btn btn-secondary btn-sm" style="width:auto; padding:0 16px; height:48px" data-act="applyPromo">Apply</button>`}</div>
-      <span class="helper ${b.promoErr?'':'neutral'}">${b.promoErr ? esc(b.promoErr) : disc ? `Promo applied · ${rm(disc)} off` : 'Try YOUAPP50 for RM50 off.'}</span></div>
+      <span class="helper ${b.promoErr?'':'neutral'}">${b.promoErr ? esc(b.promoErr) : disc ? `Promo applied · ${rm(disc)} off` : ''}</span>${disc ? '' : '<template data-demo-input>Promo code: YOUAPP50 for RM50 off.</template>'}</div>
     <h2 class="t-headline" style="font-size:16px; margin:20px 0 10px">Payment Detail</h2>
     <div class="kv"><span>Subtotal<small>${sm.subLabel}</small></span><b>${rm(sm.sub)}</b></div>
     <div class="kv"><span>Promo Code</span><b>${disc?'-'+rm(disc):'-'}</b></div>
@@ -1616,10 +1615,10 @@ function ov3(){
       <p class="t-body-lg" style="margin:0">${pin?(S.authReason?esc(S.authReason):`Confirm payment of <b>${rm(S.payTotal||0)}</b> from your Booking Balance.`):`We’ve sent a 6-digit OTP to your email<br><b>${esc(S.email||'elsa.japasal@gmail.com')}</b>`}</p>
       <div class="boxes ${S.otp2State||''}" aria-label="Enter the 6-digit code">${d.map((c,i)=>`<div class="box ${pin&&c.trim()?'dot':''} ${i===v.length && !S.otp2State?'cur':''}">${pin?(c.trim()?'•':''):c.trim()}</div>`).join('')}</div>
       ${S.otp2State==='err'?`<p class="err-text" style="margin:10px 0 0" role="alert">${pin?pinErrText():'Incorrect OTP Code. Please try again!'}</p>`:''}
-      ${pin ? `<button class="link" style="margin-top:14px; font-size:13px" data-act="forgotPin">Forgot PIN?</button><p class="t-caption subtle" style="margin:6px 0 0">Demo PIN: ${esc((D.w&&D.w.pin)||DEMO_PIN)}</p>`
+      ${pin ? `<button class="link" style="margin-top:14px; font-size:13px" data-act="forgotPin">Forgot PIN?</button><template data-demo-input>Current PIN: ${esc((D.w&&D.w.pin)||DEMO_PIN)}</template>`
         : `<div style="margin-top:16px; display:grid; gap:4px; justify-items:center"><button class="link" id="wresend" data-act="wResend" ${S.wSec>0?'disabled':''} style="font-size:12px">Send email OTP again</button>
         <span id="wTimer" class="t-caption" style="color:var(--a-indigo); font-weight:600; ${S.wSec>0?'':'display:none'}">00:${String(S.wSec||0).padStart(2,'0')}</span>
-        <p class="t-caption subtle" style="margin:6px 0 0; max-width:230px">If you have not received the OTP, try checking your spam/junk folder. Demo code: 123456</p></div>`}
+        <p class="t-caption subtle" style="margin:6px 0 0; max-width:230px">If you have not received the OTP, try checking your spam/junk folder.</p><template data-demo-input>Email OTP: ${DEMO_OTP}</template></div>`}
       <button class="iconbtn" style="position:absolute; right:10px; top:10px" data-act="closeOtp2" aria-label="Close">${ic('close')}</button></div>
     <div class="pad" role="group" aria-label="Number pad">${[['1',''],['2','ABC'],['3','DEF'],['4','GHI'],['5','JKL'],['6','MNO'],['7','PQRS'],['8','TUV'],['9','WXYZ']].map(([n,l])=>`<button class="key" data-act="key2" data-k="${n}">${n}<small>${l||'&nbsp;'}</small></button>`).join('')}
       <span></span><button class="key" data-act="key2" data-k="0">0<small>&nbsp;</small></button><button class="key ghost" data-act="key2" data-k="del" aria-label="Delete">${ic('del')}</button></div>`; }
@@ -1857,7 +1856,7 @@ renderPanel = function(){ _renderPanel3(); const p = document.getElementById('pa
     <span class="later" style="margin:0 0 6px">${b?`${esc(b.title)} · <b>${STATUS[b.status][0]}</b>`:'No booking yet. Reserve a service or experience first.'}</span>
     <div class="pbtns"><button class="pbtn" data-act="hostAct" data-a="accept">Host accepts</button><button class="pbtn" data-act="hostAct" data-a="reject">Host declines</button><button class="pbtn" data-act="hostAct" data-a="complete">Complete session</button></div></div>`);
   const ar = [...p.querySelectorAll('.pgroup h2')].find(x=>x.textContent==='Arriving in later phases');
-  if (ar) ar.parentElement.querySelector('p').innerHTML = '<b>Phase 4</b> wallet, Scan to Pay, Top Up, limits, tier, freeze · <b>Phase 5</b> host · <b>Phase 6</b> chat, settings, QA pass. Demo codes: OTP and PIN <code class="k">123456</code>, promo <code class="k">YOUAPP50</code>.';
+  if (ar) ar.parentElement.querySelector('p').innerHTML = '<b>Phase 4</b> wallet, Scan to Pay, Top Up, limits, tier, freeze · <b>Phase 5</b> host · <b>Phase 6</b> chat, settings, QA pass.';
 };
 
 /* jump targets */
@@ -2369,7 +2368,7 @@ V.forgot = () => { const f = S.fp; const w = W(); const lock = w.fpTries>=3;
       ${w.secQ?`<button role="radio" aria-checked="${f.m==='q'}" class="pmeth ${f.m==='q'?'on':''}" data-act="fpMethod" data-m="q"><span style="display:grid; gap:2px"><b>Answer your security question</b><small class="subtle">${esc(w.secQ.q)}</small></span><i></i></button>`:''}</div>
     <div class="field ${f.err||lock?'err':''}" style="text-align:left; margin-top:16px"><label class="t-body" style="font-weight:600" for="fpIn">${f.m==='id'?'Last 6 digits of your ID':'Your answer'}</label>
       <input class="input" id="fpIn" data-model="fpIn" ${f.m==='id'?'inputmode="numeric" maxlength="6"':''} value="${esc(f.v||'')}" ${lock?'disabled':''}>
-      <span class="helper ${f.err||lock?'':'neutral'}">${lock?'Too many attempts. Try again after 16:05.':f.err||(f.m==='id'?'Demo: 880512':'Demo: nasi lemak')}</span></div>
+      ${lock || f.err ? `<span class="helper">${lock ? 'Too many attempts. Try again after 16:05.' : esc(f.err)}</span>` : ''}${lock ? '' : `<template data-demo-input>${f.m==='id' ? 'Last 6 digits of ID: 880512' : `Security answer: ${esc(w.secQ?.a || '')}`}</template>`}</div>
     <div class="notice" style="text-align:left">${ic('info')}<span>After 3 wrong answers, ${f.mode==='unfreeze'?'unfreezing':'PIN reset'} is locked for a while. Face ID can’t be used here.</span></div></div>
   <div class="cta">${btn('Continue','fpGo',{disabled:lock||!(f.v||'').trim()})}</div></div>`; };
 V.secq = () => { const q = S.sq2; return `<div class="screen">${statusBar()}${topBar('Security question')}
@@ -2774,7 +2773,7 @@ renderPanel = function(){ _renderPanel4(); const p = document.getElementById('pa
   if (acts) acts.parentElement.insertAdjacentHTML('beforeend', `<div class="ctl" style="margin-top:12px"><span class="lab">Wallet back office</span>
     <div class="pbtns"><button class="pbtn" data-act="tierAct" data-a="ok">Approve tier upgrade</button><button class="pbtn" data-act="tierAct" data-a="no">Reject tier upgrade</button><button class="pbtn" data-act="resolvePending">Resolve pending payment</button><button class="pbtn" data-act="autoReload">Run Auto Reload</button></div></div>`);
   const ar = [...p.querySelectorAll('.pgroup h2')].find(x=>x.textContent==='Arriving in later phases');
-  if (ar) ar.parentElement.querySelector('p').innerHTML = '<b>Phase 5</b> host · <b>Phase 6</b> chat, full settings, profile, media editor, QA pass. Demo codes: OTP and PIN <code class="k">123456</code>, promo <code class="k">YOUAPP50</code>, ID last 6 <code class="k">880512</code>, security answer <code class="k">nasi lemak</code>.';
+  if (ar) ar.parentElement.querySelector('p').innerHTML = '<b>Phase 5</b> host · <b>Phase 6</b> chat, full settings, profile, media editor, QA pass.';
 };
 const _pjump4 = P.jump;
 P.jump = el => { const to = el.dataset.to; const P4 = ['youpage','scan','spay','topup','swap','xfer','bill','whist','wset','limits','cards','freeze','forgot','tcard','myqr'];
@@ -3484,7 +3483,7 @@ renderPanel = function(){ _renderPanel5(); const p = document.getElementById('pa
     <span class="later" style="margin:0 0 6px">First service: <b>${h.svc}</b> · Verify as a host: <b>${h.vh}</b></span>
     <div class="pbtns"><button class="pbtn" data-act="hostDecide" data-a="ok">Approve host application</button><button class="pbtn" data-act="hostDecide" data-a="no">Reject host application</button><button class="pbtn" data-act="listingsOk">Approve listings in review</button><button class="pbtn" data-act="newReq">New guest request</button><button class="pbtn" data-act="bankOk">Verify bank account</button><button class="pbtn" data-act="wdDecide" data-a="ok">Approve withdrawal</button><button class="pbtn" data-act="wdDecide" data-a="no">Reject withdrawal</button></div></div>`);
   const ar = [...p.querySelectorAll('.pgroup h2')].find(x=>x.textContent==='Arriving in later phases');
-  if (ar) ar.parentElement.querySelector('p').innerHTML = '<b>Phase 6</b> chat, announcements, reviews, full settings, profile, media editor, delete account, payment-off state, QA pass. Demo codes: OTP and PIN <code class="k">123456</code>, promo <code class="k">YOUAPP50</code>, ID last 6 <code class="k">880512</code>, security answer <code class="k">nasi lemak</code>.';
+  if (ar) ar.parentElement.querySelector('p').innerHTML = '<b>Phase 6</b> chat, announcements, reviews, full settings, profile, media editor, delete account, payment-off state, QA pass.';
 };
 const _pjump5 = P.jump;
 P.jump = el => { const to = el.dataset.to; const P5 = ['hosttab','hstep','verifyhost','cexp','hset','hexps','hsplans','hxplans','hearn','hwd','hbanks'];
@@ -3798,7 +3797,7 @@ V.delreason = () => { const d = S.del;
   <div class="cta">${btn('Next','delNext')}</div></div>`; };
 V.delotp = () => { const d = S.del; const v = (d.otp||'').padEnd(6,' ').split('');
   return `<div class="screen">${statusBar()}${topBar('')}<div class="scroll pad16" style="text-align:center"><h1 class="t-title" style="margin:10px 0 6px">OTP Verification</h1><p class="t-body muted" style="margin:0">We’ve sent a 6-digit OTP to your email<br><b style="color:var(--a-ink)">${esc(C6().prof.email)}</b></p>
-    <div class="boxes ${d.oerr?'err':''}" style="margin-top:20px">${v.map((ch,i)=>`<div class="box ${i===d.otp.length?'cur':''}">${ch.trim()}</div>`).join('')}</div>
+    <template data-demo-input>Email OTP: ${DEMO_OTP}</template><div class="boxes ${d.oerr?'err':''}" style="margin-top:20px">${v.map((ch,i)=>`<div class="box ${i===d.otp.length?'cur':''}">${ch.trim()}</div>`).join('')}</div>
     ${d.oerr?`<p class="err-text" role="alert" style="margin:10px 0 0">${d.oerr}</p>`:''}
     <p class="t-caption subtle" style="margin:16px 0 0">${d.sec>0?`Send email OTP again in <b id="delSec">00:${String(d.sec).padStart(2,'0')}</b>`:`<button class="link" data-act="delResend">Send email OTP again</button>`}</p><p class="t-caption subtle" style="margin:6px 0 0">If you have not received the OTP, try checking your spam/junk folder.</p></div>
   <div class="pad" role="group" aria-label="Number pad">${['1','2','3','4','5','6','7','8','9'].map(k=>`<button class="key" data-act="delKey" data-k="${k}">${k}<small>&nbsp;</small></button>`).join('')}<span></span><button class="key" data-act="delKey" data-k="0">0<small>&nbsp;</small></button><button class="key ghost" data-act="delKey" data-k="del" aria-label="Delete">${ic('del')}</button></div></div>`; };
@@ -4224,7 +4223,7 @@ renderPanel = function(){ _renderPanel6(); const p = document.getElementById('pa
   if (acts) { acts.parentElement.querySelector('[data-act=shake]').textContent = 'Simulate shake (report a problem when logged in)';
     acts.parentElement.insertAdjacentHTML('beforeend', `<div class="ctl" style="margin-top:12px"><span class="lab">Chat, announcement and profile</span><div class="pbtns"><button class="pbtn" data-act="incomingMsg">New message from Catherine</button><button class="pbtn" data-act="annUnpublish">Unpublish an announcement</button><button class="pbtn" data-act="clearProfile">Clear profile fields</button></div></div>`); }
   const ar = [...p.querySelectorAll('.pgroup h2')].find(x=>x.textContent==='Arriving in later phases');
-  if (ar) { ar.textContent = 'All phases built'; ar.parentElement.querySelector('p').innerHTML = 'Every Figma page is clickable. Demo codes: OTP and PIN <code class="k">123456</code>, promo <code class="k">YOUAPP50</code>, ID last 6 <code class="k">880512</code>, security answer <code class="k">nasi lemak</code>. Conflicts and copy fixes are logged in the flow map.'; }
+  if (ar) { ar.textContent = 'All phases built'; ar.parentElement.querySelector('p').innerHTML = 'Every Figma page is clickable. Conflicts and copy fixes are logged in the flow map.'; }
 };
 const _pjump6 = P.jump;
 P.jump = el => { const to = el.dataset.to; const P6 = ['chats','chat','ann','reviews','settings','profedit','medit','rform','delreason','maint'];
@@ -4472,7 +4471,7 @@ V.sexport = () => { const e = S.ex7 || (S.ex7 = {step:1, ok:false, otp:'', err:'
       <p class="t-caption ${e.err?'':'subtle'}" style="margin:8px 0 0; text-align:center; ${e.err?'color:var(--a-error)':''}">${e.err||'Can’t find the code? Check your spam or junk folder.'}</p>
       <button class="btn btn-primary pvbtn7" data-act="ex7Verify" ${e.otp.length===6?'':'aria-disabled="true"'}>Verify email</button>
       ${e.sec>0?`<p class="t-caption subtle" style="text-align:center; margin:10px 0 0">Resend code (<span id="ex7Sec">${e.sec}s</span>)</p>`:`<button class="link" style="display:block; margin:10px auto 0; font-size:13px" data-act="ex7Resend">Resend code</button>`}
-      <button class="pvcancel7" data-act="back">Cancel</button>${foot}<p class="t-caption subtle" style="text-align:center; margin:4px 0 0">Demo code: 123456</p></div>`; }
+      <button class="pvcancel7" data-act="back">Cancel</button>${foot}<template data-demo-input>Email OTP: ${DEMO_OTP}</template></div>`; }
   else card = `<div class="pvcard7 blur7">${logo}</div><div class="pvsheet7"><button class="pvx7" data-act="back" aria-label="Close">${ic('close')}</button><h2 class="t-headline" style="text-align:center; margin:0 0 6px">Export wallet</h2><p class="t-body muted" style="text-align:center; margin:0 0 12px">Copy either your private key or seed phrase to export your wallet. <u>Learn more</u></p>
       <div class="pvnote7">${ic('warn')}<span>Never share your private key or seed phrase with anyone.</span></div><small class="subtle" style="display:block; margin:12px 0 4px">Your wallet</small>
       <div class="pvw7"><b>${addr}</b><button data-act="s6CopyAddr">Copy ${ic('copy')}</button></div>
@@ -4487,7 +4486,7 @@ V.cpin7 = () => { const c = S.cp7; const isNew = c.step==='new'; const dots = Ar
     <h2 class="t-headline" style="margin:12px 0 4px">${isNew?'Create new PIN':'Enter your current PIN'}</h2><p class="t-caption subtle" style="margin:0">${isNew?'Creating a PIN helps keep your transactions safe and secure.':'For security purpose, Please enter your PIN.'}</p>
     <div class="pdots7 ${c.err?'err':''} ${isNew?'nw':''}" aria-label="${c.v.length} of 6 digits entered">${dots}</div>
     ${c.err?`<p class="t-caption" role="alert" style="color:var(--a-error); margin:0 0 6px">${c.err}</p>`:''}
-    ${isNew?`<div class="tips7"><b>Tips for secure PIN</b><ol><li>Avoid easy to guess numbers like, e.g., 123456.</li><li>Don’t use personal information, such as your birthday.</li><li>Never share your PIN with anyone.</li></ol></div>`:`<button class="fpchip7" data-act="forgotPin">Forgot PIN</button><p class="t-caption subtle" style="margin:8px 0 0">Demo PIN: ${esc(myPin7())}</p>`}</div>
+    ${isNew?`<div class="tips7"><b>Tips for secure PIN</b><ol><li>Avoid easy to guess numbers like, e.g., 123456.</li><li>Don’t use personal information, such as your birthday.</li><li>Never share your PIN with anyone.</li></ol></div>`:`<button class="fpchip7" data-act="forgotPin">Forgot PIN</button><template data-demo-input>Current PIN: ${esc(myPin7())}</template>`}</div>
     <div class="kb7"><div style="padding:0 10px 8px">${btn('Confirm','cp7Confirm',{disabled:c.v.length<6})}</div><div class="kgrid7">${['1','2','3','4','5','6','7','8','9','','0','del'].map(k=>k===''?'<span></span>':`<button data-act="cp7Key" data-k="${k}" ${k==='del'?'aria-label="Delete"':''}>${k==='del'?ic('del'):k}</button>`).join('')}</div></div></div>`; };
 V.cpinok7 = () => `<div class="screen">${statusBar()}<div class="scroll pad16" style="display:grid; place-items:center; text-align:center; align-content:center"><span class="okring7">${ic('p123')}</span><h1 class="t-headline" style="color:var(--a-indigo); margin:18px 0 6px">PIN Changed Successfully</h1><p class="t-body muted" style="margin:0">Your new security PIN has been successfully set. You can now use it to complete secure transactions.</p></div><div class="cta" style="border:0">${btn('Done','cp7Done')}</div></div>`;
 
@@ -4575,7 +4574,7 @@ function pinScreen7(o){ const dots = Array.from({length:6},(_,i)=>`<i class="${i
     <div class="pdots7 ${o.err?'err':''} ${o.ok?'ok':''} ${o.nw?'nw':''}" aria-label="${o.v.length} of 6 digits entered">${dots}</div>
     ${o.err?`<p class="t-caption" role="alert" style="color:var(--a-error); margin:0 0 6px">${o.err}</p>`:''}
     ${o.tips?`<div class="tips7"><b>Tips for secure PIN</b><ol><li>Avoid easy to guess numbers like, e.g., 123456.</li><li>Don’t use personal information, such as your birthday.</li><li>Never share your PIN with anyone.</li></ol></div>`:''}
-    ${o.forgot?`<button class="fpchip7" data-act="forgotPin">Forgot PIN</button><p class="t-caption subtle" style="margin:8px 0 0">Demo PIN: ${esc(myPin7())}</p>`:''}</div>
+    ${o.forgot?`<button class="fpchip7" data-act="forgotPin">Forgot PIN</button><template data-demo-input>Current PIN: ${esc(myPin7())}</template>`:''}</div>
     <div class="kb7"><div style="padding:0 10px 8px">${btn('Confirm',o.confirm,{disabled:o.v.length<6||o.ok})}</div><div class="kgrid7">${['1','2','3','4','5','6','7','8','9','','0','del'].map(k=>k===''?'<span></span>':`<button data-act="${o.key}" data-k="${k}" ${k==='del'?'aria-label="Delete"':''}>${k==='del'?ic('del'):k}</button>`).join('')}</div></div>`;
 }
 V.cpin7 = () => { const c = S.cp7; const isNew = c.step==='new';

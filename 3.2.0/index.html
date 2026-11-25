@@ -58,6 +58,9 @@ button{font:inherit; color:inherit; cursor:pointer}
 .now .tag{font-size:11px; font-weight:700; letter-spacing:.04em; text-transform:uppercase; padding:3px 8px; border-radius:999px; background:var(--accent-soft); color:var(--accent); white-space:nowrap}
 .now .tag.w2{background:var(--ok-soft); color:var(--ok)}
 .now b{font-weight:600; font-size:13px; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+.demo-inputs{margin:0 0 16px; padding:10px 12px; border-radius:12px; background:var(--surface-2); color:var(--text); font-size:13px; line-height:1.5}
+.demo-inputs h2{margin:0 0 4px; font-size:13px; font-weight:600}
+.demo-inputs p{margin:0; white-space:pre-line; overflow-wrap:anywhere}
 .grp{margin:0 0 16px}
 .grp h2{font-size:12px; font-weight:600; color:var(--text-3); text-transform:uppercase; letter-spacing:.05em; margin:0 0 8px}
 .jumps{display:grid; grid-template-columns:1fr 1fr; gap:6px}
@@ -143,6 +146,10 @@ button{font:inherit; color:inherit; cursor:pointer}
     <h1>YouApp full flow</h1>
     <p class="sub">One app: Wallet 2.0 screens where they changed, 3.0 screens everywhere else.</p>
     <div class="now" aria-live="polite"><span class="tag" id="nowTag">3.0</span><b id="nowName">Welcome</b></div>
+    <div aria-live="polite"><section id="demoInputs" class="demo-inputs" aria-labelledby="demoInputsTitle" hidden>
+      <h2 id="demoInputsTitle">Demo inputs</h2>
+      <p></p>
+    </section></div>
 
     <div class="grp"><h2>Version</h2>
       <nav class="version-links" aria-label="Prototype version">

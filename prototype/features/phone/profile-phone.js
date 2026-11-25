@@ -26,7 +26,7 @@
       <label class="ya-fl ya-num ${f.err ? 'err' : ''}" for="pphNum"><span class="ya-fll">New mobile number</span><span class="ya-dial">${c[2]}</span>
         <input id="pphNum" type="tel" inputmode="tel" autocomplete="tel-national" value="${esc(f.num)}" placeholder="${f.cc === 'MY' ? '12-345 6789' : 'Phone number'}" aria-describedby="pphH" ${f.busy ? 'disabled' : ''}></label>
       <p class="ya-flh ${f.err ? 'err' : ''}" id="pphH">${f.err ? esc(f.err) : 'This number is also used for your Fiat Wallet.'}</p>
-      <p class="t-caption subtle ya-demo">Demo: 12-345 0000 (Malaysia) is already linked to another account.</p>
+      <template data-demo-input>12-345 0000 (Malaysia) is already linked to another account.</template>
     </div></div>
     <div class="cta">${btn(f.busy ? 'Sending code…' : 'Send code', 'pphSend', {disabled: !ok || f.busy, loading: f.busy})}</div></div>`; };
 
@@ -46,7 +46,8 @@
       <div class="ya-otp ${err ? 'err' : ''}" role="img" aria-label="Code: ${v.length} of 6 digits entered">${[0,1,2,3,4,5].map(i => `<span class="${i === v.length && !err && !lock ? 'cur' : ''}">${v[i] || ''}</span>`).join('')}</div>
       <p style="margin:0; min-height:18px" aria-live="polite">${lock ? '<span class="ya-err">Too many wrong codes. Try again in 10 minutes or change the number.</span>'
         : err ? `<span class="ya-err">That code isn’t right. ${5 - f.tries} ${5 - f.tries === 1 ? 'try' : 'tries'} left.</span>`
-        : f.busy ? '<span class="t-caption subtle">Checking…</span>' : '<span class="t-caption subtle">Demo code: 123456</span>'}</p>
+        : f.busy ? '<span class="t-caption subtle">Checking…</span>' : ''}</p>
+      ${lock ? '' : '<template data-demo-input>SMS OTP: 123456</template>'}
       ${lock ? '' : t > 0 ? `<p class="t-caption subtle" style="margin:0">Resend code in <b id="pphT">0:${String(t).padStart(2, '0')}</b></p>` : '<button class="link" data-act="pphResend">Resend code</button>'}
     </div></div>${keypad('pphK')}</div>`; };
 
@@ -97,7 +98,6 @@
   .ya-dial{flex:none; padding-right:12px; border-right:1px solid var(--a-line); font:500 16px/24px Inter, sans-serif; color:var(--a-ink)}
   .ya-num input{flex:1; min-width:0; height:54px; border:0; outline:0; background:none; font:400 16px Inter, sans-serif; color:var(--a-ink); padding:0}
   .ya-flh{margin:6px 2px 0; font-size:12px; line-height:16px; color:var(--a-ink-3)} .ya-flh.err{color:var(--a-error)}
-  .ya-demo{margin:14px 2px 0}
   .ya-flag{display:block; width:28px; height:28px; border-radius:50%; overflow:hidden; flex:none; box-shadow:0 0 0 1px rgba(9,20,26,.08)} .ya-flag svg{display:block; width:100%; height:100%}
   .selrow .ya-flag{width:24px; height:24px}
   .ya-ccl{display:grid; align-content:start}

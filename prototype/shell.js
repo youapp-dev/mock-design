@@ -75,7 +75,20 @@
   document.getElementById('fab').addEventListener('click', () => { panel.classList.add('open'); scrim.classList.add('open'); });
   scrim.addEventListener('click', closeP);
 
+  const demoInputs = document.getElementById('demoInputs');
+  const demoText = demoInputs.querySelector('p');
+  function updateDemoInputs() {
+    const phone = F[active].contentDocument?.getElementById('phone');
+    const overlay = Array.from(phone?.querySelectorAll(':scope > .sheet, :scope > [role="dialog"], [role="dialog"][aria-modal="true"]') ?? []).at(-1);
+    const hints = document.getElementById('wvOv').classList.contains('on') ? []
+      : (overlay || phone)?.querySelectorAll('template[data-demo-input]') ?? [];
+    const next = Array.from(hints, hint => hint.content.textContent.trim()).join('\n');
+    if (demoText.textContent !== next) demoText.textContent = next;
+    demoInputs.hidden = !next;
+  }
+
   function status(){
+    updateDemoInputs();
     const st = ctxOf(active);
     document.querySelector('.stage').classList.toggle('has-preview-dock', active==='w2' || st.screen==='apform' || st.screen==='activate');
     document.getElementById('nowTag').textContent = active==='a30' ? '3.0' : 'Wallet 2.0';
@@ -89,6 +102,10 @@
   function frameLoaded(key) {
     if (!ready(key)) return;
     hookFrame(key);
+    const phone = win(key).document.getElementById('phone');
+    if (phone) new MutationObserver(() => {
+      if (active === key) updateDemoInputs();
+    }).observe(phone, {childList:true});
     loaded.add(key);
     if (started || loaded.size !== Object.keys(F).length) return;
     started = true;
