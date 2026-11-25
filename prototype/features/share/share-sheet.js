@@ -43,13 +43,13 @@
   .sh31-row{display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding:24px 16px}
   .sh31-row::-webkit-scrollbar{display:none}
   .sh31-share{gap:6px; border-top:1px solid #E5E4E7}
-  .sh31-c, .sh31-t{flex:none; display:flex; flex-direction:column; align-items:center; gap:8px; width:80px; max-width:80px; padding:0; border:0; background:none; cursor:pointer}
+  .sh31-c, .sh31-t{flex:none; display:flex; flex-direction:column; align-items:center; gap:8px; width:76px; max-width:76px; padding:0; border:0; background:none; cursor:pointer}
   .sh31-av{position:relative; width:60px; height:60px}
   .sh31-av img{width:60px; height:60px; border-radius:50%; object-fit:cover; display:block}
   .sh31-c.on .sh31-av img{outline:2.5px solid #38168E; outline-offset:2px}
   .sh31-ck{position:absolute; right:-2px; bottom:-2px; width:22px; height:22px; border-radius:50%; background:#38168E; border:2px solid #fff; display:grid; place-items:center}
   .sh31-ck svg{width:12px; height:12px}
-  .sh31-nm{display:flex; align-items:center; gap:2px; max-width:80px}
+  .sh31-nm{display:flex; align-items:center; justify-content:center; gap:2px; max-width:76px}
   .sh31-nm span{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:400 12px/16px Inter,sans-serif; color:#1A181B}
   .sh31-nm svg{flex:none; width:12px; height:12px}
   .sh31-t svg{width:60px; height:60px; display:block}
@@ -64,8 +64,8 @@
     const top = st.search
       ? `<div class="sh31-top"><button class="sh31-ib" data-act="sh31Search" aria-label="Close search">${ic('back')}</button><label class="sh31-q">${ic('search')}<input data-in="sh31Q" value="${esc(st.q)}" placeholder="Search" aria-label="Search people"></label></div>`
       : `<div class="sh31-top"><button class="sh31-ib" data-act="sh31Search" aria-label="Search people">${ICON.search}</button><h2>Send to</h2><span></span></div>`;
-    const people = list.length ? `<div class="sh31-row" role="group" aria-label="People"><span class="sh31-line" aria-hidden="true"></span>${list.map(([n, a]) => { const on = st.sel.includes(n);
-        return `<button class="sh31-c ${on ? 'on' : ''}" data-act="sh31Pick" data-n="${esc(n)}" aria-pressed="${on}"><span class="sh31-av">${img(a, n)}${on ? `<i class="sh31-ck" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2l2.3 2.3 4.7-4.9" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i>` : ''}</span><span class="sh31-nm"><span>${esc(n)}</span>${ICON.tagVerified}${ICON.tagHost}</span></button>`; }).join('')}</div>`
+    const people = list.length ? `<div class="sh31-row" role="group" aria-label="People">${list.map(([n, a]) => { const on = st.sel.includes(n);
+        return `<button class="sh31-c ${on ? 'on' : ''}" data-act="sh31Pick" data-n="${esc(n)}" aria-pressed="${on}" aria-label="${esc(n)}"><span class="sh31-av">${img(a, n)}${on ? `<i class="sh31-ck" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2l2.3 2.3 4.7-4.9" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i>` : ''}</span><span class="sh31-nm" aria-hidden="true"><span>${esc(n.split(' ')[0])}</span>${ICON.tagVerified}${ICON.tagHost}</span></button>`; }).join('')}</div>`
       : `<p class="sh31-empty">No one matches “${esc(st.q)}”.</p>`;
     const share = `<div class="sh31-row sh31-share" role="group" aria-label="Share to">${TARGETS.map(([k, t]) => `<button class="sh31-t" data-act="sh31To" data-k="${k}">${ICON[k]}<span>${t}</span></button>`).join('')}</div>`;
     const send = st.sel.length ? `<div class="sh31-send">${btn(st.sel.length > 1 ? `Send to ${st.sel.length} people` : `Send to ${esc(st.sel[0])}`, 'sh31Send')}</div>` : '';

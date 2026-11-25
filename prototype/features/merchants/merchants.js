@@ -17,6 +17,7 @@ const SV = {
   sort:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M7 12h10M10 17h4"/></svg>',
   flame:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c.6 3.2 4.8 5.2 4.8 10.2a4.8 4.8 0 0 1-9.6 0c0-2 1-3.3 2-4.3.2 1.6 1 2.6 2 2.9-.6-3.2-.3-6 .8-8.8z" fill="#F07C2A"/></svg>',
   cam:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.4"/></svg>',
+  wallet:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H17v3.5"/><path d="M4 7.5v10A2.5 2.5 0 0 0 6.5 20H20V8.5H6.5A2.5 2.5 0 0 1 4 6"/><circle cx="16" cy="14.25" r="1.1" fill="currentColor" stroke="none"/></svg>',
   qr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 18h2v2h-2zM14 18h2M18 14h2"/></svg>',
   share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17.5" cy="5.5" r="2.5"/><circle cx="6.5" cy="12" r="2.5"/><circle cx="17.5" cy="18.5" r="2.5"/><path d="M8.7 10.7l6.6-3.9M8.7 13.3l6.6 3.9"/></svg>',
   back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
@@ -155,7 +156,7 @@ const MORE = [
 const donut = (title, data) => { const tot = data.reduce((t, d) => t + d[1], 0); let acc = 0; const R = 15.9155;
   const segs = data.map(([l, v, c]) => { const pct = v / tot * 100; const s = `<circle r="${R}" cx="21" cy="21" fill="none" stroke="${c}" stroke-width="6" stroke-dasharray="${pct.toFixed(2)} ${(100 - pct).toFixed(2)}" stroke-dashoffset="${(25 - acc).toFixed(2)}"/>`; acc += pct; return s; }).join('');
   return `<figure class="mx-dn"><div class="mx-dnc"><svg viewBox="0 0 42 42" role="img" aria-label="${esc(title)}: ${data.map(d => `${d[0]} ${Math.round(d[1] / tot * 100)}%`).join(', ')}">${segs}</svg><b>${esc(title)}</b></div>
-    <figcaption>${data.map(([l, v, c]) => `<span><i style="background:${c}"></i>${esc(l)} <small>${Math.round(v / tot * 100)}% · ${fmt(v)}</small></span>`).join('')}</figcaption></figure>`; };
+    <figcaption>${data.map(([l, v, c]) => `<span><i style="background:${c}"></i><em>${esc(l)}</em><small>${Math.round(v / tot * 100)}% · ${fmt(v)}</small></span>`).join('')}</figcaption></figure>`; };
 const summary3 = `<div class="mx-sum">${[['Age','Mostly <span class="nw">25–30</span>'],['Gender','Mostly female'],['From','Mostly Malaysia']].map(([k, v]) => `<div><small>${k}</small><b>${v}</b></div>`).join('')}</div>`;
 const REVS = p => { const own = MX.reviews[p.id] ? [MX.reviews[p.id]] : [];
   return own.concat(p.id === 'px-kopi' || p.old ? [
@@ -210,9 +211,9 @@ V.mer = () => { const p = placeById(S.mer) || PLACES[0]; if (MX.hiFor !== p.id) 
       ${lbScen() === 'none' ? `<div class="mx-sh"><h2>${mine ? 'You checked in here' : 'No one has checked in here yet'}</h2></div>` : `<div class="mx-sh"><h2>${fmt(p.total + (mine > p.mine ? mine - p.mine : 0))} people checked in here</h2><button class="mx-link" data-act="mxPeople">See all</button></div>
       <div class="mx-pp">${ppl.map(k => { const u = PPL[k]; return `<button data-act="mxPerson" data-k="${k}"><span>${img(u.img, u.n)}</span><b>${esc(u.n)}</b><small>${u.age}${GEN(u.g)}</small></button>`; }).join('')}</div>`}
       ${p.total >= 50 && lbScen() !== 'none' ? `<div class="mx-sh"><h2>Who checks in here</h2><small class="mx-sub">Last 90 days</small></div>
-      <div class="mx-who">${summary3}<div class="mx-dns">${donut('Age', AGE)}${donut('Gender', GENDER)}</div><button class="mx-all in" data-act="mxWho">Show all${SV.chevd}</button></div>` : ''}
+      <div class="mx-who" id="mxWho">${summary3}<div class="mx-dns">${donut('Age', AGE)}${donut('Gender', GENDER)}${MX.who === S.mer ? MORE.map(([t, d]) => donut(t, d)).join('') : ''}</div><button class="mx-all in" data-act="mxWho" aria-expanded="${MX.who === S.mer}" aria-controls="mxWho">${MX.who === S.mer ? `Show less${SV.chevu}` : `Show all${SV.chevd}`}</button></div>` : ''}
       <p class="mx-attr">Places and reviews from Google</p>
-    </div></div>${p.cb ? `<div class="mx-paybar"><button class="mx-paybtn" data-act="cbScan" aria-label="Pay ${esc(p.name)}, ${p.open ? `${p.cb}% cashback` : 'closed now'}">${SV.qr}<span><b>Pay</b><small>${p.open ? `${p.cb}% cashback` : 'Closed now'}</small></span></button></div>` : ''}</div>`; };
+    </div></div>${p.cb ? `<div class="mx-paybar"><button class="mx-paybtn" data-act="mxPay" aria-label="Pay ${esc(p.name)}, ${p.open ? `${p.cb}% cashback` : 'closed now'}">${SV.wallet}<span><b>Pay</b><small>${p.open ? `${p.cb}% cashback` : 'Closed now'}</small></span></button></div>` : ''}</div>`; };
 
 /* ---------- 3. Checked in ---------- */
 V.merDone = () => { const p = placeById(S.mer) || PLACES[0]; const mine = mineOf(p); const r = MX.rankAfter || {}; const amb = board(p)[0];
@@ -367,6 +368,12 @@ Object.assign(A, {
   mxAreaApply: el => { if (el && el.getAttribute && el.getAttribute('aria-disabled')) return; const a = AREA(MX.ad.id); MX.area = a.id; MX.km = MX.ad.km; back(); toast(a.gps ? 'Showing merchants near you.' : `Showing merchants around ${a.name}.`); },
   mxHours: () => { MX.hours = MX.hours === S.mer ? null : S.mer; render(); },
   mxDir: () => toast('Opens this place in Google Maps.'),
+  /* Pay from the merchant page skips the camera: straight to amount entry for this merchant (Wallet 2.0 Pay screen) */
+  mxPay: () => { const p = placeById(S.mer) || PLACES[0];
+    if (window.parent !== window && window.parent.__bridge) { window.parent.__bridge('a30', 'merPay', {kyc:scen.kyc, wallet:scen.wallet, host:scen.host, mer:{id:p.id, name:p.name, area:p.addr.split(',').pop().trim(), cb:p.cb||0, img:IMG[p.img]}}); return; }
+    const k = 'mx:' + p.id;
+    QRS[k] = {kind:'ok', head:'Pay', name:p.name, branch:p.addr.split(',').pop().trim(), sub:p.type, img:p.img, min:0, fixed:null, cb:(p.cb||0)/100};
+    S.sp = {m:k, amt:''}; go('spay'); },
   mxCall: () => { const p = placeById(S.mer); toast(`Calls ${p ? p.phone : 'the shop'}.`); },
   mxShare: guard(() => {
     const p = placeById(S.mer) || PLACES[0];
@@ -385,7 +392,11 @@ Object.assign(A, {
   mxLb: el => { MX.lbAll = el.dataset.k === 'all'; render(); },
   mxPeople: () => { MX.pt = 'today'; go('merPeople'); },
   mxPt: el => { MX.pt = el.dataset.k; render(); },
-  mxWho: () => go('merWho'),
+  /* expand in place on the merchant page (no separate page); Show less collapses back to Age + Gender */
+  mxWho: () => { const kb = document.activeElement?.matches?.(':focus-visible'); const open = MX.who !== S.mer; MX.who = open ? S.mer : null; render();
+    const box = document.getElementById('mxWho'); if (!box) return;
+    if (kb) box.querySelector('[data-act="mxWho"]')?.focus({preventScroll:true});
+    if (!open) box.scrollIntoView({block:'nearest'}); },
   mxCheckIn: guard(el => { const p = placeById(S.mer); if (!p) return;
     if (el && el.getAttribute && el.getAttribute('aria-disabled')) { toast('You can check in here once an hour.'); return; }
     if (scen.network === 'offline') { toast('No internet connection. Check your connection and try again.', 'err'); return; }
@@ -421,7 +432,7 @@ document.addEventListener('input', e => { if (e.target.id === 'mxText' && MX.rf)
 Object.assign(META, {
   merGuest:{name:'Merchants · guest', group:'Discover · Merchants', rules:['Guests can browse the Merchants list (search, area, filters, sort)','Tapping a merchant opens the Welcome to YouApp sign-in bottom sheet instead of the merchant page']},
   merArea:{name:'Choose area', group:'Discover · Merchants', rules:['Opened from the area chip on Merchants; applies to Merchants only, not Locals','Search areas, tap the location button or a row; the map and the card update','Distance 1, 3 or 5 km (default 3); card shows how many merchants are inside','Show merchants here applies and goes back; Back changes nothing','Picked area shows on the chip with × to go back to Near you; next app open resets to Near you','Outside Malaysia: button disabled. Location off: prompt to turn it on']},
-  mer:{name:'Merchant page', group:'Discover · Merchants', rules:['Photos from Google: swipe the hero left/right in place (counter updates); tap a photo to open the viewer','Name, rating, type and price on the photo; Share top right','No big button row: Directions is the icon next to the address, tap the phone number to call','Order: info, check in, ambassador, reviews, people, who checks in here','Reviews: YouApp (name, age, gender, visits) and Google (small Google label) in one list; Rate your visit right there','Who checks in here: last 90 days, totals only, shown once a place has 50+ check-ins']},
+  mer:{name:'Merchant page', group:'Discover · Merchants', rules:['Photos from Google: swipe the hero left/right in place (counter updates); tap a photo to open the viewer','Name, rating, type and price on the photo; Share top right','No big button row: Directions is the icon next to the address, tap the phone number to call','Order: info, check in, ambassador, reviews, people, who checks in here','Reviews: YouApp (name, age, gender, visits) and Google (small Google label) in one list; Rate your visit right there','Who checks in here: last 90 days, totals only, shown once a place has 50+ check-ins; Show all expands every chart in place (Show less collapses), no separate page']},
   merDone:{name:'Checked in', group:'Discover · Merchants', rules:['Only at the place (GPS ~100 m), once an hour per place, ID-verified users','Shows your count here, new rank, who you passed and how many more to become ambassador','Next check-in time, then one button: Pay (cashback merchants) or Write a review. Add a photo was removed until we decide where photos live']},
   merBoard:{name:'Place leaderboard', group:'Discover · Merchants', rules:['Scenario Merchant leaderboard: Has check-ins, None in 30 days (30-day tab empty, all-time still there) or None yet (both empty)','Empty tab: No check-ins in the last 30 days / No check-ins yet with Check in; checking in makes you #1 and the ambassador','Ambassador = most check-ins in the last 30 days, ties go to who got there first','Full list with your row highlighted; switch to All time']},
   merPhotos:{name:'Photo viewer', group:'Discover · Merchants', rules:['Opens from the hero photo, a thumbnail or +N, on the photo that was tapped','Swipe left/right (drag with the mouse on desktop, arrow keys too); counter and thumbnail strip follow','Tap a thumbnail to jump; swipe down or × to close, back on the same photo in the hero','Share top right']},
@@ -480,7 +491,7 @@ document.head.insertAdjacentHTML('beforeend', `<style id="mx-css">
 .screen.mxp{background:#fff} .mx-scroll{padding-bottom:12px}
 /* sticky Pay bar: only for merchants that accept YouApp (cashback); wins over the check-in card */
 .mx-paybar{flex:none; padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px)); background:#fff; box-shadow:0 -1px 0 #EEEAF5}
-.mx-paybtn{display:flex; align-items:center; justify-content:center; gap:10px; width:100%; min-height:54px; padding:0 20px; border:0; border-radius:999px; background:#38168E; color:#fff; box-shadow:0 8px 20px rgba(56,22,142,.38); cursor:pointer}
+.mx-paybtn{display:flex; align-items:center; justify-content:center; gap:10px; width:100%; min-height:54px; padding:0 20px; border:0; border-radius:999px; background:var(--a-grad); color:#fff; box-shadow:0 8px 20px rgba(75,42,158,.24); cursor:pointer}
 .mx-paybtn svg{width:22px; height:22px; flex:none}
 .mx-paybtn span{display:flex; align-items:baseline; gap:8px}
 .mx-paybtn b{font:700 17px/1 Inter,sans-serif}
@@ -568,7 +579,7 @@ document.head.insertAdjacentHTML('beforeend', `<style id="mx-css">
 .mx-ini{width:38px; height:38px; flex:none; border-radius:50%; background:#5B8DEF; color:#fff; display:grid; place-items:center; font:700 13px/1 Inter, sans-serif}
 .mx-gl{font-style:normal; padding:1px 6px; border-radius:5px; background:#E8F0FE; color:#1A73E8; font-weight:700}
 .mx-g{display:inline-grid; place-items:center; width:15px; height:15px} .mx-g svg{width:13px; height:13px} .mx-g.f svg{fill:#D9568C} .mx-g.m svg{fill:#4F7BE0}
-.mx-all{height:46px; border:0; border-radius:14px; background:#F4EFFF; color:#4B2A9E; font:700 14px Inter, sans-serif; display:flex; align-items:center; justify-content:center; gap:4px} .mx-all svg{width:16px; height:16px} .mx-all.in{background:none}
+.mx-all{height:46px; border:0; border-radius:14px; background:#F4EFFF; color:#4B2A9E; font:700 14px Inter, sans-serif; display:flex; align-items:center; justify-content:center; gap:4px} .mx-all svg{width:16px; height:16px} .mx-all.in{background:none} .mx-who .mx-all.in, .mxw .mx-all.in{width:fit-content; margin:4px auto 0; padding:0 16px; align-self:center}
 .mx-pp{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px}
 .mx-pp button, .mx-pg button{border:0; background:none; padding:0; text-align:left; display:grid; gap:2px}
 .mx-pp button > span{aspect-ratio:.85; border-radius:12px; overflow:hidden; background:#F4EFFF} .mx-pp img, .mx-pg img{width:100%; height:100%; object-fit:cover; display:block}
@@ -576,11 +587,11 @@ document.head.insertAdjacentHTML('beforeend', `<style id="mx-css">
 .mx-who{border:1.5px solid #ECE7F7; border-radius:18px; padding:12px; display:grid; gap:12px; background:#FAF8FF}
 .mx-sum{display:grid; grid-template-columns:repeat(3,minmax(0,1fr)); gap:8px} .mx-sum div{padding:10px; border-radius:12px; background:#fff; border:1px solid #ECE7F7; display:grid; gap:3px}
 .mx-sum small{font:500 11.5px Inter, sans-serif; color:#6E6688} .mx-sum b{font:700 13px/1.3 Inter, sans-serif; color:#1E1050}
-.mx-dns{display:grid; grid-template-columns:1fr 1fr; gap:12px} .mx-dns.col{grid-template-columns:1fr 1fr; margin-top:12px}
+.mx-dns{display:grid; grid-template-columns:minmax(0,1fr) minmax(0,1fr); gap:12px} .mx-dns.col{margin-top:12px} .mx-dn{min-width:0; grid-template-columns:minmax(0,1fr)} .mx-dn figcaption span{min-width:0}
 .nw{white-space:nowrap}
 .mx-dn{margin:0; display:grid; gap:8px; justify-items:center; align-content:start; padding:10px 6px; border-radius:14px; background:#fff; border:1px solid #ECE7F7}
 .mx-dnc{position:relative; width:118px; height:118px} .mx-dnc svg{width:100%; height:100%; transform:rotate(-90deg)} .mx-dnc svg{transform:none} .mx-dnc b{position:absolute; inset:0; display:grid; place-items:center; text-align:center; padding:0 26px; font:700 12px/1.2 Inter, sans-serif; color:#1E1050}
-.mx-dn figcaption{display:grid; gap:3px; width:100%} .mx-dn figcaption span{display:flex; align-items:center; gap:6px; font:600 12px Inter, sans-serif; color:#1E1050} .mx-dn figcaption small{margin-left:auto; font-weight:500; color:#6E6688}
+.mx-dn figcaption{display:grid; gap:3px; width:100%} .mx-dn figcaption span{display:flex; align-items:center; gap:6px; font:600 12px Inter, sans-serif; color:#1E1050} .mx-dn figcaption small{margin-left:auto; flex:none; white-space:nowrap; font-weight:500; color:#6E6688} .mx-dn figcaption em{white-space:nowrap; font-style:normal} .mx-dn figcaption span{flex-wrap:wrap; row-gap:0}
 .mx-dn figcaption i{width:8px; height:8px; border-radius:50%; flex:none}
 .mx-ir:focus-visible, .mx-dir:focus-visible, .mx-ci button:focus-visible, .mx-link:focus-visible, .mx-chat:focus-visible, .mx-rate button:focus-visible, .mx-all:focus-visible, .mx-pp button:focus-visible, .mx-pg button:focus-visible, .mx-thumbs button:focus-visible, .mx-glass:focus-visible, .mx-pay:focus-visible{outline:2px solid #5E35B8; outline-offset:2px}
 /* sub screens */

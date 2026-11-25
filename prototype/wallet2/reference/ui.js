@@ -613,6 +613,9 @@
     backButton(frame);
     click(frame, '.top .r', 'scanFlash', {}, 'Toggle flash');
     $(frame, '.top .r').setAttribute('aria-pressed', Boolean(S.scanFlash));
+    /* Top up from the camera (option 4, Figma 3.1 uix:wallet-topup, white like the flash), for when the balance is too low to pay */
+    $(frame, '.top .r').insertAdjacentHTML('beforebegin', `<span class="wr-scan-tu"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.654 19.5H5.5A2.5 2.5 0 0 1 3 17V6a2.5 2.5 0 0 1 2.5-2.5h13A2.5 2.5 0 0 1 21 6v9.173"/><path d="M21 6h-3.75a1.75 1.75 0 0 0 0 3.5H21M18 15v6M15 18h6"/></svg></span>`);
+    click(frame, '.top .wr-scan-tu', 'walletReferenceTopUp', {}, 'Top up');
     click(frame, '.frame', 'sheet', {s:'scanSim'}, 'Scan a sample DuitNow QR');
     click(frame, '.sbtm .sb1', 'sheet', {s:'gallery'});
     const stack = $(frame, '.sbtm .sb2');
