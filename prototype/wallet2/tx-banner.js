@@ -18,10 +18,14 @@
   /* Same component as the live app: kind icon, title, short subtitle, status line (icon + action), chevron. Whole card is one tap. */
   const STATUS_IC = {processing:'clock', done:'check', failed:'alert', multi:'clock'};
   const KIND_IC = {topup:'plus', pay:'scan', sub:'crown', multi:'clock'};
+  /* coin of the token moved, like the live app (MYRT hibiscus coin); falls back to the kind icon */
+  const COIN = {MYRT:'assets/tokens/myrt.png', USDC:'assets/tokens/usdc.png'};
+  const lead = b => { const src = b.status !== 'multi' && COIN[b.tok || 'MYRT'];
+    return src ? `<span class="txb-ic coin" aria-hidden="true"><img src="${src}" alt=""></span>` : `<span class="txb-ic" aria-hidden="true">${ic(KIND_IC[b.kind] || 'clock')}</span>`; };
   const banner = b => { const failed = b.status === 'failed', done = b.status === 'done';
     const act = failed ? ['Try again', 'txbRetry'] : done ? ['View details', 'txbView'] : b.status === 'multi' ? ['View all', 'txbView'] : ['View status', 'txbView'];
     return `<div class="txb ${b.status}" role="status">
-      <button class="txb-main" data-act="${act[1]}" aria-label="${esc(b.title)}. ${esc(b.sub)}. ${act[0]}"><span class="txb-ic" aria-hidden="true">${ic(KIND_IC[b.kind] || 'clock')}</span>
+      <button class="txb-main" data-act="${act[1]}" aria-label="${esc(b.title)}. ${esc(b.sub)}. ${act[0]}">${lead(b)}
         <span class="txb-tx"><b>${esc(b.title)}</b><small>${esc(b.sub)}</small><em>${ic(STATUS_IC[b.status])}${act[0]}</em></span>
         <span class="txb-chev" aria-hidden="true">${ic('chev')}</span></button></div>`; };
 
@@ -36,7 +40,7 @@
     if (key === seen) return; seen = key;
     try {
       if (to === 'walletTopUpDone' && S.walletTopUps && S.walletTopUps[0]) { const x = S.walletTopUps[0];
-        S.txb = {status:'done', kind:'topup', title:'Top up complete', sub:`+${x.units.toLocaleString('en-MY', {minimumFractionDigits:2, maximumFractionDigits:2})} ${x.key === 'MYR' ? 'MYRT' : x.key} added to YouWallet`, receipt:'walletTopUpReceipt', id:x.id, at:Date.now()}; }
+        S.txb = {status:'done', kind:'topup', tok:x.key === 'MYR' ? 'MYRT' : x.key, title:'Top up complete', sub:`+${x.units.toLocaleString('en-MY', {minimumFractionDigits:2, maximumFractionDigits:2})} ${x.key === 'MYR' ? 'MYRT' : x.key} added to YouWallet`, receipt:'walletTopUpReceipt', id:x.id, at:Date.now()}; }
       if (to === 'done' && typeof walletScanRecord === 'function') { const x = walletScanRecord();
         if (x) S.txb = x.status === 'Failed' ? {status:'failed', kind:'pay', title:'Payment failed', sub:`${RMx(x.amount)} · ${x.merchant}`, at:Date.now()}
           : x.status === 'Pending' ? {status:'processing', kind:'pay', title:'Payment processing', sub:`${RMx(x.amount)} to ${x.merchant}`, receipt:'scanReceipt', id:x.id, at:Date.now()}
@@ -65,7 +69,7 @@
   .wallet-reference .txb, .txb{margin:12px 16px 0; border:1px solid #ECE7F7; border-radius:16px; background:#fff; box-shadow:0 1px 2px rgba(30,16,80,.04)}
   .txb-main{width:100%; display:flex; align-items:center; gap:12px; min-height:72px; padding:12px 8px 12px 12px; border:0; border-radius:16px; background:none; text-align:left; font:inherit; color:inherit; cursor:pointer}
   .txb-main:active{background:#FAF8FE}
-  .txb-ic{flex:none; display:grid; place-items:center; width:44px; height:44px; border-radius:50%; background:#F4EFFF; color:#4B2A9E} .txb-ic .ico, .txb-ic svg{width:22px; height:22px}
+  .txb-ic{flex:none; display:grid; place-items:center; width:44px; height:44px; border-radius:50%; background:#F4EFFF; color:#4B2A9E} .txb-ic .ico, .txb-ic svg{width:22px; height:22px} .txb-ic.coin{background:none; overflow:hidden} .txb-ic.coin img{width:100%; height:100%; object-fit:cover; display:block}
   .txb-tx{flex:1; display:grid; gap:2px; min-width:0} .txb-tx b{font:700 15px/20px Inter, sans-serif; color:#1a181b; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
   .txb-tx small{font:500 12px/16px Inter, sans-serif; color:#6E6688; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
   .txb-tx em{display:inline-flex; align-items:center; gap:4px; margin-top:2px; font:700 12px/16px Inter, sans-serif; font-style:normal; color:#A26C00} .txb-tx em .ico, .txb-tx em svg{width:14px; height:14px; flex:none}
