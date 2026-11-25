@@ -410,3 +410,53 @@ A.gPickTog = (orig => el => { const fromList = el && !el.classList.contains('gpk
     next.scrollTop = wasAtBottom ? next.scrollHeight : Math.min(top, Math.max(0, next.scrollHeight - next.clientHeight));
   };
 })();
+
+/* ---- Attach panel (25 Nov): opens under the composer like the live app, not a dimmed bottom sheet.
+   One row of round tiles: Red Packet first (when the chat allows it), then Gallery, Camera, Document, Location.
+   No GIF. Tap the paperclip again, tap the chat, pick an item, or press Esc to close. Chat stays visible and usable. ---- */
+(() => {
+  const P = d => `<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="${d}"/></svg>`;
+  const TILE = {
+    attachGal: ['Gallery', P('M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4Zm1.5 4a1.75 1.75 0 1 0 0 3.5 1.75 1.75 0 0 0 0-3.5ZM19 15.6l-3.3-3.3a1 1 0 0 0-1.4 0L9 17.6l-1.3-1.3a1 1 0 0 0-1.4 0L5 17.6V17a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-1.4Z')],
+    attachCam: ['Camera', P('M9.2 3.5h5.6a2 2 0 0 1 1.8 1.1l.7 1.4H19a3 3 0 0 1 3 3V18a3 3 0 0 1-3 3H5a3 3 0 0 1-3-3V9a3 3 0 0 1 3-3h1.7l.7-1.4a2 2 0 0 1 1.8-1.1ZM12 9a4 4 0 1 0 0 8 4 4 0 0 0 0-8Zm0 2.2a1.8 1.8 0 1 1 0 3.6 1.8 1.8 0 0 1 0-3.6Z')],
+    cxDocs: ['Document', P('M7 2h6.6a2 2 0 0 1 1.4.6l4.4 4.4a2 2 0 0 1 .6 1.4V19a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3Zm6 1.8V7a2 2 0 0 0 2 2h3.2L13 3.8ZM8 12.2a.9.9 0 0 0 0 1.8h8a.9.9 0 0 0 0-1.8H8Zm0 3.6a.9.9 0 0 0 0 1.8h5a.9.9 0 0 0 0-1.8H8Z')],
+    cxLoc: ['Location', P('M12 2a8 8 0 0 1 8 8c0 5.2-6 10.6-7.3 11.7a1.1 1.1 0 0 1-1.4 0C10 20.6 4 15.2 4 10a8 8 0 0 1 8-8Zm0 5a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z')],
+    /* Red Packet: two packets (back purple, front red) with a purple seal, recoloured from the reference icon to fit the app (25 Nov) */
+    apAttach: ['Red Packet', `<svg viewBox="0.75 0.9 22 22" width="30" height="30" aria-hidden="true"><path d="M10.2 5.6l10.3 2.1-2.9 14.1-10.3-2.1z" fill="#38168E"/><path d="M11.6 7.9l7 1.4-2.2 10.6-7-1.4" fill="none" stroke="#C9B8F2" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="2" width="11" height="17" rx="1.2" fill="#E5484D"/><path d="M3 3.2A1.2 1.2 0 0 1 4.2 2h8.6A1.2 1.2 0 0 1 14 3.2v1.6L12.4 6H4.6L3 4.8z" fill="#B42335"/><path d="M5 7.6v8.9h7V7.6" fill="none" stroke="#FFD6DA" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 8c1.3 1 1.2 2-.1 3.1s-1 2.3.2 3.1" fill="none" stroke="#B42335" stroke-width=".8" stroke-linecap="round"/><circle cx="8.5" cy="5.4" r="2.1" fill="#5E35B8" stroke="#fff" stroke-width=".6"/><path d="M8.5 4.5l.9.9-.9.9-.9-.9z" fill="#fff"/></svg>`]
+  };
+  const ORDER = ['apAttach', 'attachGal', 'attachCam', 'cxDocs', 'cxLoc'];   /* Red Packet first (25 Nov) */
+  const SHEET = /<div class="scrim[^"]*" data-act="closeSheet2"><\/div><div class="sheet[^"]*" role="dialog" aria-label="Attach"><div class="grab" aria-hidden="true"><\/div><div style="display:grid">([\s\S]*?)<\/div><\/div>/;
+  const _ovAt = overlayHTML;
+  overlayHTML = () => { let h = _ovAt();
+    if (S.sheet !== 'cAttach') return h;
+    const m = h.match(SHEET); if (!m) return h;
+    const acts = [...m[1].matchAll(/data-act="([^"]+)"/g)].map(x => x[1]);
+    if (acts.includes('attachGal')) acts.push('cxLoc');           /* Location sits with the media items */
+    const items = ORDER.filter(a => acts.includes(a) && TILE[a]);
+    const tiles = items.map(a => `<button type="button" class="catt-b" data-act="${a}"><span class="catt-ic">${TILE[a][1]}</span><span class="catt-l">${TILE[a][0]}</span></button>`).join('');
+    return h.replace(m[0], `<div class="catt ${S.sheetAnim ? 'anim' : ''}" id="cAttPanel" role="group" aria-label="Attach">${tiles}</div>`); };
+  /* paperclip toggles the panel */
+  A.cAttach = (orig => () => { if (S.sheet === 'cAttach') { closeSheet(); return; } orig(); })(A.cAttach);
+  A.cxLoc = () => { S.sheet = null; toast('Shares your current location in the chat.'); };
+  /* close when tapping outside the panel (chat, header, the message box) without re-rendering, so typing still works */
+  const shut = () => { if (S.sheet !== 'cAttach') return; S.sheet = null; document.getElementById('cAttPanel')?.remove(); document.querySelector('[data-act="cAttach"]')?.setAttribute('aria-expanded', 'false'); };
+  document.addEventListener('pointerdown', e => { if (S.sheet === 'cAttach' && !e.target.closest('#cAttPanel, [data-act="cAttach"]')) shut(); }, true);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && S.sheet === 'cAttach') { shut(); document.querySelector('[data-act="cAttach"]')?.focus(); } });
+  /* expose the open state on the paperclip */
+  const _rAt = render;
+  render = function(){ _rAt.apply(this, arguments); const b = document.querySelector('.cbar2 [data-act="cAttach"]'); if (b) { b.setAttribute('aria-expanded', S.sheet === 'cAttach' ? 'true' : 'false'); b.setAttribute('aria-controls', 'cAttPanel'); b.setAttribute('aria-label', 'Attach'); } };
+  const css = document.createElement('style');
+  css.textContent = `
+  #phone .catt{position:absolute; left:12px; right:12px; bottom:22px; z-index:30; display:grid; grid-template-columns:repeat(5, minmax(0,1fr)); gap:2px; padding:16px 6px 14px; border-radius:24px; background:var(--a-white,#fff); box-shadow:0 8px 28px rgba(30,16,80,.16), 0 0 0 1px rgba(30,16,80,.05)}
+  #phone .catt.anim{animation:cattIn .18s ease-out}
+  @keyframes cattIn{from{opacity:0; transform:translateY(12px)} to{opacity:1; transform:none}}
+  @media (prefers-reduced-motion:reduce){ #phone .catt.anim{animation:none} }
+  #phone .catt-b{display:flex; flex-direction:column; align-items:center; gap:8px; min-width:0; min-height:44px; padding:0; border:0; background:none; font:inherit; color:var(--a-ink,#1a181b); cursor:pointer}
+  #phone .catt-ic{display:grid; place-items:center; width:56px; height:56px; border-radius:50%; background:#EDE6FA; color:#38168E; transition:transform .12s, background .12s}
+  #phone .catt-b:active .catt-ic{transform:scale(.94); background:#E2D7F7}
+  #phone .catt-b:focus-visible{outline:none} #phone .catt-b:focus-visible .catt-ic{outline:2px solid #5E35B8; outline-offset:2px}
+  #phone .catt-l{font:500 12px/16px Inter, sans-serif; text-align:center; max-width:100%; overflow-wrap:anywhere}
+  #phone:has(.catt) .cfoot{padding-bottom:150px}
+  @media (max-width:340px){ #phone .catt{left:8px; right:8px; padding:14px 4px 12px; gap:2px} #phone .catt-ic{width:50px; height:50px} #phone .catt-l{font-size:11.5px; line-height:14px} #phone:has(.catt) .cfoot{padding-bottom:156px} }`;
+  document.head.appendChild(css);
+})();
