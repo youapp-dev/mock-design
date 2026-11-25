@@ -32,10 +32,10 @@ const tokAmt = (k,v) => `${k} ${(+v).toLocaleString('en-MY',{minimumFractionDigi
 function xsFromW(){ const x = S.xs||{}; const l = wList(); return l.find(w=>w.id===x.from) || wMain(); }
 function xsFromExt(){ return !!xsFromW().ext; }
 function xsTokSym(){ const x = S.xs||{}; const w = xsFromW(); if (x.tok && w.tok[x.tok]>0) return x.tok; return (wToks(w)[0]||['MYRT'])[0]; }
-function xsFromBal(){ return xsFromW().tok[xsTokSym()]||0; }
+function xsFromBal(){ return wToks(xsFromW()).find(([symbol]) => symbol === xsTokSym())?.[1] || 0; }
 function mwSendRows(){ const w = xsFromW(); const k = xsTokSym();
   return `<div class="mw-pick"><button data-act="sheet" data-s="mwFrom"><small>From</small><b>${wBadge(w,'sm')}${esc(w.name)}${w.id===wMain().id?' <em>Main</em>':''}</b>${ic('chevdown')}</button>
-    <button data-act="sheet" data-s="mwTok"><small>Token</small><b><span class="mw-tk">${k[0]}</span>${k} <em>${tokAmt('',w.tok[k]||0).trim()}</em></b>${ic('chevdown')}</button></div>
+    <button data-act="sheet" data-s="mwTok"><small>Token</small><b><span class="mw-tk">${k[0]}</span>${k} <em>Ethereum</em></b>${ic('chevdown')}</button></div>
     ${w.ext ? `<div class="xs-note">${ic('info')}<span>You’ll confirm in ${esc(w.app)}. The network fee is paid in ETH from ${esc(w.app)}.</span></div>` : ''}`; }
 SHEETS.mwFrom = () => { const cur = xsFromW().id;
   return `<div class="grab"></div><h2 class="t-title" style="margin:0 0 12px">Send from</h2><div class="mw-list">${wList().map(w=>`<button class="mw-row ${cur===w.id?'on':''}" data-act="mwFromPick" data-id="${w.id}">${wBadge(w)}<span class="m"><b>${esc(w.name)}</b><small>${RM(wRM(w))} · ${w.ext?'confirm in '+esc(w.app):'confirm with PIN'}</small></span>${w.id===wMain().id?wMainTag:''}</button>`).join('')}</div>`; };
@@ -52,15 +52,6 @@ document.addEventListener('input', ev => { if (ev.target.id !== 'mwTokQ') return
   let n = 0; box.querySelectorAll('.mw-tscroll .mw-row').forEach(r => { const hit = !q || r.dataset.q.includes(q); r.hidden = !hit; if (hit) n++; });
   box.querySelectorAll('.mw-tscroll .mw-list').forEach(l => { const g = l.previousElementSibling; if (g) g.hidden = ![...l.children].some(c=>!c.hidden); });
   const none = box.querySelector('.mw-none'); if (none) { none.hidden = n>0; none.querySelector('span').textContent = ev.target.value.trim(); } });
-
-/* review sheet: From row, ETH network fee, confirm in the wallet app, not enough ETH */
-const _xsReview = SHEETS.xsReview;
-SHEETS.xsReview = () => { let h = _xsReview(); const w = xsFromW();
-  h = h.replace('<div class="kv"><span>Network</span><b>Ethereum · ERC-20</b></div>', `<div class="kv"><span>From</span><b>${esc(w.name)}</b></div><div class="kv"><span>Network</span><b>Ethereum · ERC-20</b></div>${w.ext?'<div class="kv"><span>Network fee</span><b>≈ 0.0006 ETH (RM 7.80)</b></div>':''}`);
-  if (!w.ext) return h;
-  h = h.replace(/<div class="kv"><span>Gas fee<\/span><b>0\.00<\/b><\/div>/, '');
-  if (scen.eth==='low') return h.replace(/<button class="btn btn-primary[^"]*"[^>]*data-act="(xsConfirm|noop)"[\s\S]*?<\/button>/, `<div class="hint warn">${ic('alert')}<span><b>Not enough ETH for the network fee.</b> ${esc(w.app)} has 0.0001 ETH. Add ETH to ${esc(w.app)}${wHasYa()?', or send from your YouApp wallet':''}.</span></div>${wHasYa()?btn('Send from YouApp wallet','mwUseYa'):''}`);
-  return h.replace('data-act="xsConfirm"', 'data-act="mwSendExt"').replace(/>Send ([A-Z]{4} [\d,.]+)</, `>Confirm in ${esc(w.app)}<`); };
 
 /* waiting for the external wallet app (send, pay, top up, connect, sign) */
 V.mwWait = () => { const k = S.mwWait||{}; const app = k.app||'MetaMask';
@@ -205,7 +196,7 @@ Object.assign(A, {
   mwFromPick: el => { const x = xsInit(); x.from = el.dataset.id; x.tok = null; x.amt=''; S.sheet = null; render(); },
   mwTokPick: el => { const x = xsInit(); x.tok = el.dataset.k; x.amt=''; S.sheet = null; render(); },
   mwUseYa: () => { const x = xsInit(); x.from = 'ya'; x.tok = null; S.sheet = null; render(); toast('Switched to your YouApp wallet. Check the amount again.'); },
-  mwSendExt: () => { const w = xsFromW(); mwStart('send', w.app, 'Send', 'send'); },
+  mwSendExt: () => { if (!xsReviewReady()) return; const w = xsFromW(); mwStart('send', w.app, 'Send', 'send'); },
   mwPayExt: () => { const m = wMain(); S.payYa = false; mwStart('pay', m.app, 'Scan and Pay', 'pay'); },
   mwPayYa: () => { S.payYa = true; S.mwWait = null; S.hist = S.hist.filter(k=>k!=='mwWait' && k!=='mwCancelled' && k!=='confirm'); go('confirm'); toast('Paying from your YouApp wallet.'); },
   mwReconnect: () => { scen.extSess = 'on'; saveScen(); render(); toast(`${wMain().app} reconnected.`); },

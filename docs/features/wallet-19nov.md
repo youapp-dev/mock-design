@@ -75,7 +75,15 @@ The first batch made Scan to Pay easier to reach and aligned amounts across Pay 
 - Confirm top-up methods by currency and country and the settlement rules.
 - Finalize SVIP pricing and the limits that apply across plan selection, Settings, and payments before handoff.
 
+## Send flow
+
+Both versions keep crypto Send and Receive. Send starts with the recipient, then shows the source wallet, token, Ethereum network and available amount. Review shows the full address, fees and the token total. External addresses require acknowledgement. A connected wallet uses provider approval and shows how to recover when ETH is insufficient. YouApp Wallet uses its PIN.
+
+Reference patterns were checked against [MetaMask Mobile](https://support.metamask.io/managing-my-tokens/moving-your-tokens/how-to-send-tokens-from-your-metamask-wallet/) for account, token, network and fee review, [Phantom](https://help.phantom.com/articles/5530158379539) for recipient and QR selection, and [Trust Wallet](https://trustwallet.com/blog/academy/como-enviar-e-receber-criptomoedas-na-trust-wallet) for the address, network and amount check.
+
 ## Verification coverage
+
+Local Windows Chrome checks passed for 3.2.0 at 320 px and 3.3.0 at 375 px. Coverage included Fiat Wallet routing, address validation, simulated clipboard permission and paste, fee-aware Max, PIN and animated success, low-ETH recovery, simulated connected-wallet approval, and QR routing.
 
 - **Passed in Chrome on desktop and at 375 px.** AC-01 through AC-06 were exercised by clicking through the prototype, including retrying an incorrect PIN successfully, using a personal QR code, testing an invalid QR image, and opening the same receipt from History in both YouPage and Settings.
 - **Simulated.** The scanner, top-ups, and settlement in this flow are simulated. Payment records live in the prototype session.

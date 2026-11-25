@@ -117,11 +117,24 @@
       row.insertAdjacentHTML('afterend', `<div class="wr-quick-actions" role="group" aria-label="Send and receive">
         <button type="button" class="wr-quick-action" data-act="xsOpen"><span class="wr-quick-icon" aria-hidden="true">${ic('xsUp')}</span><span class="wr-quick-copy"><b>Send</b></span></button>
         <button type="button" class="wr-quick-action" data-act="xsRecv"><span class="wr-quick-icon" aria-hidden="true">${ic('xsDown')}</span><span class="wr-quick-copy"><b>Receive</b></span></button></div>
-        <div class="wr-quick-actions" role="group" aria-label="Bills and reload">
+        ${fiatWalletEnabled ? `<div class="wr-quick-actions" role="group" aria-label="Bills and reload">
         <button type="button" class="wr-quick-action" data-act="bills"><span class="wr-quick-icon" aria-hidden="true">${ic('bill')}</span><span class="wr-quick-copy"><b>Bill payment</b></span></button>
-        <button type="button" class="wr-quick-action" data-act="mreload"><span class="wr-quick-icon" aria-hidden="true">${ic('mreload')}</span><span class="wr-quick-copy"><b>Mobile reload</b></span></button></div>`);
+        <button type="button" class="wr-quick-action" data-act="mreload"><span class="wr-quick-icon" aria-hidden="true">${ic('mreload')}</span><span class="wr-quick-copy"><b>Mobile reload</b></span></button></div>` : ''}`);
     }
     return t.innerHTML; };
+
+  /* ---------- wallet detail (crypto wallets): Receive ---------- */
+  const _wd = V.wDetail;
+  V.wDetail = () => { const h = _wd(); const w = wList().find(e => e.id === S.wSel) || wMain(); if (!w) return h;
+    /* Receive sits inside the balance card so the asset list still follows it directly */
+    return h.replace(/(<section class="wr-asset-summary wr-wallet-summary"[\s\S]*?)(<\/section>)/, `$1<button type="button" class="ew-recv" data-act="ewCryptoRecv" data-id="${w.id}">${ic('xsDown')}Receive</button>$2`); };
+
+  A.ewCryptoRecv = el => { S.wRecv = el.dataset.id; A.xsRecv(); };
+
+  if (!fiatWalletEnabled) {
+    A.bills = A.mreload = () => go('home', {replace:true});
+    return;
+  }
 
   /* ---------- My money: Fiat Wallet section ---------- */
   const _wallets = V.wallets;
@@ -132,12 +145,6 @@
       : `<div class="cr ew-row" data-act="ewGate" data-n="" role="button" tabindex="0" aria-label="Fiat Wallet, not activated. Activate">${ewIc()}<div><b>Fiat Wallet</b><small class="ew-sub">Receive, pay bills and reload</small></div><div class="rt"><span class="ew-activate">Activate</span></div>${ic('chev')}</div>`;
     list.insertAdjacentHTML('afterend', `<div class="lst ew-lst"><div class="grp">Fiat Wallet</div>${row}</div>`);
     return t.innerHTML; };
-
-  /* ---------- wallet detail (crypto wallets): Receive ---------- */
-  const _wd = V.wDetail;
-  V.wDetail = () => { const h = _wd(); const w = wList().find(e => e.id === S.wSel) || wMain(); if (!w) return h;
-    /* Receive sits inside the balance card so the asset list still follows it directly */
-    return h.replace(/(<section class="wr-asset-summary wr-wallet-summary"[\s\S]*?)(<\/section>)/, `$1<button type="button" class="ew-recv" data-act="ewCryptoRecv" data-id="${w.id}">${ic('xsDown')}Receive</button>$2`); };
 
   /* ---------- gate: Bills, Mobile reload, Fiat Wallet Receive ---------- */
   const openingActions = {
@@ -388,7 +395,6 @@
     ewResume: () => { const n = S.ewNext; S.ewNext = null; const i = S.hist.lastIndexOf('ewConfirm'); if (i >= 0) S.hist = S.hist.slice(0, i);
       if (n === 'ewRecv') go('ewRecv', {replace:true}); else { S.screen = S.hist.pop() || 'home'; A[n](); } },
     ewFinish: () => { S.ewNext = null; const i = S.hist.lastIndexOf('ewConfirm'); if (i >= 0) S.hist = S.hist.slice(0, i); back(); },
-    ewCryptoRecv: el => { S.wRecv = el.dataset.id; A.xsRecv(); },
   });
 
   /* scenario panel: Fiat Wallet › Not activated also forgets the verified phone, so the phone step can be tested again */
@@ -408,7 +414,7 @@
     ewDetail:{name:'Fiat Wallet', ph:1, rules:['Balance, account number and name, Receive and Pay bills, history incl. the opening fee','⚠️ Assumption: received MYR stays as Fiat Wallet balance and is used before MYRT']},
     ewRecv:{name:'Receive to Fiat Wallet', ph:1, rules:['DuitNow QR and account number with Copy and Share','Crypto wallets keep their own Receive (address QR) without the Fiat Wallet']},
   });
-  if (META.home && META.home.rules) META.home.rules.push('Send and Receive tiles (25 Nov) sit below Top up and Rewards, then Bill payment and Mobile reload. Both need the Fiat Wallet. Verified users with more than RM100 in successful MYRT activity get automatic free opening. Other users see the activation sheet.');
+  if (META.home && META.home.rules) META.home.rules.push('Send and Receive tiles (25 Nov) sit below Top up and Rewards, then Bill payment and Mobile reload. Bill payment and Mobile reload use the Fiat Wallet. Verified users with more than RM100 in successful MYRT activity get automatic free opening. Other users see the activation sheet.');
   if (META.wallets && META.wallets.rules) META.wallets.rules.push('Fiat Wallet section under the currencies: Activate when off, balance when on (opens Fiat Wallet details).');
   const walletPanel = renderPanel;
   renderPanel = function(){

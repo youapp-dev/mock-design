@@ -173,12 +173,12 @@ const link = a => `youapp.ai/angpao/${a.token}`;
 const cardHTML = (a, qr) => { const c = who(a.creator);
   return `<div class="apcard"><div class="apcard-h">${img(c.av, c.n, 'apcard-av')}<span><b>${a.creator==='me'?'Your':esc(c.n)+'’s'} red packet</b><small>${apTypeDetails(a)}</small></span></div>
     <p class="apcard-m">${esc(a.msg || 'Best wishes!')}</p>${qr?`<div class="apcard-q">${qrSVG(a.token)}<small>${link(a)}</small></div>`:''}</div>`; };
-const shareBtns = a => { const cx = S.apCtx && C6().convs.find(v => v.id === S.apCtx);
-  return `${cx ? btn(`Send to ${esc(cx.name)}`, 'apSendCtx', {cls:'btn-block'}) : ''}
-    <div class="apshare">${[['chat','Send to chat','apPickChat'],['users','Send to group','apPickGroup'],['link','Copy link','apCopy']].map(([i,t,act])=>`<button data-act="${act}"><span>${ic(i==='users'?'chat':i)}</span>${t}</button>`).join('')}</div>`; };
+const shareBtns = a => { const cx = apConversation(a.sentChatId);
+  return `${cx ? `<button class="rp20-primary" type="button" data-act="apSendCtx" data-id="${esc(cx.id)}">Send to ${esc(cx.name)}</button>` : ''}
+    <div class="apshare">${[['chat','Send to chat','apPickChat'],['users','Send to group','apPickGroup'],['link','Copy link','apCopy']].map(([i,t,act])=>`<button type="button" data-act="${act}"><span>${ic(i==='users'?'chat':i)}</span>${t}</button>`).join('')}</div>`; };
 V.apdone = () => { const a = apGet(S.apTok); const cx = S.apCtx && C6().convs.find(v => v.id === S.apCtx);
   const sub = `${apTypeDetails(a)} · ${a.expLbl}`;
-  return `<div class="screen">${statusBar()}<div class="topbar"><span style="width:32px"></span><span class="t-headline" style="flex:1; text-align:center">Red Packet ready</span><button class="iconbtn" data-act="apDoneX" aria-label="Close">${ic('close')}</button></div>
+  return `<div class="screen rp20-share" style="${redPacketThemeStyle(a.theme)}">${statusBar()}<div class="topbar"><span style="width:32px"></span><span class="t-headline" style="flex:1; text-align:center">Red Packet ready</span><button class="iconbtn" data-act="apDoneX" aria-label="Close">${ic('close')}</button></div>
     <div class="scroll"><div class="apd">
       <div class="apd-top"><span class="apd-badge">${ic('check')}Paid</span><div class="apd-amt">${C(a.total + a.fee)}<span>MYRT</span></div><p>Locked for ${sub}</p></div>
       <div class="apd-qrc">
@@ -584,7 +584,7 @@ Object.assign(A, {
         apShowSend(a); }, 700);
     }); },
   apDoneX: () => { if (S.apCtx && C6().convs.find(v => v.id === S.apCtx)) { S.conv = S.apCtx; go('chat', {replace:true}); setTimeout(scrollChat, 20); return; } back(); },
-  apSendCtx: () => { const v = sendCard(S.apCtx, S.apTok); if (!v) return; toast(`Red Packet sent to ${v.name}.`); S.conv = v.id; go('chat', {replace:true}); setTimeout(scrollChat, 20); },
+  apSendCtx: el => { const v = sendCard(el?.dataset.id || S.apCtx, S.apTok); if (!v) return; toast(`Red Packet sent to ${v.name}.`); S.conv = v.id; go('chat', {replace:true}); setTimeout(scrollChat, 20); },
   apPickChat: () => { S.apPickK = 'chat'; openSheet('apPick'); },
   apPickGroup: () => { S.apPickK = 'group'; openSheet('apPick'); },
   apSendTo: el => { const v = sendCard(el.dataset.id, S.apTok); if (!v) return; S.sheetAnim = false; render(); toast(`Red Packet sent to ${v.name}.`); },

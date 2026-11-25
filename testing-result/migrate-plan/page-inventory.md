@@ -7,7 +7,7 @@
 | App 3.0 registered renderer keys | 152 | 165 | |
 | Wallet 2.0 registered renderer keys | 127 | 127 | |
 | Total registered renderer keys | 279 | 292 | |
-| Distinct product screens verified in emulator | | | 14 |
+| Distinct product screens verified in emulator | | | 23 |
 | Distinct typed Compose destination expressions found in main source | | | 126 |
 | Final distinct product screen total | Pending | Pending | Pending |
 
@@ -55,6 +55,24 @@ Confirmed logout in Settings, returned to Welcome, then signed in with the appro
 | Reconnect Wallet | App 3.0 activate or Wallet 2.0 YouPage reconnect state | Discover ? profile avatar ? YouPage ? Reconnect Wallet. The screen asked to verify email. Tapping Reconnect Wallet showed ?Wallet connection isn't available in this build yet.? The flow remained on the same screen. |
 
 Reconnect Wallet adds one screen to the emulator count. The logout confirmation is an overlay under Settings. The user session remained signed in.
+
+## Android wallet and Discover follow-up
+
+After leaving Reconnect Wallet, YouPage displayed an active balance and wallet actions. The earlier reconnect message still applies to that attempt. The following destinations were opened through the existing verified account in the same installed build.
+
+| Android screen | HTML candidate | Verified entry path |
+| --- | --- | --- |
+| Transaction History | Wallet 2.0 scanHistory or App 3.0 whist | YouPage ? History. |
+| Receipt | Wallet 2.0 scanArchiveReceipt or App 3.0 wrcpt | Transaction History ? completed incoming MYRT record. |
+| Bank Account List | App 3.0 hbanks, candidate pending scope check | Transaction History ? Bank Account icon. |
+| My money | Wallet 2.0 wallets | YouPage ? See All. |
+| Currency details | Wallet 2.0 walletCurrency | My money ? US dollar. |
+| Connect Wallet | Wallet 2.0 walletConnect | My money ? Connect. Provider choices were displayed. |
+| Top Up | Wallet 2.0 walletTopUp | YouPage ? Top Up. The Pay With sheet was also opened. |
+| Search Service Hosts | App 3.0 search | Discover ? Search locals. |
+| Rewards | Wallet 2.0 rewards | YouPage ? Rewards. |
+
+Scan and Pay opened the live scanner. It is counted under the existing Scan to Pay destination, alongside the earlier unverified state. No QR was submitted. On this pass, tapping bottom Locals from signed-in Discover left Discover visible. Chatroom access remains unverified. No wallet provider was opened and no payment or top-up was submitted.
 
 ## Registered HTML keys
 

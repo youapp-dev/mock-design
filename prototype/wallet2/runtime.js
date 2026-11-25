@@ -56,6 +56,8 @@ const fresh = () => ({screen:'home', hist:[], sheet:null, toast:null, rtab:'all'
 let S = fresh();
 const T = () => TIERS[scen.tier];
 const P = () => +scen.phase;
+const fiatWalletEnabled = new URLSearchParams(location.search).get('version') !== '3.2.0';
+const isFiatWalletScreen = screen => /^(?:bills?|mreload|ewallet|bill[A-Z]\w*|ew[A-Z]\w*)$/.test(screen);
 const kycOk = () => scen.kyc === 'passed';
 const walletCashBaseCents = () => {
   const seed = scen.bal === 'enough' ? 124050 : 1240;
