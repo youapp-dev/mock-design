@@ -7,7 +7,7 @@
 | App 3.0 registered renderer keys | 152 | 165 | |
 | Wallet 2.0 registered renderer keys | 127 | 127 | |
 | Total registered renderer keys | 279 | 292 | |
-| Distinct product screens verified in emulator | | | 13 |
+| Distinct product screens verified in emulator | | | 14 |
 | Distinct typed Compose destination expressions found in main source | | | 126 |
 | Final distinct product screen total | Pending | Pending | Pending |
 
@@ -45,6 +45,16 @@ The approved new staging account completed email OTP verification with the suppl
 | Phone country picker | App 3.0 pfCountry | Tap the dialing code on Mobile Number. |
 
 The 13 observed full-screen destinations include Welcome and Discover from the initial run. Signed-in Discover and Feed were inspected as states within the home destination. The You and Business tabs were inspected within YouPage. The Locals entry was gated, so chatroom access remains unverified. Wallet activation stopped before entering a phone number or submitting identity details. The wallet email code prompt has yet to be reached.
+
+## Android existing verified-account walkthrough
+
+Confirmed logout in Settings, returned to Welcome, then signed in with the approved existing staging account. Email OTP succeeded and opened Discover directly. YouPage showed Identity verified, an existing transaction, and the Reconnect Wallet state.
+
+| Android screen | HTML candidate | Emulator path and outcome |
+| --- | --- | --- |
+| Reconnect Wallet | App 3.0 activate or Wallet 2.0 YouPage reconnect state | Discover ? profile avatar ? YouPage ? Reconnect Wallet. The screen asked to verify email. Tapping Reconnect Wallet showed ?Wallet connection isn't available in this build yet.? The flow remained on the same screen. |
+
+Reconnect Wallet adds one screen to the emulator count. The logout confirmation is an overlay under Settings. The user session remained signed in.
 
 ## Registered HTML keys
 
