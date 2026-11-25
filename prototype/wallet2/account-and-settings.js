@@ -58,10 +58,10 @@ V.signup = () => { const s = S.su; const bad = s.err==='email';
     <label class="gs-lbl" for="suEmail">Email Address</label>
     <input id="suEmail" class="gs-in ${bad?'err':''}" type="email" inputmode="email" autocomplete="email" value="${esc(s.email)}" data-in="email" placeholder="name@example.com">
     ${bad?`<small class="gs-help err">${ic('info')}Enter a valid email address, like name@example.com</small>`:''}
-    ${btn('Login','signup')}
+    ${btn('Sign In','signup')}
     <div class="gs-or"><span>Or</span></div>
-    <button class="gs-soc" data-act="socLogin" data-k="Google">${ic('google')}Login with Google</button>
-    <button class="gs-soc" data-act="socLogin" data-k="Apple">${ic('apple')}Login with Apple ID</button>
+    <button class="gs-soc" data-act="socLogin" data-k="Google">${ic('google')}Sign in with Google</button>
+    <button class="gs-soc" data-act="socLogin" data-k="Apple">${ic('apple')}Sign in with Apple ID</button>
     <p class="gs-terms">By continuing, you confirm that you are 18 years or older and agree to our <button class="link">Terms of Service</button> and <button class="link">Privacy Policy</button>.</p>
     <small class="gs-ver">Version 1.0.2${s.from==='link'?' · opened from Scarlette’s invite link':''}</small>
   </div></div>`; };
@@ -691,10 +691,10 @@ V.splash = () => `<div class="screen gm-splash">${statusBar()}
   <img class="gm-city" src="${GM_IMG.splash}" alt="">
   <div class="gm-foot"><button class="gm-start" data-act="guestStart">Start Exploring</button><small>Powered by <b>MYRT</b></small></div></div>`;
 SHEETS.guest = () => `<div class="grab"></div><div class="gm-sh"><div class="row-between" style="width:100%"><span style="width:28px"></span><b class="t-headline">You're in Guest Mode</b><button class="iconbtn" data-act="closeSheet" aria-label="Close">${ic('close')}</button></div>
-  <img src="${GM_IMG.login}" alt="">${GM_COPY}${btn('Log In','guestLogin')}</div>`;
+  <img src="${GM_IMG.login}" alt="">${GM_COPY}${btn('Sign In','guestLogin')}</div>`;
 V.guestScan = () => `<div class="screen bz">${statusBar()}
   <div class="appbar"><button class="avatar gm-av" data-act="guestGate" aria-label="Profile">${ic('person')}</button><span class="t-headline" style="flex:1; text-align:center; margin-right:32px">Pay Like a Local</span></div>
-  <div class="scroll"><div class="gm-page"><img src="${GM_IMG.login}" alt="">${GM_COPY.replace('gm-h','gm-h big')}${btn('Login','guestLogin')}<button class="link" data-act="toast" data-msg="Opens the Terms and Conditions.">Learn more about Terms and Conditions</button></div></div>
+  <div class="scroll"><div class="gm-page"><img src="${GM_IMG.login}" alt="">${GM_COPY.replace('gm-h','gm-h big')}${btn('Sign In','guestLogin')}<button class="link" data-act="toast" data-msg="Opens the Terms and Conditions.">Learn more about Terms and Conditions</button></div></div>
   <nav class="bnav" aria-label="Main"><button data-act="nav" data-to="discover">${ic('compass')}Discover</button>
   <button class="scanbtn" aria-current="page"><span class="fab">${ic('scan')}</span><span class="lbl">Scan</span></button>
   <button data-act="guestGate">${ic('group')}Locals</button></nav></div>`;
@@ -705,10 +705,10 @@ V.guestLogin = () => { const s = S.su; const bad = s.err==='email';
     <label class="gs-lbl" for="suEmail" style="margin-top:8px">Email Address</label>
     <input id="suEmail" class="gs-in ${bad?'err':''}" type="email" inputmode="email" value="${esc(s.email)}" data-in="email" placeholder="name@example.com">
     ${bad?'<small class="gs-help err">Enter a valid email address, like name@example.com</small>':''}
-    ${btn('Login','signup')}
+    ${btn('Sign In','signup')}
     <div class="gs-or"><span>Or</span></div>
-    <button class="gs-soc" data-act="socLogin" data-k="Google">${ic('google')}Login with Google</button>
-    <button class="gs-soc" data-act="socLogin" data-k="Apple">${ic('apple')}Login with Apple ID</button>
+    <button class="gs-soc" data-act="socLogin" data-k="Google">${ic('google')}Sign in with Google</button>
+    <button class="gs-soc" data-act="socLogin" data-k="Apple">${ic('apple')}Sign in with Apple ID</button>
     <p class="gs-terms">By continuing, you confirm that you are 18 years or older and agree to our <button class="link">Terms of Service</button> and <button class="link">Privacy Policy</button>.</p>
   </div></div></div>`; };
 

@@ -113,9 +113,9 @@ render = function() {
 };
 const gateHTML = (title, why) => {
   const notIn = S.session !== 'user' || S.apSim === 'guest';
-  const head = notIn ? 'Log in to continue' : 'Verify your identity first';
-  const body = notIn ? `Log in or sign up to ${why}. We’ll bring you back here after.` : `Badge Verification and an active wallet are needed to ${why}. New members can claim too once both are done.`;
-  const cta = notIn ? 'Log in or Sign up' : 'Start Badge Verification';
+  const head = notIn ? 'Sign in to continue' : 'Verify your identity first';
+  const body = notIn ? `Sign in or sign up to ${why}. We’ll bring you back here after.` : `Badge Verification and an active wallet are needed to ${why}. New members can claim too once both are done.`;
+  const cta = notIn ? 'Sign in or sign up' : 'Start Badge Verification';
   return `<div class="screen">${statusBar()}${topBar(title)}<div class="scroll"><div class="apgate"><span class="apgate-ic">${ic('apGift')}</span><h2>${head}</h2><p>${body}</p></div></div>
     <div class="pad16" style="padding-bottom:24px">${btn(cta, 'apGateGo', {cls:'btn-block'})}</div></div>`;
 };
