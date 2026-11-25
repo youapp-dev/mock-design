@@ -1,0 +1,68 @@
+# Prototype and Android page inventory
+
+## Current totals
+
+| Evidence | 3.2.0 HTML | 3.3.0 HTML | Android |
+| --- | ---: | ---: | ---: |
+| App 3.0 registered renderer keys | 152 | 165 | |
+| Wallet 2.0 registered renderer keys | 127 | 127 | |
+| Total registered renderer keys | 279 | 292 | |
+| Distinct product screens verified in emulator | | | 13 |
+| Distinct typed Compose destination expressions found in main source | | | 126 |
+| Final distinct product screen total | Pending | Pending | Pending |
+
+Use the root entry as the primary HTML scope. Track 3.3.0 separately because it changes the Locals and Inbox entry points and adds Trips. Count distinct full-screen destinations, including tabs with their own navigation destination. Record overlays, filters, and repeated record instances under their parent. Cross-renderer copies and shared step renderers require review before the registered key total can be translated to product screens. The embedded form entries Elite application, Merchant application, and Add another merchant are outside the renderer key count. Their entry paths and unique screens still need verification.
+
+Browser evidence came from headless Chrome on Windows through a local HTTP server. A temporary response hook read the initialized view registries in both iframe renderers without changing repository code. It established registration. Each screen still needs navigation verification. Prototype checkout base is 4fb58f5 with local edits present.
+
+Android evidence came from ADB UI hierarchy inspection and emulator taps on emulator-5554, Android 17 / API 37, 1080 × 2424 px at density 420. Package com.youapp.you_app.uat reports version 3.1.0, code 280, and the login sheet reports 3.1.0-staging. Kotlin checkout is d3c5016e. The source count covers unique generic composable destination spellings in app and feature main source. In-route steps and tabs can share a Compose destination, and some source routes may be absent or gated in this APK.
+
+## Initial screen mapping
+
+| Flow | HTML candidate | Android observation | Evidence |
+| --- | --- | --- | --- |
+| Welcome | App 3.0 welcome | Welcome with Start Exploring | Emulator started here. |
+| Guest Discover | App 3.0 discover | Discover with Locals, Activities, Merchant and Feed controls | Tapped Start Exploring. The Locals browse view appeared. |
+| Guest sign-in prompt | App 3.0 guest login overlay | Welcome to YouApp sheet | Tapped profile avatar in guest Discover. Overlay recorded under Discover. |
+| Email login | App 3.0 login overlay and Wallet 2.0 signup candidate | Get Started Now sheet | Tapped Sign In from the guest prompt. The email field, Login and Google options appeared. Overlay recorded under Discover. |
+
+## Android new-account walkthrough
+
+The approved new staging account completed email OTP verification with the supplied staging code. The native OTP UI is a dialog and is recorded as a state under the email login flow. Android and HTML candidates below are aligned by task. Their visual parity is pending.
+
+| Android screen | HTML candidate | Emulator path |
+| --- | --- | --- |
+| Display name | Wallet 2.0 obName or App 3.0 name | Submit OTP. Enter YouApp HTML Test and tap Continue. |
+| Date of birth | Wallet 2.0 obDob or App 3.0 dob | Continue from Display name. Tap Skip. |
+| Gender | Wallet 2.0 obGender or App 3.0 gender | Skip date of birth. Tap Skip. |
+| Referrer | Wallet 2.0 obRef | Skip gender. Skip referrer to enter signed-in Discover. |
+| Locals messages | App 3.0 chats | Tap bottom Locals. Conversation list layout was visible with the verification gate. |
+| Scan to Pay entry | Wallet 2.0 scan | Tap bottom Scan. Observed the unverified payment state. |
+| YouPage | Wallet 2.0 home and business | Tap the profile avatar. Observed You and Business tabs under this destination. |
+| Settings | Wallet 2.0 settings | Tap the gear in YouPage. |
+| Verify to continue | App 3.0 gate | YouPage ? Activate Wallet. A related gate appeared on Locals. |
+| Mobile Number | App 3.0 phone or pfPhone | Tap Verify me from the wallet gate. |
+| Phone country picker | App 3.0 pfCountry | Tap the dialing code on Mobile Number. |
+
+The 13 observed full-screen destinations include Welcome and Discover from the initial run. Signed-in Discover and Feed were inspected as states within the home destination. The You and Business tabs were inspected within YouPage. The Locals entry was gated, so chatroom access remains unverified. Wallet activation stopped before entering a phone number or submitting identity details. The wallet email code prompt has yet to be reached.
+
+## Registered HTML keys
+
+
+### App 3.0 in 3.2.0
+
+`actappl`, `actd`, `actedit`, `activate`, `actmine`, `ann`, `annd`, `apconf`, `apdet`, `apdone`, `apform`, `aplist`, `aprecv`, `apsending`, `askq`, `bchat`, `bdone7`, `bill`, `billin`, `billpay`, `cam7`, `cardd`, `cards`, `cexp`, `chat`, `chats`, `compose`, `coupons`, `cpin7`, `cpinok7`, `cprev7`, `delotp`, `delreason`, `didit`, `discover`, `dob`, `exp`, `expres`, `floc7`, `force`, `forgot`, `freeze`, `gate`, `gateway`, `gender`, `gform`, `gimedia`, `ginfo`, `ginvite`, `gperm`, `gpic`, `gpick`, `guestlock`, `happl`, `hbankf`, `hbanks`, `hcat`, `hcity`, `hcsel`, `hearn`, `hexp`, `hexps`, `hmap`, `hostres`, `hosttab`, `hreview`, `hsched`, `hset`, `hsplans`, `hstep`, `hsvcform`, `hwd`, `hwdd`, `hxedit`, `hxplans`, `kycPhotos`, `kycRejected`, `language`, `limits`, `login7`, `maint`, `media`, `mediav`, `medit`, `mer`, `merArea`, `merBoard`, `merDone`, `merPeople`, `merPhotos`, `merRev`, `merReviews`, `merWho`, `myfeed`, `myqr`, `name`, `newpin`, `otp`, `paid`, `pay`, `pfCountry`, `pfPhone`, `pfPhoneOtp`, `phone`, `pinLocked`, `pinset`, `plans`, `post`, `profedit`, `profile`, `reviews`, `rform`, `sblock`, `scan`, `schedule`, `sconn`, `search`, `secq`, `settings`, `sexport`, `slang`, `sloc`, `spay`, `sperm`, `spin7`, `splash`, `spreview`, `srefer`, `stub`, `sub`, `svc`, `swap`, `swapc`, `tcard`, `tier`, `tierdone`, `topup`, `tureview`, `tusend`, `txn`, `verifyhost`, `verifying`, `walletActive`, `wdone`, `welcome`, `whist`, `wproc`, `wrcpt`, `wresult`, `wset`, `xfer`, `youpage`
+
+
+### Additional App 3.0 keys in 3.3.0
+
+`tpEdit`, `tpFriend`, `tpJoin`, `tpPeople`, `tpPlace`, `tpPlan`, `tpPlanChat`, `tpPlanNew`, `tpStay`, `tpStop`, `trip`, `tripAdd`, `trips`
+
+
+### Wallet 2.0 in both versions
+
+`addMerchant`, `availability`, `billConfirm`, `billDone`, `billInput`, `billReceipt`, `bills`, `bizDash`, `bizQr`, `bookingDetail`, `business`, `cbSettings`, `checkout`, `ckResult`, `confirm`, `createExp`, `cxDone`, `discover`, `done`, `editProfile`, `elApply`, `elApplyDone`, `ewAutoFail`, `ewConfirm`, `ewCountry`, `ewDetail`, `ewDone`, `ewFail`, `ewOpening`, `ewOtp`, `ewPhone`, `ewRecv`, `expPlan`, `guestLogin`, `guestScan`, `home`, `hostSet`, `insights`, `invite`, `kyc`, `kycActive`, `kycConfirmed`, `kycIntro`, `kycOtp`, `kycPhone`, `kycPhotos`, `kycVerifying`, `limits`, `listingDetail`, `mcApply`, `mcApplyDone`, `merchConfirm`, `merchDetail`, `merchInsight`, `mreload`, `mwCancelled`, `mwWait`, `myMerch`, `myQr`, `obDob`, `obGender`, `obName`, `obRef`, `otp`, `pin`, `pinConf`, `pinCur`, `pinNew`, `pinOk`, `pinOtp`, `processing`, `profile`, `refCode`, `refNet`, `regMerchants`, `rewardDetail`, `rewardNotif`, `rewards`, `rfChat`, `scan`, `scanArchiveReceipt`, `scanHistory`, `scanReceipt`, `servicePlans`, `settings`, `shApply`, `shTab`, `signup`, `splash`, `subscribe`, `superhost`, `svip`, `tier`, `topUp`, `tuExt`, `tuExtDone`, `tuProc`, `tuSend`, `txHist`, `txReceipt`, `vouchers`, `wActConnect`, `wChoose`, `wConnected`, `wDetail`, `wVerify`, `walletApprove`, `walletBooking`, `walletConnect`, `walletCurrency`, `walletPaymentSource`, `walletTopUp`, `walletTopUpAmount`, `walletTopUpDone`, `walletTopUpReceipt`, `walletTopUpStable`, `wallets`, `wdDone`, `withdraw`, `xsAddr`, `xsAmt`, `xsDone`, `xsFail`, `xsPin`, `xsProc`, `xsRecv`, `xsTo`
+
+## Android source destination candidates
+
+`YouRoute.AnnouncementDetail`, `YouRoute.Announcements`, `YouRoute.AskQuestion`, `YouRoute.BadgeKycProcessing`, `YouRoute.BadgeKycWebView`, `YouRoute.BadgePhoneCountry`, `YouRoute.BadgePhoneNumber`, `YouRoute.BadgeProfileMedia`, `YouRoute.BadgeVerification`, `YouRoute.BadgeWalletReconnect`, `YouRoute.BankAccountEditor`, `YouRoute.BankAccounts`, `YouRoute.BlockedUsers`, `YouRoute.BookService`, `YouRoute.Career`, `YouRoute.ChangeEmail`, `YouRoute.ChangeEmailOtp`, `YouRoute.ChangeMobileNumber`, `YouRoute.ChatList`, `YouRoute.ChatLocationPicker`, `YouRoute.ChatRoom`, `YouRoute.ChatSearch`, `YouRoute.ChoosePlan`, `YouRoute.ConnectWallet`, `YouRoute.ConnectedAccounts`, `YouRoute.ConvertTopUp`, `YouRoute.CreateExperience`, `YouRoute.DeleteAccount`, `YouRoute.DeleteAccountOtp`, `YouRoute.DevicePermissions`, `YouRoute.EditExperience`, `YouRoute.Education`, `YouRoute.Elite`, `YouRoute.EliteMerchantDetail`, `YouRoute.EliteReferralNetwork`, `YouRoute.ExperienceCheckout`, `YouRoute.ExperienceDetail`, `YouRoute.ExperiencePlans`, `YouRoute.ExperienceReserve`, `YouRoute.FeaturedLocals`, `YouRoute.FeedCompose`, `YouRoute.FeedMediaPreview`, `YouRoute.FeedThread`, `YouRoute.FeedbackForm`, `YouRoute.FillInYourDetails`, `YouRoute.FundingActivity`, `YouRoute.Home`, `YouRoute.HostAllReviews`, `YouRoute.HostAwardEditor`, `YouRoute.HostBadgeVerification`, `YouRoute.HostCategoryForm`, `YouRoute.HostDetail`, `YouRoute.HostRecentSearches`, `YouRoute.HostReviews`, `YouRoute.HostSearch`, `YouRoute.HostSearchSeeAll`, `YouRoute.HostServiceEditor`, `YouRoute.HostServiceLocationPicker`, `YouRoute.HostSettings`, `YouRoute.Limits`, `YouRoute.LocalsCategory`, `YouRoute.Login`, `YouRoute.ManageExperiences`, `YouRoute.ManagedWalletDetail`, `YouRoute.MeetIntro`, `YouRoute.MembershipHistory`, `YouRoute.MembershipReceipt`, `YouRoute.MembershipSuccess`, `YouRoute.MerchantDetail`, `YouRoute.MerchantRecentSearches`, `YouRoute.MerchantSearch`, `YouRoute.ModifyBooking`, `YouRoute.MyFeed`, `YouRoute.MyMoney`, `YouRoute.MyQr`, `YouRoute.MyWallets`, `YouRoute.Onboarding`, `YouRoute.OtherProfile`, `YouRoute.PaydibsTopUp`, `YouRoute.PaymentPinRecovery`, `YouRoute.PaymentPinSetting`, `YouRoute.PersonalDetails`, `YouRoute.PlaceSelector`, `YouRoute.Plans`, `YouRoute.Profile`, `YouRoute.PromoCodeDetail`, `YouRoute.PromoCodes`, `YouRoute.ReferralChatIntent`, `YouRoute.ReferralRewardDetail`, `YouRoute.Regional`, `YouRoute.RegisteredMerchants`, `YouRoute.ReportProblem`, `YouRoute.ResumeMembership`, `YouRoute.ResumeTopUp`, `YouRoute.RewardDetail`, `YouRoute.Rewards`, `YouRoute.ScanAndPay`, `YouRoute.ScanPayQr`, `YouRoute.ScanPaymentStatus`, `YouRoute.ScanQr`, `YouRoute.ScanRecovery`, `YouRoute.ScanTopUp`, `YouRoute.SelectCountry`, `YouRoute.SelectCurrency`, `YouRoute.SelectLanguage`, `YouRoute.ServiceCheckout`, `YouRoute.ServiceWaitingPayment`, `YouRoute.Settings`, `YouRoute.SettingsReferralCode`, `YouRoute.ShareToChat`, `YouRoute.SignedMerchant`, `YouRoute.Splash`, `YouRoute.SvipCheckout`, `YouRoute.SvipUpgrade`, `YouRoute.TopUp`, `YouRoute.TransactionDetail`, `YouRoute.TransactionReceipt`, `YouRoute.TravelCard`, `YouRoute.VerifyToContinue`, `YouRoute.VipConfirmation`, `YouRoute.Wallet`, `YouRoute.WalletExport`, `YouRoute.WalletQr`, `YouRoute.WalletSend`, `YouRoute.Withdrawal`, `YouRoute.WithdrawalDetail`
