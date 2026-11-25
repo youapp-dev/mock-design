@@ -17,6 +17,7 @@ const SV = {
   sort:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M7 12h10M10 17h4"/></svg>',
   flame:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c.6 3.2 4.8 5.2 4.8 10.2a4.8 4.8 0 0 1-9.6 0c0-2 1-3.3 2-4.3.2 1.6 1 2.6 2 2.9-.6-3.2-.3-6 .8-8.8z" fill="#F07C2A"/></svg>',
   cam:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-2.5h6L17 8h3v11H4z"/><circle cx="12" cy="13" r="3.4"/></svg>',
+  wallet:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7.5A2.5 2.5 0 0 1 6.5 5H17v3.5"/><path d="M4 7.5v10A2.5 2.5 0 0 0 6.5 20H20V8.5H6.5A2.5 2.5 0 0 1 4 6"/><circle cx="16" cy="14.25" r="1.1" fill="currentColor" stroke="none"/></svg>',
   qr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" aria-hidden="true"><path d="M4 4h6v6H4zM14 4h6v6h-6zM4 14h6v6H4zM14 14h2v2h-2zM18 18h2v2h-2zM14 18h2M18 14h2"/></svg>',
   share:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="17.5" cy="5.5" r="2.5"/><circle cx="6.5" cy="12" r="2.5"/><circle cx="17.5" cy="18.5" r="2.5"/><path d="M8.7 10.7l6.6-3.9M8.7 13.3l6.6 3.9"/></svg>',
   back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
@@ -212,7 +213,7 @@ V.mer = () => { const p = placeById(S.mer) || PLACES[0]; if (MX.hiFor !== p.id) 
       ${p.total >= 50 && lbScen() !== 'none' ? `<div class="mx-sh"><h2>Who checks in here</h2><small class="mx-sub">Last 90 days</small></div>
       <div class="mx-who">${summary3}<div class="mx-dns">${donut('Age', AGE)}${donut('Gender', GENDER)}</div><button class="mx-all in" data-act="mxWho">Show all${SV.chevd}</button></div>` : ''}
       <p class="mx-attr">Places and reviews from Google</p>
-    </div></div>${p.cb ? `<div class="mx-paybar"><button class="mx-paybtn" data-act="cbScan" aria-label="Pay ${esc(p.name)}, ${p.open ? `${p.cb}% cashback` : 'closed now'}">${SV.qr}<span><b>Pay</b><small>${p.open ? `${p.cb}% cashback` : 'Closed now'}</small></span></button></div>` : ''}</div>`; };
+    </div></div>${p.cb ? `<div class="mx-paybar"><button class="mx-paybtn" data-act="mxPay" aria-label="Pay ${esc(p.name)}, ${p.open ? `${p.cb}% cashback` : 'closed now'}">${SV.wallet}<span><b>Pay</b><small>${p.open ? `${p.cb}% cashback` : 'Closed now'}</small></span></button></div>` : ''}</div>`; };
 
 /* ---------- 3. Checked in ---------- */
 V.merDone = () => { const p = placeById(S.mer) || PLACES[0]; const mine = mineOf(p); const r = MX.rankAfter || {}; const amb = board(p)[0];
@@ -367,6 +368,12 @@ Object.assign(A, {
   mxAreaApply: el => { if (el && el.getAttribute && el.getAttribute('aria-disabled')) return; const a = AREA(MX.ad.id); MX.area = a.id; MX.km = MX.ad.km; back(); toast(a.gps ? 'Showing merchants near you.' : `Showing merchants around ${a.name}.`); },
   mxHours: () => { MX.hours = MX.hours === S.mer ? null : S.mer; render(); },
   mxDir: () => toast('Opens this place in Google Maps.'),
+  /* Pay from the merchant page skips the camera: straight to amount entry for this merchant (Wallet 2.0 Pay screen) */
+  mxPay: () => { const p = placeById(S.mer) || PLACES[0];
+    if (window.parent !== window && window.parent.__bridge) { window.parent.__bridge('a30', 'merPay', {kyc:scen.kyc, wallet:scen.wallet, host:scen.host, mer:{id:p.id, name:p.name, area:p.addr.split(',').pop().trim(), cb:p.cb||0, img:IMG[p.img]}}); return; }
+    const k = 'mx:' + p.id;
+    QRS[k] = {kind:'ok', head:'Pay', name:p.name, branch:p.addr.split(',').pop().trim(), sub:p.type, img:p.img, min:0, fixed:null, cb:(p.cb||0)/100};
+    S.sp = {m:k, amt:''}; go('spay'); },
   mxCall: () => { const p = placeById(S.mer); toast(`Calls ${p ? p.phone : 'the shop'}.`); },
   mxShare: guard(() => {
     const p = placeById(S.mer) || PLACES[0];
@@ -480,7 +487,7 @@ document.head.insertAdjacentHTML('beforeend', `<style id="mx-css">
 .screen.mxp{background:#fff} .mx-scroll{padding-bottom:12px}
 /* sticky Pay bar: only for merchants that accept YouApp (cashback); wins over the check-in card */
 .mx-paybar{flex:none; padding:10px 16px calc(12px + env(safe-area-inset-bottom,0px)); background:#fff; box-shadow:0 -1px 0 #EEEAF5}
-.mx-paybtn{display:flex; align-items:center; justify-content:center; gap:10px; width:100%; min-height:54px; padding:0 20px; border:0; border-radius:999px; background:#38168E; color:#fff; box-shadow:0 8px 20px rgba(56,22,142,.38); cursor:pointer}
+.mx-paybtn{display:flex; align-items:center; justify-content:center; gap:10px; width:100%; min-height:54px; padding:0 20px; border:0; border-radius:999px; background:var(--a-grad); color:#fff; box-shadow:0 8px 20px rgba(75,42,158,.24); cursor:pointer}
 .mx-paybtn svg{width:22px; height:22px; flex:none}
 .mx-paybtn span{display:flex; align-items:baseline; gap:8px}
 .mx-paybtn b{font:700 17px/1 Inter,sans-serif}
@@ -568,7 +575,7 @@ document.head.insertAdjacentHTML('beforeend', `<style id="mx-css">
 .mx-ini{width:38px; height:38px; flex:none; border-radius:50%; background:#5B8DEF; color:#fff; display:grid; place-items:center; font:700 13px/1 Inter, sans-serif}
 .mx-gl{font-style:normal; padding:1px 6px; border-radius:5px; background:#E8F0FE; color:#1A73E8; font-weight:700}
 .mx-g{display:inline-grid; place-items:center; width:15px; height:15px} .mx-g svg{width:13px; height:13px} .mx-g.f svg{fill:#D9568C} .mx-g.m svg{fill:#4F7BE0}
-.mx-all{height:46px; border:0; border-radius:14px; background:#F4EFFF; color:#4B2A9E; font:700 14px Inter, sans-serif; display:flex; align-items:center; justify-content:center; gap:4px} .mx-all svg{width:16px; height:16px} .mx-all.in{background:none}
+.mx-all{height:46px; border:0; border-radius:14px; background:#F4EFFF; color:#4B2A9E; font:700 14px Inter, sans-serif; display:flex; align-items:center; justify-content:center; gap:4px} .mx-all svg{width:16px; height:16px} .mx-all.in{background:none} .mxw .mx-all.in{width:fit-content; margin:4px auto 0; padding:0 16px; align-self:center}
 .mx-pp{display:grid; grid-template-columns:repeat(5,minmax(0,1fr)); gap:8px}
 .mx-pp button, .mx-pg button{border:0; background:none; padding:0; text-align:left; display:grid; gap:2px}
 .mx-pp button > span{aspect-ratio:.85; border-radius:12px; overflow:hidden; background:#F4EFFF} .mx-pp img, .mx-pg img{width:100%; height:100%; object-fit:cover; display:block}

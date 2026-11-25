@@ -2145,16 +2145,16 @@ function spError(){ const s = S.sp; const m = QRS[s.m]; const {amt, total} = spT
   if (amt > t.daily - w.used.daily) return `This is above your daily limit. You can pay up to ${RM(t.daily - w.used.daily)} today.`;
   return ''; }
 V.spay = () => { const s = S.sp; const m = QRS[s.m]; const w = W(); const {amt, gas, total, cb} = spTotal(); const err = spError(); const short = Math.max(0, total - w.myrt);
-  return `<div class="screen">${statusBar()}${topBar('Scan and Pay')}
+  return `<div class="screen">${statusBar()}${topBar(m.head||'Scan and Pay')}
   <div class="scroll pad16" style="padding-bottom:12px">
-    <div class="merch"><span class="mic">${ic('scan')}</span><span><b>${esc(m.name)}</b><small>${esc(m.sub)} · ${esc(m.branch)}</small></span></div>
+    <div class="merch"><span class="mic${m.img?' ph':''}">${m.img?img(m.img,''):ic('scan')}</span><span><b>${esc(m.name)}</b><small>${esc(m.sub)} · ${esc(m.branch)}</small></span></div>
     <p class="t-body subtle" style="text-align:center; margin:16px 0 0">You Pay</p>
     <p class="bigamt"><small>RM</small>${m.fixed?fmt2(m.fixed):(s.amt||'0')}</p>
     ${err?`<p class="err-text" style="text-align:center; margin:0 0 6px" role="alert">${esc(err)}${err.includes('limit')?' <button class="link" style="font-size:12px" data-act="openLimits">See limits</button>':''}</p>`:m.fixed?'<p class="t-caption subtle" style="text-align:center; margin:0 0 6px">Fixed amount set by the merchant</p>':''}
     ${m.fixed?'':`<div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap">${[50,100,120,240].map(v=>`<button class="amtchip ${String(v)===s.amt?'on':''}" data-act="spChip" data-v="${v}">${v}</button>`).join('')}</div>`}
     <div class="boxcard" style="padding:6px 14px; margin-top:14px">
       <div class="kv">Gas Fee<b>${amt?MY(gas):'-'}</b></div>
-      ${m.cb?`<div class="kv">Cashback <span class="pct">10%</span><b style="color:var(--a-success)">${amt?'+ '+MY(cb):'-'}</b></div>`:''}
+      ${m.cb?`<div class="kv">Cashback <span class="pct">${Math.round(m.cb*100)}%</span><b style="color:var(--a-success)">${amt?'+ '+MY(cb):'-'}</b></div>`:''}
       <div class="kv">Pay from<b>YouWallet · ${MY(w.myrt)}</b></div>
       ${amt?`<div class="kv">You pay<b>${MY(total)}</b></div>`:''}</div>
     ${amt && short>0 && !err ? `<div class="notice" style="margin-top:10px">${ic('info')}<span><b>${RM(short)} short.</b> Wallet ${MY(w.myrt)}. Top up and pay in one step below.</span></div>` : ''}
@@ -2163,10 +2163,10 @@ V.spay = () => { const s = S.sp; const m = QRS[s.m]; const w = W(); const {amt, 
     <p class="t-caption subtle" style="text-align:center; margin:8px 0 0">The recipient receives ringgit instantly. You keep the memory and the cashback.</p></div>
   ${m.fixed?'':`<div class="pad" style="position:static; padding-bottom:30px" role="group" aria-label="Amount keypad">${['1','2','3','4','5','6','7','8','9','.','0','del'].map(k=>k==='del'?`<button class="key ghost" data-act="spKey" data-k="del" aria-label="Delete">${ic('del')}</button>`:`<button class="key" data-act="spKey" data-k="${k}">${k}</button>`).join('')}</div>`}</div>`; };
 V.spreview = () => { const s = S.sp; const m = QRS[s.m]; const w = W(); const {amt, gas, total, cb} = spTotal();
-  return `<div class="screen">${statusBar()}${topBar('Scan and Pay')}
+  return `<div class="screen">${statusBar()}${topBar(m.head||'Scan and Pay')}
   <div class="scroll pad16">
     <h1 class="t-title" style="margin:6px 0 4px">Review your payment</h1><p class="t-body muted" style="margin:0 0 16px">Confirm the amount and merchant details before you pay.</p>
-    <div class="merch"><span class="mic">${ic('scan')}</span><span><b>${esc(m.name)}</b><small>${esc(m.sub)}</small></span></div>
+    <div class="merch"><span class="mic${m.img?' ph':''}">${m.img?img(m.img,''):ic('scan')}</span><span><b>${esc(m.name)}</b><small>${esc(m.sub)}</small></span></div>
     <div class="boxcard" style="padding:6px 14px; margin-top:14px">
       <div class="kv">Payment Amount<b>${RM(amt)}</b></div><div class="kv">Payment method<b>DuitNow QR</b></div><div class="kv">Gas Fee<b>${MY(gas)}</b></div>
       ${cb?`<div class="kv">Cashback<b style="color:var(--a-success)">+ ${MY(cb)}</b></div>`:''}
@@ -2176,13 +2176,13 @@ V.spreview = () => { const s = S.sp; const m = QRS[s.m]; const w = W(); const {a
   <div class="cta">${btn('Confirm and pay','spConfirm')}<button class="link" style="display:block; margin:14px auto 0" data-act="back">Back to edit</button></div></div>`; };
 function settle(){ const s = S.sp; const m = QRS[s.m]; const w = W(); const {amt, gas, total, cb} = spTotal(); const outcome = scen.settle||'success'; const r = ref();
   if (S.paying4) { toast('Please wait for your current payment to finish.','err'); return; } S.paying4 = true;
-  runProc({head:'Scan and Pay', title:`Paying ${m.name}`, steps:['Securing your MYRT', `Paying ${m.name}`], done:()=>{ S.paying4=false;
+  runProc({head:m.head||'Scan and Pay', title:`Paying ${m.name}`, steps:['Securing your MYRT', `Paying ${m.name}`], done:()=>{ S.paying4=false;
     if (outcome==='myrtfail') { addTxn({type:'scan', title:m.name, sub:'DuitNow QR · '+m.branch, amt:-amt, status:'Failed', det:{rm:amt, gas, cb:0, failed:true}}); S.res={kind:'myrtfail', merchant:m.name, rm:amt, ref:r}; go('wresult',{replace:true}); return; }
     w.myrt -= total;
     if (outcome==='success') { w.used.daily += amt; w.used.monthly += amt; w.used.yearly += amt;
       const t = addTxn({type:'scan', title:m.name, sub:'DuitNow QR · '+m.branch, amt:-amt, status:'Completed', det:{rm:amt, gas, cb}});
       if (cb) { w.myrt += cb; addTxn({type:'cashback', title:'Cashback · '+m.name, sub:'10% YouApp partner cashback', amt:cb, status:'Completed'}); }
-      S.done = {head:'Scan and Pay', title:'Paid', amount:RM(amt), sub:`to ${m.name} · DuitNow QR`, rows:[['Updated Balance', MY(w.myrt)],['Reference', r],...(cb?[['Cashback', '+ '+MY(cb)]]:[]),['Date', t.date]], receipt:t.id, after:'scan'}; go('wdone',{replace:true}); return; }
+      S.done = {head:'Scan and Pay', title:'Paid', amount:RM(amt), sub:`to ${m.name}${m.head?'':' · DuitNow QR'}`, rows:[['Updated Balance', MY(w.myrt)],['Reference', r],...(cb?[['Cashback', '+ '+MY(cb)]]:[]),['Date', t.date]], receipt:t.id, after:'scan'}; go('wdone',{replace:true}); return; }
     const t = addTxn({type:'scan', title:m.name, sub:'DuitNow QR · '+m.branch, amt:-amt, status:'Pending', det:{rm:amt, gas, cb:0}}); D.pendingTx = t.id;
     if (outcome==='pending') { S.res={kind:'pending', merchant:m.name, rm:amt, ref:r}; go('wresult',{replace:true}); return; }
     S.res={kind:'dnfail', merchant:m.name, rm:amt, total, ref:r}; go('wresult',{replace:true});

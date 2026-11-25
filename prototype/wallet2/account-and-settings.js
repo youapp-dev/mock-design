@@ -964,6 +964,17 @@ Object.assign(A, {
   window.__panel = () => { const p = document.getElementById('panel'); if (p) p.classList.add('open'); };
   window.__refresh = () => render();
 })();
+/* Pay from a merchant page in the app: open the Pay (amount) screen for that merchant, no camera */
+(function(){ const open = window.__open; if (!open) return;
+  window.__open = function(screen, c){
+    if (screen !== 'merPay' || !c || !c.mer) return open.call(this, screen, c);
+    const m = c.mer, id = 'mx-' + m.id;
+    if (m.img) IMG['mxp_' + m.id] = m.img;
+    MERCH[id] = {id, name:m.name, sub:'Merchant · ' + m.area, kind:'merchant', cbRate:m.cb || 0, img:m.img ? 'mxp_' + m.id : 'mer1'};
+    S.pay = {id, amt:''}; S.payYa = false; S.txId = null; S.tp = null; S.busy = false;
+    return open.call(this, 'confirm', c);
+  };
+})();
 (function(){ if (!window.__open) return;
   window.__set = (k, v) => {
     if (k === 'kyc') { scen.kyc = v; saveScen(); render(); return; }
