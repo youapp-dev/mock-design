@@ -74,6 +74,7 @@
   .ew-intro{display:grid; justify-items:center; gap:6px; text-align:center}
   .ew-intro .t-title{margin:6px 0 0}
   .ew-intro p{margin:0; max-inline-size:30ch; text-wrap:pretty}
+  .screen.ewo{position:absolute; inset:0} .screen.ewo .kpad{position:absolute; left:0; right:0; bottom:0; z-index:4} .screen.ewo .otp-card2{top:124px}
   .ew-phw{display:grid; grid-template-columns:minmax(0,1fr); padding-top:8px}
   .ew-phh{text-align:center; margin:0 0 24px} .ew-phart{margin:0 auto 12px} .ew-phh .t-title{margin:0 0 6px} .ew-phh p{margin:0; text-wrap:balance}
   .ew-fl{position:relative; display:flex; align-items:center; gap:12px; width:100%; min-height:56px; padding:0 14px; border:1px solid var(--a-line); border-radius:12px; background:#fff; text-align:left; font:inherit; box-sizing:border-box}
@@ -231,23 +232,27 @@
     return `<div class="screen bz">${statusBar()}${head}
     <div class="scroll"><div class="ew-ccl" role="radiogroup" aria-label="Country">${list.map(c => `<button class="ew-ccrow ${cur === c[0] ? 'on' : ''}" role="radio" aria-checked="${cur === c[0]}" data-act="ewCcPick" data-c="${c[0]}">${flagOf(c[0])}<b>${esc(c[1])}</b><span>${c[2]}</span></button>`).join('')
       || `<div class="ew-ccnone"><b>No country found</b><span>Try another name or code.</span></div>`}</div></div></div>`; };
+  /* code entry: modal card over the phone-number screen, same pattern as the login OTP (dim, card, toast, keypad) */
   V.ewOtp = () => { const f = S.ewPh; const v = f.otp || ''; const err = f.otpErr; const lock = f.tries >= 5; const t = f.t ?? 30;
-    return `<div class="screen bz">${statusBar()}${topBar('Verify phone number')}
-    <div class="scroll"><div class="pad16 stack" style="gap:14px; padding-top:8px; text-align:center">
-      <div><h1 class="t-title" style="margin:0 0 4px">Enter the 6-digit code</h1><p class="t-body muted" style="margin:0">Sent by SMS to <b style="color:var(--a-ink)">${esc(fmtPh(f.cc, f.num))}</b></p>
-        <button class="link" data-act="ewChangeNum" style="margin-top:4px">Change number</button></div>
-      <label class="ew-otp"><span class="sr" style="position:absolute; left:-9999px">Verification code</span>
-        <input id="ewOtpIn" inputmode="none" autocomplete="one-time-code" maxlength="6" value="${esc(v)}" ${lock || f.busy ? 'disabled' : ''} aria-describedby="ewOtpH">
-        <span class="otp-boxes ${err ? 'err' : ''}" aria-hidden="true">${[0,1,2,3,4,5].map(i => `<span class="${i === v.length && !err && !lock ? 'cur' : ''}">${v[i] || ''}</span>`).join('')}</span></label>
-      <p class="ew-otph" id="ewOtpH">${lock ? '<span class="err-text">Too many wrong codes. Try again in 10 minutes or change the number.</span>'
-        : err ? `<span class="err-text">That code isn’t right. ${5 - f.tries} ${5 - f.tries === 1 ? 'try' : 'tries'} left.</span>`
-        : f.busy ? '<span class="t-caption subtle">Checking…</span>' : '<span class="t-caption subtle">Demo code: 123456</span>'}</p>
-      ${lock ? '' : t > 0 ? `<p class="t-caption subtle" style="margin:0">Resend code in <b id="ewOtpT">0:${String(t).padStart(2, '0')}</b></p>` : `<button class="link" data-act="ewResend">Resend code</button>`}
-    </div></div>
-    ${keypad('ewk')}</div>`; };
+    const base = V.ewPhone().replace('<div class="screen bz">', '<div class="screen bz ewo">').replace('<div class="scroll">', '<div class="scroll" inert aria-hidden="true">').replace('<div class="w2foot">', '<div class="w2foot" inert aria-hidden="true">');
+    const modal = `<div class="gs-dim" data-act="noop"></div>
+    ${f.sent ? `<div class="gs-toast" role="status">${ic('check')}<span>Code sent to your phone by SMS.</span><button data-act="ewToastX" aria-label="Close">${ic('close')}</button></div>` : ''}
+    <div class="otp-card2" role="dialog" aria-modal="true" aria-labelledby="ewOtpTitle">
+      <h2 id="ewOtpTitle">Verify phone number</h2><p>We’ve sent a 6-digit code by SMS to<br><b>${esc(fmtPh(f.cc, f.num))}</b></p>
+      <div class="otp-boxes ${err || lock ? 'err' : ''}" role="img" aria-label="Code: ${v.length} of 6 digits entered">${[0,1,2,3,4,5].map(k => `<span class="${k === v.length && !err && !lock ? 'cur' : ''}">${v[k] || ''}</span>`).join('')}</div>
+      <div aria-live="polite">${lock ? '<small class="otp-err">Too many wrong codes. Try again in 10 minutes or change the number.</small>'
+        : err ? `<small class="otp-err">That code isn’t right. ${5 - f.tries} ${5 - f.tries === 1 ? 'try' : 'tries'} left.</small>`
+        : f.busy ? '<small class="otp-hint">Checking…</small>' : ''}</div>
+      ${lock ? '' : t > 0 && !err ? `<small class="otp-rs off">Resend Again</small><b class="otp-t" id="ewOtpT">00:${String(t).padStart(2, '0')}</b>` : '<button class="otp-rs" data-act="ewResend">Resend Again</button>'}
+      <small class="otp-hint">Didn’t get it? Check the number is right and your phone has signal.</small>
+      <button class="otp-cancel" data-act="ewChangeNum">Cancel</button>
+      <small class="otp-demo">Demo code: 123456</small>
+    </div>
+    ${keypad('ewk')}`;
+    return base.replace(/<\/div>\s*$/, modal + '</div>'); };
   let ewTimer = null;
   const ewTick = () => { clearInterval(ewTimer); ewTimer = setInterval(() => { const f = S.ewPh; if (S.screen !== 'ewOtp' || !f) { clearInterval(ewTimer); return; }
-    f.t = Math.max(0, (f.t ?? 30) - 1); const el = document.getElementById('ewOtpT'); if (f.t === 0) { clearInterval(ewTimer); render(); } else if (el) el.textContent = '0:' + String(f.t).padStart(2, '0'); }, 1000); };
+    f.t = Math.max(0, (f.t ?? 30) - 1); const el = document.getElementById('ewOtpT'); if (f.t === 0) { clearInterval(ewTimer); render(); } else if (el) el.textContent = '00:' + String(f.t).padStart(2, '0'); }, 1000); };
   const keepFocus = (id, pos) => { const el = document.getElementById(id); if (el) { el.focus(); try { if (pos != null) el.setSelectionRange(pos, pos); } catch(_){} } };
   document.addEventListener('input', e => { const id = e.target.id, f = S.ewPh;
     if (id === 'ewNum' && f) { f.num = e.target.value.replace(/[^\d\s-]/g, ''); f.err = ''; const pos = e.target.selectionStart; render(); keepFocus('ewNum', pos); }
@@ -356,12 +361,13 @@
     ewCcPick: el => { const f = S.ewPh; if (f.cc !== el.dataset.c) { f.cc = el.dataset.c; f.err = ''; } S.ewCcSearch = false; S.ewCcQ = ''; back(); setTimeout(() => keepFocus('ewNum'), 50); },
     ewSend: el => { const f = S.ewPh; if ((el && el.getAttribute && el.getAttribute('aria-disabled')) || f.busy) return;
       if (f.cc === 'MY' && digits(f.num) === TAKEN) { f.err = 'This number is linked to another Fiat Wallet. Use a different number.'; render(); return; }
-      f.busy = true; render(); setTimeout(() => { f.busy = false; f.otp = ''; f.otpErr = false; f.tries = 0; f.t = 30; go('ewOtp'); toast('Code sent to ' + fmtPh(f.cc, f.num) + '.'); ewTick(); }, 700); },
+      f.busy = true; render(); setTimeout(() => { f.busy = false; f.otp = ''; f.otpErr = false; f.tries = 0; f.t = 30; f.sent = true; go('ewOtp'); ewTick(); setTimeout(() => { if (f.sent) { f.sent = false; if (S.screen === 'ewOtp') render(); } }, 4000); }, 700); },
     ewk: el => { const f = S.ewPh; if (!f || f.busy || f.tries >= 5) return; if (f.otpErr) { f.otp = ''; f.otpErr = false; } if ((f.otp || '').length >= 6) return;
       f.otp = (f.otp || '') + el.dataset.k; render(); if (f.otp.length === 6) A.ewVerify(); },
     ewkDel: () => { const f = S.ewPh; if (!f || f.busy) return; f.otp = (f.otp || '').slice(0, -1); f.otpErr = false; render(); },
     ewChangeNum: () => { clearInterval(ewTimer); back(); setTimeout(() => keepFocus('ewNum'), 50); },
-    ewResend: () => { const f = S.ewPh; f.otp = ''; f.otpErr = false; f.t = 30; render(); toast('New code sent.'); ewTick(); },
+    ewResend: () => { const f = S.ewPh; f.otp = ''; f.otpErr = false; f.t = 30; f.sent = true; render(); ewTick(); setTimeout(() => { if (f.sent) { f.sent = false; if (S.screen === 'ewOtp') render(); } }, 4000); },
+    ewToastX: () => { if (S.ewPh) S.ewPh.sent = false; render(); },
     ewVerify: el => { const f = S.ewPh; if ((el && el.getAttribute && el.getAttribute('aria-disabled')) || f.busy || (f.otp || '').length < 6 || f.tries >= 5) return;
       f.busy = true; render(); setTimeout(() => { f.busy = false;
         if (f.otp !== '123456') { f.tries = (f.tries || 0) + 1; f.otpErr = true; f.otp = ''; render(); keepFocus('ewOtpIn'); return; }
@@ -391,7 +397,7 @@
   Object.assign(META, {
     ewPhone:{name:'Fiat Wallet · phone number', ph:1, rules:['Shown when paid activation has no saved verified number. Verify the phone before paying','Country field (flag, name) opens Choose country: full screen, A–Z, flag, name and dial code, search from the header; Malaysia by default','Phone number field shows the dial code before the number','Send code enabled once the number has the right length for that country','Number already linked to another Fiat Wallet: error under the field (demo 12-345 0000)']},
     ewCountry:{name:'Fiat Wallet · choose country', ph:1, rules:['A–Z list with flag, name and dial code; the current country is highlighted','Search icon turns the header into a search field (name or code); no match shows No country found','Tap a country to go back with it selected']},
-    ewOtp:{name:'Fiat Wallet · verify phone', ph:1, rules:['6-digit SMS code typed on the number keypad (same as the login OTP); checks automatically when 6 digits are in, no Verify button','Wrong code: error with tries left; 5 wrong codes lock for 10 minutes','Resend after 30 s; Change number goes back to step 1','Correct code: saves the shared number and opens the RM50 payment step. Later activation uses the saved number. Edit profile › Mobile Number verifies any change']},
+    ewOtp:{name:'Fiat Wallet · verify phone', ph:1, rules:['Modal card over the phone-number screen, like the login OTP: Code sent toast, 6 boxes, Resend Again after 30 s, Cancel back to the number, keypad; checks automatically at 6 digits','Wrong code: error with tries left; 5 wrong codes lock for 10 minutes','Resend after 30 s; Change number goes back to step 1','Correct code: saves the shared number and opens the RM50 payment step. Later activation uses the saved number. Edit profile › Mobile Number verifies any change']},
     ewOpening:{name:'Opening Fiat Wallet', ph:1, rules:['Existing verified details are used. No opening fee, phone prompt or SMS.']},
     ewAutoFail:{name:'Fiat Wallet · opening failed', ph:1, rules:['No fee was charged. Try again resumes automatic opening.']},
     ewConfirm:{name:ACTIVATION_TITLE, ph:1, rules:['Only needed for Receive (Fiat Wallet), Bill payment and Mobile reload. Scan to Pay does not need it','One-time RM50 account opening fee, not added to balance; shows as −RM50 in history','Paid from MYRT first; if short, top up the rest by debit or credit card or stablecoins (MYRT, USDT, USDC)','Existing KYC covers it, no extra screens','⚠️ Assumption: opening is instant (pending Kevon)']},
