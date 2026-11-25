@@ -68,6 +68,9 @@ button{font:inherit; color:inherit; cursor:pointer}
 .jumps button small{color:var(--text-3); font-size:11px}
 .jumps button:hover{border-color:var(--accent)}
 .ctl{margin-bottom:10px}
+.merchant-loading-control{display:grid; grid-template-columns:minmax(0,1fr) 6.5rem; align-items:center; gap:8px; color:var(--text-2); font-size:12.5px}
+.merchant-loading-control input{width:100%; min-height:36px; padding:6px 8px; border:1px solid var(--rule); border-radius:8px; color:var(--text); background:var(--surface); font:inherit}
+.merchant-loading-control input:focus-visible{outline:2px solid var(--accent); outline-offset:2px}
 .ctl > span{display:block; font-size:12.5px; color:var(--text-2); margin:0 0 4px}
 .lucky-rates{border:1px solid var(--rule);border-radius:12px;background:var(--surface-2);margin-bottom:12px;padding:10px}
 .lucky-rates summary{cursor:pointer;font-weight:600}
@@ -180,6 +183,7 @@ button{font:inherit; color:inherit; cursor:pointer}
     </div>
 
     <div class="grp"><h2>Quick scenario</h2>
+      <label class="ctl merchant-loading-control"><span>Merchant loading (seconds)</span><input id="merchantLoadSeconds" type="number" inputmode="decimal" min="0" step="any" value="1"></label>
       <div class="ctl"><span>Identity (KYC result)</span><div class="seg" role="group" aria-label="Identity (KYC result)" style="grid-template-columns:repeat(3,1fr)"><button data-s="kyc" data-v="none">Not started</button><button data-s="kyc" data-v="rejected">Rejected</button><button data-s="kyc" data-v="approved">Approved</button></div></div>
       <div class="ctl"><span>Wallet</span><div class="seg" role="group" aria-label="Wallet" style="grid-template-columns:repeat(3,1fr)"><button data-s="wallet" data-v="off">Not active</button><button data-s="wallet" data-v="active">Active</button><button data-s="wallet" data-v="reconnect">Reconnect</button></div></div>
       <div class="ctl"><span>Host</span><div class="seg" role="group" aria-label="Host" style="grid-template-columns:repeat(3,1fr)"><button data-s="host" data-v="no">No</button><button data-s="host" data-v="pending">In review</button><button data-s="host" data-v="yes">Approved</button></div></div>

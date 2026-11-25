@@ -60,6 +60,77 @@ const placeById = id => PLACES.find(p => p.id === id) || (typeof merById === 'fu
 
 /* our own state: check-ins, reviews */
 const MX = window.MX = {mine:{}, last:{}, reviews:{}, oldMap:{}, flt:'all', sort:'near', area:'near', km:3};
+
+function merchantSnapshot(place) {
+  const {id, name, type, addr, img, rating, rev, cb} = place;
+  return {id, name, type, addr, img, rating, rev, cb};
+}
+
+function merchantMessage(merchant, fields) {
+  return {t:'merchant', text:`Shared a merchant · ${merchant.name}`, merchant, ...fields};
+}
+
+MX.renderChatShare = merchant => {
+  const place = placeById(merchant.id);
+  const available = Boolean(place);
+  const photo = available && merchant.img && IMG[merchant.img];
+  const hasRating = merchant.rating > 0 && merchant.rev > 0;
+  const content = `<span class="mx-chat-card-art${photo ? '' : ' is-placeholder'}" aria-hidden="true">${photo ? img(merchant.img, '') : ic('pin')}</span>
+    <span class="mx-chat-card-copy"><small>Merchant</small><strong>${esc(merchant.name)}</strong>
+      ${available ? `<span class="mx-chat-card-meta">${hasRating ? `<span class="mx-chat-rating">${STAR}<b>${merchant.rating.toFixed(1)}</b><span>(${fmt(merchant.rev)})</span></span>` : '<span>No ratings yet</span>'}<span>${esc(merchant.type)}</span></span>
+        ${merchant.addr ? `<span class="mx-chat-address">${esc(merchant.addr)}</span>` : ''}
+        ${place.open === false ? '<span class="mx-chat-closed">Closed now</span>' : ''}
+        ${merchant.cb > 0 ? `<span class="mx-chat-offer">${merchant.cb}% cashback with YouApp</span>` : ''}`
+        : '<span class="mx-chat-address">This merchant is no longer available.</span>'}
+    </span>`;
+  return available ? `<button type="button" class="mx-chat-card" data-act="mxChatOpen" data-id="${esc(merchant.id)}" aria-label="View ${esc(merchant.name)}">${content}<span class="mx-chat-card-action">View merchant${ic('chev')}</span></button>`
+    : `<div class="mx-chat-card is-unavailable">${content}</div>`;
+};
+
+MX.shareInChat = (id, recipients) => {
+  const place = id ? placeById(id) : PLACES[0];
+  if (!place) { toast('This merchant is no longer available.'); return; }
+  const store = C6();
+  const merchant = merchantSnapshot(place);
+  const chats = recipients.filter(([name]) => !store.blocked.some(person => person.name === name)).map(([name, av]) => {
+    let chat = store.convs.find(item => !item.group && item.name === name);
+    if (!chat) {
+      chat = {id:`c-merchant-${nid()}`, name, av, msgs:[]};
+      store.convs.unshift(chat);
+    }
+    chat.at = 'Today';
+    addMsg(chat.msgs, merchantMessage(merchant, {id:nid(), me:true, at:nowHM()}), false);
+    return chat;
+  });
+  if (!chats.length) { toast('Choose someone you can message.'); return; }
+  S.sheet = null;
+  A.openConv({dataset:{id:chats[0].id}});
+  if (chats.length > 1) toast(`Shared with ${chats.length} people.`);
+};
+
+const previousMerchantChatStore = C6;
+C6 = function(){
+  const store = previousMerchantChatStore();
+  if (store.merchantDemoSeeded) return store;
+  store.merchantDemoSeeded = true;
+  const examples = [
+    ['cashback', 'px-kopi', {}, {who:'catherine'}],
+    ['standard', 'px-noodle', {}, {who:'lara'}],
+    ['closed', 'px-salon', {}, {who:'catherine'}],
+    ['no-photo', 'px-bread', {img:null}, {who:'lara'}],
+    ['unrated', 'px-boba', {rating:null, rev:0}, {who:'catherine'}],
+    ['unavailable', 'px-thread', {id:'px-unavailable-demo'}, {who:'lara'}],
+    ['sent', 'px-dimsum', {}, {me:true, st:'sent'}],
+    ['sending', 'px-kopi', {}, {me:true, st:'up'}],
+    ['failed', 'px-bread', {}, {me:true, st:'fail'}],
+  ];
+  store.convs.unshift({id:'g-youapp-merchants', group:true, name:'YouApp Merchants', myRole:'admin', unread:0, at:'Today',
+    bio:'Demo conversations for merchant sharing in chat.', perm:GPERM0(),
+    mem:[{k:'me', role:'admin'}, {k:'catherine', role:'owner'}, {k:'lara', role:'member'}],
+    msgs:examples.map(([state, id, fields, sender], index) => merchantMessage({...merchantSnapshot(placeById(id)), ...fields},
+      {id:`merchant-demo-${state}`, at:`09:0${index}`, ...sender}))});
+  return store;
+};
 PLACES.forEach(p => { MX.mine[p.id] = p.mine; });
 const lbScen = () => (typeof scen !== 'undefined' && scen.mxLb) || 'has';  /* has | none30 (nobody in the last 30 days) | none (nobody ever) */
 const fresh = p => (MX.fresh || {})[p.id] || 0;  /* check-ins made after the scenario was picked */
@@ -137,7 +208,7 @@ V.merArea = () => { const d = MX.ad; const a = AREA(d.id); const n = a.cnt[d.km]
 const _mxOv = overlayHTML;
 overlayHTML = () => _mxOv() + (S.sheet === 'mxGps' ? `<div class="scrim ${S.sheetAnim ? 'anim' : ''}" data-act="mxGpsLater"></div><div class="sheet ${S.sheetAnim ? 'anim' : ''}" role="dialog" aria-label="Turn on location"><div class="grab" aria-hidden="true"></div>
   <div class="mx-gps"><span class="mx-gpsi">${SV.nav}</span><h2 class="t-title" style="margin:0">Turn on location</h2><p class="t-body muted" style="margin:0">Allow location to see merchants near you. You can still search for an area.</p>
-  <div style="display:grid; gap:8px; width:100%; margin-top:8px">${btn('Open settings', 'mxGpsOn', {cls:'btn-block'})}${btn('Not now', 'mxGpsLater', {cls:'btn-block', kind:'btn-secondary'})}</div></div></div>` : '');
+  <div style="display:grid; gap:8px; width:100%; margin-top:8px">${btn('Open settings', 'mxGpsOn', {cls:'btn-block'})}${btn('Not now', 'mxGpsLater', {cls:'btn-block', kind:'btn-secondary'})}</div></div></div>` : S.sheet === 'mxReviewSort' ? reviewSortSheet() : '');
 document.addEventListener('input', e => { if (e.target.id !== 'mxAq' || !MX.ad) return; const pos = e.target.selectionStart; MX.ad.q = e.target.value; render();
   const el = document.getElementById('mxAq'); if (el) { el.focus(); try { el.setSelectionRange(pos, pos); } catch(_){} } });
 
@@ -228,7 +299,7 @@ V.merDone = () => { const p = placeById(S.mer) || PLACES[0]; const mine = mineOf
 
 /* ---------- 4. Place leaderboard ---------- */
 V.merBoard = () => { const p = placeById(S.mer) || PLACES[0]; const all = MX.lbAll; const b = board(p, all); const sc = lbScen();
-  const tabs = `<div class="mx-seg" role="tablist">${[['30','Last 30 days'],['all','All time']].map(([k, t]) => `<button role="tab" aria-selected="${(k === 'all') === !!all}" data-act="mxLb" data-k="${k}">${t}</button>`).join('')}</div>`;
+  const tabs = `<div class="mx-seg" role="tablist" aria-label="Leaderboard period">${[['30','Last 30 days'],['all','All time']].map(([k, t]) => `<button type="button" role="tab" aria-selected="${(k === 'all') === !!all}" data-act="mxLb" data-k="${k}">${t}</button>`).join('')}</div>`;
   if (!b.length) { const allHas = !all && sc === 'none30';
     return `<div class="screen mxb">${statusBar()}${topBar(p.name)}<div class="scroll mx-pad">${tabs}
       <div class="mx-lbe"><span class="mx-lbei">${CROWN}</span>
@@ -255,6 +326,17 @@ const allRevs = p => { const base = REVS(p); const yk = ['hafiz','mei','jason','
   return base.concat(more).map((v, i) => ({...v, _i:i})); };
 const RVF = [['all','All'],['ya','YouApp'],['g','Google'],['ph','With photos']];
 const RVS = [['new','Newest'],['high','Highest'],['low','Lowest']];
+function reviewSortSheet() {
+  const current = MX.rvs || 'new';
+  return `<div class="scrim ${S.sheetAnim ? 'anim' : ''}" data-act="mxRvSortClose"></div>
+    <div class="sheet mx-review-sort-sheet ${S.sheetAnim ? 'anim' : ''}" role="dialog" aria-modal="true" aria-labelledby="mx-review-sort-title">
+      <div class="grab" aria-hidden="true"></div>
+      <header><h2 id="mx-review-sort-title">Sort reviews</h2><button type="button" class="iconbtn" data-act="mxRvSortClose" aria-label="Close sort options">${ic('close')}</button></header>
+      <div class="mx-review-sort-options" role="group" aria-label="Review order">
+        ${RVS.map(([key, label]) => `<button type="button" data-act="mxRvSortPick" data-k="${key}" aria-pressed="${key === current}">${label}${key === current ? ic('check') : ''}</button>`).join('')}
+      </div>
+    </div>`;
+}
 V.merReviews = () => { const p = placeById(S.mer) || PLACES[0]; const f = MX.rvf || 'all', so = MX.rvs || 'new', n = MX.rvn || 12; const total = p.rev + 86;
   let list = allRevs(p).filter(v => f === 'all' || (f === 'ya' ? !v.g : f === 'g' ? !!v.g : v.ph && v.ph.length));
   if (so !== 'new') list = [...list].sort((a, b) => so === 'high' ? b.r - a.r || a._i - b._i : a.r - b.r || a._i - b._i);
@@ -265,8 +347,8 @@ V.merReviews = () => { const p = placeById(S.mer) || PLACES[0]; const f = MX.rvf
     <div class="mx-rsum"><div><b>${p.rating}</b>${starRow(p.rating, 'sm')}<small>${fmt(total)} reviews</small></div><div class="mx-bars">${ratings.map(([s2, v]) => `<span><em>${s2}</em><i><b style="width:${v * 100}%"></b></i></span>`).join('')}</div></div>
     <div class="mx-flt mx-rvflt" role="tablist" aria-label="Filter reviews">${RVF.map(([k, t]) => `<button role="tab" aria-selected="${f === k}" data-act="mxRvF" data-k="${k}">${t}</button>`).join('')}</div>
     <div class="mx-rvbar"><p class="mx-rvcnt">${list.length ? `${fmt(count)} review${count === 1 ? '' : 's'}${f === 'g' ? ' from Google' : f === 'ya' ? ' from YouApp' : f === 'ph' ? ' with photos' : ''}` : ''}</p>
-      <button class="mx-sort" data-act="mxRvS" aria-label="Sort: ${RVS.find(x => x[0] === so)[1]}. Change">${SV.sort}${RVS.find(x => x[0] === so)[1]}</button></div>
-    ${shown.length ? shown.map(revCard).join('') : `<div class="mx-rve"><b>No reviews here yet</b><span>Try another filter.</span></div>`}
+      <button type="button" class="mx-review-sort" data-act="mxRvS" aria-haspopup="dialog">${SV.sort}<span><small>Sort by</small><b>${RVS.find(x => x[0] === so)[1]}</b></span>${ic('chevdown')}</button></div>
+    ${shown.length ? `<div class="mx-review-list">${shown.map(revCard).join('')}</div>` : `<div class="mx-rve"><b>No reviews here yet</b><span>Try another filter.</span></div>`}
     ${list.length > n ? `<button class="mx-all" data-act="mxRvMore">Show more reviews</button>` : shown.length ? '<p class="mx-fine">That’s all for now.</p>' : ''}
     <p class="mx-attr">Google reviews are shown as written. YouApp reviews come from people who checked in.</p></div>
     <div class="cta">${btn(mineV ? 'Edit your review' : 'Write a review', 'mxReview', {cls:'btn-block'})}</div></div>`; };
@@ -356,6 +438,7 @@ V.merWho = () => `<div class="screen mxw">${statusBar()}${topBar('Who checks in 
 /* ---------- actions ---------- */
 Object.assign(A, {
   mxOpen: el => { if (isGuest()) { openSheet('loginGuest'); return; } S.mer = el.dataset.id; MX.hours = null; go('mer'); },
+  mxChatOpen: el => { if (placeById(el.dataset.id)) A.mxOpen(el); },
   mxFlt: el => { MX.flt = el.dataset.k; render(); },
   mxSort: () => { MX.sort = MX.sort === 'top' ? 'near' : 'top'; render(); toast(MX.sort === 'top' ? 'Sorted by top rated.' : 'Sorted by nearest.'); },
   mxArea: () => { MX.ad = {id:MX.area, km:MX.km, q:''}; go('merArea'); },
@@ -386,7 +469,20 @@ Object.assign(A, {
   mxPerson: el => { const u = PPL[el.dataset.k]; toast(`Opens ${u ? u.n : 'their'} profile. Say hi from there.`); },
   mxAllRev: () => { MX.rvf = 'all'; MX.rvs = 'new'; MX.rvn = 12; go('merReviews'); },
   mxRvF: el => { MX.rvf = el.dataset.k; MX.rvn = 12; render(); },
-  mxRvS: () => { const i = RVS.findIndex(x => x[0] === (MX.rvs || 'new')); MX.rvs = RVS[(i + 1) % RVS.length][0]; MX.rvn = 12; render(); toast(`Sorted by ${RVS.find(x => x[0] === MX.rvs)[1].toLowerCase()}.`); },
+  mxRvS: () => {
+    openSheet('mxReviewSort');
+    document.querySelector('.mx-review-sort-options [aria-pressed="true"]')?.focus({preventScroll:true});
+  },
+  mxRvSortClose: () => {
+    S.sheet = null;
+    render();
+    document.querySelector('.mx-review-sort')?.focus({preventScroll:true});
+  },
+  mxRvSortPick: el => {
+    MX.rvs = el.dataset.k;
+    MX.rvn = 12;
+    A.mxRvSortClose();
+  },
   mxRvMore: () => { MX.rvn = (MX.rvn || 12) + 12; render(); },
   mxBoard: () => { MX.lbAll = false; go('merBoard'); },
   mxLb: el => { MX.lbAll = el.dataset.k === 'all'; render(); },
@@ -607,21 +703,80 @@ document.head.insertAdjacentHTML('beforeend', `<style id="mx-css">
 .mx-rate .mx-rstars button{width:26px; height:30px; padding:5px 3px; background:none; border-radius:0}
 @media (max-width:360px){.mx-rate{flex-wrap:wrap} .mx-rate > button{flex:1 1 100%}}
 .mx-ambc.none .mx-amt b{color:#1E1050} .mx-ambc.none .mx-amt span{color:#4B2A9E} .mx-ambc.none .mx-amt small{color:#6E6688}
-.mx-rvflt{margin:2px -16px 0; padding:4px 16px} .mx-rvbar{display:flex; align-items:center; justify-content:space-between; gap:8px} .mxrl .mx-all{width:100%}
+.mxrl .mx-pad{padding-top:8px}
+.mxrl .mx-rsum{gap:16px;padding:16px}
+.mx-rvflt{display:grid;grid-template-columns:auto repeat(2,minmax(0,1fr)) minmax(0,1.35fr);gap:8px;margin-top:12px;padding:0;overflow:visible}
+.mx-rvflt button{justify-content:center;min-height:44px;height:auto;padding:6px 12px;text-align:center;line-height:1.2}
+.mx-rvbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:8px 0}
+.mx-review-sort{display:flex;align-items:center;gap:8px;flex:none;min-height:44px;padding:6px 10px;border:1px solid #E2DAF1;border-radius:12px;background:#fff;color:#4B2A9E;text-align:left;cursor:pointer}
+.mx-review-sort > svg,.mx-review-sort > .ico{width:16px;height:16px;flex:none}
+.mx-review-sort > span:not(.ico){display:grid;gap:2px}
+.mx-review-sort small{font:600 10px/1.2 Inter,sans-serif;color:#6E6688}
+.mx-review-sort b{font:700 13px/1.2 Inter,sans-serif;color:#1E1050}
+.mx-review-sort:active{background:#FAF8FF}
+.mx-review-sort-sheet header{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:8px;color:#1E1050}
+.mx-review-sort-sheet h2{margin:0;font:700 18px Inter,sans-serif}
+.mx-review-sort-sheet header .iconbtn{width:44px;height:44px;margin:0}
+.mx-review-sort-options{display:grid;gap:4px}
+.mx-review-sort-options button{display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:48px;padding:8px 12px;border:0;border-radius:12px;background:#fff;color:#1E1050;text-align:left;font:600 14px Inter,sans-serif;cursor:pointer}
+.mx-review-sort-options button[aria-pressed="true"],.mx-review-sort-options button:active{background:#F4EFFF;color:#4B2A9E}
+.mx-review-sort-options .ico{width:18px;height:18px}
+.mx-review-list{display:grid;gap:12px}
+.mx-review-list .mx-rv{padding:14px;gap:10px}
+.mx-review-list .mx-rvh{align-items:flex-start}
+.mx-review-list .mx-rvn{gap:3px}
+.mx-review-list .mx-rvn small{line-height:1.35}
+.mx-review-list .mx-rvs{min-height:20px}
+.mx-review-list .mx-rvp{flex-wrap:wrap}
+.mx-review-list .mx-ago{color:#6E6688}
+.mxrl .mx-all{width:100%;min-height:44px;margin-top:12px}
+.mxrl .cta{padding-bottom:max(20px,calc(12px + env(safe-area-inset-bottom,0px)))}
+@media (max-width:360px){
+  .mx-rvflt{gap:4px}
+  .mx-rvflt button{padding-inline:8px;font-size:12px}
+  .mx-review-list .mx-rv{padding:12px}
+  .mx-review-list .mx-rvh{gap:8px}
+}
 .mx-rvcnt{margin:0; font:600 13px Inter, sans-serif; color:#6E6688}
+.mx-chat-bubble{width:min(78%,264px)}
+.grow .mx-chat-bubble{width:min(100%,264px);min-width:0}
+.mx-chat-bubble > .gwho{margin-bottom:6px}
+#phone .mx-chat-card{display:grid;width:100%;min-width:0;overflow:hidden;padding:0;border:1px solid var(--a-line);border-radius:14px;background:#fff;color:var(--a-ink);text-align:left;font:inherit}
+.mx-chat-card[data-act]{cursor:pointer}
+#phone :where(.mx-chat-card) span{color:inherit;margin:0;text-align:left}
+#phone .mx-chat-card-art{display:grid;place-items:center;width:100%;aspect-ratio:2;overflow:hidden;background:var(--a-indigo-100)}
+.mx-chat-card-art img{width:100%;height:100%;min-height:0;object-fit:cover;display:block}
+#phone .mx-chat-card-art.is-placeholder{aspect-ratio:auto;min-height:52px}
+.mx-chat-card-art .ico{width:24px;height:24px;color:var(--a-indigo)}
+#phone .mx-chat-card-copy{display:grid;justify-items:start;gap:6px;padding:12px;min-width:0}
+.mx-chat-card-copy small{font-size:11px;line-height:1.25;font-weight:650;color:var(--a-ink-2)}
+.mx-chat-card-copy > strong{font-size:16px;line-height:1.22}
+#phone :is(.mx-chat-card-meta,.mx-chat-rating){display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:12px;line-height:1.3}
+#phone .mx-chat-rating{gap:3px}
+.mx-chat-rating svg{width:13px;height:13px;fill:#b77209}
+#phone .mx-chat-card .mx-chat-address,#phone .mx-chat-card .mx-chat-card-meta{color:var(--a-ink-2);font-size:12px;line-height:1.4}
+#phone .mx-chat-card .mx-chat-offer,#phone .mx-chat-card .mx-chat-closed{padding:3px 7px;border-radius:8px;background:var(--a-indigo-100);color:var(--a-indigo);font-size:11px;font-weight:650;line-height:1.35}
+#phone .mx-chat-card .mx-chat-closed{background:var(--a-gray-100);color:var(--a-ink-2)}
+#phone .mx-chat-card .mx-chat-card-action{display:flex;justify-content:space-between;align-items:center;gap:8px;min-height:44px;padding:8px 12px;border-top:1px solid var(--a-line);color:var(--a-indigo);font:700 13px Inter,sans-serif}
+.mx-chat-card-action .ico{width:16px;height:16px}
+.mx-chat-card:active .mx-chat-card-action{background:var(--a-indigo-100)}
+.mx-chat-card:focus-visible{outline-offset:-2px}
 .mx-rve{display:grid; justify-items:center; gap:4px; padding:32px 16px; text-align:center} .mx-rve b{color:#1E1050} .mx-rve span{color:#6E6688; font-size:14px}
-.mx-seg{display:grid; grid-template-columns:1fr 1fr; gap:6px; padding:4px; border-radius:16px; background:#F4EFFF}
-.mx-seg button{height:42px; border:0; border-radius:12px; background:none; font:700 14px Inter, sans-serif; color:#6E6688} .mx-seg button[aria-selected="true"]{background:linear-gradient(100deg,#9A6BBF,#3D1C96); color:#fff}
-.mx-crown{display:grid; justify-items:center; gap:3px; margin:30px 0 14px; padding:56px 16px 16px; border-radius:20px; background:linear-gradient(180deg,#FFF3D1,#FFE9B0); text-align:center; position:relative}
-.mx-avb{position:absolute; top:-26px; left:50%; transform:translateX(-50%)} .mx-avb img{width:76px; height:76px; border-radius:50%; object-fit:cover; border:4px solid #F5B82E; display:block} .mx-avb i{position:absolute; top:-20px; left:50%; transform:translateX(-50%); width:32px; height:32px}
+.mxb .mx-pad{padding-top:8px}
+.mx-seg{display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:4px; padding:4px; border-radius:16px; background:#F4EFFF}
+.mx-seg button{min-height:44px; padding:6px 8px; border:0; border-radius:12px; background:none; font:700 14px Inter, sans-serif; color:#6E6688} .mx-seg button[aria-selected="true"]{background:linear-gradient(100deg,#9A6BBF,#3D1C96); color:#fff}
+.mx-seg button:focus-visible{outline-offset:-2px}
+.mx-crown{display:grid; justify-items:center; gap:4px; margin:16px 0; padding:12px 16px 16px; border-radius:20px; background:linear-gradient(180deg,#FFF3D1,#FFE9B0); text-align:center}
+.mx-avb{position:relative; display:block; padding-top:16px; margin-bottom:4px} .mx-avb img{width:72px; height:72px; border-radius:50%; object-fit:cover; border:3px solid #F5B82E; display:block} .mx-avb i{position:absolute; top:0; left:50%; transform:translateX(-50%); width:28px; height:28px}
 .mx-crown b{font:800 20px Inter, sans-serif; color:#7A2E00} .mx-crown span{font:700 13.5px Inter, sans-serif; color:#7A5200} .mx-crown small{font:500 12.5px/1.4 Inter, sans-serif; color:#8F6A1E; max-width:260px}
 .mx-tbl{border:1.5px solid #ECE7F7; border-radius:16px; overflow:hidden}
-.mx-th, .mx-tr{display:grid; grid-template-columns:30px minmax(0,1fr) auto; align-items:center; gap:10px; padding:10px 14px}
-.mx-th{font:700 11.5px Inter, sans-serif; letter-spacing:.06em; text-transform:uppercase; color:#6E6688; background:#FAF8FF} .mx-th span:last-child{text-align:right}
+.mx-th, .mx-tr{display:grid; grid-template-columns:24px minmax(0,1fr) 76px; align-items:center; gap:8px; padding:10px 14px}
+.mx-th{font:700 11.5px Inter, sans-serif; letter-spacing:.06em; text-transform:uppercase; color:#6E6688; background:#FAF8FF} .mx-th span:last-child,.mx-tr strong{text-align:right}
 .mx-tr{border-top:1px solid #ECE7F7} .mx-tr em{font:700 14px Inter, sans-serif; font-style:normal; color:#6E6688} .mx-tr.me{background:#F4EFFF} .mx-tr.me em{color:#5E35B8}
 .mx-tr > span{display:flex; align-items:center; gap:10px; min-width:0} .mx-tr img{width:40px; height:40px; border-radius:50%; object-fit:cover; flex:none}
 .mx-tr > span > span{display:grid; min-width:0} .mx-tr b{display:flex; align-items:center; gap:4px; font:700 14.5px Inter, sans-serif; color:#1E1050} .mx-tr b i{width:14px; height:14px} .mx-tr small{font:500 12.5px Inter, sans-serif; color:#6E6688}
-.mx-tr strong{font:800 17px Inter, sans-serif; color:#1E1050}
+.mx-tr strong{font:800 17px Inter, sans-serif; color:#1E1050;font-variant-numeric:tabular-nums}
+@media (max-width:360px){.mx-th,.mx-tr{grid-template-columns:18px minmax(0,1fr) 72px;padding-inline:12px}.mx-tr > span{gap:8px}}
 .mx-fine{margin:14px 0 0; text-align:center; font:500 12.5px/1.4 Inter, sans-serif; color:#6E6688}
 .screen.mxd{background:linear-gradient(180deg,#F6F0FF 0%,#fff 55%)}
 .mx-dtop{display:flex; justify-content:space-between; padding:0 8px}

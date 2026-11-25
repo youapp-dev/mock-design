@@ -68,6 +68,16 @@
     }
     status();
   }));
+  const merchantLoadInput = document.getElementById('merchantLoadSeconds');
+  const syncMerchantLoad = () => {
+    if (merchantLoadInput && ready('a30')) merchantLoadInput.value = ctxOf('a30').merchantLoadSeconds ?? 1;
+  };
+  merchantLoadInput?.addEventListener('input', () => {
+    if (ready('a30') && merchantLoadInput.value !== '' && merchantLoadInput.validity.valid) {
+      win('a30').__set('merchantLoadSeconds', merchantLoadInput.valueAsNumber);
+    }
+  });
+  merchantLoadInput?.addEventListener('blur', syncMerchantLoad);
   document.getElementById('openScen').addEventListener('click', () => { closeP(); try { win(active).__panel(); } catch(e){} });
   document.getElementById('resetAll').addEventListener('click', () => { try { localStorage.removeItem('w2scen'); localStorage.removeItem('ya-proto-scen'); localStorage.removeItem('youapp-artifact-benchmark'); localStorage.removeItem(YouAppLuckyDraw.storageKey); } catch(e){} location.reload(); });
   const panel = document.getElementById('panel'), scrim = document.getElementById('scrim');
@@ -110,6 +120,7 @@
     if (started || loaded.size !== Object.keys(F).length) return;
     started = true;
     document.getElementById('loading').remove();
+    syncMerchantLoad();
     status();
     if (launchJump) jump(launchJump);
   }

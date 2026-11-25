@@ -10,4 +10,5 @@ YouApp's prototype helps the team evaluate ideas from leadership, clients, and s
 - Write and maintain all Markdown files in English, including specs, PRDs, templates, and notes.
 - Honor the work phase. A planning request produces a plan. An implementation request follows the approved scope and includes verification through the normal entry point.
 - For a UI review, compare the running prototype against the supplied reference at the same viewport and scenario. Fix unintended layout differences and verify interactions first. Then evaluate improvements and document intentional changes from the reference.
+- Treat an attached UI screenshot as a request to inspect or update the interface. Apply UI/UX Pro Max, Taste Skill, and any other frontend skills relevant to the task. Verify padding, alignment, and responsive spacing in the running prototype.
 - Report exactly what was exercised and on which environment. Prototype interaction checks, simulated behavior, and native build results are distinct.

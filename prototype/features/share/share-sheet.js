@@ -23,7 +23,9 @@
   const TARGETS = [['whatsapp','WhatsApp'],['telegram','Telegram'],['copy','Copy link'],['instagram','Instagram'],['x','X'],['more','More'],['facebook','Facebook'],['sms','SMS'],['email','Email'],['wechat','Wechat'],['threads','Threads'],['messenger','Messenger'],['discord','Discord']];
   const CONTACTS = [['Aaron Lim','ca5'],['Clarissa','ca3'],['Cherie Tan','ca2'],['Justin Ng','ca4'],['Daniel Ed','ca1'],['Lara','ca2'],['Fionna','ca4']];
   const ST = () => S.sh31 || (S.sh31 = {sel:[], q:'', search:false, what:'service'});
-  const open31 = what => { S.sh31 = {sel:[], q:'', search:false, what}; openSheet('share31'); };
+  const open31 = (what, merchantId) => { S.sh31 = {sel:[], q:'', search:false, what, merchantId}; openSheet('share31'); };
+  const shareContacts = () => ST().what === 'place'
+    ? CONTACTS.filter(([name]) => !C6().blocked.some(person => person.name === name)) : CONTACTS;
 
   const css = document.createElement('style');
   css.textContent = `
@@ -84,7 +86,7 @@
 
   function searchResults() {
     const query = ST().q.trim().toLowerCase();
-    const list = query ? CONTACTS.filter(([name]) => name.toLowerCase().includes(query)) : [];
+    const list = query ? shareContacts().filter(([name]) => name.toLowerCase().includes(query)) : [];
     if (list.length) return {status:`${list.length} ${list.length === 1 ? 'person found' : 'people found'}`, html:list.map(person => personButton(person, true)).join('')};
     const title = query ? 'No people found' : 'Find someone to share with';
     const detail = query ? 'Try a different name or check the spelling.' : 'Start typing a name to find a friend on YouApp.';
@@ -100,7 +102,7 @@
       : `<div class="sh31-top"><button type="button" class="sh31-q" data-act="sh31Search">${ic('search')}<span>Search people</span></button></div>`;
     const body = expanded
       ? `<div class="sh31-status" role="status">${results.status}</div><div class="sh31-results" role="group" aria-label="Search results">${results.html}</div>`
-      : `<div class="sh31-row" role="group" aria-label="People">${CONTACTS.map(person => personButton(person, false)).join('')}</div>
+      : `<div class="sh31-row" role="group" aria-label="People">${shareContacts().map(person => personButton(person, false)).join('')}</div>
         <div class="sh31-row" role="group" aria-label="Share options">${TARGETS.map(([key, label]) => `<button type="button" class="sh31-t" data-act="sh31To" data-k="${key}">${ICON[key]}<span>${label}</span></button>`).join('')}</div>`;
     const send = st.sel.length ? `<div class="sh31-send">${btn(st.sel.length > 1 ? `Send to ${st.sel.length} people` : `Send to ${esc(st.sel[0])}`, 'sh31Send')}</div>` : '';
     return `<div class="scrim ${S.sheetAnim ? 'anim' : ''}" data-act="closeSheet2"></div><div class="sheet sh31${expanded ? ' is-search' : ''}${S.sheetAnim ? ' anim' : ''}" role="dialog" aria-modal="true" aria-label="${expanded ? 'Search people' : 'Share'}">${expanded ? statusBar() : '<div class="grab" aria-hidden="true"></div>'}${top}${body}${send}</div>`;
@@ -114,7 +116,7 @@
   const _share = A.share;
   A.share = el => { const k = el && el.dataset && KIND[el.dataset.kind]; if (k && !isGuest()) { open31(k); return; } return _share(el); };
   const _mx = A.mxShare;
-  if (_mx) A.mxShare = el => { if (isGuest()) return _mx(el); open31('place'); };
+  if (_mx) A.mxShare = el => { if (isGuest()) return _mx(el); open31('place', S.mer); };
   const keep = () => { S.sheetAnim = false; render(); };
   Object.assign(A, {
     sh31Search: () => {
@@ -148,7 +150,16 @@
       }
       const name = (TARGETS.find(t => t[0] === k) || [])[1];
       S.sheet = null; render(); toast(k === 'more' ? 'Opens the phone’s share options.' : `Opens ${name} to share this ${ST().what}.`); },
-    sh31Send: () => { const st = ST(); const n = st.sel.length; S.sheet = null; render(); toast(n > 1 ? `Sent to ${n} people.` : `Sent to ${st.sel[0]}.`); },
+    sh31Send: () => {
+      const st = ST();
+      if (!st.sel.length) return;
+      if (st.what === 'place') {
+        const people = shareContacts();
+        MX.shareInChat(st.merchantId, st.sel.map(name => people.find(person => person[0] === name)).filter(Boolean));
+        return;
+      }
+      S.sheet = null; render(); toast(st.sel.length > 1 ? `Sent to ${st.sel.length} people.` : `Sent to ${st.sel[0]}.`);
+    },
   });
   document.addEventListener('input', event => {
     if (!event.target.matches('[data-in="sh31Q"]')) return;

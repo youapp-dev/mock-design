@@ -3667,10 +3667,11 @@ function msgHTML(m, c, idx){
   if (m.del) body = `<em class="delm">${ic('block')}This message was deleted</em>`;
   else if (m.t==='voice') { const p = pl ? S.vplay.p : 0; body = `<span class="vn"><button class="vplay" data-act="vPlay" data-id="${m.id}" aria-label="${pl&&!S.vplay.paused?'Pause':'Play'} voice message">${ic(pl&&!S.vplay.paused?'pause':'play')}</button><span class="wave">${Array.from({length:26},(_,i)=>`<i class="${i/26<p?'on':''}" style="height:${6+((i*37)%13)}px"></i>`).join('')}</span></span><span class="vmeta">${fmtDur(pl?Math.floor(p*m.dur):m.dur)}</span>`; }
   else if (m.t==='img' || m.t==='video') body = `<span class="mimg">${img(m.img,'Photo')}${m.t==='video'?`<span class="vbadge">${ic('play')}0:12</span>`:''}${m.st==='up'?`<span class="upov"><span class="spin"></span></span>`:''}</span>${m.cap?`<span class="mcap">${esc(m.cap)}</span>`:''}`;
+  else if (m.t==='merchant') body = window.MX.renderChatShare(m.merchant);
   else body = esc(m.text);
   const quote = m.reply && !m.del ? `<span class="rq"><b>${esc(m.reply.who)}</b>${m.reply.prev}</span>` : '';
   const tick = m.me ? (m.st==='up' ? ic('clock') : m.st==='fail' ? '' : '✓✓') : '';
-  return `<div class="bub ${m.me?'me':''} ${sel?'sel':''} ${m.t==='img'||m.t==='video'?'media':''}" data-act="mSel" data-id="${m.id}">${quote}${body}<span class="bmeta">${c.pin===m.id?ic('pinm'):''}${m.at} ${tick}</span></div>
+  return `<div class="bub ${m.me?'me':''} ${sel?'sel':''} ${m.t==='img'||m.t==='video'?'media':''}${m.t==='merchant'&&!m.del?' mx-chat-bubble':''}" data-act="mSel" data-id="${m.id}">${quote}${body}<span class="bmeta">${c.pin===m.id?ic('pinm'):''}${m.at} ${tick}</span></div>
     ${m.st==='fail'?`<button class="mretry" data-act="mRetry" data-id="${m.id}">${ic('alert')}Not sent. Tap to retry</button>`:''}`;
 }
 function chatHTML(c, o){
