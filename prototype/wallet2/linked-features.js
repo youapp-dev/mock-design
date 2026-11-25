@@ -336,7 +336,7 @@ V.xsDone = () => { const x = xsInit(); const p = xsTo(); const a = +x.amt;
     ${x.note?`<div class="kv"><span>Note</span><b>${esc(x.note)}</b></div>`:''}</div>
     ${p.ext?'':`<p class="t-caption subtle" style="margin:0; text-align:center">${esc(p.n.split(' ')[0])} gets a notification that the MYRT has landed.</p>`}
   </div></div>
-  <div class="w2foot">${btn('Done','xsDoneGo')}${btn('Share this moment','xsShare',{kind:'btn-secondary'})}</div></div>`; };
+  <div class="w2foot">${btn('Done','xsDoneGo')}</div></div>`; };
 V.xsFail = () => { const x = xsInit(); const p = xsTo();
   return `<div class="screen bz">${statusBar()}${topBar('Send')}
   <div class="scroll"><div class="success"><span class="big err">${ic('xcircle')}</span><b class="t-headline">Transfer didn’t go through</b>
@@ -455,7 +455,7 @@ Object.assign(META, {
   xsAmt:{name:'Send MYRT · Amount', ph:1, rules:['Recipient card with short address and Change.','First-time recipient warning. External addresses always count as first time.','Keypad amount in MYRT, Fees as Scan and Pay: tier payment fee (e.g. Free 2.00%, RM1.50 minimum) plus gas. Max = balance minus fees. Min MYRT 1.00.','No tier limit on transfers for now.','Optional note, kept in YouApp only (not on-chain).']},
   xsPin:{name:'Send MYRT · PIN', ph:1, rules:['Every on-chain transfer needs the PIN, whatever the amount.']},
   xsProc:{name:'Send MYRT · On-chain progress', ph:1, rules:['Signed → Submitted (tx hash) → Confirming n of 12 → Sent.','User can leave; a notification arrives when it lands.','Scenario: Transfer result = Network busy holds at 3 of 12 with a busy notice; Failed ends after submit.']},
-  xsDone:{name:'Send MYRT · Sent', ph:1, rules:['Amount, recipient, payment fee, gas fee, total, tx hash (Etherscan), network, reference, date, note. No balance shown.','Share this moment opens the share flow with the transfer card.','Receiver gets a push: “Elsa sent you MYRT 50.00”.']},
+  xsDone:{name:'Send MYRT · Sent', ph:1, rules:['Amount, recipient, payment fee, gas fee, total, tx hash (Etherscan), network, reference, date, note. No balance shown.','No Share this moment on this screen: Done and View details only.','Receiver gets a push: “Elsa sent you MYRT 50.00”.']},
   xsFail:{name:'Send MYRT · Failed', ph:1, rules:['MYRT and the payment fee return to the wallet. Gas is used by the network and not refunded, and the screen says so.']},
   xsRecv:{name:'Receive MYRT', ph:1, rules:['QR with avatar, name, @handle. Full address in groups of 4 with Copy.','YouApp users scan it in Scan → it opens Send MYRT, not Pay.','Warning: from other wallets, only MYRT on Ethereum (ERC-20).']},
 });
