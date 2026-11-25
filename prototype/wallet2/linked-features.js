@@ -263,7 +263,7 @@ V.xsTo = () => {
     <div class="scroll"><div class="xs-recipient-content">
       <section class="xs-recipient-entry" aria-labelledby="xsRecipientTitle">
         <h1 id="xsRecipientTitle"><label for="xsQ">Who are you sending to?</label></h1>
-        <div class="xs-recipient-field">${ic('search')}<input id="xsQ" type="search" data-in="xsQ" value="${esc(draft.q)}" placeholder="Name, @handle, phone or address" autocomplete="off" spellcheck="false">
+        <div class="xs-recipient-field">${ic('search')}<input id="xsQ" type="search" data-in="xsQ" value="${esc(draft.q)}" placeholder="Crypto wallet address" autocomplete="off" spellcheck="false">
           <button type="button" class="xs-recipient-clear" data-act="xsClear" aria-label="Clear search"${draft.q ? '' : ' hidden'}>${ic('close')}</button></div>
         <div class="xs-recipient-tools">
           <button type="button" data-act="xsScan">${ic('scan')}Scan QR</button>
