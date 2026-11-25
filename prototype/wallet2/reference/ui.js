@@ -613,6 +613,9 @@
     backButton(frame);
     click(frame, '.top .r', 'scanFlash', {}, 'Toggle flash');
     $(frame, '.top .r').setAttribute('aria-pressed', Boolean(S.scanFlash));
+    /* Top up from the camera (option 4: round wallet icon next to the flash), for when the balance is too low to pay */
+    $(frame, '.top .r').insertAdjacentHTML('beforebegin', `<span class="wr-scan-tu">${ic('xsWallet')}</span>`);
+    click(frame, '.top .wr-scan-tu', 'walletReferenceTopUp', {}, 'Top up');
     click(frame, '.frame', 'sheet', {s:'scanSim'}, 'Scan a sample DuitNow QR');
     click(frame, '.sbtm .sb1', 'sheet', {s:'gallery'});
     const stack = $(frame, '.sbtm .sb2');

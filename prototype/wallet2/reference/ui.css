@@ -438,3 +438,10 @@
   .wallet-reference .acts > div > i { width: 34px; height: 34px; }
   .wallet-reference .wr .wt { flex-shrink: 0; }
 }
+
+/* Scan to pay: Top up icon button beside the flash (25 Nov, option 4). Left slot widened so the title stays centred. */
+.wallet-reference .top.w .wr-scan-tu{flex:none; display:grid; place-items:center; width:40px; height:40px; margin-right:8px; border-radius:50%; background:rgba(160,124,232,.45); color:#fff; cursor:pointer; -webkit-backdrop-filter:blur(8px); backdrop-filter:blur(8px)}
+.wallet-reference .top.w .wr-scan-tu .ico, .wallet-reference .top.w .wr-scan-tu svg{width:20px; height:20px}
+.wallet-reference .top.w .wr-scan-tu:active{background:rgba(160,124,232,.65)}
+.wallet-reference .top.w .wr-scan-tu:focus-visible{outline:2px solid #fff; outline-offset:2px}
+.wallet-reference .top.w:has(.wr-scan-tu) > .tb:first-child{width:80px}
