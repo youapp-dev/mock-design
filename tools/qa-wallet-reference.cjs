@@ -320,7 +320,7 @@ let ws;
   for (const theme of ['raya', 'deepavali', 'birthday', 'youapp', 'red']) {
     await appAct('apTheme', `[data-v="${theme}"]`);
     await until(() => app(`document.querySelector('.rp20-preview .rp20-packet')?.naturalWidth > 0`), `${theme} envelope artwork`);
-    assert.ok(await app(`document.querySelector('.rp20-preview .rp20-packet').src.endsWith('${theme}-packet.svg')`));
+    assert.ok(await app(`document.querySelector('.rp20-preview .rp20-packet').src.split('?')[0].endsWith('${theme}-packet.svg')`));
     assert.equal(await app(`document.querySelector('[data-act="apTheme"][aria-pressed="true"]').dataset.v`), theme);
     const colors = await app(`(() => {
       const style = selector => getComputedStyle(document.querySelector(selector));
