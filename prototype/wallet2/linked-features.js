@@ -184,7 +184,8 @@ const xsErr = () => { const a = +(xsInit().amt||0); if (!a) return '';
   if (xsFees(a).total > xsFromBal()) return `Not enough ${xsTokSym()}. With fees this needs ${xsMoney(xsFees(a).total)}.`; return ''; };
 const xsAv = (p, cls='') => p.ext ? `<span class="xs-avx ${cls}">${ic('xsWallet')}</span>` : `<span class="xs-av ${cls}">${img(p.av,p.n)}</span>`;
 const xsName = p => `${esc(p.n)}${p.v?`<span class="vbdg" aria-label="Verified">${ic('verify')}</span>`:''}`;
-const xsMoney = v => xsTokSym()+' '+(+v).toLocaleString('en-MY',{minimumFractionDigits:2, maximumFractionDigits:2});
+const xsAmount = v => (+v).toLocaleString('en-MY', {minimumFractionDigits:2, maximumFractionDigits:2});
+const xsMoney = v => xsTokSym() + ' ' + xsAmount(v);
 
 async function xsPasteAddress(field, inputId) {
   const draft = xsInit();
@@ -228,7 +229,7 @@ V.xsTo = () => { const x = xsInit(); const q = x.q.trim(); const ql = q.toLowerC
 V.xsAmt = () => { const x = xsInit(); const p = xsTo(); const a = x.amt||''; const err = xsErr(); const ok = +a>0 && !err;
   const scanned = x.src==='scan' ? `<div class="xs-scan">${ic('scan')}<span>${p.ext?'Wallet address QR scanned.':'YouApp QR scanned.'} Check the recipient details before continuing.</span></div>` : '';
   return `<div class="screen bz xs-amtscr">${statusBar()}${topBar('Send')}
-  <div class="scroll"><div class="pad16 stack" style="gap:16px; padding-top:8px; padding-bottom:20px">
+  <div class="scroll"><div class="pad16 stack" style="gap:12px; padding-top:8px; padding-bottom:12px">
     ${scanned}
     <button class="xs-to" data-act="xsChange">${xsAv(p)}<span class="xs-rt"><b>${p.ext?'External wallet':xsName(p)}</b><small class="mono">${p.ext?'':esc(p.h)+' · '}${xsShort(p.addr)}</small></span><em>Change</em></button>
     ${xsFirst() ? `<div class="xs-note warn">${ic('info')}<span>${p.ext?'First time sending to this address. Check every character before you send.':`First time sending to ${esc(p.n.split(' ')[0])}. Make sure it’s the right person.`}</span></div>`:''}
@@ -258,11 +259,17 @@ SHEETS.xsReview = () => {
   const recipientName = recipient.ext ? 'External wallet' : esc(recipient.n);
   const submit = sender.ext ? `Confirm in ${esc(sender.app)}` : `Send ${xsMoney(amount)}`;
   return `<div class="grab"></div><div class="stack xs-confirm-review">
-    <div class="xs-rvh"><h2 class="t-title">Review transfer</h2><b>${xsMoney(amount)}</b><span>To ${recipientName}</span></div>
+    <header class="xs-review-heading">
+      <h2 id="xs-review-title">Review transfer</h2>
+      <button type="button" class="xs-review-icon" data-act="closeSheet" aria-label="Close transfer review">${ic('close')}</button>
+    </header>
+    <div class="xs-review-summary">
+      <div class="xs-review-amount"><small>${xsTokSym()}</small> <strong>${xsAmount(amount)}</strong></div>
+      <p>To <b>${recipientName}</b></p>
+    </div>
     <div class="xs-review-address">
-      <span>Recipient address · Ethereum</span>
-      <code>${esc(recipient.addr)}</code>
-      <button class="link" data-act="xsCopy" data-v="${esc(recipient.addr)}">Copy address</button>
+      <div><span>Recipient address</span><code>${esc(recipient.addr)}</code></div>
+      <button type="button" class="xs-review-icon" data-act="xsCopy" data-v="${esc(recipient.addr)}" aria-label="Copy address">${ic('copy')}</button>
     </div>
     <div class="kvbox sp-box xs-kv">
       <div class="kv"><span>From</span><b>${esc(sender.name)}</b></div>
@@ -276,7 +283,6 @@ SHEETS.xsReview = () => {
     ${recipient.ext ? `<button class="xs-ack ${draft.ack ? 'on' : ''}" data-act="xsAck" role="checkbox" aria-checked="${draft.ack}"><i>${ic('check')}</i><span>I checked that this address accepts ${xsTokSym()} on Ethereum.</span></button>`
       : `<p class="xs-irr">${ic('lock')}Transfers can’t be reversed after sending.</p>`}
     ${btn(submit, sender.ext ? 'mwSendExt' : 'xsConfirm', {disabled:!xsReviewReady()})}
-    ${btn('Edit transfer', 'closeSheet', {kind:'btn-tertiary'})}
   </div>`;
 };
 

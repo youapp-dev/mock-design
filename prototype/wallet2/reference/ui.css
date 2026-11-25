@@ -202,6 +202,23 @@
 .wallet-reference .wr-wallet-address button:active { background: rgba(255,255,255,.15); }
 .wallet-reference .wr-wallet-address button:focus-visible { outline-color: #fff; }
 .wallet-reference .wr-wallet-address .ico { width: 16px; height: 16px; }
+.wallet-reference .wr-wallet-actions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; margin-top: 14px; }
+.wallet-reference .wr-wallet-actions button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  min-height: 44px;
+  padding: 8px;
+  border: 0;
+  border-radius: 999px;
+  background: rgb(255 255 255 / 18%);
+  color: #fff;
+  font: 600 15px/1.2 Inter, sans-serif;
+}
+.wallet-reference .wr-wallet-actions .ico { width: 18px; height: 18px; flex: none; }
+.wallet-reference .wr-wallet-actions button:active { background: rgb(255 255 255 / 28%); }
+.wallet-reference .wr-wallet-actions button:focus-visible { outline: 2px solid #fff; outline-offset: 2px; }
 .wallet-reference .wr-wallet-detail .wr-asset-wallet header { justify-content: space-between; }
 .wallet-reference .wr-wallet-detail .wr-asset-wallet header small { color: var(--mut); font: 600 12px Inter, sans-serif; }
 .wallet-reference .wr-asset-pages {
@@ -373,7 +390,25 @@
   margin-top: auto;
   text-align: center;
 }
-.wallet-reference .wr-plan-car .pq { margin-bottom: 16px; line-height: 1.4; }
+.wallet-reference .wr-plan-car .pq {
+  display: grid;
+  grid-template-columns: 20px minmax(0, 1fr);
+  align-items: start;
+  gap: 10px;
+  margin: 10px 0 16px;
+  padding-top: 10px;
+  border-top: 1px solid currentColor;
+  border-top-color: color-mix(in srgb, currentColor 19%, transparent);
+  line-height: 1.35;
+  opacity: 1;
+}
+.wallet-reference .wr-plan-car .pq strong { display: block; margin-bottom: 2px; font-size: 12px; }
+.wallet-reference .wr-plan-id-icon {
+  width: 20px;
+  height: 20px;
+  background: currentColor;
+  mask: url('../../../design-system/assets/Icons/id-card.svg') center / contain no-repeat;
+}
 .wallet-reference .wr-plan-car .pb.off { color: var(--mut); opacity: 1; }
 .wallet-reference .wr-plan-dots { margin: 0; gap: 0; }
 .wallet-reference .wr-plan-dots > i {

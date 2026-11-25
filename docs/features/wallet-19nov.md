@@ -36,6 +36,8 @@ The profile name, transactions, currencies, balances, and referral statistics re
 
 **Choose your plan** keeps the reference illustrations, tabs, and benefit order. Cards adapt to the screen width so all four benefits, requirements, and buttons remain readable. The **Current** label reflects the account tier. Annual VIP displays RM120 to match prototype checkout.
 
+Each plan card places an ID icon and a **Required to join** row above the primary action. Free and VIP show **ID check**. SVIP shows **ID check + proof of income**. Windows Chrome checks confirmed that the icon loads and the requirement row and button fit and align at 390 px in 3.2.0 and 3.3.0 and at 320 px in 3.3.0. The VIP billing sheet opened from the plan card.
+
 Wallet providers, quotes, top-ups, and payments use demo data. The stablecoin QR code is labeled as a demo. **Withdraw to bank** and **Back up wallet** open information about their flows. Preference changes apply within the prototype session. Native permissions and gateway connectivity require iOS and Android QA.
 
 **Chrome QA** covers entry through YouPage, hiding balances, Booking Balance, single and multiple wallets, MetaMask and OKX connections, open-amount and fixed-amount QR codes, internal and external debits, quote refresh, pending payments and retries, card top-ups, stablecoin selection, opening a receipt from Settings, VIP checkout, Rewards and referral filters, preference changes, and the waitlist. At 375 px, QA checked access to the referral QR code, My money, currency selection, and the top-up keypad. Prototype controls sit outside the Wallet screen on mobile.
@@ -78,6 +80,8 @@ The first batch made Scan to Pay easier to reach and aligned amounts across Pay 
 ## Send flow
 
 Both versions keep crypto Send and Receive. Send starts with the recipient, then shows the source wallet, token, Ethereum network and available amount. Review shows the full address, fees and the token total. External addresses require acknowledgement. A connected wallet uses provider approval and shows how to recover when ETH is insufficient. YouApp Wallet uses its PIN.
+
+Each crypto wallet detail shows **Send** and **Receive** side by side on the balance card. Send preselects the open wallet as the source. Receive opens that wallet's address QR. Windows Chrome verified matching sources and addresses, equal button widths, and Back navigation for every configured demo wallet at 390 px in both versions and at 320 px in 3.3.0.
 
 Reference patterns were checked against [MetaMask Mobile](https://support.metamask.io/managing-my-tokens/moving-your-tokens/how-to-send-tokens-from-your-metamask-wallet/) for account, token, network and fee review, [Phantom](https://help.phantom.com/articles/5530158379539) for recipient and QR selection, and [Trust Wallet](https://trustwallet.com/blog/academy/como-enviar-e-receber-criptomoedas-na-trust-wallet) for the address, network and amount check.
 

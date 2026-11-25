@@ -1,10 +1,10 @@
 /* ---------- Tier upgrade flow (Figma 3.1 · node 4:1126) ---------- */
 const PLAN_ORDER = ['free','vip','svip'];
-const LEAF = `<svg viewBox="0 0 64 64" fill="none" stroke="url(#lfg)" stroke-width="4.2" stroke-linecap="round" stroke-linejoin="round"><defs><linearGradient id="lfg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#5a2bb0"/><stop offset="1" stop-color="#38168e"/></linearGradient></defs><circle cx="32" cy="32" r="27"/><path d="M32 57V33"/><path d="M32 44c-10 0-17-8-17-18 10 0 17 8 17 18z"/><path d="M32 36c0-11 8-19 19-19 0 11-8 19-19 19z"/></svg>`;
+const WALLET_BRAND_MARK = `<i class="wallet-brand-mark" aria-hidden="true"></i>`;
 const DOC = `<svg viewBox="0 0 48 48" fill="none" stroke="url(#dcg)" stroke-width="3.4" stroke-linecap="round" stroke-linejoin="round"><defs><linearGradient id="dcg" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#996cb7"/><stop offset="1" stop-color="#38168e"/></linearGradient></defs><path d="M13 6h15l11 11v19a6 6 0 0 1-6 6H13a6 6 0 0 1-6-6V12a6 6 0 0 1 6-6z"/><path d="M28 6v11h11"/><path d="M15 25h11M15 32h7"/></svg>`;
 const badgeIc = k => ic(k==='ok'?'check':k==='warn'?'clock':'close');
 const confetti = `<i class="cf c1"></i><i class="cf c2"></i><i class="cf c3"></i><i class="cf c4"></i><i class="cf c5"></i><i class="cf c6"></i><i class="sp s1">✦</i><i class="sp s2">✦</i><i class="sp s3">✦</i>`;
-const cele = () => `<div class="cele" aria-hidden="true">${confetti}<span class="cele-ring"><span class="cele-art">${LEAF}</span><span class="cele-badge ok">${badgeIc('ok')}</span></span></div>`;
+const cele = () => `<div class="cele" aria-hidden="true">${confetti}<span class="cele-ring"><span class="cele-art">${WALLET_BRAND_MARK}</span><span class="cele-badge ok">${badgeIc('ok')}</span></span></div>`;
 const docIllo = k => `<div class="cele doc" aria-hidden="true"><span class="cele-ring"><span class="cele-art">${DOC}</span><span class="cele-badge ${k}">${badgeIc(k)}</span></span></div>`;
 
 V.subscribe = () => { const s = S.sub; const cur = scen.tier;

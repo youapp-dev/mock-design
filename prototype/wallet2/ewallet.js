@@ -102,9 +102,6 @@
   .ew-assume{font-size:12px; color:#8A6D00; background:#FFF6D6; border-radius:12px; padding:8px 10px; margin:0}
   .wr-quick-actions + .wr-quick-actions{margin-top:10px}
   .ew-lst .grp{text-transform:none}
-  .ew-recv{display:inline-flex; align-items:center; justify-content:center; gap:8px; width:100%; min-height:44px; margin-top:14px; border:0; border-radius:999px; background:rgba(255,255,255,.18); color:#fff; font:600 15px/1 Inter,sans-serif; cursor:pointer}
-  .ew-recv svg{width:18px; height:18px}
-  .ew-recv:focus-visible{outline:2px solid #fff; outline-offset:2px}
   `;
   document.head.appendChild(css);
 
@@ -122,12 +119,6 @@
         <button type="button" class="wr-quick-action" data-act="mreload"><span class="wr-quick-icon" aria-hidden="true">${ic('mreload')}</span><span class="wr-quick-copy"><b>Mobile reload</b></span></button></div>` : ''}`);
     }
     return t.innerHTML; };
-
-  /* ---------- wallet detail (crypto wallets): Receive ---------- */
-  const _wd = V.wDetail;
-  V.wDetail = () => { const h = _wd(); const w = wList().find(e => e.id === S.wSel) || wMain(); if (!w) return h;
-    /* Receive sits inside the balance card so the asset list still follows it directly */
-    return h.replace(/(<section class="wr-asset-summary wr-wallet-summary"[\s\S]*?)(<\/section>)/, `$1<button type="button" class="ew-recv" data-act="ewCryptoRecv" data-id="${w.id}">${ic('xsDown')}Receive</button>$2`); };
 
   A.ewCryptoRecv = el => { S.wRecv = el.dataset.id; A.xsRecv(); };
 

@@ -448,6 +448,10 @@
         <span class="wr-asset-estimate">${esc(xsShort(wallet.addr))}</span>
         <button type="button" data-act="xsCopy" data-v="${esc(wallet.addr)}" aria-label="Copy wallet address">${ic('copy')}</button>
       </div>
+      <div class="wr-wallet-actions" role="group" aria-label="Wallet transfers">
+        <button type="button" data-act="xsOpen" data-from-wallet="${esc(wallet.id)}">${ic('xsUp')}Send</button>
+        <button type="button" data-act="ewCryptoRecv" data-id="${esc(wallet.id)}">${ic('xsDown')}Receive</button>
+      </div>
     </section>
     <div class="wr-asset-holdings">
       <section class="wr-wallet-settings" aria-labelledby="wr-wallet-settings">
@@ -1085,6 +1089,8 @@
       if (!tier) return;
       const cta = $(card, '.pb');
       if (!cta) return;
+      const requirements = $(card, '.pq');
+      requirements.innerHTML = `<span class="wr-plan-id-icon" aria-hidden="true"></span><span><strong>Required to join</strong><span>ID check${k === 'svip' ? ' + proof of income' : ''}</span></span>`;
       const badge = $(card, '.pn .tg');
       if (k === current) {
         badge.className = 'tg cur';

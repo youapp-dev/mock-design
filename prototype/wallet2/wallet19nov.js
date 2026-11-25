@@ -31,7 +31,7 @@
     return `<div class="screen">${statusBar()}${youTabs('you')}
       <div class="scroll wp19-content">
         <section class="wp19-balance" aria-label="Wallet balance">
-          <span class="yb-leaf" aria-hidden="true">${LEAF}</span>
+          <span class="yb-leaf" aria-hidden="true">${WALLET_BRAND_MARK}</span>
           <div class="row-between">
             <b>${hasYouApp ? 'YouApp Wallet Balance' : esc(mainWallet.name) + ' · Estimated Balance'}</b>
             <button class="yb-badge" data-act="tierInfo" aria-label="${tier.name} tier benefits">${ic('crown')}${tier.name}</button>
