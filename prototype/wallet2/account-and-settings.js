@@ -76,7 +76,8 @@ V.otp = () => { const v = S.otp||''; const err = S.otpErr; const ok = v.length==
     ${t>0&&!err?`<small class="otp-rs off">Resend Again</small><b class="otp-t" id="otpT">00:${String(t).padStart(2,'0')}</b>`:`<button class="otp-rs" data-act="otpResend">Resend Again</button>`}
     <small class="otp-hint">If you have not received the OTP, try checking your spam/junk folder</small>
     <button class="otp-cancel" data-act="otpEdit">Cancel</button>
-    <small class="otp-demo">Demo: 123456 · new user. 111111 · existing user.</small>
+    <template data-demo-input>Existing user OTP: 111111
+New user OTP: 123456</template>
   </div>
   ${keypad('otk')}</div>`; };
 
@@ -117,7 +118,7 @@ V.obRef = () => { const o = obInit(); const selected = referrerById(o.ref); cons
     <small>@${esc(user.username)} · ${esc(user.city)}</small>${legacy&&legacy.id===user.id?`<small class="ob-ref-legacy">Matched to this username from a referral code</small>`:''}</span>${ic('chev')}</button>`).join('');
   const field = selected
     ? `<div class="ob-ref-field" role="group" aria-label="Selected referrer username"><span class="ob-ref-at">@</span><span class="ob-ref-value">${esc(selected.username)}</span>${locked?'':`<button class="ob-ref-clear" data-act="obRefEdit" aria-label="Clear selected referrer"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M18 6L6 18M6 6l12 12"/></svg></button>`}</div>`
-    : `<label class="ob-ref-field"><span class="ob-ref-at">@</span><input id="obRef" data-in="obRef" value="${esc(query.replace(/^@+/,''))}" placeholder="Enter username" aria-label="Your friend’s YouApp username" autocomplete="off" autocapitalize="none"></label>`;
+    : `<template data-demo-input>Search for @scarlette, or enter the legacy referral code SCAR88.</template><label class="ob-ref-field"><span class="ob-ref-at">@</span><input id="obRef" data-in="obRef" value="${esc(query.replace(/^@+/,''))}" placeholder="Enter username" aria-label="Your friend’s YouApp username" autocomplete="off" autocapitalize="none"></label>`;
   const hero = !query.trim() && !selected ? `<div class="ob-card ob-ref-hero"><img class="ob-card-art" src="../../assets/referral-onboarding-gift.webp" alt="Two friends sharing a gift"><b>Sharing is rewarding!</b><p>Your friend can earn rewards when you start using YouApp.</p></div>` : '';
   const picked = selected ? `<div class="ob-ref-picked"><div class="ob-ref-card">${img(selected.avatar,selected.name,'width:72px;height:72px')}<span class="ob-ref-person"><b>${esc(selected.name)}${selected.verified?`<span class="ob-ref-verified" aria-label="Verified">${ic('check')}</span>`:''}</b><small>@${esc(selected.username)} · ${esc(selected.city)}</small></span><span class="ob-ref-confirmed" aria-label="Selected">${ic('check')}</span></div>
     <p class="ob-ref-note">You’ll be linked to ${esc(selected.name)}. This can’t be changed later.</p>${locked?'':`<button class="ob-ref-change" data-act="obRefEdit">Not them? Change</button>`}</div>` : '';
@@ -330,7 +331,7 @@ const pinScreen = (title, h, p, st) => { const n = (S.p3v||'').length; const err
     <b class="t-headline">${h}</b><p class="t-caption subtle" style="margin:0">${p}</p>
     <div class="pin-dots ${err?'err':''}" style="margin:28px 0 10px">${[0,1,2,3,4,5].map(i=>`<i class="${i<n?'on':''}"></i>`).join('')}</div>
     ${err?`<small class="sp-err">${err}</small>`:''}
-    ${st==='cur'?'<button class="pin-forgot" data-act="pinForgot">Forgot PIN</button>':''}
+    ${st==='cur'?'<template data-demo-input>Use 123456 to continue. Enter 000000 to test a wrong PIN.</template><button class="pin-forgot" data-act="pinForgot">Forgot PIN</button>':''}
   </div></div>
   <div class="w2foot" style="border:0; padding-bottom:6px">${btn('Confirm', n===6?'pinNext':'noop',{disabled:n<6})}</div>
   ${keypad('p3k')}</div>`; };
@@ -343,7 +344,7 @@ V.pinOtp = () => { const v = S.otp||''; const err = S.otpErr;
   <div class="otp-card2"><h2>Reset your PIN</h2><p>We’ve sent a 6-digit OTP to your email<br><b>elsa.japasal@gmail.com</b></p>
     <div class="otp-boxes ${err?'err':''}">${[0,1,2,3,4,5].map(i=>`<span class="${i===v.length&&!err?'cur':''}">${v[i]||''}</span>`).join('')}</div>
     ${err?'<small class="otp-err">Incorrect OTP Code. Please try again!</small>':''}<button class="otp-rs" data-act="toast" data-msg="We’ve sent a new code.">Send email OTP again</button>
-    <small class="otp-hint">If you have not received the OTP, try checking your spam/junk folder</small><small class="otp-demo">Demo: 123456</small></div>
+    <small class="otp-hint">If you have not received the OTP, try checking your spam/junk folder</small><template data-demo-input>Email OTP: 123456</template></div>
   ${keypad('pfk')}</div>`; };
 
 /* ===== Edit profile (Flow Settings 3664:9691) ===== */
@@ -570,7 +571,7 @@ V.kycOtp = () => { const v = S.otp||''; const err = S.otpErr;
   <div class="otp-card2"><h2>OTP Verification</h2><p>We’ve sent a 6-digit OTP to your email<br><b>elsa.japasal@gmail.com</b></p>
     <div class="otp-boxes ${err?'err':''}">${[0,1,2,3,4,5].map(i=>`<span class="${i===v.length&&!err?'cur':''}">${v[i]||''}</span>`).join('')}</div>
     ${err?'<small class="otp-err">Incorrect OTP Code. Please try again!</small>':''}<button class="otp-rs" data-act="toast" data-msg="We’ve sent a new code.">Send email OTP again</button>
-    <small class="otp-hint">If you have not received the OTP, try checking your spam/junk folder</small><small class="otp-demo">Demo: 123456</small></div>
+    <small class="otp-hint">If you have not received the OTP, try checking your spam/junk folder</small><template data-demo-input>Email OTP: 123456</template></div>
   ${keypad('kok')}</div>`; };
 V.kycActive = () => `<div class="screen bz">${statusBar()}${topBar('YouWallet')}
   <div class="scroll"><div class="success" style="padding-top:0">${cele()}<b class="ky-h" style="color:var(--a-ink); font-size:28px">You’re Verified!</b><b class="ky-h" style="margin-top:-6px">Your Wallet is Now Active</b><span class="t-body subtle">Thanks for completing the verification process. Your DuitNow account is live.</span></div>
@@ -817,7 +818,7 @@ function renderPanel(){ const m = META[S.screen] || META.home;
     ${segCtl('Merchant request','mreq',[['none','Not sent'],['pending','In review']],'Become Merchant form (self). Elite-added shops show In review in Registered Merchant after submit.')}
     ${segCtl('Merchant data','mdata',[['has','Has data'],['none','No data']],'Business › Merchant overview with or without sales yet.')}
     ${segCtl('Merchant float','float',[['ok','84%'],['low','16%'],['empty','RM0']])}
-    <div class="later">Demo codes: OTP <code class="k">123456</code> · legacy referral <code class="k">SCAR88</code> · promo <code class="k">KOL-SCAR</code></div></div>
+    </div>
   <div class="pgroup"><h2>Actions</h2><div class="pbtns">
     <button class="pbtn" data-act="startNew">${ic('userplus')}Start as new user</button>
     <button class="pbtn" data-act="startGuest">${ic('compass')}Start as guest</button>

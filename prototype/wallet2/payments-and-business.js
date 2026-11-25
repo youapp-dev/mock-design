@@ -47,7 +47,7 @@ V.pin = () => { const n = (S.pinV||'').length;
     <div class="pin-dots ${S.pinErr?'err':''}">${[0,1,2,3,4,5].map(i=>`<i class="${i<n?'on':''}"></i>`).join('')}</div>
     ${S.pinErr?'<small class="sp-err">Wrong PIN. 4 tries left.</small>':''}
     <button class="link" data-act="pinForgot">Forgot PIN?</button>
-    <small class="subtle">Demo: any 6 digits works. 000000 shows the error.</small></div></div>
+    <template data-demo-input>Use 123456 to continue. Enter 000000 to test a wrong PIN.</template></div></div>
   ${keypad('pk')}</div>`; };
 
 V.processing = () => `<div class="screen">${statusBar()}${topBar('Scan and Pay')}
@@ -72,7 +72,7 @@ V.done = () => { const p = S.pay; const m = MERCH[p.id]; const t = T(); const am
 Object.assign(SHEETS, {
   gallery: () => `<div class="grab"></div><div class="stack" style="gap:10px"><div class="bz-row"><h2 class="t-title" style="margin:0">Recents</h2><button class="link" data-act="closeSheet">Cancel</button></div>
     <div class="sp-gal"><button data-act="galPick" aria-label="QR photo">${ic('qr')}</button>${['image','camera','image','image','image','image','image','image'].map((x,i)=>`<button data-act="galBad" aria-label="Photo ${i+2}" class="g${i%4}">${ic(x)}</button>`).join('')}</div>
-    <small class="subtle">Demo: the first photo has a QR code. Others show the invalid image message.</small></div>`,
+    <template data-demo-input>The first photo contains a QR code. Pick another photo to test the error.</template></div>`,
   badQr: () => `<div class="grab"></div><div class="stack" style="gap:10px; text-align:center; align-items:center"><span class="sp-kyc err">${ic('xcircle')}</span><b class="t-headline">Invalid QR image</b><p class="t-body muted" style="margin:0">This image doesn't contain a valid DuitNow QR code. Please try another image.</p>${btn('Close','closeSheet')}</div>`,
   topPay: () => { const p = S.pay; const amt = +p.amt||0; const total = spFees(amt).total; const short = Math.max(0,total-bal()); const exact = Math.max(20, Math.ceil(short*100)/100);
     const tp = S.tp; const opts = [[exact, `RM${exact.toFixed(2)} exact`], [100,'RM100'], [500,'RM500']];
@@ -826,7 +826,7 @@ V.billInput = () => { const b = S.bill; const B = bl(b.id); const v = b.acct||''
   return `<div class="screen bz">${statusBar()}${topBar(blTitle(B))}
   <div class="scroll"><div class="pad16 stack" style="gap:12px; padding-top:6px">${head}
     ${b.err?`<small class="bl-nf">${b.err}</small>`:''}
-    <small class="subtle">Demo: numbers starting with 000 show “${B.kind==='phone'?'mobile':'account'} number not found”${B.kind==='acct'?', 111 shows “No Bills Found”':''}.</small></div></div>
+    <template data-demo-input>Numbers starting with 000 show “${B.kind==='phone'?'mobile':'account'} number not found”${B.kind==='acct'?', 111 shows “No Bills Found”':''}.</template></div></div>
   <div class="w2foot bl-foot">${btn(b.busy?'Checking…':'Continue', ok&&!b.busy?'blCheck':'noop', {disabled:!ok||b.busy, loading:b.busy})}
     ${B.kind==='acct'?'<p class="t-caption subtle" style="margin:0; text-align:center">Your account number is used only to fetch the latest bill amount and confirm the payee.</p>':''}</div>
   ${keypad('blk')}</div>`; };

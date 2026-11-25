@@ -89,7 +89,7 @@ V.checkout = () => { const c = S.ck; const i = ckInfo(); const sv = c.plan==='sv
       ${i.n>=10?`<button class="ck-yr" data-act="ckYearly">${ic('gift')}<span><b>Going for 12 months?</b><small>Yearly is RM120 and gives you RM20 back to your wallet.</small></span><em>Switch</em></button>`:`<span class="helper neutral">Up to ${VIP_MAX_M} months. For 12 months, pick Yearly.</span>`}
     </section>` : ''}
     <section class="stack" style="gap:8px"><h2 class="sec" style="margin:0">Promo Code</h2>
-      <div class="promorow ${s.promoOk===false?'err':''}"><input id="promoIn" data-in="promo" value="${esc(s.promo)}" placeholder="Enter promo code" autocapitalize="characters" aria-label="Promo code" ${pOn?'readonly':''}>${promoBtn}</div>
+      <div class="promorow ${s.promoOk===false?'err':''}"><input id="promoIn" data-in="promo" value="${esc(s.promo)}" placeholder="Enter promo code" autocapitalize="characters" aria-label="Promo code" ${pOn?'readonly':''}>${promoBtn}</div>${pOn ? '' : '<template data-demo-input>Promo code: KOL-SCAR</template>'}
       ${pOn?`<span class="helper neutral">Your upgrade is credited to KOL Scarlette. The price stays the same.</span>`:s.promoOk===false?`<span class="helper" style="color:var(--a-error)">This code isn't valid. Check it and try again.</span>`:''}
     </section>
     <section class="stack" style="gap:8px"><h2 class="sec" style="margin:0">Payment Method</h2>
@@ -551,8 +551,8 @@ V.refCode = () => { const by = rfRefBy(); const paid = scen.paid==='yes'; const 
       <div class="hint">${ic('lock')}<span>Linked to your account. It can’t be changed.</span></div>`
     : paid ? `<div class="rc-empty"><span class="rc-ic">${ic('lock')}</span><b>Referral codes are closed</b><p>A referral code can only be added before your first payment. Your account has no referrer.</p></div>`
     : `<div><h1 class="t-title" style="margin:0 0 6px">Add a referral code</h1><p class="t-body muted" style="margin:0">Enter the code a friend shared with you. You can add one before your first payment.</p></div>
-      <div class="field ${e?'err':''}"><label for="rcIn">Referral code</label><input id="rcIn" class="input" data-in="rfCode" value="${esc(c)}" placeholder="e.g. SCAR88" autocapitalize="characters" autocomplete="off">
-        ${e?`<span class="err-text">${esc(e)}</span>`:'<span class="helper neutral">Demo: SCAR88 works. Your own code (AC3N9) or CATH3 show errors.</span>'}</div>
+      <div class="field ${e?'err':''}"><label for="rcIn">Referral code</label><input id="rcIn" class="input" data-in="rfCode" value="${esc(c)}" placeholder="Enter referral code" autocapitalize="characters" autocomplete="off">
+        ${e?`<span class="err-text">${esc(e)}</span>`:''}<template data-demo-input>Use SCAR88 or JU4N7 to link a referrer. Enter AC3N9 or CATH3 to test an error.</template></div>
       <div class="hint">${ic('lock')}<span>Once linked, your referrer can’t be changed.</span></div>`;
   return `<div class="screen">${statusBar()}${topBar('Referral code')}<div class="scroll"><div class="pad16 stack" style="gap:16px; padding-top:8px">${body}</div></div>
     ${by||paid ? '' : `<div class="w2foot">${btn('Link referrer', c.trim()?'rfLink':'noop', {disabled:!c.trim()})}</div>`}</div>`; };
@@ -657,8 +657,8 @@ A.shrWd = () => { const w = (S.rfWd||[])[0]; const v = w ? w.v : 0;
 Object.assign(SHEETS, {
   linkRef: () => { const c = (S.rfCode||'').trim().toUpperCase(); const e = S.rfErr;
     return `<div class="grab"></div><div class="stack" style="gap:12px"><h2 class="t-title" style="margin:0">Link Your Referrer</h2><p class="t-body muted" style="margin:0">Enter the code your friend shared with you.</p>
-    <div class="field ${e?'err':''}"><label for="rfIn" style="font-size:14px">Referral code</label><input id="rfIn" class="input" data-in="rfCode" value="${esc(S.rfCode||'')}" placeholder="e.g. JU4N7" autocapitalize="characters" style="text-transform:uppercase">
-      ${e?`<span class="helper">${e}</span>`:'<span class="helper neutral">Try JU4N7 (valid), AC3N9 (your own) or CATH3 (someone you referred).</span>'}</div>
+    <div class="field ${e?'err':''}"><label for="rfIn" style="font-size:14px">Referral code</label><input id="rfIn" class="input" data-in="rfCode" value="${esc(S.rfCode||'')}" placeholder="Enter referral code" autocapitalize="characters" style="text-transform:uppercase">
+      ${e?`<span class="helper">${e}</span>`:''}<template data-demo-input>Use JU4N7 to link a referrer. Enter AC3N9 or CATH3 to test an error.</template></div>
     <div class="hint warn">${ic('lock')}<span>Once linked, your referrer can't be changed.</span></div>
     ${btn('Confirm', c?'rfLink':'noop', {disabled:!c})}${btn('Cancel','closeSheet',{kind:'btn-tertiary'})}</div>`; },
 });

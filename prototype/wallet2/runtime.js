@@ -172,7 +172,7 @@ V.signup = () => { const s = S.su; const tied = s.code.trim().toUpperCase()==='S
       <input id="suEmail" class="input" type="email" inputmode="email" autocomplete="email" value="${esc(s.email)}" data-in="email" placeholder="you@example.com">
       ${s.err==='email'?'<span class="helper">Enter a valid email address.</span>':'<span class="helper neutral">We\'ll send a 6-digit OTP to this email.</span>'}</div>
     <div class="field ${s.err==='code'?'err':''}"><label for="suCode">Referral Code ${s.from==='link'?'<span class="subtle" style="font-weight:400; font-size:13px">(filled from link)</span>':'<span class="subtle" style="font-weight:400; font-size:13px">(optional)</span>'}</label>
-      <input id="suCode" class="input" value="${esc(s.code)}" data-in="code" placeholder="e.g. SCAR88" autocapitalize="characters">
+      <template data-demo-input>Referral code: SCAR88</template><input id="suCode" class="input" value="${esc(s.code)}" data-in="code" placeholder="Enter referral code" autocapitalize="characters">
       ${s.err==='code'?'<span class="helper">We couldn\'t find this code. Check it, or leave it empty.</span>':''}</div>
     ${tied && s.err!=='code' ? `<div class="reftie">${ic('link')}<span><b>Referred by Scarlette.</b> This is saved to your account when you sign up.</span></div>` : ''}
     <div class="divider">or continue with</div>
@@ -187,7 +187,7 @@ V.otp = () => `<div class="screen">${statusBar()}${topBar('Verify Email')}
     <p class="t-body muted" style="margin:0">We've sent a 6-digit OTP to <b style="color:var(--a-ink)">${esc(S.su.email)}</b>. Didn't get it? Try checking your spam/junk folder.</p>
     <label class="sr" for="otpIn" style="position:absolute; left:-9999px">OTP code</label>
     <input id="otpIn" class="input" inputmode="numeric" maxlength="6" value="${esc(S.otp)}" data-in="otp" placeholder="6-digit code" style="text-align:center; letter-spacing:.4em; font-size:24px; height:64px; ${S.otpErr?'border-color:var(--a-error)':''}">
-    ${S.otpErr?'<span class="err-text">Incorrect OTP Code. Please try again!</span>':'<span class="t-caption subtle">Demo code: 123456</span>'}
+    ${S.otpErr?'<span class="err-text">Incorrect OTP Code. Please try again!</span>':''}<template data-demo-input>Email OTP: 123456</template>
     <button class="link" data-act="toast" data-msg="We've sent a new code.">Resend Again</button>
   </div></div><div class="w2foot">${btn('Verify','otpGo')}</div></div>`;
 
@@ -317,7 +317,7 @@ V.scan = () => { if (!kycOk()) return `<div class="screen">${statusBar()}${topBa
   <div class="topbar" style="color:#fff"><button class="iconbtn" style="color:#fff" data-act="back" aria-label="Back">${ic('back')}</button><span class="t-headline" style="flex:1; text-align:center">Pay Like a Local</span><button class="iconbtn" style="color:#fff; margin-right:-8px" data-act="myQr" aria-label="My QR">${ic('qr')}</button></div>
   <div class="camera scroll"><div class="vf"><i></i><i></i><i></i><i></i><span class="line"></span></div>
     <p class="t-body" style="margin:0; text-align:center">Point at any DuitNow QR, merchant or personal</p>
-    <div class="qrpick"><p>Demo: tap a QR to scan it</p>
+    <div class="qrpick"><template data-demo-input>Select a sample QR to simulate scanning it.</template>
     ${Object.values(MERCH).map(m=>`<button class="qrbtn" data-act="scanQr" data-id="${m.id}">${ic(m.kind==='personal'?'person':'store')}<span><b>${m.name}</b><small>${m.sub}</small></span>${m.cbRate&&P()>=4?`<span class="cbtag">${m.cbRate>0?'Cashback':''}</span>`:''}</button>`).join('')}</div>
   </div></div>`; };
 

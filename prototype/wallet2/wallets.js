@@ -70,7 +70,7 @@ V.mwWait = () => { const k = S.mwWait||{}; const app = k.app||'MetaMask';
     <span class="mw-bd ext xl">${app[0]}</span><h1 class="t-title" style="margin:0">Waiting for ${esc(app)}…</h1>
     <p class="t-body muted" style="margin:0">${t} in ${esc(app)}, then come back here.</p>
     ${k.kind==='sign'||k.kind==='connect'?'<span class="tag act">No gas fee</span>':''}</div></div>
-  <div class="w2foot">${btn(`Open ${esc(app)}`,'mwApprove')}${btn('Cancel','mwCancel',{kind:'btn-tertiary'})}<p class="t-caption subtle" style="margin:0; text-align:center">Demo: Open ${esc(app)} plays the result from the scenario “Approval in wallet app”.</p></div></div>`; };
+  <div class="w2foot">${btn(`Open ${esc(app)}`,'mwApprove')}${btn('Cancel','mwCancel',{kind:'btn-tertiary'})}<template data-demo-input>Open ${esc(app)} to play the result selected under “Approval in wallet app”.</template></div></div>`; };
 V.mwCancelled = () => { const k = S.mwWait||{}; const app = k.app||'MetaMask';
   const msg = k.kind==='reconnect' ? 'Wallet reconnection cancelled' : k.kind==='pay' ? 'Payment cancelled in '+app : k.kind==='sign'||k.kind==='connect' ? 'Signature cancelled' : 'Cancelled in '+app;
   return `<div class="screen bz">${statusBar()}${topBar(k.title||'Confirm')}
