@@ -354,7 +354,7 @@ V.merWho = () => `<div class="screen mxw">${statusBar()}${topBar('Who checks in 
 
 /* ---------- actions ---------- */
 Object.assign(A, {
-  mxOpen: el => { S.mer = el.dataset.id; MX.hours = null; go('mer'); },
+  mxOpen: el => { if (isGuest()) { openSheet('loginGuest'); return; } S.mer = el.dataset.id; MX.hours = null; go('mer'); },
   mxFlt: el => { MX.flt = el.dataset.k; render(); },
   mxSort: () => { MX.sort = MX.sort === 'top' ? 'near' : 'top'; render(); toast(MX.sort === 'top' ? 'Sorted by top rated.' : 'Sorted by nearest.'); },
   mxArea: () => { MX.ad = {id:MX.area, km:MX.km, q:''}; go('merArea'); },
@@ -419,6 +419,7 @@ document.addEventListener('input', e => { if (e.target.id === 'mxText' && MX.rf)
   const _st = window.__state; window.__state = () => Object.assign(_st ? _st() : {}, {mxLb: lbScen()}); }
 /* scenario panel notes */
 Object.assign(META, {
+  merGuest:{name:'Merchants · guest', group:'Discover · Merchants', rules:['Guests can browse the Merchants list (search, area, filters, sort)','Tapping a merchant opens the Welcome to YouApp sign-in bottom sheet instead of the merchant page']},
   merArea:{name:'Choose area', group:'Discover · Merchants', rules:['Opened from the area chip on Merchants; applies to Merchants only, not Locals','Search areas, tap the location button or a row; the map and the card update','Distance 1, 3 or 5 km (default 3); card shows how many merchants are inside','Show merchants here applies and goes back; Back changes nothing','Picked area shows on the chip with × to go back to Near you; next app open resets to Near you','Outside Malaysia: button disabled. Location off: prompt to turn it on']},
   mer:{name:'Merchant page', group:'Discover · Merchants', rules:['Photos from Google: swipe the hero left/right in place (counter updates); tap a photo to open the viewer','Name, rating, type and price on the photo; Share top right','No big button row: Directions is the icon next to the address, tap the phone number to call','Order: info, check in, ambassador, reviews, people, who checks in here','Reviews: YouApp (name, age, gender, visits) and Google (small Google label) in one list; Rate your visit right there','Who checks in here: last 90 days, totals only, shown once a place has 50+ check-ins']},
   merDone:{name:'Checked in', group:'Discover · Merchants', rules:['Only at the place (GPS ~100 m), once an hour per place, ID-verified users','Shows your count here, new rank, who you passed and how many more to become ambassador','Next check-in time, then one button: Pay (cashback merchants) or Write a review. Add a photo was removed until we decide where photos live']},
