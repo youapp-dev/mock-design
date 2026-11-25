@@ -108,13 +108,16 @@
   `;
   document.head.appendChild(css);
 
-  /* ---------- YouPage: Bills and Mobile reload tiles below Top up / Rewards ---------- */
+  /* ---------- YouPage: Send / Receive, then Bills and Mobile reload tiles below Top up / Rewards ---------- */
   const _home = V.home;
   V.home = () => { const h = _home(); if (!kycOk() || h.indexOf('wr-quick-actions') < 0) return h;
     const t = document.createElement('template'); t.innerHTML = h;
     const row = t.content.querySelector('.wr-quick-actions');
     if (row && !t.content.querySelector('[data-act="bills"].wr-quick-action')) {
-      row.insertAdjacentHTML('afterend', `<div class="wr-quick-actions" role="group" aria-label="Bills and reload">
+      row.insertAdjacentHTML('afterend', `<div class="wr-quick-actions" role="group" aria-label="Send and receive">
+        <button type="button" class="wr-quick-action" data-act="xsOpen"><span class="wr-quick-icon" aria-hidden="true">${ic('xsUp')}</span><span class="wr-quick-copy"><b>Send</b></span></button>
+        <button type="button" class="wr-quick-action" data-act="xsRecv"><span class="wr-quick-icon" aria-hidden="true">${ic('xsDown')}</span><span class="wr-quick-copy"><b>Receive</b></span></button></div>
+        <div class="wr-quick-actions" role="group" aria-label="Bills and reload">
         <button type="button" class="wr-quick-action" data-act="bills"><span class="wr-quick-icon" aria-hidden="true">${ic('bill')}</span><span class="wr-quick-copy"><b>Bill payment</b></span></button>
         <button type="button" class="wr-quick-action" data-act="mreload"><span class="wr-quick-icon" aria-hidden="true">${ic('mreload')}</span><span class="wr-quick-copy"><b>Mobile reload</b></span></button></div>`);
     }
@@ -405,7 +408,7 @@
     ewDetail:{name:'Fiat Wallet', ph:1, rules:['Balance, account number and name, Receive and Pay bills, history incl. the opening fee','⚠️ Assumption: received MYR stays as Fiat Wallet balance and is used before MYRT']},
     ewRecv:{name:'Receive to Fiat Wallet', ph:1, rules:['DuitNow QR and account number with Copy and Share','Crypto wallets keep their own Receive (address QR) without the Fiat Wallet']},
   });
-  if (META.home && META.home.rules) META.home.rules.push('Bill payment and Mobile reload tiles sit below Top up and Rewards. Both need the Fiat Wallet. Verified users with more than RM100 in successful MYRT activity get automatic free opening. Other users see the activation sheet.');
+  if (META.home && META.home.rules) META.home.rules.push('Send and Receive tiles (25 Nov) sit below Top up and Rewards, then Bill payment and Mobile reload. Both need the Fiat Wallet. Verified users with more than RM100 in successful MYRT activity get automatic free opening. Other users see the activation sheet.');
   if (META.wallets && META.wallets.rules) META.wallets.rules.push('Fiat Wallet section under the currencies: Activate when off, balance when on (opens Fiat Wallet details).');
   const walletPanel = renderPanel;
   renderPanel = function(){
