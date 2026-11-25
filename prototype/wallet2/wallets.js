@@ -44,16 +44,15 @@ function mwSendRows(){
   return `<div class="xs-source" role="group" aria-label="Wallet and token">
     <button type="button" class="xs-source-row" data-act="sheet" data-s="mwFrom" aria-haspopup="dialog">
       ${wBadge(wallet, 'sm')}
-      <span class="xs-source-copy"><small>From</small><strong>${esc(wallet.name)}</strong></span>
+      <span class="xs-source-copy"><small>From</small><strong>${wallet.id === 'ya' ? 'YouApp Wallet' : esc(wallet.name)}</strong></span>
       ${ic('chevdown')}
     </button>
     <button type="button" class="xs-source-row" data-act="mwTokOpen">
       ${sendTokenIcon(token)}
-      <span class="xs-source-copy"><small>Token · Ethereum</small><strong>${token}</strong></span>
+      <span class="xs-source-copy"><small>Token</small><strong>${token}</strong></span>
       ${ic('chevdown')}
     </button>
-  </div>
-  ${wallet.ext ? `<div class="xs-note">${ic('info')}<span>Confirm in ${esc(wallet.app)} and pay the network fee in ETH.</span></div>` : ''}`;
+  </div>`;
 }
 SHEETS.mwFrom = () => { const cur = xsFromW().id;
   return `<div class="grab"></div><h2 class="t-title" style="margin:0 0 12px">Send from</h2><div class="mw-list">${wList().map(w=>`<button class="mw-row ${cur===w.id?'on':''}" data-act="mwFromPick" data-id="${w.id}">${wBadge(w)}<span class="m"><b>${esc(w.name)}</b><small>${RM(wRM(w))} · ${w.ext?'confirm in '+esc(w.app):'confirm with PIN'}</small></span>${w.id===wMain().id?wMainTag:''}</button>`).join('')}</div>`; };
@@ -252,7 +251,6 @@ Object.assign(A, {
     back();
   },
   mwUseYa: () => { const x = xsInit(); x.from = 'ya'; x.tok = null; S.sheet = null; render(); toast('Switched to your YouApp wallet. Check the amount again.'); },
-  mwSendExt: () => { if (!xsReviewReady()) return; const w = xsFromW(); mwStart('send', w.app, 'Send', 'send'); },
   mwPayExt: () => { const m = wMain(); S.payYa = false; mwStart('pay', m.app, 'Scan and Pay', 'pay'); },
   mwPayYa: () => { S.payYa = true; S.mwWait = null; S.hist = S.hist.filter(k=>k!=='mwWait' && k!=='mwCancelled' && k!=='confirm'); go('confirm'); toast('Paying from your YouApp wallet.'); },
   mwReconnect: () => { scen.extSess = 'on'; saveScen(); render(); toast(`${wMain().app} reconnected.`); },

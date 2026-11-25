@@ -841,7 +841,7 @@ function render(){
   const ph = document.getElementById('phone');
   const v = V[S.screen] || V.home;
   let html = v();
-  if (S.sheet && SHEETS[S.sheet]) html += `<div class="scrim anim" data-act="closeSheet"></div><div class="sheet anim ${typeof MODALS!=='undefined'&&MODALS.has(S.sheet)?'tm'+(S.sheet==='tierInfo'?' tmc '+scen.tier:S.sheet==='shInfo'?' tmc shm':''):''}${S.sheet==='xsReview'?' xs-review-sheet':''}" role="dialog" aria-modal="true"${S.sheet==='xsReview'?' aria-labelledby="xs-review-title"':''}>${SHEETS[S.sheet]()}</div>`;
+  if (S.sheet && SHEETS[S.sheet]) html += `<div class="scrim anim" data-act="closeSheet"></div><div class="sheet anim ${typeof MODALS!=='undefined'&&MODALS.has(S.sheet)?'tm'+(S.sheet==='tierInfo'?' tmc '+scen.tier:S.sheet==='shInfo'?' tmc shm':''):''}${S.sheet==='xsSendCheck'?' xs-review-sheet':''}" role="dialog" aria-modal="true"${S.sheet==='xsSendCheck'?' aria-labelledby="xs-review-title"':''}>${SHEETS[S.sheet]()}</div>`;
   ph.innerHTML = html + '<div class="home-ind"></div>';
   renderToast(); renderPanel(); syncCar();
 }

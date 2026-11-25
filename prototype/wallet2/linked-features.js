@@ -190,99 +190,140 @@ const xsMoney = v => xsTokSym() + ' ' + xsAmount(v);
 async function xsPasteAddress(field, inputId) {
   const draft = xsInit();
   const screen = S.screen;
+  const previous = draft[field];
   try {
     const address = (await navigator.clipboard.readText()).trim();
-    if (S.screen !== screen || S.xs !== draft) return;
+    if (S.screen !== screen || S.xs !== draft || draft[field] !== previous) return;
     if (address) {
-      draft[field] = address;
-      render();
+      if (field === 'q') xsSearch(address);
+      else { draft[field] = address; render(); }
       return;
     }
   } catch (_) {}
-  if (S.screen !== screen || S.xs !== draft) return;
+  if (S.screen !== screen || S.xs !== draft || draft[field] !== previous) return;
   document.getElementById(inputId)?.focus();
   toast('Paste the address into the recipient field.');
 }
 
 /* 1 · Send to */
-V.xsTo = () => { const x = xsInit(); const q = x.q.trim(); const ql = q.toLowerCase().replace(/[\s-]/g,'');
-  const isA = xsIsAddr(q), looksA = /^0x/i.test(q) && !isA; const own = isA && q.toLowerCase() === xsFromW().addr.toLowerCase(); const hit = isA ? xsByAddr(q) : null;
-  const list = !q ? XS_PEOPLE : XS_PEOPLE.filter(p => p.n.toLowerCase().includes(q.toLowerCase()) || p.h.includes(q.toLowerCase()) || p.ph.replace(/[\s-]/g,'').includes(ql));
-  const row = p => `<button class="xs-row ${p.addr?'':'off'}" data-act="xsPick" data-id="${p.id}">${xsAv(p)}<span class="xs-rt"><b>${xsName(p)}</b><small>${p.addr ? `${p.h} · ${xsShort(p.addr)}` : `${p.h} · Wallet not activated yet`}</small></span>${p.addr?ic('chev'):''}</button>`;
-  let body;
-  if (isA) body = own ? `<div class="xs-note err">${ic('alert')}<span>This is your own wallet address. Enter someone else’s.</span></div>`
-    : hit ? `<p class="xs-sec">YouApp user</p><div class="xs-list">${row(hit)}</div><p class="xs-tip">${ic('check')}This address belongs to ${esc(hit.n)} on YouApp.</p>`
-    : `<p class="xs-sec">Wallet address</p><div class="xs-list"><button class="xs-row" data-act="xsPickAddr">${xsAv({ext:true})}<span class="xs-rt"><b>Send to this address</b><small class="mono">${xsShort(q)} · Ethereum</small></span>${ic('chev')}</button></div>`;
-  else if (looksA) body = `<div class="xs-note err" role="alert">${ic('alert')}<span>Enter the full Ethereum address: 0x followed by 40 hexadecimal characters.</span></div>`;
-  else body = `${!q?`<p class="xs-sec">Recent</p><div class="xs-rec">${XS_RECENT.map(id=>{ const p = xsP(id); return `<button data-act="xsPick" data-id="${p.id}">${xsAv(p,'lg')}<small>${esc(p.n.split(' ')[0])}</small></button>`; }).join('')}</div>`:''}
-    <p class="xs-sec">${q?'Results':'YouApp friends'}</p>${list.length?`<div class="xs-list">${list.map(row).join('')}</div>`:`<div class="xs-empty"><b>No one found</b><small>Try a name, @handle or phone number, or paste a wallet address.</small></div>`}`;
-  return `<div class="screen bz">${statusBar()}${topBar('Send')}
-  <div class="scroll"><div class="pad16 stack" style="gap:12px; padding-top:4px">
-    <label class="xs-recipient-label" for="xsQ">Recipient</label>
-    <div class="xs-search">${ic('search')}<input id="xsQ" data-in="xsQ" value="${esc(x.q)}" placeholder="Name, @handle, phone or address" autocomplete="off" spellcheck="false" aria-describedby="xsRecipientHelp">${q?`<button data-act="xsClear" aria-label="Clear recipient">${ic('close')}</button>`:''}</div>
-    <p class="xs-recipient-help" id="xsRecipientHelp">Search YouApp users or enter an Ethereum wallet address.</p>
-    <div class="xs-quick"><button data-act="xsScan">${ic('scan')}Scan QR</button><button data-act="xsPaste">${ic('copy')}Paste address</button></div>
-    ${body}
-  </div></div></div>`; };
+function xsRecipientRow(person, recent = false) {
+  const detail = person.addr ? `${esc(person.h)}${recent ? '' : ` · ${xsShort(person.addr)}`}` : 'Wallet not activated';
+  return `<button type="button" class="xs-recipient-row" data-act="xsPick" data-id="${person.id}"${person.addr ? '' : ' disabled'}>
+    ${xsAv({...person, n:''})}<span class="xs-recipient-copy"><b>${xsName(person)}</b><small>${detail}</small></span>${person.addr && !recent ? ic('chev') : ''}
+  </button>`;
+}
+
+function xsRecipientResults(draft) {
+  const query = draft.q.trim().toLowerCase();
+  if (draft.searching) return {status:'Searching for recipients', html:`<h2>Search results</h2><div class="xs-recipient-skeleton" aria-hidden="true">${'<div><i></i><span><i></i><i></i></span></div>'.repeat(3)}</div>`};
+  if (!query) return {status:'', html:`<section><h2>Recent recipients</h2><div class="xs-recipient-recent">${XS_RECENT.map(id => xsRecipientRow(xsP(id), true)).join('')}</div></section>
+    <section><h2>YouApp friends</h2><div class="xs-recipient-list">${XS_PEOPLE.map(person => xsRecipientRow(person)).join('')}</div></section>`};
+  const state = (icon, title, detail, error = false) => ({status:`${title}. ${detail}`, html:`<div class="xs-recipient-state${error ? ' is-error' : ''}">${ic(icon)}<h2>${title}</h2><p>${detail}</p></div>`});
+  if (query.startsWith('0x')) {
+    if (!xsIsAddr(query)) return state('alert', 'Incomplete Ethereum address', 'Enter 0x followed by 40 hexadecimal characters.', true);
+    if (query === xsFromW().addr.toLowerCase()) return state('alert', 'This is your wallet address', 'Enter the recipient’s Ethereum address.', true);
+    const person = xsByAddr(query);
+    return {status:person ? '1 YouApp recipient found' : 'External wallet address ready', html:person
+      ? `<h2>YouApp recipient</h2><div class="xs-recipient-list">${xsRecipientRow(person)}</div>`
+      : `<h2>External wallet</h2><div class="xs-recipient-list"><button type="button" class="xs-recipient-row" data-act="xsPickAddr">${xsAv({ext:true})}<span class="xs-recipient-copy"><b>Use this address</b><small class="mono">${xsShort(draft.q.trim())} · Ethereum</small></span>${ic('chev')}</button></div>`};
+  }
+  const phone = query.replace(/[\s()-]/g, '');
+  const matches = XS_PEOPLE.filter(person => person.n.toLowerCase().includes(query) || person.h.toLowerCase().includes(query)
+    || (phone && person.ph.replace(/[\s()-]/g, '').includes(phone)));
+  if (!matches.length) return state('search', 'No recipients found', 'Try a different name, @handle or phone number. You can also paste a wallet address.');
+  return {status:`${matches.length} ${matches.length === 1 ? 'recipient' : 'recipients'} found`, html:`<h2>Search results</h2><div class="xs-recipient-list">${matches.map(person => xsRecipientRow(person)).join('')}</div>`};
+}
+
+let xsSearchTimer;
+function xsSearch(value) {
+  const draft = xsInit();
+  clearTimeout(xsSearchTimer);
+  draft.q = value;
+  draft.searching = Boolean(value.trim());
+  const refresh = () => {
+    const input = document.getElementById('xsQ');
+    if (S.screen !== 'xsTo' || S.xs !== draft || !input) return;
+    if (input.value !== draft.q) input.value = draft.q;
+    document.querySelector('.xs-recipient-clear').hidden = !draft.q;
+    const {html, status} = xsRecipientResults(draft);
+    const results = document.getElementById('xsRecipientResults');
+    results.setAttribute('aria-busy', String(draft.searching));
+    results.innerHTML = html;
+    const announcement = document.getElementById('xsRecipientStatus');
+    if (announcement.textContent !== status) announcement.textContent = status;
+  };
+  refresh();
+  if (draft.searching) xsSearchTimer = setTimeout(() => { draft.searching = false; refresh(); }, 280);
+}
+
+V.xsTo = () => {
+  const draft = xsInit();
+  const {html, status} = xsRecipientResults(draft);
+  return `<div class="screen bz xs-recipient-screen">${statusBar()}${topBar('Send')}
+    <div class="scroll"><div class="xs-recipient-content">
+      <section class="xs-recipient-entry" aria-labelledby="xsRecipientTitle">
+        <h1 id="xsRecipientTitle"><label for="xsQ">Who are you sending to?</label></h1>
+        <div class="xs-recipient-field">${ic('search')}<input id="xsQ" type="search" data-in="xsQ" value="${esc(draft.q)}" placeholder="Name, @handle, phone or address" autocomplete="off" spellcheck="false">
+          <button type="button" class="xs-recipient-clear" data-act="xsClear" aria-label="Clear search"${draft.q ? '' : ' hidden'}>${ic('close')}</button></div>
+        <div class="xs-recipient-tools">
+          <button type="button" data-act="xsScan">${ic('scan')}Scan QR</button>
+          <button type="button" data-act="xsPaste">${ic('copy')}Paste address</button>
+        </div>
+      </section>
+      <div id="xsRecipientStatus" class="xs-recipient-status" role="status">${status}</div>
+      <div id="xsRecipientResults" class="xs-recipient-results" aria-busy="${Boolean(draft.searching)}">${html}</div>
+    </div></div></div>`;
+};
 
 /* 2 · Amount */
 V.xsAmt = () => { const x = xsInit(); const p = xsTo(); const a = x.amt||''; const err = xsErr(); const ok = +a>0 && !err;
-  const scanned = x.src==='scan' ? `<div class="xs-scan">${ic('scan')}<span>${p.ext?'Wallet address QR scanned.':'YouApp QR scanned.'} Check the recipient details before continuing.</span></div>` : '';
-  return `<div class="screen bz xs-amtscr">${statusBar()}${topBar('Send')}
-  <div class="scroll"><div class="pad16 stack" style="gap:12px; padding-top:8px; padding-bottom:12px">
-    ${scanned}
-    <button class="xs-to" data-act="xsChange">${xsAv(p)}<span class="xs-rt"><b>${p.ext?'External wallet':xsName(p)}</b><small class="mono">${p.ext?'':esc(p.h)+' · '}${xsShort(p.addr)}</small></span><em>Change</em></button>
-    ${xsFirst() ? `<div class="xs-note warn">${ic('info')}<span>${p.ext?'First time sending to this address. Check every character before you send.':`First time sending to ${esc(p.n.split(' ')[0])}. Make sure it’s the right person.`}</span></div>`:''}
-    ${mwSendRows()}<div class="xs-amt ${err?'err':''}"><small>You send</small><div><span>${xsTokSym()}</span><b class="${a?'':'ph'}">${a||'0.00'}</b></div>
-      <span class="xs-av2">${err?`<em class="xs-e" role="alert">${err}</em>`:`Available ${xsMoney(xsFromBal())}`}<button data-act="xsMax">Max</button></span>${+a>0&&!err?`<span class="xs-tot">+ fees ${xsMoney(xsFees(+a).fee+xsFees(+a).gas)} · Total ${xsMoney(xsFees(+a).total)}</span>`:''}</div>
-    <div class="xs-nw"><label class="xs-notein">${ic('edit')}<input id="xsNote" data-in="xsNote" maxlength="60" value="${esc(x.note)}" placeholder="Add a note (optional)" aria-label="Note"></label>
-    <small class="xs-cap">${p.ext?'Notes stay in YouApp. They aren’t stored on-chain.':`Only you and ${esc(p.n.split(' ')[0])} see the note. It isn’t stored on-chain.`}</small></div>
-  </div></div>
-  <div class="w2foot">${btn('Review', ok?'xsReview':'noop', {disabled:!ok})}</div>
-  ${keypad('xk')}</div>`; };
-
-/* 3 · Review (sheet) */
-const xsReviewReady = () => {
-  const draft = xsInit();
-  const recipient = xsTo();
-  return S.sheet === 'xsReview' && recipient && Number(draft.amt) > 0 && !xsErr()
-    && (!recipient.ext || draft.ack) && (!xsFromExt() || scen.eth !== 'low');
+  const amount = a || '0.00';
+  const sendLabel = `Send ${xsMoney(+a || 0)}`;
+  const checkRecipient = x.src === 'scan' ? 'QR scanned. Check the recipient before sending.' : xsFirst() ? 'First transfer. Check the recipient before sending.' : '';
+  return `<div class="screen wallet-reference xs-amtscr">${statusBar()}${topBar('Send')}
+    <div class="scroll"><div class="xs-transfer-content">
+      <button type="button" class="xs-transfer-recipient" data-act="xsChange">${xsAv(p)}<b>${p.ext?'External wallet':xsName(p)}</b><small>${p.ext?'Ethereum':esc(p.h)} · ${xsShort(p.addr)}</small><span>Change recipient</span></button>
+      ${checkRecipient ? `<p class="xs-transfer-check">${checkRecipient}</p>` : ''}
+      <div class="bigamt xs-transfer-amount${amount.length > 5 ? ' is-long' : ''}${err ? ' is-invalid' : ''}" aria-label="Amount to send: ${amount} ${xsTokSym()}"><span>${xsTokSym()}</span><strong>${amount}</strong><i aria-hidden="true"></i></div>
+      <section class="sum xs-transfer-summary" aria-label="Transfer summary">
+        ${mwSendRows()}
+        <div class="xs-transfer-available"><span>Available <b>${xsMoney(xsFromBal())}</b></span><button type="button" data-act="xsMax">Max</button></div>
+        <div><span>Recipient gets</span><b>${xsMoney(+a || 0)}</b></div>
+        ${xsFeeRows(+a || 0, 'xs-transfer-fee')}
+        <div class="tot"><span>${xsFromExt() ? 'Token total' : 'Total debited'}</span><b>${xsMoney(xsFees(+a || 0).total)}</b></div>
+      </section>
+      ${err ? `<p class="xs-transfer-error" role="alert">${err}</p>` : ''}
+      <details class="xs-transfer-note"${x.note ? ' open' : ''}><summary>Note (optional)</summary>
+        <label class="xs-notein">${ic('edit')}<input id="xsNote" data-in="xsNote" maxlength="60" value="${esc(x.note)}" placeholder="Add a note" aria-label="Note" aria-describedby="xsNoteHelp"></label>
+        <span class="xs-transfer-note-help" id="xsNoteHelp">Notes stay in YouApp and aren’t stored on-chain.</span>
+      </details>
+    </div></div>
+    <div class="xs-transfer-footer"><button type="button" class="paybtn" data-act="xsSend"${ok ? '' : ' disabled'}>${sendLabel}</button></div>
+    ${keypad('xk')}
+  </div>`;
 };
 
-SHEETS.xsReview = () => {
+/* 3 · External address check and network fee recovery */
+SHEETS.xsSendCheck = () => {
   const draft = xsInit();
   const recipient = xsTo();
   const sender = xsFromW();
   const amount = Number(draft.amt);
-  const total = xsFees(amount).total;
   const needsGas = sender.ext && scen.eth === 'low';
-  const recipientName = recipient.ext ? 'External wallet' : esc(recipient.n);
   const submit = sender.ext ? `Confirm in ${esc(sender.app)}` : `Send ${xsMoney(amount)}`;
-  return `<div class="grab"></div><div class="stack xs-confirm-review">
+  return `<div class="grab"></div><div class="stack wallet-reference xs-confirm-review">
     <header class="xs-review-heading">
-      <h2 id="xs-review-title">Review transfer</h2>
-      <button type="button" class="xs-review-icon" data-act="closeSheet" aria-label="Close transfer review">${ic('close')}</button>
+      <h2 id="xs-review-title">${recipient.ext ? 'Check recipient address' : 'Network fee'}</h2>
+      <button type="button" class="xs-review-icon" data-act="closeSheet" aria-label="Close transfer check">${ic('close')}</button>
     </header>
-    <div class="xs-review-summary">
-      <div class="xs-review-amount"><small>${xsTokSym()}</small> <strong>${xsAmount(amount)}</strong></div>
-      <p>To <b>${recipientName}</b></p>
-    </div>
-    <div class="xs-review-address">
+    ${recipient.ext ? `<div class="xs-review-address">
       <div><span>Recipient address</span><code>${esc(recipient.addr)}</code></div>
       <button type="button" class="xs-review-icon" data-act="xsCopy" data-v="${esc(recipient.addr)}" aria-label="Copy address">${ic('copy')}</button>
-    </div>
-    <div class="kvbox sp-box xs-kv">
-      <div class="kv"><span>From</span><b>${esc(sender.name)}</b></div>
-      <div class="kv"><span>Token and network</span><b>${xsTokSym()} · Ethereum</b></div>
-      ${xsFeeRows(amount)}
-      ${draft.note ? `<div class="kv"><span>Note</span><b>${esc(draft.note)}</b></div>` : ''}
-      <div class="kv tot"><span>${sender.ext ? 'Token total' : 'Total debited'}</span><b>${xsMoney(total)}</b></div>
-    </div>
+    </div>` : ''}
     ${needsGas ? `<div class="xs-note warn" role="alert">${ic('alert')}<span>Add ETH to ${esc(sender.app)} to cover the estimated network fee.</span></div>
       ${wHasYa() ? btn('Use YouApp Wallet', 'mwUseYa', {kind:'btn-secondary'}) : ''}` : ''}
-    ${recipient.ext ? `<button class="xs-ack ${draft.ack ? 'on' : ''}" data-act="xsAck" role="checkbox" aria-checked="${draft.ack}"><i>${ic('check')}</i><span>I checked that this address accepts ${xsTokSym()} on Ethereum.</span></button>`
-      : `<p class="xs-irr">${ic('lock')}Transfers can’t be reversed after sending.</p>`}
-    ${btn(submit, sender.ext ? 'mwSendExt' : 'xsConfirm', {disabled:!xsReviewReady()})}
+    ${recipient.ext ? `<button type="button" class="xs-ack ${draft.ack ? 'on' : ''}" data-act="xsAck" role="checkbox" aria-checked="${draft.ack}"><i>${ic('check')}</i><span>I checked that this address accepts ${xsTokSym()} on Ethereum. Transfers can’t be reversed.</span></button>` : ''}
+    ${needsGas ? '' : `<button type="button" class="paybtn" data-act="xsSend"${recipient.ext && !draft.ack ? ' disabled' : ''}>${submit}</button>`}
   </div>`;
 };
 
@@ -308,6 +349,13 @@ V.xsProc = () => { const x = xsInit(); const p = xsTo(); const r = x.run || {st:
     ${r.st>=1?`<button class="xs-hash" data-act="xsScanTx">${ic('xsExt')}View on Etherscan</button>`:''}
   </div></div>
   <div class="w2foot">${btn('Back to Wallet','xsLeave',{kind:'btn-secondary'})}<p class="t-caption subtle" style="margin:0; text-align:center">You can leave this screen. We’ll notify you when it lands.</p></div></div>`; };
+function xsProceed(replace = false) {
+  const draft = xsInit();
+  draft.fail = false;
+  draft.bgDone = false;
+  go('xsProc', {replace});
+  xsRun();
+}
 const xsRun = () => { const x = xsInit(); x.run = {st:0, conf:0, t:Date.now()}; clearInterval(S.xsT);
   const res = scen.xsRes || 'ok'; let tick = 0;
   S.xsT = setInterval(() => { const r = x.run; tick++;
@@ -370,7 +418,7 @@ Object.assign(A, {
     go('xsTo');
   },
   xsRecv: () => { if (!kycOk()) { toast('Verify your identity to receive MYRT.','err'); return; } go('xsRecv'); },
-  xsClear: () => { xsInit().q=''; render(); },
+  xsClear: () => { xsSearch(''); document.getElementById('xsQ')?.focus(); },
   xsPaste: () => xsPasteAddress('q', 'xsQ'),
   xsScan: () => { S.sheet='scanSim'; render(); },
   xsPick: el => { const p = xsP(el.dataset.id); if (!p.addr) { toast(`${p.n} hasn’t activated a YouApp wallet yet. Ask them to verify first.`,'err'); return; }
@@ -384,22 +432,35 @@ Object.assign(A, {
     x.amt = v; render(); },
   xkDel: () => { const x = xsInit(); x.amt = (x.amt||'').slice(0,-1); render(); },
   xsMax: () => { xsInit().amt = xsAvail().toFixed(2); render(); },
-  xsReview: () => {
+  xsSend: () => {
     const draft = xsInit();
-    if (!xsTo() || !(Number(draft.amt) > 0) || xsErr()) return;
-    draft.ack = false;
-    S.sheet = 'xsReview';
-    render();
+    const recipient = xsTo();
+    if (S.screen !== 'xsAmt' || !recipient || !(Number(draft.amt) > 0) || xsErr()) return;
+    const needsGas = xsFromExt() && scen.eth === 'low';
+    const checking = S.sheet === 'xsSendCheck';
+    if (needsGas || (recipient.ext && (!checking || !draft.ack))) {
+      if (!checking) draft.ack = false;
+      S.sheet = 'xsSendCheck';
+      render();
+      return;
+    }
+    S.sheet = null;
+    if (xsFromExt()) { mwStart('send', xsFromW().app, 'Send', 'send'); return; }
+    const totalRm = xsFees(Number(draft.amt)).total * (RATE[xsTokSym()] || 1);
+    if (!walletRequiresPin(totalRm)) { xsProceed(); return; }
+    S.xsPin = '';
+    S.xsPinErr = false;
+    go('xsPin');
   },
   xsAck: () => {
+    if (S.sheet !== 'xsSendCheck' || !xsTo()?.ext) return;
     const x = xsInit();
     x.ack = !x.ack;
     render();
     document.querySelector('.xs-confirm-review [data-act="xsAck"]')?.focus();
   },
-  xsConfirm: () => { if (!xsReviewReady()) return; S.sheet=null; S.xsPin=''; S.xsPinErr=false; go('xsPin'); },
   xp: el => { if ((S.xsPin||'').length>=6) return; S.xsPin = (S.xsPin||'')+el.dataset.k; S.xsPinErr=false;
-    if (S.xsPin.length===6) { if (S.xsPin==='000000') { S.xsPinErr=true; S.xsPin=''; render(); return; } const x = xsInit(); x.fail=false; x.bgDone=false; go('xsProc',{replace:true}); xsRun(); return; } render(); },
+    if (S.xsPin.length===6) { if (S.xsPin==='000000') { S.xsPinErr=true; S.xsPin=''; render(); return; } xsProceed(true); return; } render(); },
   xpDel: () => { S.xsPin = (S.xsPin||'').slice(0,-1); render(); },
   xsLeave: () => { S.hist = S.hist.filter(s=>!/^xs/.test(s)); S.screen = 'home'; S.sheet=null; render(); toast('Sending in the background. We’ll let you know when it lands.'); },
   xsDoneGo: () => { S.hist = S.hist.filter(s=>!/^xs/.test(s)); S.screen = 'home'; render(); },
@@ -449,11 +510,11 @@ Object.assign(A, {
 });
 document.addEventListener('input', e => { if (e.target.dataset && e.target.dataset.in==='xsA') { xsInit().addr = e.target.value.replace(/\s/g,''); reRender(e); } });
 META.xsAddr = {name:'Send MYRT · Enter wallet address', ph:1, rules:['From “Enter wallet address” under My QR on Scan.','Paste or type; checks 0x prefix and 42 characters; blocks your own address.','A YouApp user’s address resolves to that user; others show External wallet with a warning.']};
-document.addEventListener('input', e => { const k = e.target.dataset && e.target.dataset.in; if (k==='xsQ') { xsInit().q = e.target.value; reRender(e); } else if (k==='xsNote') { xsInit().note = e.target.value.slice(0,60); } });
+document.addEventListener('input', e => { const k = e.target.dataset && e.target.dataset.in; if (k==='xsQ') { xsSearch(e.target.value); } else if (k==='xsNote') { xsInit().note = e.target.value.slice(0,60); } });
 Object.assign(META, {
   xsTo:{name:'Send MYRT · Send to', ph:1, rules:['Opens from Send on the Wallet Balance card.','Search by name, @handle, phone, or paste a 0x address. Scan QR opens the camera.','Recent first, then YouApp friends. Each row shows @handle and the short wallet address.','A pasted address that belongs to a YouApp user resolves to that user. Your own address is blocked.','Friends without an activated wallet are listed but can’t be picked.']},
   xsAmt:{name:'Send MYRT · Amount', ph:1, rules:['Recipient card with short address and Change.','First-time recipient warning. External addresses always count as first time.','Keypad amount in MYRT, Fees as Scan and Pay: tier payment fee (e.g. Free 2.00%, RM1.50 minimum) plus gas. Max = balance minus fees. Min MYRT 1.00.','No tier limit on transfers for now.','Optional note, kept in YouApp only (not on-chain).']},
-  xsPin:{name:'Send MYRT · PIN', ph:1, rules:['Every on-chain transfer needs the PIN, whatever the amount.']},
+  xsPin:{name:'Send MYRT · PIN', ph:1, rules:['YouApp Wallet transfers with a total debit equivalent to RM100 or more require PIN. Connected wallets use provider approval.']},
   xsProc:{name:'Send MYRT · On-chain progress', ph:1, rules:['Signed → Submitted (tx hash) → Confirming n of 12 → Sent.','User can leave; a notification arrives when it lands.','Scenario: Transfer result = Network busy holds at 3 of 12 with a busy notice; Failed ends after submit.']},
   xsDone:{name:'Send MYRT · Sent', ph:1, rules:['Amount, recipient, payment fee, gas fee, total, tx hash (Etherscan), network, reference, date, note. No balance shown.','Share this moment opens the share flow with the transfer card.','Receiver gets a push: “Elsa sent you MYRT 50.00”.']},
   xsFail:{name:'Send MYRT · Failed', ph:1, rules:['MYRT and the payment fee return to the wallet. Gas is used by the network and not refunded, and the screen says so.']},

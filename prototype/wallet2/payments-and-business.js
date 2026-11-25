@@ -1116,7 +1116,8 @@ function settleWalletScan(tx){
   tx.status = 'Completed';
   if (scen.paid !== 'yes') { scen.paid = 'yes'; saveScen(); }
 }
-function spGate(){ if (spTotal() >= 100) { S.pinV=''; S.pinErr=false; go('pin'); } else spProceed(); }
+function walletRequiresPin(totalRm) { return Math.round(totalRm * 100) >= 10_000; }
+function spGate(){ if (walletRequiresPin(spTotal())) { S.pinV=''; S.pinErr=false; go('pin'); } else spProceed(); }
 Object.assign(A, {
   scanQr: el => {
     const m = MERCH[el.dataset.id];

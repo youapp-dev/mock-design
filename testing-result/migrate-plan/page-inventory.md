@@ -7,7 +7,7 @@
 | App 3.0 registered renderer keys | 152 | 165 | |
 | Wallet 2.0 registered renderer keys | 127 | 127 | |
 | Total registered renderer keys | 279 | 292 | |
-| Distinct product screens verified in emulator | | | 31 |
+| Distinct product screens verified in emulator | | | 33 |
 | Distinct typed Compose destination expressions found in main source | | | 126 |
 | Final distinct product screen total | Pending | Pending | Pending |
 
@@ -120,7 +120,19 @@ Four new full-screen destinations were observed. Merchant detail tabs and the ma
 | Increase guests from one to two | Guest count changed to two. The total stayed at RM300. | App 3.0 schedule guest state |
 | Increase duration from two to three hours | The total increased to RM450. | App 3.0 schedule duration state |
 
-Host detail and Schedule add two screens to the emulator count. The emulator is on Schedule with the RM450 selection. The Android source calls the booking creation endpoint directly from Schedule → Reserve after validation, whereas the HTML renderer contains a separate booking payment view. This is a source-level mapping difference. The installed build's post-submit behavior, any charge, and the booking chat or confirmation remain unverified. Complete the submit test with an approved staging host and slot.
+### Booking request and chat
+
+Submitted the existing staging selection for Erica on 28 November 2026, 12:00?15:00, with two guests and RM450 displayed on Schedule. Android opened Erica's existing chat with a new system message and a Service card marked Requested. No payment screen appeared during submission. The HTML renderer contains a separate booking payment view.
+
+| Android entry or control | Observed result |
+| --- | --- |
+| Schedule Reserve | Created a request and opened Erica's chat. |
+| Service card expand/collapse | Collapsed and reopened the booking card. |
+| Service card progress control | Opened Progress Detail. It showed Waiting for Confirmation and stated that the host must confirm. |
+| Chat Add | Opened Gallery, Camera, Document, Location, and GIF choices. Individual actions were not exercised. |
+| Service card Modify | Opened Re-schedule meeting. The form initially showed two hours, one guest, and 0 MYR with no start time selected. No modification was submitted. |
+
+Erica's chat and Re-schedule meeting add two full-screen destinations beyond Host detail and Schedule. The HTML chat candidate is App 3.0 bchat. The reschedule pairing remains open. The emulator is on Re-schedule meeting. Acceptance, payment, and later booking states remain pending host confirmation or a staged fixture for those states.
 
 ## Registered HTML keys
 

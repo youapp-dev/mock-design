@@ -322,6 +322,58 @@
 .wallet-reference [data-reference="pay"], .wallet-reference [data-reference="payu"],
 .wallet-reference [data-reference="topcard"], .wallet-reference [data-reference="connect"] { display: flex; flex-direction: column; }
 .wallet-reference [data-reference] .keys { position: relative; inset: auto; margin-top: auto; flex: 0 0 214px; }
+.xs-transfer-content { padding: 6px 16px 12px; }
+.xs-transfer-recipient { display: grid; justify-items: center; gap: 3px; width: fit-content; min-height: 44px; max-width: 100%; margin-inline: auto; padding: 2px 8px; border: 0; border-radius: 12px; background: transparent; color: var(--ink); font: inherit; }
+.xs-transfer-recipient .xs-av, .xs-transfer-recipient .xs-avx { width: 34px; height: 34px; }
+.xs-transfer-recipient small, .xs-transfer-check, .xs-transfer-note-help { color: var(--mut); font-size: 12px; line-height: 1.4; }
+.xs-transfer-recipient > span:last-child { color: var(--deep); font-size: 12px; font-weight: 700; }
+.xs-transfer-check { margin: 6px auto 0; text-align: center; }
+.wallet-reference .xs-transfer-amount { margin: 12px 0 16px; align-items: center; font-size: clamp(50px, 17cqi, 76px); }
+.wallet-reference .xs-transfer-amount.is-long { font-size: clamp(28px, 9cqi, 44px); letter-spacing: -1px; }
+.xs-transfer-amount strong { font-weight: inherit; font-variant-numeric: tabular-nums; }
+.wallet-reference .xs-transfer-amount span { margin-top: 0; font-size: clamp(14px, 4.5cqi, 21px); }
+.wallet-reference .xs-transfer-amount i { height: .83em; flex: 0 0 3px; }
+.xs-transfer-amount.is-invalid strong, .xs-transfer-error { color: var(--a-error); }
+.wallet-reference .xs-transfer-summary, .wallet-reference.xs-confirm-review .sum { margin: 0; }
+.wallet-reference .xs-transfer-summary { padding: 8px 16px 10px; }
+.wallet-reference .xs-transfer-summary > div.xs-source { display: grid; grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr); gap: 10px; margin: 0; padding: 0 0 8px; border: 0; border-bottom: 1px solid var(--line); border-radius: 0; }
+.xs-transfer-summary .xs-source-row { border: 0; min-height: 44px; padding: 4px 0; gap: 6px; border-radius: 8px; }
+.xs-transfer-summary .xs-source-row + .xs-source-row { padding-inline-start: 10px; border-inline-start: 1px solid var(--line); border-radius: 0 8px 8px 0; }
+.xs-transfer-summary .xs-source-row > :is(.mw-bd.sm,.xs-token-icon) { width: 24px; height: 24px; }
+.xs-transfer-summary .xs-source-copy strong { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; color: var(--ink); font-size: 13px; line-height: 17px; }
+.xs-transfer-summary .xs-source-row > .ico:last-child { width: 12px; height: 12px; }
+.wallet-reference .xs-transfer-summary > div { gap: 10px; padding-block: 6px; }
+.wallet-reference .xs-transfer-summary > div.xs-transfer-available { padding: 2px 0 0; color: var(--mut); font-size: 12px; }
+.wallet-reference .xs-transfer-summary > div.tot { margin-top: 4px; padding-top: 9px; }
+@container (max-width: 340px) {
+  .wallet-reference .xs-transfer-summary { padding-inline: 12px; }
+  .wallet-reference .xs-transfer-summary > div.xs-source { grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr); gap: 8px; }
+  .xs-transfer-summary .xs-source-row { gap: 4px; }
+  .xs-transfer-summary .xs-source-row + .xs-source-row { padding-inline-start: 8px; }
+  .xs-transfer-summary .xs-source-row > :is(.mw-bd.sm,.xs-token-icon) { width: 22px; height: 22px; }
+}
+.xs-transfer-available button { min-width: 44px; min-height: 44px; border: 0; border-radius: 10px; background: transparent; color: var(--deep); font: 700 13px Inter, sans-serif; }
+.xs-transfer-summary :is(.xs-transfer-fee,.tot) b, .xs-confirm-review .sum .kv b { text-align: right; overflow-wrap: anywhere; }
+.xs-transfer-error, .xs-transfer-note-help { display: block; margin-top: 6px; }
+.xs-transfer-note { margin-top: 6px; color: var(--deep); font-size: 13px; }
+.xs-transfer-note summary { padding-block: 8px; cursor: pointer; }
+.xs-transfer-note-help { color: var(--mut); }
+.xs-transfer-error { font-size: 13px; line-height: 1.4; }
+.xs-transfer-footer { flex: none; padding: 0 16px 12px; }
+.wallet-reference .xs-transfer-footer .paybtn, .wallet-reference.xs-confirm-review .paybtn { width: 100%; min-height: 56px; height: auto; margin: 0; padding: 10px 14px; border: 0; }
+.wallet-reference .paybtn:disabled { opacity: .48; cursor: default; }
+.wallet-reference.xs-amtscr .kpad { gap: 6px; padding: 8px 8px max(20px, env(safe-area-inset-bottom)); background: #F6F4FA; }
+.wallet-reference.xs-amtscr .kpad button { height: clamp(34px, 5.2dvh, 44px); border-radius: 10px; box-shadow: none; color: var(--ink); }
+.wallet-reference.xs-amtscr .kpad button b { font-weight: 500; }
+.wallet-reference.xs-amtscr .kpad button[data-k="."] { background: transparent; }
+.wallet-reference.xs-amtscr .kpad button:active { background: var(--lav2); }
+.wallet-reference.xs-confirm-review { container-type: normal; }
+.wallet-reference.xs-confirm-review .xs-review-summary { text-align: center; padding-block: 4px 8px; }
+.wallet-reference.xs-confirm-review .xs-review-amount { justify-content: center; color: var(--ink); }
+.wallet-reference.xs-confirm-review .xs-review-amount small { color: var(--deep); }
+.wallet-reference.xs-confirm-review .xs-review-amount strong { font-size: clamp(30px, 11vw, 46px); line-height: 1.05; }
+.wallet-reference.xs-confirm-review .xs-review-address { border-color: var(--line); background: var(--lav); }
+.wallet-reference.xs-confirm-review .sum { padding-inline: 12px; }
 .wallet-reference [data-reference] .alt,
 .wallet-reference [data-reference] .xn.bt { position: relative; inset: auto; margin: 20px 16px 4px; }
 .wallet-reference [data-reference] .xn.bt { margin-top: auto; }

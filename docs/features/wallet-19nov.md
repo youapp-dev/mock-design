@@ -79,9 +79,19 @@ The first batch made Scan to Pay easier to reach and aligned amounts across Pay 
 
 ## Send flow
 
-Both versions keep crypto Send and Receive. Send starts with the recipient, then shows the source wallet, token, Ethereum network and available amount. Review shows the full address, fees and the token total. External addresses require acknowledgement. A connected wallet uses provider approval and shows how to recover when ETH is insufficient. YouApp Wallet uses its PIN.
+Both versions keep crypto Send and Receive. Send starts with the recipient, then shows the source wallet, token, available amount, fees, and total. The external-address check shows the full address and Ethereum network. A connected wallet uses provider approval. YouApp Wallet requires PIN when the total debit, including fees, is equivalent to RM100 or more.
 
 Each crypto wallet detail shows **Send** and **Receive** side by side on the balance card. Send preselects the open wallet as the source. Receive opens that wallet's address QR. Windows Chrome verified matching sources and addresses, equal button widths, and Back navigation for every configured demo wallet at 390 px in both versions and at 320 px in 3.3.0.
+
+The Send recipient screen groups search, Scan QR, and Paste address together, with recent recipients and YouApp friends below. Search shows a brief skeleton while the query settles, announces the result, and keeps focus in the search field. No results offers another way to find the recipient. Incomplete and own-wallet addresses have separate messages. Friends without an active wallet remain visible as unavailable. Clearing the query restores the default lists.
+
+Send uses the Pay layout and visual styles for the amount, summary card, keypad, and primary action. The amount screen shows the source wallet, token, available balance, Max, fees, total, and optional note. Send starts processing or opens the required authorization directly. An external recipient requires an address check, and a source wallet with insufficient ETH opens the network-fee recovery options.
+
+Windows Chrome verified direct PIN and provider approval, optional note retention, the external-address check, and low-ETH recovery at 390 px in 3.2.0 and 3.3.0 and at 320 px in 3.3.0.
+
+On the same browser and viewports, the shared PIN rule passed the RM99.99 and RM100 boundary checks. A small Send completed in simulation without PIN, and a larger Send opened the PIN screen.
+
+Windows Chrome verified the redesigned screen at 390 px in 3.2.0 and 3.3.0 and at 320 px in 3.3.0. Coverage included alignment, touch targets, recent and unavailable recipients, loading, no results, handle and phone search, address validation, and the amount-screen handoff from simulated paste and QR scan.
 
 Reference patterns were checked against [MetaMask Mobile](https://support.metamask.io/managing-my-tokens/moving-your-tokens/how-to-send-tokens-from-your-metamask-wallet/) for account, token, network and fee review, [Phantom](https://help.phantom.com/articles/5530158379539) for recipient and QR selection, and [Trust Wallet](https://trustwallet.com/blog/academy/como-enviar-e-receber-criptomoedas-na-trust-wallet) for the address, network and amount check.
 
