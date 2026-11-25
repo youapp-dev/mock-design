@@ -337,7 +337,7 @@ A.gPickTog = (orig => el => { const fromList = el && !el.classList.contains('gpk
       <div class="scroll gi2-scroll">
         <div class="gi2-id"><button class="gi2-pic" data-act="gPicView" aria-label="View group photo">${g.photo ? img(g.photo, 'Group photo') : `<b>${esc(gLet(g))}</b>`}</button>
           <h1>${esc(g.name)}</h1><small>${nTxt}${g.created ? ` · Created ${esc(g.created)}` : ''}</small>${bio}</div>
-        <div class="gi2-acts n${acts.length}">${acts.map(([i, t, a, c]) => `<button data-act="${a}"><i class="${c}">${ic(i)}</i><span>${t}</span></button>`).join('')}</div>
+        <div class="gi2-acts n${acts.length}">${acts.map(([i, t, a, c]) => `<button data-act="${a}"><i class="${c}">${c === 'rp' ? RP_ICON : ic(i)}</i><span>${t}</span></button>`).join('')}</div>
         ${link}
         <div class="gi2-sec"><button class="gi2-row" data-act="giMedia">${ic('image')}<span>Media &amp; files</span><em>${nMedia || ''}</em>${ic('chev')}</button></div>
         <p class="gi2-sl">Members · ${n}</p>
@@ -411,6 +411,8 @@ A.gPickTog = (orig => el => { const fromList = el && !el.classList.contains('gpk
   };
 })();
 
+/* Red Packet icon shared by the chat attach panel and Group info (purple + red packets, 25 Nov) */
+const RP_ICON = `<svg viewBox="0.75 0.9 22 22" width="30" height="30" aria-hidden="true"><path d="M10.2 5.6l10.3 2.1-2.9 14.1-10.3-2.1z" fill="#38168E"/><path d="M11.6 7.9l7 1.4-2.2 10.6-7-1.4" fill="none" stroke="#C9B8F2" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="2" width="11" height="17" rx="1.2" fill="#E5484D"/><path d="M3 3.2A1.2 1.2 0 0 1 4.2 2h8.6A1.2 1.2 0 0 1 14 3.2v1.6L12.4 6H4.6L3 4.8z" fill="#B42335"/><path d="M5 7.6v8.9h7V7.6" fill="none" stroke="#FFD6DA" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 8c1.3 1 1.2 2-.1 3.1s-1 2.3.2 3.1" fill="none" stroke="#B42335" stroke-width=".8" stroke-linecap="round"/><circle cx="8.5" cy="5.4" r="2.1" fill="#5E35B8" stroke="#fff" stroke-width=".6"/><path d="M8.5 4.5l.9.9-.9.9-.9-.9z" fill="#fff"/></svg>`;
 /* ---- Attach panel (25 Nov): opens under the composer like the live app, not a dimmed bottom sheet.
    One row of round tiles: Red Packet first (when the chat allows it), then Gallery, Camera, Document, Location.
    No GIF. Tap the paperclip again, tap the chat, pick an item, or press Esc to close. Chat stays visible and usable. ---- */
@@ -422,7 +424,7 @@ A.gPickTog = (orig => el => { const fromList = el && !el.classList.contains('gpk
     cxDocs: ['Document', P('M7 2h6.6a2 2 0 0 1 1.4.6l4.4 4.4a2 2 0 0 1 .6 1.4V19a3 3 0 0 1-3 3H7a3 3 0 0 1-3-3V5a3 3 0 0 1 3-3Zm6 1.8V7a2 2 0 0 0 2 2h3.2L13 3.8ZM8 12.2a.9.9 0 0 0 0 1.8h8a.9.9 0 0 0 0-1.8H8Zm0 3.6a.9.9 0 0 0 0 1.8h5a.9.9 0 0 0 0-1.8H8Z')],
     cxLoc: ['Location', P('M12 2a8 8 0 0 1 8 8c0 5.2-6 10.6-7.3 11.7a1.1 1.1 0 0 1-1.4 0C10 20.6 4 15.2 4 10a8 8 0 0 1 8-8Zm0 5a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z')],
     /* Red Packet: two packets (back purple, front red) with a purple seal, recoloured from the reference icon to fit the app (25 Nov) */
-    apAttach: ['Red Packet', `<svg viewBox="0.75 0.9 22 22" width="30" height="30" aria-hidden="true"><path d="M10.2 5.6l10.3 2.1-2.9 14.1-10.3-2.1z" fill="#38168E"/><path d="M11.6 7.9l7 1.4-2.2 10.6-7-1.4" fill="none" stroke="#C9B8F2" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round"/><rect x="3" y="2" width="11" height="17" rx="1.2" fill="#E5484D"/><path d="M3 3.2A1.2 1.2 0 0 1 4.2 2h8.6A1.2 1.2 0 0 1 14 3.2v1.6L12.4 6H4.6L3 4.8z" fill="#B42335"/><path d="M5 7.6v8.9h7V7.6" fill="none" stroke="#FFD6DA" stroke-width=".9" stroke-linecap="round" stroke-linejoin="round"/><path d="M8.5 8c1.3 1 1.2 2-.1 3.1s-1 2.3.2 3.1" fill="none" stroke="#B42335" stroke-width=".8" stroke-linecap="round"/><circle cx="8.5" cy="5.4" r="2.1" fill="#5E35B8" stroke="#fff" stroke-width=".6"/><path d="M8.5 4.5l.9.9-.9.9-.9-.9z" fill="#fff"/></svg>`]
+    apAttach: ['Red Packet', RP_ICON]
   };
   const ORDER = ['apAttach', 'attachGal', 'attachCam', 'cxDocs', 'cxLoc'];   /* Red Packet first (25 Nov) */
   const SHEET = /<div class="scrim[^"]*" data-act="closeSheet2"><\/div><div class="sheet[^"]*" role="dialog" aria-label="Attach"><div class="grab" aria-hidden="true"><\/div><div style="display:grid">([\s\S]*?)<\/div><\/div>/;

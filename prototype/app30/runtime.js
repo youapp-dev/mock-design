@@ -5100,7 +5100,7 @@ document.head.insertAdjacentHTML('beforeend', `<style id="ta-ui">
 .gi2-acts.n4{grid-template-columns:repeat(4,1fr)} .gi2-acts.n3{grid-template-columns:repeat(3,1fr)}
 .gi2-acts button{display:grid; justify-items:center; gap:7px; padding:4px 0; min-height:72px; border:0; background:none; font:600 12px Inter; color:#3B3360}
 .gi2-acts i{width:48px; height:48px; border-radius:50%; background:#F4EFFF; color:#4B2A9E; display:grid; place-items:center}
-.gi2-acts i.rp{background:#FDECEC; color:#C8102E}
+.gi2-acts i.rp{background:#F4EFFF} .gi2-acts i.rp svg{width:26px; height:26px}
 .gi2-acts i .ico{width:22px; height:22px}
 .gi2-acts button:active i{transform:scale(.94)}
 .gi2-act{margin:14px 16px}
