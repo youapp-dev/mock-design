@@ -27,7 +27,7 @@ const META = {
   splash:  {name:'Splash', group:'Entry', figma:'Flow Onboarding › Splash Screen', rules:['Plays once per launch, then Welcome','Language defaults to English in this prototype (production: Chinese Simplified)']},
   welcome: {name:'Welcome', group:'Entry', figma:'Flow Onboarding › NEW Get Started Screen', rules:['Language chip opens Select Your Language','Start Exploring opens the login sheet']},
   language:{name:'Select Your Language', group:'Entry', figma:'Flow Onboarding › Select Language - Default', rules:['10 languages with round flags','Save stays disabled until a different language is picked']},
-  login:   {name:'Login sheet', group:'Entry', figma:'Flow Onboarding › Get Started Now sheet + Guest Mode PRD 6.1', rules:['Login disabled until an email is typed; invalid format shows an inline error on tap','Apple ID is shown on iOS only','Continue as a Guest appears only on the sheet opened from Start Exploring','Tap outside or swipe down to close; the email is cleared']},
+  login:   {name:'Login sheet', group:'Entry', figma:'Flow Onboarding › Get Started Now sheet + Guest Mode PRD 6.1', rules:['Sign In disabled until an email is typed; invalid format shows an inline error on tap','Apple ID is shown on iOS only','Continue as a Guest appears only on the sheet opened from Start Exploring','Tap outside or swipe down to close; the email is cleared']},
   otp:     {name:'OTP Verification', group:'Entry', figma:'Flow Onboarding › OTP Verification / Error Otp / Success OTP', rules:['6 digits; demo code 123456','Resend unlocks after 25 seconds','Wrong code: red boxes + "Incorrect OTP Code. Please try again!"','Correct code: New user → onboarding, Returning user → Discover']},
   name:    {name:'What’s Your Name?', group:'Onboarding', figma:'Flow Onboarding › Name (default / 2 errors / filled)', rules:['Error if fewer than 4 characters on Continue','Error if the field was touched and left blank','Back with data typed asks "Start Over Later?"']},
   dob:     {name:'What’s Your Date of Birth?', group:'Onboarding', figma:'Flow Onboarding › Birthdate', rules:['Picker sheet: day, month, year','Error on Continue when empty','Must be 18 or older (login terms) — added rule, flagged in the flow map','Skip goes to Gender']},
@@ -99,10 +99,10 @@ function loginForm(where){
       <input class="input" id="email" type="email" inputmode="email" autocomplete="email" placeholder="Enter your email" value="${esc(S.email)}" data-model="email">
       <span class="helper" id="emailHelp">${S.emailErr?esc(S.emailErr):'Example: name@example.com'}</span>
     </div>
-    ${btn('Login','login',{id:'loginBtn', disabled:!S.email.trim(), loading:S.loading==='email'})}
+    ${btn('Sign In','login',{id:'loginBtn', disabled:!S.email.trim(), loading:S.loading==='email'})}
     <div class="divider">Or</div>
-    <button class="social" data-act="social" data-p="google">${ic('google')}Login with Google</button>
-    ${ios?`<button class="social" data-act="social" data-p="apple">${ic('apple')}Login with Apple ID</button>`:''}
+    <button class="social" data-act="social" data-p="google">${ic('google')}Sign in with Google</button>
+    ${ios?`<button class="social" data-act="social" data-p="apple">${ic('apple')}Sign in with Apple ID</button>`:''}
     ${guestLink?`<button class="link" data-act="guest" style="align-self:center; padding:6px 12px">Continue as a Guest</button>`:''}
     <p class="terms" style="margin:0">By continuing, you confirm that you are 18 years or older and agree to our <button class="link" data-act="legal" data-doc="Terms of Service">Terms of Service</button> and <button class="link" data-act="legal" data-doc="Privacy Policy">Privacy Policy</button>.</p>
     <p class="terms subtle" style="margin:0">${VERSION}</p>`;
@@ -223,7 +223,7 @@ const bottomNav = active => `<nav class="bnav" aria-label="Main">
 const SEG = {locals:{search:'Search locals', title:'Explore by passion'}, activities:{search:'Search activities', title:'Activities in Malaysia'}, merchants:{search:'Search merchants', title:'Where locals eat, play and unwind'}};
 V.discover = () => { const guest = S.session==='guest'; const feed = S.htab==='feed'; return `<div class="screen">${statusBar()}
   <div class="appbar">
-    <button class="avatar" data-act="youpage" aria-label="${guest?'Log in to open YouPage':'Open YouPage'}"><img src="${IMG.avatar}" alt=""></button>
+    <button class="avatar" data-act="youpage" aria-label="${guest?'Sign in to open YouPage':'Open YouPage'}"><img src="${IMG.avatar}" alt=""></button>
     <div class="htabs" role="tablist"><button role="tab" aria-selected="${!feed}" data-act="htab" data-t="discover">Discover</button><button role="tab" aria-selected="${feed}" data-act="htab" data-t="feed">Feed</button></div>
     ${guest || !tripsEnabled ? '<span style="width:32px"></span>' : `<button class="iconbtn" style="margin:0 -6px 0 0; width:36px; height:36px" data-act="menu" aria-label="More options">${ic('dots')}</button>`}
   </div>
@@ -472,7 +472,7 @@ function renderPanel(){
   </div>
   <div class="pgroup"><h2>Scenario</h2>
     ${segCtl('Account after login','account',[['new','New user'],['returning','Returning user']],'New user goes through onboarding; returning user lands on Discover.')}
-    ${segCtl('Platform','platform',[['ios','iOS'],['android','Android']],'Login with Apple ID shows on iOS only.')}
+    ${segCtl('Platform','platform',[['ios','iOS'],['android','Android']],'Sign in with Apple ID shows on iOS only.')}
     ${segCtl('Network','network',[['online','Online'],['offline','Offline']])}
     ${segCtl('Force Update (admin)','force',[['off','Off'],['on','On']],'Turning this on restarts the app at the update screen.')}
     ${segCtl('Badge Verification (KYC)','kyc',[['none','Not started'],['rejected','Rejected'],['approved','Approved']],'Not started or Rejected: posting and commenting open the verify gate.')}
@@ -705,7 +705,7 @@ function postHTML(p, where){
 
 V.discover = () => { const guest = isGuest(); const feed = S.htab==='feed'; return `<div class="screen">${statusBar()}
   <div class="appbar">
-    <button class="avatar" data-act="youpage" aria-label="${guest?'Log in to open YouPage':'Open YouPage'}"><img src="${IMG.avatar}" alt=""></button>
+    <button class="avatar" data-act="youpage" aria-label="${guest?'Sign in to open YouPage':'Open YouPage'}"><img src="${IMG.avatar}" alt=""></button>
     <div class="htabs" role="tablist"><button role="tab" aria-selected="${!feed && S.seg!=='merchants'}" data-act="browseTab" data-k="locals">Locals</button><button role="tab" aria-selected="${!feed && S.seg==='merchants'}" data-act="browseTab" data-k="merchants">Merchants</button></div>
     ${guest || !tripsEnabled ? '<span style="width:32px"></span>' : `<button class="iconbtn" style="margin:0 -6px 0 0; width:36px; height:36px" data-act="menu" aria-label="More options">${ic('dots')}</button>`}
   </div>
@@ -4836,7 +4836,7 @@ const MAP7 = `<svg class="map7" viewBox="0 0 400 480" preserveAspectRatio="xMidY
 
 /* ===== Guest Mode revamp (Figma 3472:41398) ===== */
 const GUEST_ILL7 = `<img class="gill7" src="${IMG.guestIll}" alt="Person unlocking a phone that shows a Log In screen" width="361" height="233">`;
-const guestAv7 = (act='youpage') => `<button class="gav7" data-act="${act}" aria-label="Log in to open YouPage">${ic('person')}</button>`;
+const guestAv7 = (act='youpage') => `<button class="gav7" data-act="${act}" aria-label="Sign in to open YouPage">${ic('person')}</button>`;
 
 /* 1. Start Exploring goes straight into Discover as a guest */
 A.start = () => { S.sheet = null; A.guest(); };
@@ -4849,7 +4849,7 @@ const _discoverV7 = V.discover; V.discover = () => { const h = _discoverV7(); re
 /* 4. Scan and Locals pages for a guest */
 V.guestlock = () => { const scan = S.lockKind==='scan';
   return `<div class="screen">${statusBar()}<div class="topbar g7top">${guestAv7()}<span class="t-headline">${scan?'Pay Like a Local':'Locals'}</span><span style="width:40px"></span></div>
-  <div class="scroll g7page">${GUEST_ILL7}<h1>Experience life like a local</h1><p>Sign in to discover more local experiences and unlock more features with YouApp.</p>${btn('Login','g7LoginPage')}</div>
+  <div class="scroll g7page">${GUEST_ILL7}<h1>Experience life like a local</h1><p>Sign in to discover more local experiences and unlock more features with YouApp.</p>${btn('Sign In','g7LoginPage')}</div>
   ${bottomNav(scan?'scan':'locals')}</div>`; };
 /* login page reached from the Scan / Locals guest pages (Figma 3709:24265) */
 V.login7 = () => `<div class="screen">${statusBar()}<div class="topbar"><button class="iconbtn" data-act="back" aria-label="Back">${ic('back')}</button></div>
@@ -4868,7 +4868,7 @@ Object.assign(A, {
 /* after logging in from guest mode: Discover, Locals tab */
 const _afterAuth7 = afterAuth; afterAuth = function(){ _afterAuth7(); if (S.session==='user' && S.screen==='discover') { S.htab='discover'; S.seg='merchants'; render(); } };
 Object.assign(META, {
-  guestlock:{name:'Guest page (Scan / Locals)', group:'Guest Mode', figma:'Guest Mode › page guest mode', rules:['Scan and Locals tabs show this page for guests','Login opens the login page']},
+  guestlock:{name:'Guest page (Scan / Locals)', group:'Guest Mode', figma:'Guest Mode › page guest mode', rules:['Scan and Locals tabs show this page for guests','Sign In opens the sign-in page']},
   login7:{name:'Login page (guest)', group:'Guest Mode', figma:'Guest Mode › page guest mode (3709:24265)', rules:['Back returns to the guest page; after login the user lands on Discover › Locals']},
 });
 const _finishOnb7 = finishOnb; finishOnb = function(){ _finishOnb7(); S.htab='discover'; S.seg='merchants'; render(); };
