@@ -1045,7 +1045,7 @@ Object.assign(A, {
   openSvc: el => { S.svc = el.dataset.id; go('svc'); },
   openExp: el => { if (el.dataset.rec) pushRecent(S.sk||'activities', el.dataset.rec); S.exp = el.dataset.id; go('exp'); },
   cbScan: () => go('scan'),
-  openMer: el => { if (el.dataset.rec) pushRecent('merchants', el.dataset.rec); S.mer = el.dataset.id; S.merTab='about'; S.merRev='reviews'; S.hoursOpen=false; go('mer'); },
+  openMer: el => { if (isGuest()) { openSheet('loginGuest'); return; } if (el.dataset.rec) pushRecent('merchants', el.dataset.rec); S.mer = el.dataset.id; S.merTab='about'; S.merRev='reviews'; S.hoursOpen=false; go('mer'); },
   merchantCategory: el => { S.merCat=el.dataset.c; render(); },
   saveMerchant: el => { const m=merById(el.dataset.id); if (!m) return; D.savedMerchants[m.id]=!D.savedMerchants[m.id]; render(); },
   merchantCheckIn: guard(el => { const m=merById(el.dataset.id); if (!m) return;
