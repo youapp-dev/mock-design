@@ -3,7 +3,6 @@
    Other share entry points keep the old sheet for now. Icons are the Figma exports (SVG, unchanged). */
 (function(){
   const ICON = {
-    search:`<svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M19.5 29.75C13.85 29.75 9.25 25.15 9.25 19.5C9.25 13.85 13.85 9.25 19.5 9.25C25.15 9.25 29.75 13.85 29.75 19.5C29.75 25.15 25.15 29.75 19.5 29.75ZM19.5 10.75C14.67 10.75 10.75 14.68 10.75 19.5C10.75 24.32 14.67 28.25 19.5 28.25C24.33 28.25 28.25 24.32 28.25 19.5C28.25 14.68 24.33 10.75 19.5 10.75Z" fill="#1A181B"/><path d="M29.9995 30.7499C29.8095 30.7499 29.6195 30.6799 29.4695 30.5299L27.4695 28.5299C27.1795 28.2399 27.1795 27.7599 27.4695 27.4699C27.7595 27.1799 28.2395 27.1799 28.5295 27.4699L30.5295 29.4699C30.8195 29.7599 30.8195 30.2399 30.5295 30.5299C30.3795 30.6799 30.1895 30.7499 29.9995 30.7499Z" fill="#1A181B"/></svg>`,
     tagVerified:`<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M2.99762 3.00075H8.998V8.99925H2.99762V3.00075Z" fill="white"/><path d="M10.7781 5.37016L10.0981 4.58035C9.96806 4.43039 9.86305 4.15046 9.86305 3.95051V3.10072C9.86305 2.57086 9.42802 2.13597 8.89799 2.13597H8.04794C7.85293 2.13597 7.56791 2.03099 7.4179 1.90102L6.62785 1.22119C6.28283 0.926268 5.71779 0.926268 5.36777 1.22119L4.58272 1.90602C4.43271 2.03099 4.1477 2.13597 3.95268 2.13597H3.08763C2.5576 2.13597 2.12257 2.57086 2.12257 3.10072V3.95551C2.12257 4.15046 2.01756 4.43039 1.89256 4.58035L1.21751 5.37516C0.927496 5.72007 0.927496 6.27993 1.21751 6.62484L1.89256 7.41964C2.01756 7.56961 2.12257 7.84954 2.12257 8.04449V8.89927C2.12257 9.42914 2.5576 9.86403 3.08763 9.86403H3.95268C4.1477 9.86403 4.43271 9.96901 4.58272 10.099L5.37277 10.7788C5.71779 11.0737 6.28283 11.0737 6.63285 10.7788L7.4229 10.099C7.57291 9.96901 7.85293 9.86403 8.05294 9.86403H8.90299C9.43302 9.86403 9.86805 9.42914 9.86805 8.89927V8.04949C9.86805 7.85454 9.97306 7.56961 10.1031 7.41964L10.7831 6.62984C11.0731 6.28493 11.0731 5.71507 10.7781 5.37016ZM8.07794 5.05524L5.66279 7.46963C5.59278 7.53961 5.49778 7.5796 5.39777 7.5796C5.29777 7.5796 5.20276 7.53961 5.13276 7.46963L3.92268 6.25994C3.77767 6.11497 3.77767 5.87503 3.92268 5.73007C4.06769 5.5851 4.30771 5.5851 4.45271 5.73007L5.39777 6.67483L7.54791 4.52537C7.69292 4.3804 7.93293 4.3804 8.07794 4.52537C8.22295 4.67033 8.22295 4.91027 8.07794 5.05524Z" fill="url(#shTagV)"/><defs><linearGradient id="shTagV" x1="1" y1="1" x2="11.1213" y2="1.12434" gradientUnits="userSpaceOnUse"><stop stop-color="#996CB7"/><stop offset="1" stop-color="#38168E"/></linearGradient></defs></svg>`,
     tagHost:`<svg width="12" height="12" viewBox="0 0 12 12" fill="none" xmlns="http://www.w3.org/2000/svg"><path d="M5.83934 1.0102C5.63882 1.04554 5.3475 1.19864 4.9824 1.46364C4.51137 1.80518 4.483 1.815 3.81523 1.85033C3.2988 1.87977 3.18341 1.8994 2.97721 1.99362C2.74832 2.09962 2.55726 2.29395 2.44376 2.53735C2.3662 2.7042 2.34728 2.7729 2.2054 3.38925C2.12974 3.71902 2.07866 3.7995 1.64925 4.2549C1.16119 4.7731 1.06282 4.92621 1.01364 5.25794C0.970131 5.54845 1.02499 5.76634 1.26145 6.25706C1.34469 6.4298 1.43549 6.63983 1.46197 6.72227C1.50926 6.86557 1.51115 6.89108 1.5017 7.16982C1.49791 7.33078 1.48278 7.59381 1.46765 7.75084C1.44684 8.00406 1.44684 8.05509 1.47332 8.19446C1.52629 8.47712 1.6606 8.70285 1.8876 8.89522C1.94813 8.94625 2.16568 9.07973 2.37566 9.19162C2.98856 9.52139 3.02829 9.55672 3.37825 10.0965C3.77172 10.6991 4.06115 10.9268 4.51516 10.9896C4.70622 11.0171 4.84809 10.9955 5.3929 10.8562C5.985 10.707 6.05877 10.705 6.59601 10.8444C7.08974 10.9739 7.23162 10.9955 7.47187 10.9838C7.71022 10.97 7.89371 10.9092 8.07721 10.7796C8.25503 10.654 8.38177 10.5009 8.61445 10.1338C8.989 9.54494 9.01548 9.51942 9.6038 9.20339C9.80054 9.09543 10.0048 8.9757 10.0559 8.9384C10.2905 8.75978 10.4645 8.48497 10.5213 8.21016C10.5572 8.03546 10.5572 7.86861 10.5213 7.52314C10.4834 7.16 10.4853 6.88127 10.5232 6.74779C10.5402 6.68891 10.6291 6.48476 10.7218 6.2924C10.8145 6.10003 10.911 5.87626 10.9374 5.79578C11.0339 5.49742 11.0188 5.19906 10.892 4.92817C10.7975 4.72599 10.7161 4.62196 10.3491 4.23527C9.93863 3.7995 9.89323 3.72098 9.79297 3.27344C9.63596 2.56679 9.53948 2.36461 9.2614 2.14476C9.00035 1.94062 8.80551 1.88566 8.23989 1.86014C7.61374 1.8307 7.50402 1.78948 6.92517 1.38904C6.74924 1.26538 6.5544 1.14172 6.49197 1.11227C6.29902 1.02198 6.02283 0.978796 5.83934 1.0102Z" fill="white"/><path d="M5.83934 1.0102C5.63882 1.04554 5.3475 1.19864 4.9824 1.46364C4.51137 1.80518 4.483 1.815 3.81523 1.85033C3.2988 1.87977 3.18341 1.8994 2.97721 1.99362C2.74832 2.09962 2.55726 2.29395 2.44376 2.53735C2.3662 2.7042 2.34728 2.7729 2.2054 3.38925C2.12974 3.71902 2.07866 3.7995 1.64925 4.2549C1.16119 4.7731 1.06282 4.92621 1.01364 5.25794C0.970131 5.54845 1.02499 5.76634 1.26145 6.25706C1.34469 6.4298 1.43549 6.63983 1.46197 6.72227C1.50926 6.86557 1.51115 6.89109 1.5017 7.16982C1.49791 7.33078 1.48278 7.59381 1.46765 7.75084C1.44684 8.00406 1.44684 8.05509 1.47332 8.19446C1.52629 8.47712 1.6606 8.70285 1.8876 8.89522C1.94813 8.94625 2.16568 9.07973 2.37566 9.19162C2.98856 9.52139 3.02829 9.55672 3.37825 10.0965C3.77172 10.6991 4.06115 10.9268 4.51516 10.9896C4.70622 11.0171 4.84809 10.9955 5.3929 10.8562C5.985 10.707 6.05877 10.705 6.59601 10.8444C7.08974 10.9739 7.23162 10.9955 7.47187 10.9838C7.71022 10.97 7.89371 10.9092 8.07721 10.7796C8.25502 10.654 8.38177 10.5009 8.61445 10.1338C8.989 9.54494 9.01548 9.51942 9.6038 9.20339C9.80054 9.09543 10.0048 8.9757 10.0559 8.9384C10.2905 8.75978 10.4645 8.48497 10.5213 8.21016C10.5572 8.03546 10.5572 7.86861 10.5213 7.52314C10.4834 7.16 10.4853 6.88127 10.5232 6.74779C10.5402 6.68891 10.6291 6.48476 10.7218 6.2924C10.8145 6.10003 10.911 5.87626 10.9374 5.79578C11.0339 5.49742 11.0188 5.19906 10.892 4.92817C10.7975 4.72599 10.7161 4.62196 10.3491 4.23527C9.93863 3.7995 9.89323 3.72098 9.79297 3.27344C9.63596 2.56679 9.53948 2.36461 9.2614 2.14477C9.00035 1.94062 8.80551 1.88566 8.23989 1.86014C7.61374 1.8307 7.50402 1.78948 6.92517 1.38904C6.74924 1.26538 6.5544 1.14172 6.49197 1.11227C6.29902 1.02198 6.02283 0.978796 5.83934 1.0102ZM4.85377 3.70135L4.90674 3.75632L4.91998 4.28434C4.92754 4.57681 4.93133 4.92229 4.92944 5.05576C4.92565 5.28346 4.92754 5.29916 4.96916 5.34431L5.01267 5.39338H5.88285H6.75113L6.80599 5.33646L6.86085 5.27953V4.49241V3.70724L6.90247 3.6778C6.93841 3.65032 7.02354 3.64639 7.4416 3.64639C7.89939 3.64639 7.941 3.64836 7.97316 3.68173C8.00532 3.7151 8.00911 3.76809 8.02046 4.17834C8.02802 4.43156 8.0337 5.07932 8.0337 5.61912V6.59861L7.53807 7.11486C7.00651 7.66644 6.9857 7.68214 6.89868 7.59184C6.86274 7.55455 6.86085 7.52707 6.86085 7.07167C6.86085 6.5515 6.8495 6.48476 6.76059 6.46317C6.73789 6.45728 6.33874 6.45336 5.87339 6.45728L5.02591 6.46317L4.97484 6.51813L4.92187 6.57113L4.91241 7.40144C4.90295 8.26709 4.89917 8.2926 4.81783 8.33775C4.79702 8.34953 4.60028 8.35738 4.3222 8.35738C3.80577 8.35738 3.79442 8.35542 3.75848 8.2239C3.732 8.12379 3.732 3.87998 3.75848 3.77987C3.79442 3.64836 3.80577 3.64639 4.33166 3.64639H4.80269L4.85377 3.70135ZM9.15925 6.20995C9.25951 6.25903 9.48273 6.51028 9.50732 6.60057C9.53381 6.70461 9.53381 6.73601 9.49976 6.81846C9.46949 6.89501 7.21838 9.2721 7.11055 9.34276C7.03489 9.39183 6.89301 9.39576 6.81167 9.35258C6.7587 9.32509 5.62369 8.1552 5.56694 8.07079C5.52532 8.00994 5.51208 7.90198 5.53478 7.81365C5.56315 7.70766 5.79772 7.46818 5.91122 7.43285C6.06445 7.38574 6.10985 7.41518 6.51278 7.82936C6.73411 8.05705 6.88733 8.20035 6.91003 8.20035C6.93463 8.20035 7.27891 7.85291 7.88236 7.21693C8.3969 6.67516 8.84334 6.21977 8.8755 6.20603C8.95306 6.1707 9.08358 6.17266 9.15925 6.20995Z" fill="url(#shTagH)"/><defs><linearGradient id="shTagH" x1="1" y1="11" x2="11.1213" y2="10.8757" gradientUnits="userSpaceOnUse"><stop stop-color="#996CB7"/><stop offset="1" stop-color="#38168E"/></linearGradient></defs></svg>`,
     whatsapp:`<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="60" rx="30" fill="url(#shWa0)"/><path d="M11.8027 47.4537L14.3751 38.1127C12.7847 35.371 11.9505 32.266 11.9592 29.0918C11.9592 19.1454 20.0933 11.0586 30.0785 11.0586C34.9277 11.0586 39.4814 12.9354 42.8967 16.3431C46.3207 19.7509 48.2065 24.2829 48.1978 29.1005C48.1978 39.0468 40.0637 47.1337 30.0698 47.1337H30.0611C27.0282 47.1337 24.0474 46.3726 21.3968 44.9368L11.8027 47.4537ZM21.8574 41.6761L22.4049 42.0048C24.7165 43.3713 27.3671 44.0892 30.0698 44.0979H30.0785C38.3777 44.0979 45.1388 37.3776 45.1388 29.1091C45.1388 25.1046 43.5745 21.3423 40.7328 18.5054C37.8911 15.6685 34.1021 14.1117 30.0785 14.1117C21.7792 14.103 15.0182 20.8233 15.0182 29.0918C15.0182 31.92 15.809 34.6791 17.3211 37.0662L17.6774 37.637L16.1566 43.1638L21.8574 41.6761Z" fill="white"/><path d="M12.4375 46.8223L14.9229 37.8014C13.3847 35.1635 12.5765 32.1622 12.5765 29.1005C12.5852 19.5001 20.4326 11.69 30.0788 11.69C34.7629 11.69 39.1515 13.5063 42.4539 16.7929C45.7562 20.0796 47.5725 24.456 47.5725 29.1091C47.5725 38.7095 39.7164 46.5196 30.0788 46.5196H30.0702C27.1415 46.5196 24.265 45.7845 21.7101 44.4006L12.4375 46.8223Z" fill="url(#shWa1)"/><path d="M11.8027 47.4537L14.3751 38.1127C12.7847 35.371 11.9505 32.266 11.9592 29.0918C11.9592 19.1454 20.0933 11.0586 30.0785 11.0586C34.9277 11.0586 39.4814 12.9354 42.8967 16.3431C46.3207 19.7509 48.2065 24.2829 48.1978 29.1005C48.1978 39.0468 40.0637 47.1337 30.0698 47.1337H30.0611C27.0282 47.1337 24.0474 46.3726 21.3968 44.9368L11.8027 47.4537ZM21.8574 41.6761L22.4049 42.0048C24.7165 43.3713 27.3671 44.0892 30.0698 44.0979H30.0785C38.3777 44.0979 45.1388 37.3776 45.1388 29.1091C45.1388 25.1046 43.5745 21.3423 40.7328 18.5054C37.8911 15.6685 34.1021 14.1117 30.0785 14.1117C21.7792 14.103 15.0182 20.8233 15.0182 29.0918C15.0182 31.92 15.809 34.6791 17.3211 37.0662L17.6774 37.637L16.1566 43.1638L21.8574 41.6761Z" fill="url(#shWa2)"/><path d="M25.5504 21.5499C25.2115 20.7974 24.8552 20.7801 24.5336 20.7715C24.2729 20.7628 23.9688 20.7628 23.6646 20.7628C23.3604 20.7628 22.8738 20.8753 22.4566 21.325C22.0395 21.7748 20.875 22.8645 20.875 25.0873C20.875 27.3015 22.5001 29.4464 22.726 29.7492C22.952 30.0519 25.8632 34.7483 30.4604 36.5559C34.2842 38.0609 35.0663 37.7581 35.8919 37.6803C36.7175 37.6025 38.5685 36.5905 38.9509 35.5353C39.3245 34.4802 39.3245 33.5807 39.2116 33.3904C39.0986 33.2001 38.7944 33.0877 38.3425 32.8628C37.8906 32.6379 35.6659 31.5481 35.2488 31.3925C34.8316 31.2454 34.5275 31.1676 34.232 31.6173C33.9279 32.0671 33.0588 33.079 32.7981 33.3817C32.5374 33.6845 32.268 33.7191 31.8161 33.4942C31.3642 33.2693 29.9042 32.7936 28.1749 31.2541C26.8279 30.0605 25.9154 28.5815 25.6547 28.1318C25.394 27.682 25.6286 27.4399 25.8546 27.215C26.0544 27.0161 26.3064 26.6874 26.5324 26.4279C26.7583 26.1685 26.8366 25.9782 26.9843 25.6755C27.132 25.3727 27.0625 25.1133 26.9495 24.8884C26.8366 24.6722 25.9501 22.4407 25.5504 21.5499Z" fill-rule="evenodd" clip-rule="evenodd" fill="white"/><defs><linearGradient id="shWa0" x1="29.9984" y1="59.997" x2="29.9984" y2="-0.00209924" gradientUnits="userSpaceOnUse"><stop stop-color="#20B038"/><stop offset="1" stop-color="#60D66A"/></linearGradient><linearGradient id="shWa1" x1="30.0041" y1="46.8206" x2="30.0041" y2="11.6888" gradientUnits="userSpaceOnUse"><stop stop-color="#20B038"/><stop offset="1" stop-color="#60D66A"/></linearGradient><linearGradient id="shWa2" x1="30.0038" y1="47.4502" x2="30.0038" y2="11.0586" gradientUnits="userSpaceOnUse"><stop stop-color="#F9F9F9"/><stop offset="1" stop-color="white"/></linearGradient></defs></svg>`,
@@ -21,55 +20,91 @@
     discord:`<svg width="60" height="60" viewBox="0 0 60 60" fill="none" xmlns="http://www.w3.org/2000/svg"><rect width="60" height="60" rx="30" fill="#5865F2"/><path d="M44.5548 16.2355C41.8778 14.9694 39.0072 14.0365 36.0058 13.5022C35.9512 13.4919 35.8966 13.5177 35.8684 13.5692C35.4992 14.2461 35.0903 15.1291 34.8039 15.8232C31.5757 15.325 28.3641 15.325 25.2021 15.8232C24.9156 15.1137 24.4918 14.2461 24.121 13.5692C24.0928 13.5194 24.0382 13.4936 23.9836 13.5022C20.9838 14.0348 18.1132 14.9677 15.4346 16.2355C15.4114 16.2458 15.3916 16.263 15.3784 16.2853C9.93344 24.6707 8.44184 32.85 9.17357 40.9278C9.17688 40.9673 9.1984 41.0051 9.2282 41.0292C12.8206 43.7487 16.3005 45.3997 19.7157 46.494C19.7704 46.5112 19.8283 46.4906 19.8631 46.4442C20.671 45.3069 21.3911 44.1078 22.0086 42.8468C22.045 42.7729 22.0102 42.6853 21.9358 42.6561C20.7935 42.2094 19.7058 41.6648 18.6595 41.0464C18.5768 40.9965 18.5701 40.8745 18.6463 40.8161C18.8665 40.646 19.0867 40.4691 19.2969 40.2904C19.335 40.2578 19.388 40.2509 19.4327 40.2715C26.3062 43.5065 33.7477 43.5065 40.5402 40.2715C40.5849 40.2492 40.6379 40.2561 40.6776 40.2887C40.8879 40.4674 41.1081 40.646 41.3299 40.8161C41.406 40.8745 41.401 40.9965 41.3183 41.0464C40.272 41.6768 39.1843 42.2094 38.0404 42.6544C37.9659 42.6836 37.9328 42.7729 37.9692 42.8468C38.5999 44.106 39.3201 45.3052 40.1131 46.4425C40.1462 46.4906 40.2058 46.5112 40.2604 46.494C43.6922 45.3997 47.1721 43.7487 50.7645 41.0292C50.796 41.0051 50.8158 40.969 50.8192 40.9295C51.6949 31.5906 49.3524 23.4785 44.6094 16.287C44.5978 16.263 44.578 16.2458 44.5548 16.2355ZM23.035 36.0093C20.9656 36.0093 19.2605 34.0508 19.2605 31.6456C19.2605 29.2405 20.9326 27.282 23.035 27.282C25.154 27.282 26.8427 29.2577 26.8095 31.6456C26.8095 34.0508 25.1375 36.0093 23.035 36.0093ZM36.9908 36.0093C34.9215 36.0093 33.2163 34.0508 33.2163 31.6456C33.2163 29.2405 34.8883 27.282 36.9908 27.282C39.1099 27.282 40.7984 29.2577 40.7654 31.6456C40.7654 34.0508 39.1099 36.0093 36.9908 36.0093Z" fill="white"/></svg>`,
   };
 
-  /* order and labels as in Figma (the design labels the Instagram icon "Instagram") */
-  const TARGETS = [['whatsapp','Whatsapp'],['telegram','Telegram'],['instagram','Instagram'],['x','X'],['copy','Copy Link'],['more','More'],['facebook','Facebook'],['sms','SMS'],['email','Email'],['wechat','Wechat'],['threads','Threads'],['messenger','Messenger'],['discord','Discord']];
+  const TARGETS = [['whatsapp','WhatsApp'],['telegram','Telegram'],['copy','Copy link'],['instagram','Instagram'],['x','X'],['more','More'],['facebook','Facebook'],['sms','SMS'],['email','Email'],['wechat','Wechat'],['threads','Threads'],['messenger','Messenger'],['discord','Discord']];
   const CONTACTS = [['Aaron Lim','ca5'],['Clarissa','ca3'],['Cherie Tan','ca2'],['Justin Ng','ca4'],['Daniel Ed','ca1'],['Lara','ca2'],['Fionna','ca4']];
   const ST = () => S.sh31 || (S.sh31 = {sel:[], q:'', search:false, what:'service'});
   const open31 = what => { S.sh31 = {sel:[], q:'', search:false, what}; openSheet('share31'); };
 
   const css = document.createElement('style');
   css.textContent = `
-  .sh31{padding:0 0 calc(12px + env(safe-area-inset-bottom,0px))!important; border-radius:24px 24px 0 0!important}
-  .sh31 .grab{width:40px!important; height:4px!important; border-radius:100px!important; background:#1A181B!important; margin:8px auto 12px!important}
-  .sh31-top{display:grid; grid-template-columns:64px 1fr 64px; align-items:center; min-height:52px}
-  .sh31-top h2{margin:0; text-align:center; font:600 18px/28px Inter,sans-serif; color:#1A181B}
-  .sh31-ib{display:grid; place-items:center; width:40px; height:40px; margin-left:12px; border:0; border-radius:999px; background:none; padding:0; cursor:pointer}
-  .sh31-ib svg{width:40px; height:40px}
-  .sh31-ib:focus-visible, .sh31-c:focus-visible, .sh31-t:focus-visible{outline:2px solid #6a2ad8; outline-offset:2px}
-  .sh31-q{grid-column:2/4; display:flex; align-items:center; gap:8px; margin-right:16px; height:40px; padding:0 14px; border-radius:999px; background:#F4F3F5}
-  .sh31-q input{flex:1; min-width:0; height:auto; padding:0!important; border:0!important; border-radius:0!important; background:none!important; box-shadow:none!important; font:400 14px Inter,sans-serif; color:#1A181B; outline:none!important}
-  .sh31-q .ico, .sh31-q svg{width:18px; height:18px; flex:none; color:#99949E}
-  .sh31-line{flex:none; align-self:stretch; width:1px; margin-right:4px; background:#C9C6CC}
-  .sh31-row{display:flex; gap:8px; overflow-x:auto; scrollbar-width:none; padding:24px 16px}
+  #phone .sh31{display:flex;flex-direction:column;gap:16px;padding:8px 0 max(20px,env(safe-area-inset-bottom,0px));border-radius:24px 24px 0 0}
+  #phone .sh31.is-search{inset:0;max-height:none;gap:12px;padding-top:0;border-radius:0;overflow:hidden}
+  #phone .sheet.sh31 .grab{width:36px;height:4px;flex:none;border-radius:999px;background:var(--a-line-strong,#b2afb6);margin:0 auto}
+  .sh31-top{display:flex;align-items:center;gap:8px;flex:none;margin:0 16px}
+  .sh31-q{display:flex;align-items:center;gap:8px;flex:1;min-width:0;min-height:48px;padding:0 12px;border:1px solid var(--a-line);border-radius:16px;background:var(--a-gray-100);color:var(--a-ink-2);text-align:left;font:500 14px Inter,sans-serif}
+  button.sh31-q{cursor:pointer}
+  .sh31-q:focus-within{border-color:var(--a-indigo);outline:2px solid var(--a-indigo-100);outline-offset:1px}
+  .sh31-q input{flex:1;min-width:0;width:100%;padding:0;border:0;background:none;box-shadow:none;color:var(--a-ink);font:500 16px Inter,sans-serif;outline:0}
+  .sh31-q input::-webkit-search-cancel-button{display:none}
+  .sh31-q input:focus-visible{outline:none}
+  .sh31-q>.ico,.sh31-ib>.ico{width:20px;height:20px;flex:none}
+  .sh31-ib{display:grid;place-items:center;flex:none;width:44px;height:44px;border:0;border-radius:14px;background:var(--a-gray-100);color:var(--a-indigo);cursor:pointer}
+  .sh31 button:focus-visible{outline:2px solid var(--a-indigo);outline-offset:-2px}
+  .sh31-row{display:flex;gap:8px;overflow-x:auto;scrollbar-width:none;padding:2px 16px 4px}
   .sh31-row::-webkit-scrollbar{display:none}
-  .sh31-share{gap:6px; border-top:1px solid #E5E4E7}
-  .sh31-c, .sh31-t{flex:none; display:flex; flex-direction:column; align-items:center; gap:8px; width:76px; max-width:76px; padding:0; border:0; background:none; cursor:pointer}
-  .sh31-av{position:relative; width:60px; height:60px}
-  .sh31-av img{width:60px; height:60px; border-radius:50%; object-fit:cover; display:block}
-  .sh31-c.on .sh31-av img{outline:2.5px solid #38168E; outline-offset:2px}
-  .sh31-ck{position:absolute; right:-2px; bottom:-2px; width:22px; height:22px; border-radius:50%; background:#38168E; border:2px solid #fff; display:grid; place-items:center}
-  .sh31-ck svg{width:12px; height:12px}
-  .sh31-nm{display:flex; align-items:center; justify-content:center; gap:2px; max-width:76px}
-  .sh31-nm span{min-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:400 12px/16px Inter,sans-serif; color:#1A181B}
-  .sh31-nm svg{flex:none; width:12px; height:12px}
-  .sh31-t svg{width:60px; height:60px; display:block}
-  .sh31-t span{width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:center; font:400 12px/16px Inter,sans-serif; color:#000}
-  .sh31-empty{padding:24px 16px; margin:0; text-align:center; font:400 13px Inter,sans-serif; color:#99949E}
-  .sh31-send{padding:0 16px 8px}
+  .sh31-c,.sh31-t{flex:0 0 76px;display:flex;flex-direction:column;align-items:center;gap:6px;min-width:0;padding:4px 2px;border:0;border-radius:16px;background:none;color:var(--a-ink);cursor:pointer}
+  .sh31-c:active,.sh31-t:active,.sh31-profile:active{background:var(--a-indigo-100)}
+  .sh31-av{position:relative;width:54px;height:54px;flex:none}
+  .sh31-av img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
+  .sh31-c.on .sh31-av img{outline:2px solid var(--a-indigo);outline-offset:2px}
+  .sh31-ck{position:absolute;right:-2px;bottom:-2px;width:20px;height:20px;border:2px solid #fff;border-radius:50%;background:var(--a-indigo);color:#fff;display:grid;place-items:center}
+  .sh31-ck .ico,.sh31-indicator .ico{width:12px;height:12px}
+  .sh31-nm{display:flex;align-items:center;gap:3px;min-width:0;max-width:100%}
+  .sh31-nm span,.sh31-t span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font:500 12px/16px Inter,sans-serif}
+  .sh31-nm svg{flex:none;width:12px;height:12px}
+  .sh31-t>svg{width:54px;height:54px;display:block}
+  .sh31-results{flex:1;min-height:0;overflow-y:auto;overscroll-behavior:contain;padding:4px 16px 16px}
+  .sh31-profile{display:flex;align-items:center;gap:12px;width:100%;min-height:64px;padding:8px;border:0;border-radius:16px;background:none;color:var(--a-ink);text-align:left;cursor:pointer}
+  .sh31-profile.on{background:var(--a-indigo-100)}
+  .sh31-profile .sh31-av{width:44px;height:44px}
+  .sh31-profile .sh31-nm{flex:1}
+  .sh31-profile .sh31-nm span{font-size:14px;font-weight:650}
+  .sh31-indicator{display:grid;place-items:center;width:22px;height:22px;flex:none;border:1px solid var(--a-line-strong,#b2afb6);border-radius:50%;color:transparent}
+  .sh31-profile.on .sh31-indicator{border-color:var(--a-indigo);background:var(--a-indigo);color:#fff}
+  .sh31-empty{display:grid;justify-items:center;gap:8px;padding:32px 16px;text-align:center;color:var(--a-ink)}
+  .sh31-empty>.ico{display:grid;place-items:center;width:48px;height:48px;margin-bottom:4px;border-radius:50%;background:var(--a-indigo-100);color:var(--a-indigo)}
+  .sh31-empty>.ico svg{width:22px;height:22px}
+  .sh31-empty h2{margin:0;font:700 17px/1.3 Inter,sans-serif}
+  .sh31-empty p{max-width:28ch;margin:0;color:var(--a-ink-2);font:500 13px/1.5 Inter,sans-serif}
+  .sh31-send{padding:0 16px;flex:none}
+  .sh31-send button{width:100%}
+  .sh31-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
+  @media (max-width:360px){.sh31-top{margin-inline:12px}.sh31-row,.sh31-results,.sh31-send{padding-inline:12px}.sh31-c,.sh31-t{flex-basis:64px}}
+  @media (prefers-reduced-motion:reduce){.sh31.anim{animation:none}}
   `;
   document.head.appendChild(css);
 
-  const sheetHTML = () => { const st = ST(); const q = st.q.trim().toLowerCase();
-    const list = CONTACTS.filter(([n]) => !q || n.toLowerCase().includes(q));
-    const top = st.search
-      ? `<div class="sh31-top"><button class="sh31-ib" data-act="sh31Search" aria-label="Close search">${ic('back')}</button><label class="sh31-q">${ic('search')}<input data-in="sh31Q" value="${esc(st.q)}" placeholder="Search" aria-label="Search people"></label></div>`
-      : `<div class="sh31-top"><button class="sh31-ib" data-act="sh31Search" aria-label="Search people">${ICON.search}</button><h2>Send to</h2><span></span></div>`;
-    const people = list.length ? `<div class="sh31-row" role="group" aria-label="People">${list.map(([n, a]) => { const on = st.sel.includes(n);
-        return `<button class="sh31-c ${on ? 'on' : ''}" data-act="sh31Pick" data-n="${esc(n)}" aria-pressed="${on}" aria-label="${esc(n)}"><span class="sh31-av">${img(a, n)}${on ? `<i class="sh31-ck" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2l2.3 2.3 4.7-4.9" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i>` : ''}</span><span class="sh31-nm" aria-hidden="true"><span>${esc(n.split(' ')[0])}</span>${ICON.tagVerified}${ICON.tagHost}</span></button>`; }).join('')}</div>`
-      : `<p class="sh31-empty">No one matches “${esc(st.q)}”.</p>`;
-    const share = `<div class="sh31-row sh31-share" role="group" aria-label="Share to">${TARGETS.map(([k, t]) => `<button class="sh31-t" data-act="sh31To" data-k="${k}">${ICON[k]}<span>${t}</span></button>`).join('')}</div>`;
+  function personButton([name, avatar], expanded) {
+    const on = ST().sel.includes(name);
+    return `<button type="button" class="${expanded ? 'sh31-profile' : 'sh31-c'}${on ? ' on' : ''}" data-act="sh31Pick" data-n="${esc(name)}" aria-pressed="${on}" aria-label="${esc(name)}">
+      <span class="sh31-av">${img(avatar, '')}${on && !expanded ? `<i class="sh31-ck" aria-hidden="true">${ic('check')}</i>` : ''}</span>
+      <span class="sh31-nm" aria-hidden="true"><span>${esc(expanded ? name : name.split(' ')[0])}</span>${ICON.tagVerified}${ICON.tagHost}</span>
+      ${expanded ? `<span class="sh31-indicator" aria-hidden="true">${ic('check')}</span>` : ''}</button>`;
+  }
+
+  function searchResults() {
+    const query = ST().q.trim().toLowerCase();
+    const list = query ? CONTACTS.filter(([name]) => name.toLowerCase().includes(query)) : [];
+    if (list.length) return {status:`${list.length} ${list.length === 1 ? 'person found' : 'people found'}`, html:list.map(person => personButton(person, true)).join('')};
+    const title = query ? 'No people found' : 'Find someone to share with';
+    const detail = query ? 'Try a different name or check the spelling.' : 'Start typing a name to find a friend on YouApp.';
+    return {status:query ? title : '', html:`<div class="sh31-empty">${ic('search')}<h2>${title}</h2><p>${detail}</p></div>`};
+  }
+
+  const sheetHTML = () => {
+    const st = ST();
+    const expanded = st.search;
+    const results = expanded ? searchResults() : null;
+    const top = expanded
+      ? `<div class="sh31-top"><button type="button" class="sh31-ib" data-act="sh31Search" aria-label="Back to share options">${ic('back')}</button><label class="sh31-q">${ic('search')}<input type="search" data-in="sh31Q" value="${esc(st.q)}" placeholder="Search by name" aria-label="Search by name" autocomplete="off"></label></div>`
+      : `<div class="sh31-top"><button type="button" class="sh31-q" data-act="sh31Search">${ic('search')}<span>Search people</span></button></div>`;
+    const body = expanded
+      ? `<div class="sh31-status" role="status">${results.status}</div><div class="sh31-results" role="group" aria-label="Search results">${results.html}</div>`
+      : `<div class="sh31-row" role="group" aria-label="People">${CONTACTS.map(person => personButton(person, false)).join('')}</div>
+        <div class="sh31-row" role="group" aria-label="Share options">${TARGETS.map(([key, label]) => `<button type="button" class="sh31-t" data-act="sh31To" data-k="${key}">${ICON[key]}<span>${label}</span></button>`).join('')}</div>`;
     const send = st.sel.length ? `<div class="sh31-send">${btn(st.sel.length > 1 ? `Send to ${st.sel.length} people` : `Send to ${esc(st.sel[0])}`, 'sh31Send')}</div>` : '';
-    return `<div class="scrim ${S.sheetAnim ? 'anim' : ''}" data-act="closeSheet2"></div><div class="sheet sh31 ${S.sheetAnim ? 'anim' : ''}" role="dialog" aria-label="Send to"><div class="grab" aria-hidden="true"></div>${top}${people}${share}${send}</div>`; };
+    return `<div class="scrim ${S.sheetAnim ? 'anim' : ''}" data-act="closeSheet2"></div><div class="sheet sh31${expanded ? ' is-search' : ''}${S.sheetAnim ? ' anim' : ''}" role="dialog" aria-modal="true" aria-label="${expanded ? 'Search people' : 'Share'}">${expanded ? statusBar() : '<div class="grab" aria-hidden="true"></div>'}${top}${body}${send}</div>`;
+  };
 
   const _ov = overlayHTML;
   overlayHTML = () => _ov() + (S.sheet === 'share31' ? sheetHTML() : '');
@@ -82,15 +117,59 @@
   if (_mx) A.mxShare = el => { if (isGuest()) return _mx(el); open31('place'); };
   const keep = () => { S.sheetAnim = false; render(); };
   Object.assign(A, {
-    sh31Search: () => { const st = ST(); st.search = !st.search; if (!st.search) st.q = ''; keep(); if (st.search) setTimeout(() => document.querySelector('.sh31-q input')?.focus(), 0); },
-    sh31Pick: el => { const st = ST(); const n = el.dataset.n; st.sel = st.sel.includes(n) ? st.sel.filter(x => x !== n) : [...st.sel, n]; keep(); },
-    sh31To: el => { const k = el.dataset.k;
-      if (k === 'copy') { try { navigator.clipboard.writeText('https://youapp.ai/share/demo').catch(() => {}); } catch(e) {} S.sheet = null; render(); toast('Link copied.'); return; }
+    sh31Search: () => {
+      const st = ST();
+      st.search = !st.search;
+      if (!st.search) st.q = '';
+      keep();
+      document.querySelector(st.search ? '.sh31-q input' : 'button.sh31-q')?.focus({preventScroll:true});
+    },
+    sh31Pick: el => {
+      const st = ST();
+      const name = el.dataset.n;
+      const row = el.closest('.sh31-row, .sh31-results');
+      const scroll = st.search ? row.scrollTop : row.scrollLeft;
+      st.sel = st.sel.includes(name) ? st.sel.filter(selected => selected !== name) : [...st.sel, name];
+      keep();
+      const button = [...document.querySelectorAll('.sh31 [data-act="sh31Pick"]')].find(person => person.dataset.n === name);
+      if (button) {
+        button.closest('.sh31-row, .sh31-results')[st.search ? 'scrollTop' : 'scrollLeft'] = scroll;
+        button.focus({preventScroll:true});
+      }
+    },
+    sh31To: async el => { const k = el.dataset.k;
+      if (k === 'copy') {
+        const state = ST();
+        try { await navigator.clipboard.writeText('https://youapp.ai/share/demo'); }
+        catch { toast('Couldn?t copy the link. Try again.'); return; }
+        if (S.sheet === 'share31' && ST() === state) { S.sheet = null; render(); }
+        toast('Link copied.');
+        return;
+      }
       const name = (TARGETS.find(t => t[0] === k) || [])[1];
       S.sheet = null; render(); toast(k === 'more' ? 'Opens the phone’s share options.' : `Opens ${name} to share this ${ST().what}.`); },
     sh31Send: () => { const st = ST(); const n = st.sel.length; S.sheet = null; render(); toast(n > 1 ? `Sent to ${n} people.` : `Sent to ${st.sel[0]}.`); },
   });
-  /* search input: filter as you type without losing focus */
-  document.addEventListener('input', e => { const t = e.target; if (!t.matches || !t.matches('[data-in="sh31Q"]')) return; ST().q = t.value; const pos = t.selectionStart; keep(); const i = document.querySelector('.sh31-q input'); if (i) { i.focus(); i.setSelectionRange(pos, pos); } }, true);
+  document.addEventListener('input', event => {
+    if (!event.target.matches('[data-in="sh31Q"]')) return;
+    ST().q = event.target.value;
+    const {status, html} = searchResults();
+    const results = document.querySelector('.sh31-results');
+    results.innerHTML = html;
+    results.scrollTop = 0;
+    document.querySelector('.sh31-status').textContent = status;
+  });
+  document.addEventListener('keydown', event => {
+    if (event.key !== 'Tab' || S.sheet !== 'share31') return;
+    const sheet = document.querySelector('.sh31');
+    const controls = sheet?.querySelectorAll('button:not(:disabled), input:not(:disabled)');
+    if (!controls?.length) return;
+    const first = controls[0];
+    const last = controls[controls.length - 1];
+    const active = document.activeElement;
+    if (sheet.contains(active) && active !== (event.shiftKey ? first : last)) return;
+    event.preventDefault();
+    (event.shiftKey ? last : first).focus();
+  });
   try { render(); } catch(e) {}
 })();
