@@ -412,7 +412,7 @@ A.gPickTog = (orig => el => { const fromList = el && !el.classList.contains('gpk
 })();
 
 /* ---- Attach panel (25 Nov): opens under the composer like the live app, not a dimmed bottom sheet.
-   One row of round tiles: Gallery, Camera, Document, Location, then Red Packet in the same style when the chat allows it.
+   One row of round tiles: Red Packet first (when the chat allows it), then Gallery, Camera, Document, Location.
    No GIF. Tap the paperclip again, tap the chat, pick an item, or press Esc to close. Chat stays visible and usable. ---- */
 (() => {
   const P = d => `<svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true"><path fill="currentColor" fill-rule="evenodd" d="${d}"/></svg>`;
@@ -423,7 +423,7 @@ A.gPickTog = (orig => el => { const fromList = el && !el.classList.contains('gpk
     cxLoc: ['Location', P('M12 2a8 8 0 0 1 8 8c0 5.2-6 10.6-7.3 11.7a1.1 1.1 0 0 1-1.4 0C10 20.6 4 15.2 4 10a8 8 0 0 1 8-8Zm0 5a3 3 0 1 0 0 6 3 3 0 0 0 0-6Z')],
     apAttach: ['Red Packet', P('M6 2.5h12A2.5 2.5 0 0 1 20.5 5v2.3l-7.4 4.4a2.2 2.2 0 0 1-2.2 0L3.5 7.3V5A2.5 2.5 0 0 1 6 2.5Zm-2.5 7 6.5 3.9a3.9 3.9 0 0 0 4 0l6.5-3.9V19a2.5 2.5 0 0 1-2.5 2.5H6A2.5 2.5 0 0 1 3.5 19V9.5Zm8.5 5.2a1.6 1.6 0 1 0 0 3.2 1.6 1.6 0 0 0 0-3.2Z')]
   };
-  const ORDER = ['attachGal', 'attachCam', 'cxDocs', 'cxLoc', 'apAttach'];
+  const ORDER = ['apAttach', 'attachGal', 'attachCam', 'cxDocs', 'cxLoc'];   /* Red Packet first (25 Nov) */
   const SHEET = /<div class="scrim[^"]*" data-act="closeSheet2"><\/div><div class="sheet[^"]*" role="dialog" aria-label="Attach"><div class="grab" aria-hidden="true"><\/div><div style="display:grid">([\s\S]*?)<\/div><\/div>/;
   const _ovAt = overlayHTML;
   overlayHTML = () => { let h = _ovAt();
