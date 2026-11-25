@@ -613,8 +613,8 @@
     backButton(frame);
     click(frame, '.top .r', 'scanFlash', {}, 'Toggle flash');
     $(frame, '.top .r').setAttribute('aria-pressed', Boolean(S.scanFlash));
-    /* Top up from the camera (option 4: round wallet icon next to the flash), for when the balance is too low to pay */
-    $(frame, '.top .r').insertAdjacentHTML('beforebegin', `<span class="wr-scan-tu">${ic('xsWallet')}</span>`);
+    /* Top up from the camera (option 4, Figma 3.1 icon/system/plus, white like the flash), for when the balance is too low to pay */
+    $(frame, '.top .r').insertAdjacentHTML('beforebegin', `<span class="wr-scan-tu"><svg viewBox="0 0 24 24" width="22" height="22" fill="none" aria-hidden="true"><path fill="currentColor" d="M16.19 2H7.81C4.17 2 2 4.17 2 7.81v8.37C2 19.83 4.17 22 7.81 22h8.37c3.64 0 5.81-2.17 5.81-5.81V7.81C22 4.17 19.83 2 16.19 2ZM16 12.75h-3.25V16a.75.75 0 0 1-1.5 0v-3.25H8a.75.75 0 0 1 0-1.5h3.25V8a.75.75 0 0 1 1.5 0v3.25H16a.75.75 0 0 1 0 1.5Z"/></svg></span>`);
     click(frame, '.top .wr-scan-tu', 'walletReferenceTopUp', {}, 'Top up');
     click(frame, '.frame', 'sheet', {s:'scanSim'}, 'Scan a sample DuitNow QR');
     click(frame, '.sbtm .sb1', 'sheet', {s:'gallery'});
