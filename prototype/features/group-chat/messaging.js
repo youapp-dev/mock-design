@@ -244,40 +244,15 @@ const qr = tok => { let h = 0; const N = 25, cells = []; for (let i = 0; i < tok
   const eye = (x, y) => `<rect x="${x}" y="${y}" width="7" height="7"/><rect x="${x+1}" y="${y+1}" width="5" height="5" fill="#fff"/><rect x="${x+2}" y="${y+2}" width="3" height="3"/>`;
   return `<svg viewBox="-1 -1 27 27" role="img" aria-label="Group invite QR code"><rect x="-1" y="-1" width="27" height="27" fill="#fff"/><g fill="#1E1050">${cells.join('')}${eye(0,0)}${eye(N-7,0)}${eye(0,N-7)}</g></svg>`; };
 V.ginvite = () => { const g = grp(); if (!g) return V.chats(); const link = linkOf(g); const admin = ['owner','admin'].includes(myRole(g));
-  /* 26 Nov: centred group identity, QR with the group photo in the middle, quick share apps and a short "how it works", like Receive / Refer a Friend */
-  const I = window.SH31_ICON || {};
-  const apps = [['whatsapp','WhatsApp'],['telegram','Telegram'],['x','X'],['more','More']];
-  const how = [['userplus', 'Anyone with the link joins right away', 'No approval needed'],
-    ['group', g.perm && g.perm.link ? 'Members can share it too' : 'Only admins can share it', 'Set in Group permissions']];
   return `<div class="screen">${statusBar()}${topBar('Invite link')}<div class="scroll" style="padding:8px 16px 24px">
-    <div class="gc-qrc">
-      <div class="gc-hero">${gAv(g, 'gc-hav')}<b>${esc(g.name)}</b><small>${g.mem.length} member${g.mem.length===1?'':'s'}</small></div>
-      <div class="gc-qr">${qr(g.linkTok + g.id)}<span class="gc-qmark" aria-hidden="true">${gAv(g, 'gc-qav')}</span></div><small>Scan with YouApp to join</small>
+    <div class="gc-gid">${gAv(g, 'av44g')}<span><b>${esc(g.name)}</b><small>${g.mem.length} member${g.mem.length===1?'':'s'} · anyone with the link joins right away</small></span></div>
+    <div class="gc-qrc"><div class="gc-qr">${qr(g.linkTok + g.id)}</div><small>Scan with YouApp to join</small>
       <div class="gx-code"><span><small>Group link</small><b>${link}</b></span><button data-act="gcCopy" aria-label="Copy group link">${ic('copy')}</button></div>
       <div class="gx-two"><button class="b2" data-act="gcSaveQr">${ic('download')}Save QR</button><button class="b1" data-act="extShare">${ic('share')}Share link</button></div></div>
-    <p class="gx-sl">Share to</p>
-    <div class="gc-apps" role="group" aria-label="Share to">${apps.map(([k, t]) => `<button type="button" data-act="${k === 'more' ? 'extShare' : 'gcShareTo'}" data-k="${t}">${I[k] || ic('share')}<span>${t}</span></button>`).join('')}</div>
-    <p class="gx-sl">How it works</p>
-    <div class="gx-sg gc-how">${how.map(([i, t, d]) => `<div class="gx-sr"><span class="gx-si">${ic(i)}</span><span><b>${t}</b><small>${d}</small></span></div>`).join('')}</div>
     ${admin ? `<p class="gx-sl">Admin</p><div class="gx-sg">
         <button class="gx-sr dng" data-act="gcReset"><span class="gx-si">${ic('refresh')}</span><span><b>Reset link</b><small>The current link and QR stop working</small></span>${ic('chev')}</button></div>`
       : `<p class="act-note">Only admins can reset the link.</p>`}
   </div></div>`; };
-A.gcShareTo = el => toast(`Opens ${el.dataset.k} with the group link.`);
-{ const st = document.createElement('style'); st.textContent = `
-  .gc-hero{display:grid; justify-items:center; gap:2px; margin:2px 0 16px}
-  .gc-hero .gav.gc-hav{width:64px; height:64px; border-radius:20px; margin-bottom:8px} .gc-hero .gav.gc-hav b{font-size:28px}
-  .gc-hero > b{font:700 17px/1.3 Inter, sans-serif; color:#1E1050; text-align:center; overflow-wrap:anywhere; text-wrap:balance}
-  .gc-hero > small{font:500 12.5px Inter, sans-serif; color:#6E6688}
-  .gc-qr{position:relative}
-  .gc-qmark{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); padding:4px; border-radius:14px; background:#fff; display:grid}
-  .gc-qmark .gav.gc-qav{width:36px; height:36px; border-radius:10px} .gc-qmark .gav.gc-qav b{font-size:16px}
-  .gc-apps{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:4px}
-  .gc-apps button{display:flex; flex-direction:column; align-items:center; gap:6px; min-width:0; padding:0; border:0; background:none; cursor:pointer}
-  .gc-apps svg{width:48px; height:48px; display:block}
-  .gc-apps span{max-width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; font:500 12px/16px Inter, sans-serif; color:#1E1050}
-  .gc-apps button:focus-visible{outline:2px solid #5E35B8; outline-offset:2px; border-radius:12px}
-  .gc-how .gx-sr{cursor:default}`; document.head.appendChild(st); }
 A.gcCopy = () => { const g = grp(); try { navigator.clipboard.writeText('https://' + linkOf(g)).catch(()=>{}); } catch(e) {} toast('Group link copied.'); };
 A.gcSaveQr = () => toast('QR code saved to your photos.');
 A.gcReset = () => { S.dialog = 'gcReset'; render(); };
