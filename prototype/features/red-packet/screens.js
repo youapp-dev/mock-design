@@ -5,8 +5,7 @@ SVG.apList = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 SVG.apFlag = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4h11l-1.5 4L16 12H5"/></svg>';
 
 const C = n => fmt2(n/100);                       /* cents → "12.34" */
-const MY_ = n => `${C(n)} MYRT`;
-const apMyrtIcon = '<img class="rp20-unit" src="../../design-system/assets/Logos/myrt-icon.svg" alt="MYRT" width="24" height="24">';
+const MY_ = n => `RM${C(n)}`;   /* 26 Nov: red packet amounts show in RM */
 const NOW = () => Date.now();
 const AP_TYPES = {lucky:'Lucky draw', random:'Random', equal:'Equal split'};
 const AP_CREATE_TITLE = 'Create packet';
@@ -187,12 +186,12 @@ function apCalc(chat = apConversation(S.apCtx)){
   const a = Math.round((parseFloat(f.amt) || 0) * 100), n = isLucky(f) ? 0 : parseInt(count, 10) || 0;
   const total = f.type === 'equal' ? a * n : a, fee = feeOf(total), ded = total + fee;
   const e = {};
-  if (f.amt !== '' && a < 100) e.amt = f.type === 'equal' ? 'Minimum 1.00 MYRT per person.' : 'Enter at least 1.00 MYRT.';
+  if (f.amt !== '' && a < 100) e.amt = f.type === 'equal' ? 'Minimum RM1.00 per person.' : 'Enter at least RM1.00.';
   if (!isLucky(f) && count !== '') {
     if (maxPeople === 0) e.count = 'There’s no one else in this group yet.';
     else if (n < 1) e.count = 'Enter at least 1 person.';
     else if (n > maxPeople) e.count = maxPeople === 100 ? 'Maximum 100 people.' : `Choose up to ${apPeople(maxPeople)} for this group.`;
-    else if (f.type === 'random' && a >= 100 && n > Math.floor(a / 100)) e.count = `With ${C(a)} MYRT, you can send to up to ${Math.floor(a / 100)} ${Math.floor(a/100)===1?'person':'people'} (min 1 MYRT each).`;
+    else if (f.type === 'random' && a >= 100 && n > Math.floor(a / 100)) e.count = `With RM${C(a)}, you can send to up to ${Math.floor(a / 100)} ${Math.floor(a/100)===1?'person':'people'} (min RM1 each).`;
   }
   const customExp = parseInt(f.days, 10), expUnit = f.expUnit || 'days', expMax = expUnit === 'hours' ? 168 : 365;
   if (!f.forever && f.dur === 'custom' && f.days !== '' && !(String(customExp) === f.days.trim() && customExp >= 1 && customExp <= expMax)) e.days = `Enter whole ${expUnit} from 1 to ${expMax}.`;
@@ -210,9 +209,9 @@ const fld = (id, key, label, val, o={}) => `<label class="apfld ${o.err?'err':''
 V.apconf = () => { const f = S.apf, r = apCalc(), x = expOf();
   const rows = [['Type', AP_TYPES[f.type]], ['Recipients', isLucky(f) ? 'No people limit' : apPeople(r.n)], ...(f.type==='equal'?[['Per person', MY_(r.a)]]:[]), [isLucky(f) ? 'Budget' : 'Total', MY_(r.total)], ['Validity', x.lbl], ...(f.msg?[['Message', esc(f.msg)]]:[])];
   return `<div class="screen">${statusBar()}${topBar('Confirm Red Packet')}<div class="scroll"><div class="pad16">
-    <div class="apcf-top"><span class="apgate-ic">${ic('apGift')}</span><small>You pay</small><b>${C(r.ded)}${apMyrtIcon}</b></div>
+    <div class="apcf-top"><span class="apgate-ic">${ic('apGift')}</span><small>You pay</small><b><span style="margin-right:4px">RM</span>${C(r.ded)}</b></div>
     <div class="boxcard apkv">${rows.map(([k,v])=>`<div class="kv">${k}<b>${v}</b></div>`).join('')}</div>
-    <p class="apnote" style="text-align:left">Your MYRT is locked when you pay and paid out as people open it.${x.at?' Anything unclaimed comes back to you when it expires.':''}</p></div></div>
+    <p class="apnote" style="text-align:left">Your money is locked when you pay and paid out as people open it.${x.at?' Anything unclaimed comes back to you when it expires.':''}</p></div></div>
     <div class="pad16 apfoot">${btn(`Pay ${MY_(r.ded)}`,'apPay',{cls:'btn-block', loading:S.apBusy, disabled:S.apBusy})}</div></div>`; };
 
 /* ---- section 5: success + share ---- */
@@ -233,7 +232,7 @@ V.apdone = () => { const a = apGet(S.apTok); const cx = S.apCtx && C6().convs.fi
   const sub = `${apTypeDetails(a)} · ${a.expLbl}`;
   return `<div class="screen rp20-share" style="${redPacketThemeStyle(a.theme)}">${statusBar()}<div class="topbar"><span style="width:32px"></span><span class="t-headline" style="flex:1; text-align:center">Red Packet ready</span><button class="iconbtn" data-act="apDoneX" aria-label="Close">${ic('close')}</button></div>
     <div class="scroll"><div class="apd">
-      <div class="apd-top"><span class="apd-badge">${ic('check')}Paid</span><div class="apd-amt">${C(a.total + a.fee)}${apMyrtIcon}</div><p>Locked for ${sub}</p></div>
+      <div class="apd-top"><span class="apd-badge">${ic('check')}Paid</span><div class="apd-amt"><span style="margin-right:4px">RM</span>${C(a.total + a.fee)}</div><p>Locked for ${sub}</p></div>
       <div class="apd-qrc">
         <div class="apd-h">${img(ME_AV(), 'You', 'apd-av')}<span><b>${esc(a.msg || 'Best wishes!')}</b><small>Your red packet · ${MY_(a.total)} inside</small></span><span class="apd-env">${redPacketArt(a.theme, 'packet', 'rp20-detail-thumb')}</span></div>
         <div class="apd-qr">${qrSVG(a.token)}</div>
@@ -321,7 +320,7 @@ function apOpenResult(a, claim, sender) {
   return `<section class="rp20-result${S.apJust ? ' is-new' : ''}">
     <header class="rp20-sender-chip">${img(sender.av, '')}<span>${esc(sender.n)} · “${esc(a.msg || 'Best wishes!')}”</span></header>
     <div class="apreceive-result" role="status" aria-label="You got ${MY_(claim.amt)}. Added to YouWallet." tabindex="-1">
-      <small>You got</small><strong aria-hidden="true"><span data-ap-payout="${claim.amt}">${C(claim.amt)}</span>${apMyrtIcon}</strong>
+      <small>You got</small><strong aria-hidden="true"><span class="rp20-unit pre">RM</span><span data-ap-payout="${claim.amt}">${C(claim.amt)}</span></strong>
       <span>✓ Added to YouWallet</span>
     </div>
     <div class="rp20-result-actions">${source ? '<button type="button" class="rp20-secondary" data-act="apThanks">Say thanks</button>' : ''}${target ? '<button type="button" class="rp20-primary" data-act="apReturnGift">Send one back</button>' : ''}</div>
@@ -396,7 +395,7 @@ function apCompletedRecap(a) {
   const summary = `<p class="rp20-recap-summary">${progress} · ${MY_(claimed)} claimed${a.refunded ? ` · <b>${MY_(a.refunded)} back to you</b>` : ''}</p>`;
   if (!winner) return `<section class="rp20-recap-neutral">${redPacketArt(a.theme, 'packet', 'rp20-detail-thumb')}<h1>Red packet complete</h1>${summary}</section>`;
   return `<section class="rp20-winner">
-    <div class="rp20-winner-art"><img src="../features/red-packet/art/winner.svg" alt="Luckiest" width="358" height="230">${img(winner.av, '', 'rp20-winner-avatar')}</div>
+    <div class="rp20-winner-art"><img src="../features/red-packet/art/winner.svg?v=coin-rm" alt="Luckiest" width="358" height="230">${img(winner.av, '', 'rp20-winner-avatar')}</div>
     ${redPacketArt(a.theme, 'packet', 'rp20-detail-thumb')}
     <h1>${esc(winner.n)} got the most!</h1>
     <p><strong>${MY_(t.luck.amt)}</strong> from your ${MY_(a.total)} red packet</p>
@@ -420,7 +419,7 @@ V.apdet = () => {
     : `Returned to your wallet from ${unclaimed} unclaimed ${unclaimed === 1 ? 'packet' : 'packets'}.`;
   return `<div class="screen apdetail" style="${redPacketThemeStyle(a.theme)}">${statusBar()}${topBar(complete ? 'Your red packet' : 'Red Packet details')}<div class="scroll"><div class="aphist-content">
     ${complete ? apCompletedRecap(a) : `<section class="aphist-hero apdetail-hero"><span class="apst ${tone}">${status}</span><h1>${esc(a.msg || 'Best wishes!')}</h1>
-      <small>${lucky ? 'Packet budget' : 'Packet total'}</small><strong class="apdetail-total">${C(a.total)}${apMyrtIcon}</strong>${apHistoryArt(a.theme)}</section>`}
+      <small>${lucky ? 'Packet budget' : 'Packet total'}</small><strong class="apdetail-total">${MY_(a.total)}</strong>${apHistoryArt(a.theme)}</section>`}
     ${a.refunded && !complete ? `<section class="apdetail-refund"><span class="apdetail-refund-icon">${ic('check')}</span><div><h2><strong>${MY_(a.refunded)}</strong> refunded</h2><p>${refundNote}</p></div></section>` : ''}
     ${active ? `<div class="apdetail-share">${shareBtns(a)}</div>` : ''}
     ${claimList(a, {sender:true})}
@@ -449,7 +448,7 @@ V.aplist = () => {
     return `<li><button type="button" class="aphist-row" data-side="${tab}" data-state="${a.status}" data-act="${sent ? 'apDetail' : 'apOpenTok'}" data-tok="${esc(a.token)}">
       <span class="aphist-row-icon" style="${redPacketThemeStyle(theme)}" aria-hidden="true">${redPacketArt(theme, 'packet', 'rp20-history-thumb')}</span>
       <span class="aphist-row-copy"><b>${esc(a.msg || 'Best wishes!')}</b><small>${themeName} &middot; ${sent ? apOpenedLabel(a) : `From ${esc(sender.n)}`}</small></span>
-      <span class="aphist-row-value"><b>${sent ? `−${C(a.total + a.fee)}` : `${claim.amt ? '+' : ''}${C(claim.amt)}`}${apMyrtIcon}</b>${sent ? `<span class="apst ${tone}">${status}</span>` : ''}</span>${ic('chev')}</button></li>`;
+      <span class="aphist-row-value"><b>${sent ? `−${MY_(a.total + a.fee)}` : `${claim.amt ? '+' : ''}${MY_(claim.amt)}`}</b>${sent ? `<span class="apst ${tone}">${status}</span>` : ''}</span>${ic('chev')}</button></li>`;
   }).join('');
   const count = history.length;
   const summary = sent ? `${history.filter(({a}) => a.status === 'ACTIVE').length} active` : `${count} ${count === 1 ? 'packet' : 'packets'} opened`;
@@ -510,7 +509,7 @@ overlayHTML = () => { let h = _ovAp();
   }
   if (S.dialog === 'apCancel') { const a = apGet(S.apTok); const left = apLeft(a); const amt = redPacketAmountLeft(a);
     const refund = isLucky(a) ? `${MY_(amt)} in unused budget` : `${left} unclaimed packet${left===1?'':'s'} (${MY_(amt)})`;
-    h += gModal('alert', 'Cancel remaining red packet?', `${refund} will go back to your wallet. Any MYRT already paid out stays with its recipient.`, ['Cancel Red Packet','apCancelOk'], ['Keep It','closeDialog']); }
+    h += gModal('alert', 'Cancel remaining red packet?', `${refund} will go back to your wallet. Anything already paid out stays with its recipient.`, ['Cancel Red Packet','apCancelOk'], ['Keep It','closeDialog']); }
   return h; };
 
 /* ---- actions ---- */
@@ -561,7 +560,7 @@ V.apsending = () => {
     <div class="topbar"><span class="t-headline" style="flex:1;text-align:center">Red packet</span><button class="iconbtn" type="button" data-act="apFinishSend" aria-label="Continue">${ic('close')}</button></div>
     <div class="rp20-send-stage"><img class="rp20-send-trail" src="../features/red-packet/art/send-trail.svg" alt="" aria-hidden="true">
       ${redPacketArt(a?.theme, 'packet', 'rp20-flight')}<div class="rp20-sent-mark" role="status"><span>${ic('check')}</span>
-      <h2>${chat ? `Sent to ${esc(chat.name)}` : 'Red packet ready'}</h2><p>${a ? C(a.total) + apMyrtIcon : ''}</p></div></div>
+      <h2>${chat ? `Sent to ${esc(chat.name)}` : 'Red packet ready'}</h2><p>${a ? MY_(a.total) : ''}</p></div></div>
   </div>`;
 };
 Object.assign(A, {
@@ -774,7 +773,7 @@ Object.assign(appEntryRoutes, {
 /* scenario panel */
 if (!scen.apLim) scen.apLim = 'ok';
 Object.assign(META, {
-  apform:{name:'Red Packet · Create', group:'V2 · Red Packet', figma:'Spec: Red Packet 1–4', rules:['Gate: logged in, KYC approved, wallet active; otherwise onboarding, then back to this form','Random: total ≥ people × 1 MYRT, people ≤ floor(total). Equal: amount per person ≥ 1 MYRT. Max 100 people','Message ≤ 50 characters. Never expires is on by default; off: 1h / 6h / 24h / 3d / 7d / Custom 1–365 days','Fee (placeholder): Free 1% min 0.50 · VIP 0.5% min 0.30 · SVIP free. Charged on top; recipients get the full amount','total + fee must fit balance, per-transaction and monthly limit; over limit disables Continue and shows Upgrade']},
+  apform:{name:'Red Packet · Create', group:'V2 · Red Packet', figma:'Spec: Red Packet 1–4', rules:['Gate: logged in, KYC approved, wallet active; otherwise onboarding, then back to this form','Random: total ≥ people × RM1, people ≤ floor(total). Equal: amount per person ≥ RM1. Max 100 people','Message ≤ 50 characters. Never expires is on by default; off: 1h / 6h / 24h / 3d / 7d / Custom 1–365 days','Fee (placeholder): Free 1% min 0.50 · VIP 0.5% min 0.30 · SVIP free. Charged on top; recipients get the full amount','total + fee must fit balance, per-transaction and monthly limit; over limit disables Continue and shows Upgrade']},
   apconf:{name:'Red Packet · Confirm', group:'V2 · Red Packet', rules:['Total, fee, deducted, recipients, validity','PIN, then one server transaction: debit total + fee, total to escrow, fee to revenue, record ACTIVE, all slots generated, random token','Idempotency key: a double tap never charges twice']},
   apdone:{name:'Red Packet · Ready to share', group:'V2 · Red Packet', rules:['Card with QR','Send to chat / Send to group / Copy link, any number of times, same token (no new transaction)','View details for the sender']},
   aprecv:{name:'Red Packet · Receive', group:'V2 · Red Packet', rules:['Checks in order: not logged in → login; KYC/wallet → onboarding; token not found; expired/cancelled → ended; sender → View details only; already claimed → your result; all slots taken → fully claimed; else Open','Open: one free slot taken with a lock, unique (red packet, user), credited without fee or PIN','Amounts are fixed at create and never sent to the app before opening','Random shows a Luckiest label on the top amount']},
@@ -784,7 +783,7 @@ Object.assign(META, {
 const _rpAp = renderPanel;
 renderPanel = function(){ _rpAp(); const p = document.getElementById('panel'); if (!p) return;
   const sc = [...p.querySelectorAll('.pgroup h2')].find(x=>x.textContent==='Scenario'); const later = sc && sc.parentElement.querySelector('.later:last-child');
-  if (later && !p.querySelector('[data-k="apLim"]')) later.insertAdjacentHTML('beforebegin', `${segCtl('Red Packet · monthly limit','apLim',[['ok','Plenty left'],['near','30 MYRT left']],'30 MYRT left: bigger red packet disable Continue and show Upgrade. Tier and balance come from the Wallet 2.0 scenario (Tier, Balance).')}
+  if (later && !p.querySelector('[data-k="apLim"]')) later.insertAdjacentHTML('beforebegin', `${segCtl('Red Packet · monthly limit','apLim',[['ok','Plenty left'],['near','RM30 left']],'RM30 left: bigger red packet disable Continue and show Upgrade. Tier and balance come from the Wallet 2.0 scenario (Tier, Balance).')}
     <div class="ctl"><span class="lab">Red Packet · demo</span><div class="segp" role="group" aria-label="Red Packet demo">${[['ready','Ready'],['guest','Not logged in'],['kyc','KYC not done'],['notfound','Not found'],['ended','Ended'],['own','Own'],['claimed','Claimed'],['full','Fully claimed'],['lucky','Lucky draw']].map(([v,t])=>`<button data-act="apDemoGo" data-v="${v}">${t}</button>`).join('')}</div><button class="pbtn" style="margin-top:6px" data-act="apExpireNow">Expire my latest active red packet now</button></div>`); };
 A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist = S.screen === t ? S.hist : [...S.hist, S.screen]; S.screen = t; S.sheet = null; S.dialog = null; render(); };
 
@@ -812,7 +811,7 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
       <button type="button" data-act="apExpiryOptions" aria-expanded="${f.expiryOpen}" aria-controls="apExpiryFields">${ic('clock')}
         <span class="rp20-exp-copy"><small>Leftover money</small><b>${label}</b></span>${ic('chevdown')}</button>
       <div id="apExpiryFields"${f.expiryOpen ? '' : ' hidden'}><div class="apexp">
-        <button type="button" class="apchk" role="checkbox" aria-checked="${f.forever}" data-act="apForever"><i>${f.forever?'✓':''}</i><span><b>Never expires</b><small>Choose when unclaimed MYRT returns to your wallet.</small></span></button>
+        <button type="button" class="apchk" role="checkbox" aria-checked="${f.forever}" data-act="apForever"><i>${f.forever?'✓':''}</i><span><b>Never expires</b><small>Choose when unclaimed money returns to your wallet.</small></span></button>
         ${f.forever ? '' : `<div class="apdurs">${DURS.map(([v,t]) => `<button type="button" aria-pressed="${f.dur===v}" data-act="apDur" data-v="${v}">${t}</button>`).join('')}</div>
         ${f.dur === 'custom' ? `<div class="apcustom"><div class="apunits" role="group" aria-label="Custom expiry unit">${['hours','days'].map(value => `<button type="button" aria-pressed="${unit === value}" data-act="apExpUnit" data-v="${value}">${value === 'hours' ? 'Hours' : 'Days'}</button>`).join('')}</div>
           ${fld('apDays','days',`Number of ${unit}`,f.days,{mode:'numeric', ph:`1–${max}`, suf:unit, err:r.e.days, help:`Whole ${unit}, 1 to ${max}`})}</div>` : ''}`}
@@ -853,7 +852,7 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
           ${amountHelp ? `<p class="rp20-error" id="apAmtH">${esc(amountHelp)} ${r.e.lim ? '<button class="link" type="button" data-act="apUpgrade">Upgrade</button>' : ''}</p>` : ''}
           <div class="rp20-wallet"><img class="rp20-wallet-flag" src="../features/red-packet/art/wallet-flag.svg" alt=""><span${amountHelp ? '' : ' id="apAmtH"'}>YouWallet · ${RM(r.bal / 100)}</span>
             <button class="rp20-wallet-change" type="button" data-act="apChangeWallet" aria-label="Change wallet" aria-haspopup="dialog">Change ${ic('chevdown')}</button></div>
-          ${r.e.bal ? '<p class="rp20-error" id="apAmtBalance">Not enough MYRT in your wallet. <button class="link" type="button" data-act="apTopUp">Top up</button></p>' : ''}
+          ${r.e.bal ? '<p class="rp20-error" id="apAmtBalance">Not enough balance in your wallet. <button class="link" type="button" data-act="apTopUp">Top up</button></p>' : ''}
         </section>
         ${lucky ? '' : `<div class="rp20-box rp20-people">${ic('group')}<div>
           <label for="apCount">How many people</label><input id="apCount" data-apf="count" value="${esc(r.count)}" inputmode="numeric" placeholder="0" autocomplete="off" aria-invalid="${Boolean(r.e.count)}"${r.e.count ? ' aria-describedby="apCountError"' : ''}></div>
@@ -936,12 +935,12 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
     const sub = esc(S.apAuthSum);
     const hold = isLucky(S.apf) ? '<small>Set aside when you confirm</small>' : '';
     const recipient = chat ? `<small>To ${esc(chat.name)}</small>` : '';
-    return h.replace(sub, `<span class="ap2-pin"><span class="ap2-pin-e">${redPacketArt(S.apf.theme, 'packet')}</span><b>${C(r.total)}${apMyrtIcon}</b>${recipient}${hold}<small>${apTypeDetails({type:S.apf.type, count:r.n})} · ${expOf().lbl}</small></span>`); };
+    return h.replace(sub, `<span class="ap2-pin"><span class="ap2-pin-e">${redPacketArt(S.apf.theme, 'packet')}</span><b>${MY_(r.total)}</b>${recipient}${hold}<small>${apTypeDetails({type:S.apf.type, count:r.n})} · ${expOf().lbl}</small></span>`); };
   /* the PIN step carries the summary the confirm screen used to show */
   const _authAp = auth;
   auth = function(reason, ok, opts){ if (reason === 'Send angpao' && S.apAuthSum) reason = S.apAuthSum; return _authAp(reason, ok, opts); };
   if (typeof META === 'object') {
-    if (META.apform) META.apform.rules = ['Gate: logged in, KYC approved, wallet active; otherwise onboarding, then back to this form','Random: Total ≥ people × 1 MYRT, people ≤ floor(total). Equal: amount per person ≥ 1 MYRT. Both allow up to 100 people','Lucky draw: set a MYRT budget with no people limit. Each person gets one draw. The payout is calculated when they open it','Message ≤ 50 characters, empty uses “Best wishes!”','Expiry: Never expires, presets from 1 hour to 7 days, or Custom using 1–168 hours / 1–365 days. Unclaimed MYRT returns on expiry or cancellation','No fee: you pay exactly the red packet total','Send {total} opens PIN with the summary (no separate confirm screen). Double tap never charges twice'];
+    if (META.apform) META.apform.rules = ['Gate: logged in, KYC approved, wallet active; otherwise onboarding, then back to this form','Random: Total ≥ people × RM1, people ≤ floor(total). Equal: amount per person ≥ RM1. Both allow up to 100 people','Lucky draw: set a RM budget with no people limit. Each person gets one draw. The payout is calculated when they open it','Message ≤ 50 characters, empty uses “Best wishes!”','Expiry: Never expires, presets from 1 hour to 7 days, or Custom using 1–168 hours / 1–365 days. Unclaimed RM returns on expiry or cancellation','No fee: you pay exactly the red packet total','Send {total} opens PIN with the summary (no separate confirm screen). Double tap never charges twice'];
     if (META.aprecv) META.aprecv.rules = ['An eligible recipient can open each packet once. The sender can only view details','Lucky draw uses the prize rates saved when the packet is created and draws from prizes the budget can afford','Luckiest marks the largest positive claim so far for Random and Lucky draw'];
     if (META.apconf) META.apconf.rules = ['Not used in the main flow any more: Send on the form goes straight to PIN'];
     if (META.apdet) META.apdet.rules = (META.apdet.rules || []).map(x => x.replace('Status, total, fee, validity', 'Status, total, validity').replace(', fee not refunded', ''));

@@ -175,6 +175,7 @@
 .rp20-unit { display:inline-block; width:max(14px,.56em); height:max(14px,.56em); object-fit:contain; flex:none; vertical-align:baseline; margin-inline-start:4px; }
 .apcf-top .rp20-unit, .apd-amt .rp20-unit { align-self:center; min-width:20px; min-height:20px; }
 .rp20-result .rp20-unit { margin-inline-start:6px; }
+.rp20-result .apreceive-result strong span.rp20-unit.pre { margin-left:0; margin-right:5px; }
 .rp20-result .apreceive-result > span { color:#08725a; font-size:13px; font-weight:690; }
 .rp20-result-actions { width:100%; margin:14px 0 11px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
 .rp20-result-actions:has(button:only-child) { grid-template-columns:minmax(0,1fr); }

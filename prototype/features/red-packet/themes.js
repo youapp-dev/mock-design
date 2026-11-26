@@ -12,7 +12,7 @@ function redPacketTheme(value) {
 
 function redPacketArt(theme, part, className = '') {
   const design = redPacketTheme(theme);
-  const revision = design === 'youapp' && part === 'packet' ? '?v=seal-logo' : '';
+  const revision = design === 'youapp' && part === 'packet' ? '?v=seal-logo' : '?v=coin-rm';
   return `<img class="${className}" src="../features/red-packet/art/${design}-${part}.svg${revision}" alt="" aria-hidden="true" draggable="false">`;
 }
 
