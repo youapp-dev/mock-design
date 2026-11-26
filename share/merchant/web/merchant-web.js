@@ -28,7 +28,9 @@
     close: svg('<path d="M6 6l12 12M18 6L6 18"/>'),
     down: svg('<path d="M6 9l6 6 6-6"/>'),
   };
-  const CB_ART = `<svg viewBox="0 0 52 52" aria-hidden="true"><rect x="7" y="20" width="30" height="24" rx="3" fill="#7f57e5"/><path d="M5 20l4-9h26l4 9z" fill="#b79cf2"/><rect x="18" y="30" width="8" height="14" rx="1.5" fill="#251052"/><circle cx="40" cy="15" r="9" fill="#2fbf71"/><text x="40" y="19" text-anchor="middle" font-size="11" font-weight="700" fill="#fff" font-family="Inter, system-ui, sans-serif">%</text><circle cx="13" cy="9" r="2" fill="#2fbf71"/><circle cx="46" cy="32" r="1.6" fill="#b79cf2"/></svg>`;
+  /* cashback banner art: same as the app's merchant page (merchants.js CBB_BG and GIFT) */
+  const CBB_BG = "<svg class=\"mw-cb-bg\" viewBox=\"0 0 343 88\" preserveAspectRatio=\"xMidYMid slice\" aria-hidden=\"true\"><path d=\"M122 6c46-14 128-10 168 10 34 17 26 58-18 68-52 12-128 10-162-6C74 64 78 20 122 6z\" fill=\"#E6DCFD\"/><path d=\"M0 52c22-8 48 2 60 20 6 9 4 16 0 16H0z\" fill=\"#DCCDFA\"/><path d=\"M14 88c4-14 22-20 40-14 12 4 22 10 26 14z\" fill=\"#CFBDF7\"/><path d=\"M262 88c8-18 30-26 50-18 14-14 30-12 31-10v28z\" fill=\"#DCCDFA\"/><path d=\"M300 10c14-10 34-8 40 4 2 10-12 18-26 16-14-2-22-12-14-20z\" fill=\"#E6DCFD\"/><circle cx=\"326\" cy=\"48\" r=\"5\" fill=\"#C9B5F7\"/></svg>";
+  const GIFT = "<svg viewBox=\"0 0 96 84\"><g stroke=\"#F5B82E\" stroke-width=\"4.5\" stroke-linecap=\"round\"><path d=\"M14 18l6 8M5 33l9 2M9 49l8-4M82 7l-4 9M91 20l-8 5M93 35l-9 1\"/></g><g transform=\"rotate(-12 48 52)\"><ellipse cx=\"48\" cy=\"80\" rx=\"24\" ry=\"3.5\" fill=\"#38168E\" opacity=\".18\"/><rect x=\"23\" y=\"40\" width=\"50\" height=\"36\" rx=\"6\" fill=\"#7F57E5\"/><rect x=\"23\" y=\"40\" width=\"13\" height=\"36\" rx=\"6\" fill=\"#5E35B8\" opacity=\".55\"/><rect x=\"23\" y=\"40\" width=\"50\" height=\"6\" fill=\"#38168E\" opacity=\".22\"/><rect x=\"18\" y=\"29\" width=\"60\" height=\"14\" rx=\"5\" fill=\"#9B7BF0\"/><rect x=\"18\" y=\"29\" width=\"60\" height=\"5\" rx=\"2.5\" fill=\"#fff\" opacity=\".22\"/><rect x=\"43\" y=\"29\" width=\"10\" height=\"47\" fill=\"#F5B82E\"/><rect x=\"43\" y=\"29\" width=\"4\" height=\"47\" fill=\"#FFD66B\"/><path d=\"M48 29c-6-12-20-15-21-7-1 7 12 8 21 7zM48 29c6-12 20-15 21-7 1 7-12 8-21 7z\" fill=\"#F5B82E\" stroke=\"#DE9E14\" stroke-width=\"1.6\" stroke-linejoin=\"round\"/><circle cx=\"48\" cy=\"28.5\" r=\"3.4\" fill=\"#DE9E14\"/></g></svg>";
   const plural = (n, one, many = one + 's') => `${fmt(n)} ${n === 1 ? one : many}`;
 
   /* app links: the same merchant page in the prototype, version from ?version= */
@@ -64,7 +66,7 @@
   const tabsHTML = `<nav class="mw-tabs" aria-label="Sections"><div class="wrap" id="mwTabs">${SECTIONS.map(([k, t], i) => `<a href="#${k}" data-sec="${k}"${i === 0 ? ' aria-current="true"' : ''}>${t}</a>`).join('')}</div></nav>`;
 
   const sideHTML = `<aside class="mw-side" aria-label="Actions">
-    ${p.cb ? `<div class="mw-cb">${CB_ART}<div><b>${p.cb}% cashback</b><span>Pay with YouApp at this merchant.</span></div></div>` : ''}
+    ${p.cb ? `<div class="mw-cb">${CBB_BG}<span class="mw-cb-g" aria-hidden="true">${GIFT}</span><p><small>Pay with YouApp and get</small><b>${p.cb}% cashback</b></p></div>` : ''}
     <div class="card mw-been"><h2>Been here?</h2>
       ${p.rating ? `<div class="rt"><b>${STAR}${p.rating}</b><small>${plural(p.reviews, 'review')}</small></div>` : ''}
       <p>Check in and review in the YouApp app.</p>
