@@ -243,16 +243,65 @@ const qr = tok => { let h = 0; const N = 25, cells = []; for (let i = 0; i < tok
   for (let y = 0; y < N; y++) for (let x = 0; x < N; x++) { if (fp(x, y)) continue; h = (h * 1103515245 + 12345) >>> 0; if ((h >>> 16) & 1) cells.push(`<rect x="${x}" y="${y}" width="1" height="1"/>`); }
   const eye = (x, y) => `<rect x="${x}" y="${y}" width="7" height="7"/><rect x="${x+1}" y="${y+1}" width="5" height="5" fill="#fff"/><rect x="${x+2}" y="${y+2}" width="3" height="3"/>`;
   return `<svg viewBox="-1 -1 27 27" role="img" aria-label="Group invite QR code"><rect x="-1" y="-1" width="27" height="27" fill="#fff"/><g fill="#1E1050">${cells.join('')}${eye(0,0)}${eye(N-7,0)}${eye(0,N-7)}</g></svg>`; };
+/* 26 Nov: laid out like Refer a Friend (Figma YouApp-3.0 3719:115757), in group terms:
+   purple header with the group, a "joins right away" card (Reset link for admins), gradient QR with the group code,
+   link pill, Save QR / Share link, then the members. */
+const GQ_ART = `<svg class="gq-art" viewBox="0 0 160 128" fill="none" aria-hidden="true">
+  <path d="M18 34l9-5M46 14l3 9M128 20l7 6M108 8l-2 9M150 58l-9 2" stroke="#fff" stroke-opacity=".35" stroke-width="5" stroke-linecap="round"/>
+  <path d="M84 22l2.6 6.4L93 31l-6.4 2.6L84 40l-2.6-6.4L75 31l6.4-2.6zM140 34l1.8 4.2 4.2 1.8-4.2 1.8L140 46l-1.8-4.2-4.2-1.8 4.2-1.8z" fill="#fff" fill-opacity=".45"/>
+  <circle cx="98" cy="74" r="18" fill="#fff" fill-opacity=".16"/><circle cx="134" cy="78" r="14" fill="#fff" fill-opacity=".12"/><circle cx="64" cy="80" r="14" fill="#fff" fill-opacity=".12"/>
+  <path d="M60 128c4-22 20-34 38-34s34 12 38 34z" fill="#fff" fill-opacity=".14"/>
+  <path d="M38 128c3-16 14-25 26-25 7 0 13 3 18 8M158 128c-3-16-12-25-24-25-7 0-13 3-18 8" stroke="#fff" stroke-opacity=".14" stroke-width="10" stroke-linecap="round"/></svg>`;
+const qrGrad = tok => qr(tok).replace('<g fill="#1E1050">', '<defs><linearGradient id="gqGrad" x1="0" y1="0" x2="25" y2="25" gradientUnits="userSpaceOnUse"><stop stop-color="#9A6BBF"/><stop offset="1" stop-color="#3D1C96"/></linearGradient></defs><g fill="url(#gqGrad)">');
 V.ginvite = () => { const g = grp(); if (!g) return V.chats(); const link = linkOf(g); const admin = ['owner','admin'].includes(myRole(g));
-  return `<div class="screen">${statusBar()}${topBar('Invite link')}<div class="scroll" style="padding:8px 16px 24px">
-    <div class="gc-gid">${gAv(g, 'av44g')}<span><b>${esc(g.name)}</b><small>${g.mem.length} member${g.mem.length===1?'':'s'} · anyone with the link joins right away</small></span></div>
-    <div class="gc-qrc"><div class="gc-qr">${qr(g.linkTok + g.id)}<span class="gc-qmark" aria-hidden="true">${gAv(g, 'gc-qav')}</span></div><small>${ic('scan')}Scan with YouApp to join</small>
-      <div class="gx-code"><span><small>Group link</small><b>${link}</b></span><button data-act="gcCopy" aria-label="Copy group link">${ic('copy')}</button></div>
-      <div class="gx-two"><button class="b2" data-act="gcSaveQr">${ic('download')}Save QR</button><button class="b1" data-act="extShare">${ic('share')}Share link</button></div></div>
-    ${admin ? `<p class="gx-sl">Admin</p><div class="gx-sg">
-        <button class="gx-sr dng" data-act="gcReset"><span class="gx-si">${ic('refresh')}</span><span><b>Reset link</b><small>The current link and QR stop working</small></span>${ic('chev')}</button></div>`
-      : `<p class="act-note">Only admins can reset the link.</p>`}
+  const n = g.mem.length; const order = {owner:0, admin:1, member:2};
+  const mem = [...g.mem].sort((a, b) => (a.k === 'me' ? -1 : b.k === 'me' ? 1 : (order[a.role] ?? 2) - (order[b.role] ?? 2)));
+  const role = {owner:'Owner', admin:'Admin'};
+  const rows = mem.slice(0, 5).map(m => { const p = GP(m.k) || {}; return `<div class="gq-mem">${img(p.av, p.n, 'gq-av')}<span><b>${esc(m.k === 'me' ? 'You' : p.n || '')}</b><small>${esc(p.u || '')}</small></span>${role[m.role] ? `<i class="gq-role">${role[m.role]}</i>` : ''}</div>`; }).join('');
+  return `<div class="screen">${statusBar()}${topBar('Invite link')}<div class="scroll gq" style="padding:0 0 24px">
+    <div class="gq-head">${GQ_ART}${gAv(g, 'gq-hav')}<span class="gq-hid"><b>${esc(g.name)}</b><small>${n} member${n === 1 ? '' : 's'}</small><i>Group</i></span></div>
+    <div class="gq-body">
+      <div class="gq-info"><span class="gq-ic">${ic('link')}</span><span><b>Anyone with the link joins</b><small>${admin ? 'No approval needed.' : 'No approval needed. Only admins can reset it.'}</small></span>${admin ? `<button class="gq-pill" data-act="gcReset">Reset link</button>` : ''}</div>
+      <div class="gq-card">
+        <div class="gq-qr">${qrGrad(g.linkTok + g.id)}<span class="gq-mark" aria-hidden="true">${gAv(g, 'gc-qav')}</span></div>
+        <p class="gq-code"><span>Group</span> Code<b>${esc(String(g.linkTok).toUpperCase())}</b></p>
+        <div class="gq-link">${ic('link')}<span>${link}</span><button data-act="gcCopy" aria-label="Copy group link">${ic('copy')}</button></div>
+        <div class="gq-two"><button class="gq-out" data-act="gcSaveQr">${ic('download')}Save QR</button><button class="gq-fill" data-act="extShare">${ic('share')}Share link</button></div>
+      </div>
+      <div class="gq-mh"><b>Members</b><span><b>${n}</b> member${n === 1 ? '' : 's'}</span></div>
+      <div class="gq-list">${rows}${n > 5 ? `<button class="link gq-all" data-act="gInfo">See all in Group info</button>` : ''}</div>
+    </div>
   </div></div>`; };
+{ const st = document.createElement('style'); st.textContent = `
+  .gq-head{position:relative; overflow:hidden; display:flex; align-items:center; gap:14px; min-height:128px; padding:18px 16px; background:linear-gradient(100deg,#9A6BBF 0%,#6A3FB8 48%,#3D1C96 100%); color:#fff}
+  .gq-art{position:absolute; right:-6px; bottom:0; width:168px; height:auto; pointer-events:none}
+  .gq-head .gav.gq-hav{position:relative; width:64px; height:64px; border-radius:20px; box-shadow:0 0 0 3px rgba(255,255,255,.85)} .gq-head .gav.gq-hav b{font-size:28px}
+  .gq-hid{position:relative; display:grid; gap:2px; min-width:0; justify-items:start}
+  .gq-hid b{font:700 18px/1.3 Inter, sans-serif; color:#fff; overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
+  .gq-hid small{font:500 13px Inter, sans-serif; color:rgba(255,255,255,.82)}
+  .gq-hid i{margin-top:4px; padding:2px 10px; border-radius:999px; background:rgba(255,255,255,.22); font:600 11.5px/18px Inter, sans-serif; font-style:normal; color:#fff}
+  .gq-body{padding:16px 16px 0}
+  .gq-info{display:flex; align-items:center; gap:12px; padding:14px; border:1px solid #ECE7F7; border-radius:16px; background:#fff}
+  .gq-ic{flex:none; display:grid; place-items:center; width:40px; height:40px; border-radius:12px; background:#F4EFFF; color:#4B2A9E} .gq-ic .ico{width:20px; height:20px}
+  .gq-info > span:nth-child(2){flex:1; min-width:0} .gq-info b{display:block; font:700 14.5px Inter, sans-serif; color:#1E1050} .gq-info small{display:block; margin-top:2px; font:500 12px/16px Inter, sans-serif; color:#6E6688}
+  .gq-pill{flex:none; height:34px; padding:0 12px; border:0; border-radius:999px; background:linear-gradient(100deg,#9A6BBF,#3D1C96); color:#fff; font:700 13px Inter, sans-serif; cursor:pointer}
+  .gq-card{margin-top:12px; padding:16px; border:1px solid #ECE7F7; border-radius:16px; background:#fff; text-align:center}
+  .gq-qr{position:relative; width:220px; max-width:100%; aspect-ratio:1; margin:0 auto} .gq-qr svg{width:100%; height:100%; display:block}
+  .gq-mark{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); padding:4px; border-radius:14px; background:#fff; display:grid}
+  .gq-mark .gav.gc-qav{width:40px; height:40px; border-radius:11px} .gq-mark .gav.gc-qav b{font-size:18px}
+  .gq-code{margin:12px 0 0; font:700 14px/20px Inter, sans-serif; color:#3D1C96} .gq-code span{color:#9A6BBF} .gq-code b{display:block; font:800 16px/22px Inter, sans-serif; letter-spacing:.5px; color:#3D1C96}
+  .gq-link{display:flex; align-items:center; gap:8px; margin:14px 0 12px; padding:6px 6px 6px 12px; border-radius:999px; background:#F4EFFF; color:#4B2A9E}
+  .gq-link > .ico{width:18px; height:18px; flex:none} .gq-link span{flex:1; min-width:0; text-align:left; font:500 12.5px Inter, sans-serif; color:#3D1C96; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .gq-link button{flex:none; display:grid; place-items:center; width:36px; height:36px; border:0; border-radius:999px; background:none; color:#4B2A9E; cursor:pointer} .gq-link button .ico{width:18px; height:18px}
+  .gq-two{display:flex; gap:10px} .gq-two button{flex:1; min-width:0; height:46px; display:flex; align-items:center; justify-content:center; gap:7px; border-radius:999px; font:700 14.5px Inter, sans-serif; cursor:pointer} .gq-two .ico{width:18px; height:18px}
+  .gq-out{border:1.5px solid #3D1C96; background:#fff; color:#3D1C96} .gq-fill{border:0; background:linear-gradient(100deg,#9A6BBF,#3D1C96); color:#fff}
+  .gq-mh{display:flex; align-items:baseline; justify-content:space-between; margin:20px 2px 8px} .gq-mh > b{font:700 16px Inter, sans-serif; color:#1E1050} .gq-mh span{font:500 13px Inter, sans-serif; color:#6E6688} .gq-mh span b{color:#1E1050}
+  .gq-mem{display:flex; align-items:center; gap:12px; padding:8px 2px} .gq-av{width:42px; height:42px; border-radius:50%; object-fit:cover; flex:none}
+  .gq-mem > span{flex:1; min-width:0} .gq-mem b{display:block; font:600 14.5px Inter, sans-serif; color:#1E1050} .gq-mem small{display:block; font:500 12px Inter, sans-serif; color:#6E6688}
+  .gq-role{padding:3px 10px; border-radius:999px; background:#F4EFFF; font:700 11.5px/16px Inter, sans-serif; font-style:normal; color:#4B2A9E}
+  .gq-all{display:block; margin:6px auto 0}
+  .gq button:focus-visible{outline:2px solid #5E35B8; outline-offset:2px}
+  @media (max-width:340px){ .gq-two button{font-size:13.5px} }`; document.head.appendChild(st); }
 A.gcCopy = () => { const g = grp(); try { navigator.clipboard.writeText('https://' + linkOf(g)).catch(()=>{}); } catch(e) {} toast('Group link copied.'); };
 A.gcSaveQr = () => toast('QR code saved to your photos.');
 A.gcReset = () => { S.dialog = 'gcReset'; render(); };
