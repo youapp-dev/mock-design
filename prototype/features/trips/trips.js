@@ -297,7 +297,7 @@
   const goTrips = () => { S.hist = ['discover']; go('trips', {replace:true}); };
   Object.assign(A, {
     nav: (orig => el => { if (el.dataset.to === 'locals' && !isGuest()) {
-      if (kyc() !== 'approved' && !SESS6.localsLater) { S.gateFrom = 'locals'; S.hist = ['discover']; go('gate', {replace:true}); return; }
+      if (kyc() !== 'approved') { S.gateFrom = 'locals'; S.hist = ['discover']; go('gate', {replace:true}); return; }
       goTrips(); return; } orig(el); })(A.nav),
     gateLater: (orig => () => { if (S.gateFrom === 'locals') { SESS6.localsLater = true; goTrips(); return; } orig(); })(A.gateLater),
     tpTab: el => { T.tab = el.dataset.k; render(); },

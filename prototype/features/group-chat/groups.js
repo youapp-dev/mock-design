@@ -91,7 +91,10 @@ V.chats = () => { const c = gStore();
       : `<div class="pad16">${list.map(gRow).join('')}${!list.length?stateBlock('search','No groups found',`No groups match “${esc(S.cq)}”.`):''}</div>`;
     h = h.replace(/<div class="scroll" style="padding-bottom:96px">[\s\S]*<\/div>\s*<button class="cfab"/, `<div class="scroll" style="padding-bottom:96px">${body}</div>\n  <button class="cfab"`); }
   if (tab==='group') h = h.replace(/<button class="cfab" data-act="addPeople" aria-label="Add people">[\s\S]*?<\/button>/, gl.length ? `<button class="cfab" data-act="gNew" aria-label="Create group">${ic('userplus')}</button>` : '');
+  /* Host tab (26 Nov): the floating button finds hosts: Discover › Locals › Hosts, with a discover (compass) icon */
+  if (tab==='host') h = h.replace(/<button class="cfab" data-act="addPeople" aria-label="Add people">[\s\S]*?<\/button>/, `<button class="cfab" data-act="findHosts" aria-label="Find hosts on Discover">${ic('compass')}</button>`);
   return h; };
+A.findHosts = () => { S.hist = []; S.htab = 'discover'; S.seg = 'locals'; go('discover', {replace:true}); document.querySelector('.scroll')?.scrollTo(0, 0); };
 const gFix = g => { const o = g.mem.find(m=>m.k!=='me'); g.msgs.forEach(m=>{ if (!m.me && !m.who && !m.gsys && !m.sys && m.t!=='ginvite' && o) m.who = o.k; }); };
 function gRow(g){ gFix(g); const last = [...g.msgs].reverse().find(m=>!m.gsys && !m.sys) || g.msgs[g.msgs.length-1] || {};
   const who = last.me ? 'You: ' : last.who ? GP(last.who).n.split(' ')[0]+': ' : '';
@@ -213,7 +216,7 @@ Object.assign(A, {
   gSaveOk: () => { const g = grp(); const f = S.gf; const renamed = g.name!==f.name.trim(); g.name = f.name.trim(); g.letter = g.logo ? g.letter : gIni(g.name); g.bio = f.bio.trim(); g.photo = f.photo; if (renamed) gMsg(g, `<b>You</b> changed the group name to “${esc(g.name)}”`); S.dialog=null; back(); gToast('Group info updated'); },
   gPhotoMenu: () => openSheet('gPhoto'),
   gPhotoPick: () => openSheet('gGal'),
-  gPhotoDel: () => { if (S.screen==='gform') S.gf.photo = null; else grp().photo = null; S.sheet=null; render(); },
+  gPhotoDel: () => { if (S.screen==='gform') S.gf.photo = null; else grp().photo = null; S.sheet=null; render(); toast('Group photo removed'); },
   gGalPick: el => { if (S.screen==='gform') S.gf.photo = el.dataset.m; else { grp().photo = el.dataset.m; gToast('Group info updated'); } S.sheet=null; render(); },
   gAddMem: () => { const g = grp(); S.gf = {mode:'add', sel:[], mem:g.mem}; S.gq=''; go('gpick'); },
   gAddGo: () => { const g = grp(); const f = S.gf; f.sel.forEach(k=>{ g.mem.push({k, role:'member'}); gMsg(g, `<b>You</b> added <b>${esc(GP(k).n)}</b>`); }); const n = f.sel.length; back(); gToast(n===1?`${GP(f.sel[0]).n} added to group`:`${n} members added to group`); },
@@ -259,7 +262,7 @@ const _ovGrp = overlayHTML; overlayHTML = () => { let h = _ovGrp();
     if (me==='owner') { if (ro==='admin') { rows.shift(); rows.push(['demote','person','Demote to member']); } else if (ro==='member') rows.push(['promote','shield','Promote to admin']); rows.push(['remove','trash','Remove from group']); }
     else if (me==='admin' && ro==='member') rows.push(['remove','trash','Remove from group']);
     h += sheet(`<div class="gmhd">${img(p.av,p.n,'av40')}<span><b>${esc(p.n)}</b><small>${esc(p.u)}</small></span></div><div style="display:grid">${rows.map(([a,i,t])=>`<button class="menurow ${a==='remove'?'danger':''}" data-act="gMemAct" data-a="${a}">${ic(i)}${t}</button>`).join('')}</div>`, 'Member actions'); }
-  if (S.sheet==='gPhoto') { const has = S.screen==='gform' ? S.gf.photo : g && g.photo; h += sheet(`<div style="display:grid"><button class="menurow" data-act="gPhotoPick">${ic('image')}Change Photo</button></div>`, 'Group photo'); }
+  if (S.sheet==='gPhoto') { const has = S.screen==='gform' ? S.gf.photo : g && g.photo; h += sheet(`<div style="display:grid"><button class="menurow" data-act="gPhotoPick">${ic('image')}Change Photo</button>${has ? `<button class="menurow danger" data-act="gPhotoDel">${ic('trash')}Remove Photo</button>` : ''}</div>`, 'Group photo'); }
   if (S.sheet==='gGal') h += sheet(`<div class="row-between" style="margin-bottom:10px"><b class="t-headline">Recents</b></div><div class="pickgrid">${['mountain','gal1','gal2','act3','act4','exp2','svct1','exp1','profCover'].map(o=>`<button data-act="gGalPick" data-m="${o}">${img(o,'Photo')}</button>`).join('')}</div>`, 'Choose a photo');
   if (S.sheet==='gShare') { const list = gStore().convs.filter(x=>!x.group); h += sheet(`<div class="row-between" style="margin-bottom:12px"><span class="ico">${ic('search')}</span><b class="t-headline">Send to</b><span style="width:24px"></span></div><div class="gshare">${list.map(x=>`<button data-act="gShareTo" data-id="${x.id}">${img(x.av,x.name)}<small>${esc(x.name)}</small></button>`).join('')}</div>`, 'Send to'); }
   if (S.sheet==='gJoin') { const id = S.ginv; const t = GINV[id] || (groups().find(x=>x.id===id) ? {name:groups().find(x=>x.id===id).name, bio:groups().find(x=>x.id===id).bio, mem:groups().find(x=>x.id===id).mem.filter(m=>m.k!=='me').map(m=>m.k)} : null);

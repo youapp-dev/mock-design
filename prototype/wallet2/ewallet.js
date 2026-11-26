@@ -101,27 +101,20 @@
   .ew-tools{display:grid; grid-template-columns:1fr 1fr; gap:10px}
   .ew-assume{font-size:12px; color:#8A6D00; background:#FFF6D6; border-radius:12px; padding:8px 10px; margin:0}
   .wr-quick-actions + .wr-quick-actions{margin-top:10px}
-  .wr-qa4{display:grid; grid-template-columns:repeat(4, minmax(0,1fr)); gap:8px; margin:12px 16px 0}
-  .wr-qa4-b{display:flex; flex-direction:column; align-items:center; justify-content:center; gap:6px; min-height:84px; padding:10px 4px; border:1px solid #eae3f8; border-radius:16px; background:#F6F2FE; color:#1a181b; font:inherit; cursor:pointer}
-  .wr-qa4-b b{font:700 13px/18px Inter, sans-serif; text-align:center}
-  .wr-qa4-ic{display:grid; place-items:center; width:40px; height:40px; border-radius:50%; background:#fff; color:#4B2A9E} .wr-qa4-ic .ico, .wr-qa4-ic svg{width:20px; height:20px}
-  .wr-qa4-b[data-act="qaMore"]{background:#fff} .wr-qa4-b[aria-expanded="true"]{border-color:#C9B6F5; background:#F6F2FE} .wr-qa4-b[aria-expanded="true"] .wr-qa4-ic svg{transform:rotate(180deg)}
-  .wr-qa4-b small{font:600 11px/14px Inter, sans-serif; color:#5d4c79; margin-top:-4px; font-variant-numeric:tabular-nums}
-  .wr-qa4-more{margin-top:8px; animation:qaIn .16s ease-out} @keyframes qaIn{from{opacity:0; transform:translateY(-6px)} to{opacity:1; transform:none}}
-  @media (prefers-reduced-motion:reduce){.wr-qa4-more{animation:none}}
-  .wr-qa4-b:active{background:#e9dff8} .wr-qa4-b:focus-visible, .wr-more-r:focus-visible{outline:2px solid #5E35B8; outline-offset:2px}
-  .wr-more{display:grid; margin-top:4px}
-  .wr-more-r{display:flex; align-items:center; gap:12px; width:100%; min-height:64px; padding:10px 2px; border:0; border-bottom:1px solid var(--a-line); background:none; text-align:left; font:inherit; color:var(--a-ink); cursor:pointer}
-  .wr-more-r:last-child{border-bottom:0} .wr-more-r .wr-quick-icon{display:grid; place-items:center; width:40px; height:40px; border-radius:12px; background:#F6F2FE; color:#4B2A9E; flex:none} .wr-more-r .wr-quick-icon svg{width:20px; height:20px}
-  .wr-more-t{flex:1; display:grid; gap:2px; min-width:0} .wr-more-t b{font:700 15px/20px Inter, sans-serif} .wr-more-t small{font:500 13px/18px Inter, sans-serif; color:var(--a-ink-3)}
-  .wr-more-r > .ico{width:18px; height:18px; color:var(--a-ink-3); flex:none}
+  .wr-qa6{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); row-gap:16px; column-gap:8px; margin:12px 16px 0; padding:18px 8px; border:1px solid #ECE7F7; border-radius:20px; background:#fff}
+  .wr-qa6-b{display:flex; flex-direction:column; align-items:center; gap:8px; min-width:0; min-height:44px; padding:0; border:0; background:none; font:inherit; color:#1a181b; cursor:pointer}
+  .wr-qa6-b > span:last-child{font:500 13px/18px Inter, sans-serif; text-align:center}
+  .wr-qa6-ic{display:grid; place-items:center; width:48px; height:48px; border-radius:50%; background:#F4EFFF; color:#4B2A9E; transition:transform .12s, background .12s} .wr-qa6-ic .ico, .wr-qa6-ic svg{width:22px; height:22px}
+  .wr-qa6-b:active .wr-qa6-ic{transform:scale(.94); background:#E9DFF8}
+  .wr-qa6-b:focus-visible{outline:none} .wr-qa6-b:focus-visible .wr-qa6-ic{outline:2px solid #5E35B8; outline-offset:2px}
   .ew-lst .grp{text-transform:none}
   `;
   document.head.appendChild(css);
 
   /* ---------- YouPage quick actions ----------
      3.2.0: Top up, Rewards, Send, Receive (no Bills / Mobile reload in this version).
-     3.3.0: one row (Option 4, 25 Nov): Top up, Send, Receive, More. More opens a sheet with Rewards, Bill payment and Mobile reload. */
+     3.3.0 (26 Nov): one card, 3 x 2 grid of round icons: Top up, Send, Receive / Bill payment, Mobile reload, Rewards.
+     All six always visible, no More; Rewards shows no balance (it lives on the Rewards screen). */
   const qa = (act, icon, label, extra = '') => `<button type="button" class="wr-quick-action" data-act="${act}"${extra}><span class="wr-quick-icon" aria-hidden="true">${ic(icon)}</span><span class="wr-quick-copy"><b>${label}</b></span></button>`;
   const _home = V.home;
   V.home = () => { const h = _home(); if (!kycOk() || h.indexOf('wr-quick-actions') < 0) return h;
@@ -129,22 +122,14 @@
     const row = t.content.querySelector('.wr-quick-actions');
     if (!row) return h;
     if (!fiatWalletEnabled) row.insertAdjacentHTML('afterend', `<div class="wr-quick-actions" role="group" aria-label="Send and receive">${qa('xsOpen', 'xsUp', 'Send')}${qa('xsRecv', 'xsDown', 'Receive')}</div>`);
-    else { const open = !!S.qaOpen; const rb = S.balHide ? '••••' : RM(typeof rfBal === 'function' ? rfBal() : 0);
-      const b = (a, i, l, extra = '', sub = '') => `<button type="button" class="wr-qa4-b" data-act="${a}"${extra}><span class="wr-qa4-ic" aria-hidden="true">${ic(i)}</span><b>${l}</b>${sub ? `<small>${sub}</small>` : ''}</button>`;
-      row.outerHTML = `<div class="wr-qa4" role="group" aria-label="Quick actions">${b('walletReferenceTopUp', 'plus', 'Top up')}${b('xsOpen', 'xsUp', 'Send')}${b('xsRecv', 'xsDown', 'Receive')}${b('qaMore', open ? 'chevdown' : 'dots', open ? 'Less' : 'More', ` aria-expanded="${open}" aria-controls="wrQaMore"`)}</div>
-        ${open ? `<div class="wr-qa4 wr-qa4-more" id="wrQaMore" role="group" aria-label="More actions">${b('qaRewards', 'gift', 'Rewards', ` aria-label="Rewards, internal balance ${rb}"`, rb)}${b('qaBills', 'bill', 'Bill payment')}${b('qaReload', 'mreload', 'Mobile reload')}</div>` : ''}`; }
+    else { const b = (a, i, l) => `<button type="button" class="wr-qa6-b" data-act="${a}"><span class="wr-qa6-ic" aria-hidden="true">${ic(i)}</span><span>${l}</span></button>`;
+      row.outerHTML = `<div class="wr-qa6" role="group" aria-label="Quick actions">${b('walletReferenceTopUp', 'plus', 'Top up')}${b('xsOpen', 'xsUp', 'Send')}${b('xsRecv', 'xsDown', 'Receive')}${b('qaBills', 'bill', 'Bill payment')}${b('qaReload', 'mreload', 'Mobile reload')}${b('qaRewards', 'gift', 'Rewards')}</div>`; }
     return t.innerHTML; };
-  SHEETS.qaMore = () => { const rb = S.balHide ? '••••' : RM(typeof rfBal === 'function' ? rfBal() : 0);
-    const row = (act, icon, t, sub) => `<button class="wr-more-r" data-act="${act}"><span class="wr-quick-icon" aria-hidden="true">${ic(icon)}</span><span class="wr-more-t"><b>${t}</b>${sub ? `<small>${sub}</small>` : ''}</span>${ic('chev')}</button>`;
-    return `<div class="grab"></div><h2 class="t-title" style="margin:0 0 6px; text-align:center">More</h2>
-      <div class="wr-more">${row('qaRewards', 'gift', 'Rewards', `Internal balance ${rb}`)}${row('qaBills', 'bill', 'Bill payment', 'Electricity, water, internet and more')}${row('qaReload', 'mreload', 'Mobile reload', 'Prepaid top up for any number')}</div>`; };
   Object.assign(A, {
-    qaMore: () => { const kb = document.activeElement?.matches?.(':focus-visible'); S.qaOpen = !S.qaOpen; render(); if (kb) document.querySelector('#phone [data-act="qaMore"]')?.focus({preventScroll:true}); },
-    qaRewards: () => { S.sheet = null; S.qaOpen = false; A.rewards ? A.rewards() : go('rewards'); },
-    qaBills: () => { S.sheet = null; S.qaOpen = false; A.bills(); },
-    qaReload: () => { S.sheet = null; S.qaOpen = false; A.mreload(); },
+    qaRewards: () => { S.sheet = null; A.rewards ? A.rewards() : go('rewards'); },
+    qaBills: () => { S.sheet = null; A.bills(); },
+    qaReload: () => { S.sheet = null; A.mreload(); },
   });
-  { const _r = render; render = function(){ if (S.screen !== 'home') S.qaOpen = false; return _r.apply(this, arguments); }; }
 
   A.ewCryptoRecv = el => { S.wRecv = el.dataset.id; A.xsRecv(); };
 

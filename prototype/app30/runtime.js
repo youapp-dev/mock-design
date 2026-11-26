@@ -1310,7 +1310,7 @@ V.gate = () => { const g = GATE[S.gateFrom] || GATE.post; const rej = kyc()==='r
     <button class="link subtle" style="display:block; margin:18px auto 0; font-weight:500; font-size:13px" data-act="toast" data-msg="Opens the Terms and Conditions.">Learn more about Terms and Conditions</button></div>`}`;
   /* opened from YouPage (Activate wallet / Get verified): a focused flow, so no bottom nav */
   const nav = g.tab ? bottomNav(g.tab) : '';
-  return `<div class="screen">${statusBar()}${top}<div class="scroll" style="padding-bottom:20px">${body}${scanArt}</div>${nav}</div>`; };
+  return `<div class="screen">${statusBar()}${top}<div class="scroll" style="padding-bottom:${nav ? 112 : 20}px">${body}${scanArt}</div>${nav}</div>`; };
 
 /* ---------- Mobile number (only when missing) ---------- */
 V.phone = () => { const cc = COUNTRY_CODES.find(c=>c[0]===(S.cc||'MY')); const v = S.phoneNum||''; const ok = v.replace(/\D/g,'').length>=8;
@@ -3987,7 +3987,7 @@ function stopRec(){ clearInterval(timers.rec); S.rec = null; }
 Object.assign(A, {
   nav: (orig => el => { const to = el.dataset.to;
     if (to==='scan' && !isGuest() && payOff()) { S.hist=['discover']; go('maint',{replace:true}); return; }
-    if (to==='locals' && !isGuest()) { if (kyc()!=='approved' && !SESS6.localsLater) { S.gateFrom='locals'; S.hist=['discover']; go('gate',{replace:true}); return; } S.hist=['discover']; go('chats',{replace:true}); return; }
+    if (to==='locals' && !isGuest()) { if (kyc()!=='approved') { S.gateFrom='locals'; S.hist=['discover']; go('gate',{replace:true}); return; } S.hist=['discover']; go('chats',{replace:true}); return; }
     orig(el); })(A.nav),
   gateLater: (orig => () => { if (S.gateFrom==='locals') { SESS6.localsLater = true; S.hist=['discover']; go('chats',{replace:true}); return; } orig(); })(A.gateLater),
   shake: (orig => () => { if (S.session==='user' && !['splash','welcome','force'].includes(S.screen)) { if (C6().shake) openSheet('rp'); else toast('Shake to report is off. Turn it on in Settings › Report a problem.'); return; } orig(); })(A.shake),
@@ -4243,7 +4243,7 @@ P.jump = el => { const to = el.dataset.to; const P6 = ['chats','chat','ann','rev
   render(); };
 
 Object.assign(META, {
-  chats:{name:'Locals · chat list', group:'Chat', figma:'Flow Chat - Locals › Chat List', rules:['Unverified: Badge Verification first; Maybe Later skips it for the rest of the session','Announcement & Notification row only when there is something to show','Message, Service and Experience tabs; drafts and voice previews; Content switch states']},
+  chats:{name:'Locals · chat list', group:'Chat', figma:'Flow Chat - Locals › Chat List', rules:['KYC not started or rejected: the Badge Verification gate shows every time Locals opens (Get your verified badge, or Verification rejected with Re-Submit); Maybe Later opens the chat list this time','Announcement & Notification row only when there is something to show','Message, Service and Experience tabs; drafts and voice previews; Content switch states']},
   chat:{name:'Chatroom', group:'Chat', figma:'Flow Chat - Locals › Chatroom states', rules:['Voice note: tap mic, Slide to cancel, lock for hands-free, pause, send; back while recording asks first','Tap a message: Reply, Pin, Copy, Delete (own); pinned bar','Photos go through the full editor; videos skip it; uploading and retry (Chat media upload switch)','Offline: Connecting to the network…']},
   bchat:{name:'Booking chat', group:'Chat', figma:'Flow Chat - Locals › Chatroom (booking card)', rules:['Booking card on top; same composer as chats','Unverified party sees the Badge Verification system message','Completed experience: Give Review system message opens the transaction']},
   ann:{name:'Announcement', group:'Chat', figma:'Announcement › list, empty, skeleton', rules:['Newest first; Content switch shows Loading, Empty and Error']},
@@ -5101,7 +5101,7 @@ document.head.insertAdjacentHTML('beforeend', `<style id="ta-ui">
 .gi2-acts.n4{grid-template-columns:repeat(4,1fr)} .gi2-acts.n3{grid-template-columns:repeat(3,1fr)}
 .gi2-acts button{display:grid; justify-items:center; gap:7px; padding:4px 0; min-height:72px; border:0; background:none; font:600 12px Inter; color:#3B3360}
 .gi2-acts i{width:48px; height:48px; border-radius:50%; background:#F4EFFF; color:#4B2A9E; display:grid; place-items:center}
-.gi2-acts i.rp{background:#FDECEC; color:#C8102E}
+.gi2-acts i.rp{background:#F4EFFF} .gi2-acts i.rp svg{width:26px; height:26px}
 .gi2-acts i .ico{width:22px; height:22px}
 .gi2-acts button:active i{transform:scale(.94)}
 .gi2-act{margin:14px 16px}
