@@ -18,10 +18,23 @@
     const fl = row && row.querySelector('.flag'); if (fl) fl.outerHTML = P.flag(cc); return t.innerHTML; };
 
   /* 1. new number */
+/* same illustration as Activate Fiat Wallet › Your phone number */
+const PF_PHONE_ART = (w = 160) => `<svg class="ya-phart" width="${w}" height="${Math.round(w * 0.72)}" viewBox="0 0 200 144" fill="none" aria-hidden="true">
+    <defs><linearGradient id="pfpg" x1="70" y1="20" x2="130" y2="132" gradientUnits="userSpaceOnUse"><stop stop-color="#8B5CF0"/><stop offset="1" stop-color="#4B2A9E"/></linearGradient></defs>
+    <ellipse cx="100" cy="82" rx="86" ry="56" fill="#F4EFFF"/>
+    <path d="M38 132c20-6 104-6 124 0" stroke="#E9E0FB" stroke-width="6" stroke-linecap="round"/>
+    <rect x="70" y="18" width="60" height="112" rx="14" fill="url(#pfpg)"/>
+    <rect x="76" y="28" width="48" height="92" rx="8" fill="#fff" fill-opacity=".14"/>
+    <rect x="92" y="22" width="16" height="3" rx="1.5" fill="#fff" fill-opacity=".45"/>
+    <g><rect x="40" y="46" width="86" height="34" rx="12" fill="#fff" stroke="#E9E0FB" stroke-width="2"/><path d="M58 79l-6 9 14-8" fill="#fff"/><path d="M58 79.5l-6 8.5 13-7.5" stroke="#E9E0FB" stroke-width="2" stroke-linejoin="round"/>
+      ${[0,1,2,3,4,5].map(i => `<circle cx="${54 + i * 11.6}" cy="63" r="3.6" fill="${i < 4 ? '#5E35B8' : '#C9B6F5'}"/>`).join('')}</g>
+    <g><path d="M146 70l18 7v11c0 11-8 19-18 23-10-4-18-12-18-23V77z" fill="#fff" stroke="#E9E0FB" stroke-width="2"/><path d="M139 90l5 5 9-10" stroke="#2FA36B" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></g>
+    <path d="M154 26l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#F5B82E"/><path d="M30 104l1.5 3.5L35 109l-3.5 1.5L30 114l-1.5-3.5L25 109l3.5-1.5z" fill="#C05CA8"/><circle cx="48" cy="28" r="3" fill="#C9B6F5"/><circle cx="170" cy="118" r="2.5" fill="#C9B6F5"/>
+  </svg>`;
   V.pfPhone = () => { const f = S.pph; const c = P.get(f.cc); const ok = P.ok(f.cc, f.num);
     return `<div class="screen">${statusBar()}${topBar('Mobile Number')}
     <div class="scroll"><div class="pad16 ya-phw">
-      <div class="ya-phh"><h1 class="t-title">Change mobile number</h1><p class="t-body muted">Your number now is <b>${esc(cur().disp)}</b>. Enter the new one and we’ll text it a 6-digit code.</p></div>
+      <div class="ya-phh">${PF_PHONE_ART()}<h1 class="t-title">Change mobile number</h1><p class="t-body muted">Your number now is <b>${esc(cur().disp)}</b>. Enter the new one and we’ll text it a 6-digit code.</p></div>
       <button class="ya-fl ya-ctry" data-act="pphCc" aria-label="Country: ${esc(c[1])}, ${c[2]}. Change"><span class="ya-fll">Country</span>${P.flag(f.cc)}<b>${esc(c[1])}</b>${ic('chev')}</button>
       <label class="ya-fl ya-num ${f.err ? 'err' : ''}" for="pphNum"><span class="ya-fll">New mobile number</span><span class="ya-dial">${c[2]}</span>
         <input id="pphNum" type="tel" inputmode="tel" autocomplete="tel-national" value="${esc(f.num)}" placeholder="${f.cc === 'MY' ? '12-345 6789' : 'Phone number'}" aria-describedby="pphH" ${f.busy ? 'disabled' : ''}></label>
@@ -89,7 +102,7 @@
 
   document.head.insertAdjacentHTML('beforeend', `<style id="ya-phone-css">
   .ya-phw{display:grid; grid-template-columns:minmax(0,1fr); padding-top:20px}
-  .ya-phh{text-align:center; margin:0 0 24px} .ya-phh .t-title{margin:0 0 6px} .ya-phh p{margin:0; text-wrap:balance} .ya-phh p b{color:var(--a-ink)}
+  .ya-phh{text-align:center; margin:0 0 24px} .ya-phart{display:block; max-width:100%; height:auto; margin:0 auto 12px} .ya-phh .t-title{margin:0 0 6px} .ya-phh p{margin:0; text-wrap:balance} .ya-phh p b{color:var(--a-ink); white-space:nowrap}
   .ya-fl{position:relative; display:flex; align-items:center; gap:12px; width:100%; min-height:56px; padding:0 14px; border:1px solid var(--a-line); border-radius:12px; background:#fff; text-align:left; font:inherit; box-sizing:border-box}
   .ya-fll{position:absolute; left:12px; top:0; transform:translateY(-50%); padding:0 4px; background:#fff; font:500 12px/16px Inter, sans-serif; color:var(--a-ink-3)}
   .ya-ctry{margin-bottom:20px; cursor:pointer} .ya-ctry b{flex:1; font:500 16px Inter, sans-serif; color:var(--a-ink)} .ya-ctry > .ico{width:18px; height:18px; color:var(--a-ink-3); flex:none}
