@@ -246,7 +246,7 @@ const qr = tok => { let h = 0; const N = 25, cells = []; for (let i = 0; i < tok
 V.ginvite = () => { const g = grp(); if (!g) return V.chats(); const link = linkOf(g); const admin = ['owner','admin'].includes(myRole(g));
   return `<div class="screen">${statusBar()}${topBar('Invite link')}<div class="scroll" style="padding:8px 16px 24px">
     <div class="gc-gid">${gAv(g, 'av44g')}<span><b>${esc(g.name)}</b><small>${g.mem.length} member${g.mem.length===1?'':'s'} · anyone with the link joins right away</small></span></div>
-    <div class="gc-qrc"><div class="gc-qr">${qr(g.linkTok + g.id)}</div><small>Scan with YouApp to join</small>
+    <div class="gc-qrc"><div class="gc-qr">${qr(g.linkTok + g.id)}<span class="gc-qmark" aria-hidden="true">${gAv(g, 'gc-qav')}</span></div><small>${ic('scan')}Scan with YouApp to join</small>
       <div class="gx-code"><span><small>Group link</small><b>${link}</b></span><button data-act="gcCopy" aria-label="Copy group link">${ic('copy')}</button></div>
       <div class="gx-two"><button class="b2" data-act="gcSaveQr">${ic('download')}Save QR</button><button class="b1" data-act="extShare">${ic('share')}Share link</button></div></div>
     ${admin ? `<p class="gx-sl">Admin</p><div class="gx-sg">
