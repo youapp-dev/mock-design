@@ -5042,7 +5042,7 @@ document.head.insertAdjacentHTML('beforeend', `<style id="ta-ui">
 .gpictop .iconbtn{color:#fff}
 .gpictop b{flex:1; text-align:center; font-size:17px}
 .gpicscr .gpicbig{flex:none; width:100%; aspect-ratio:1/1; height:auto; margin:auto 0; display:grid; place-items:center; background:#0CC25F; overflow:hidden}
-.gpicscr .gpicbig img{width:100%; height:100%; object-fit:cover}
+.gpicscr .gpicbig{position:relative} .gpicscr .gpicbig img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
 .gtabs.n3{grid-template-columns:repeat(3,1fr)}
 /* group without photo: purple + initials (Figma No profil picture) */
 .gav.pur{background:var(--a-grad)}
@@ -5091,7 +5091,7 @@ document.head.insertAdjacentHTML('beforeend', `<style id="ta-ui">
 .gi2-id{display:grid; justify-items:center; text-align:center; padding:24px 24px 18px; border-bottom:1px solid #ECE7F7}
 .gi2-pic{width:96px; height:96px; border:0; padding:0; border-radius:50%; background:#F4EFFF; box-shadow:inset 0 0 0 1.5px #E9E0FB; display:grid; place-items:center; overflow:hidden}
 .gi2-pic b{font:800 38px/1 Inter; color:#5E35B8}
-.gi2-pic img{width:100%; height:100%; object-fit:cover}
+.gi2-pic{position:relative} .gi2-pic img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
 .gi2-id h1{margin:14px 0 2px; font:800 22px/1.25 Inter; color:#1E1050; overflow-wrap:anywhere}
 .gi2-id small{font:500 13px Inter; color:#6E6688}
 .gi2-bio{margin:10px 0 0; font:500 14px/1.45 Inter; color:#3B3360; overflow-wrap:anywhere}
