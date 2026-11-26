@@ -320,7 +320,7 @@ function apOpenResult(a, claim, sender) {
   return `<section class="rp20-result${S.apJust ? ' is-new' : ''}">
     <header class="rp20-sender-chip">${img(sender.av, '')}<span>${esc(sender.n)} · “${esc(a.msg || 'Best wishes!')}”</span></header>
     <div class="apreceive-result" role="status" aria-label="You got ${MY_(claim.amt)}. Added to YouWallet." tabindex="-1">
-      <small>You got</small><strong aria-hidden="true"><span class="rp20-unit pre">RM</span><span data-ap-payout="${claim.amt}">${C(claim.amt)}</span></strong>
+      <small>You got</small><strong aria-hidden="true"><span class="rp20-cur">RM</span><span data-ap-payout="${claim.amt}">${C(claim.amt)}</span></strong>
       <span>✓ Added to YouWallet</span>
     </div>
     <div class="rp20-result-actions">${source ? '<button type="button" class="rp20-secondary" data-act="apThanks">Say thanks</button>' : ''}${target ? '<button type="button" class="rp20-primary" data-act="apReturnGift">Send one back</button>' : ''}</div>
