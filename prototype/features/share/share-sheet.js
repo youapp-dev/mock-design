@@ -42,7 +42,8 @@
     const local = new URL(`../../share/merchant/${supportedKey}.html`, location.href);
     const external = new URL(`${supportedKey}.html`, catalog.publicBase);
     for (const link of [local, external]) link.searchParams.set('version', version);
-    return {item:catalog.items[supportedKey], local, external};
+    const copyUrl = ['localhost', '127.0.0.1'].includes(location.hostname) ? local : external;
+    return {item:catalog.items[supportedKey], local, external, copyText:`${catalog.shareDescription}: ${copyUrl.href}`};
   };
 
   const css = document.createElement('style');
@@ -137,7 +138,7 @@
         <div class="sh31-row" role="group" aria-label="Share options">${targets.map(([key, label]) => `<button type="button" class="sh31-t" data-act="sh31To" data-k="${key}">${ICON[key]}<span>${label}</span></button>`).join('')}</div>`;
     const preview = st.merchantId ? merchantPreview(st.previewKey) : null;
     const previewCard = preview ? `<a class="sh31-preview" href="${esc(preview.local.href)}" target="_blank" rel="noopener" aria-label="Open link preview for ${esc(preview.item.title)}"><img src="${esc(new URL(preview.item.image, preview.local).href)}" alt=""><span class="sh31-preview-copy"><b>${esc(preview.item.title)}</b><small>${esc(preview.item.description)}</small></span>${ic('chev')}</a>` : '';
-    const manualLink = preview && st.showLink ? `<label class="sh31-link-field">Copy this link<input readonly value="${esc(preview.external.href)}"></label>` : '';
+    const manualLink = preview && st.showLink ? `<label class="sh31-link-field">Copy this message<input readonly value="${esc(preview.copyText)}"></label>` : '';
     const selectedName = recipients.find(([name, , group]) => (group?.id || name) === st.sel[0])?.[0];
     const send = st.sel.length ? `<div class="sh31-send">${btn(st.sel.length > 1 ? `Send to ${st.sel.length} ${st.merchantId ? "recipients" : "people"}` : `Send to ${esc(selectedName || "1 recipient")}`, 'sh31Send')}</div>` : '';
     return `<div class="scrim ${S.sheetAnim ? 'anim' : ''}" data-act="closeSheet2"></div><div class="sheet sh31${expanded ? ' is-search' : ''}${S.sheetAnim ? ' anim' : ''}" role="dialog" aria-modal="true" aria-label="${expanded ? searchLabel : 'Share'}">${expanded ? statusBar() : '<div class="grab" aria-hidden="true"></div>'}${top}${body}${expanded ? '' : previewCard + manualLink}${send}</div>`;
@@ -177,7 +178,7 @@
     sh31To: async el => { const k = el.dataset.k;
       const st = ST();
       if (st.merchantId) {
-        const {item, local, external} = merchantPreview(st.previewKey);
+        const {item, external, copyText} = merchantPreview(st.previewKey);
         const offerCopy = () => {
           if (S.sheet !== 'share31' || S.sh31 !== st) return;
           st.showLink = true;
@@ -186,7 +187,7 @@
         };
         if (k === 'copy') {
           try {
-            await navigator.clipboard.writeText(location.hostname === 'localhost' || location.hostname === '127.0.0.1' ? local.href : external.href);
+            await navigator.clipboard.writeText(copyText);
             if (S.sheet === 'share31' && S.sh31 === st) { S.sheet = null; render(); }
             toast('Link copied.');
           } catch {
