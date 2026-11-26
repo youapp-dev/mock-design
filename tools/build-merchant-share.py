@@ -57,6 +57,8 @@ def page(key, item):
     alt = esc(item["alt"])
     destination = f"../../?app=app30&amp;jump=merchantPlace%3A{item['id']}" if item["id"] else "../../"
     label = "View merchant" if item["id"] else "Open YouApp"
+    # Active merchants use the merchant web app (web/, built by tools/build-merchant-web.cjs).
+    web = bool(item["id"])
     return f"""<!doctype html>
 <html lang="en" prefix="og: https://ogp.me/ns#">
 <head>
@@ -80,18 +82,18 @@ def page(key, item):
   <meta name="twitter:description" content="{description}">
   <meta name="twitter:image" content="{image}">
   <meta name="twitter:image:alt" content="{alt}">
-  <link rel="stylesheet" href="share.css">
+  <link rel="stylesheet" href="{'web/merchant-web.css' if web else 'share.css'}">
 </head>
-<body>
-  <main class="preview">
+<body{' class="mw-body"' if web else ''}>
+  {'<div id="mw" data-merchant="' + key + '"><noscript>' if web else ''}<main class="preview">
     <img src="{item['image']}" width="{SIZE[0]}" height="{SIZE[1]}" alt="{alt}">
     <div class="details">
       <h1>{title}</h1>
       <p>{description}</p>
       <a class="primary" data-open-merchant href="{destination}">{label}</a>
     </div>
-  </main>
-  <script src="landing.js" defer></script>
+  </main>{'</noscript></div>' if web else ''}
+  {'<script src="web/merchant-data.js" defer></script>' + chr(10) + '  <script src="web/merchant-web.js" defer></script>' + chr(10) + '  ' if web else ''}<script src="landing.js" defer></script>
 </body>
 </html>
 """

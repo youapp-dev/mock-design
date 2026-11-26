@@ -21,17 +21,19 @@
   <meta name="twitter:description" content="8 Sentosa Gateway, Singapore 098269">
   <meta name="twitter:image" content="https://youapp-dev.github.io/mock-design/share/merchant/mer4.jpg">
   <meta name="twitter:image:alt" content="Photo for Universal Studios Singapore">
-  <link rel="stylesheet" href="share.css">
+  <link rel="stylesheet" href="web/merchant-web.css">
 </head>
-<body>
-  <main class="preview">
+<body class="mw-body">
+  <div id="mw" data-merchant="m-uss"><noscript><main class="preview">
     <img src="mer4.jpg" width="1200" height="630" alt="Photo for Universal Studios Singapore">
     <div class="details">
       <h1>Universal Studios Singapore</h1>
       <p>8 Sentosa Gateway, Singapore 098269</p>
       <a class="primary" data-open-merchant href="../../?app=app30&amp;jump=merchantPlace%3Am-uss">View merchant</a>
     </div>
-  </main>
+  </main></noscript></div>
+  <script src="web/merchant-data.js" defer></script>
+  <script src="web/merchant-web.js" defer></script>
   <script src="landing.js" defer></script>
 </body>
 </html>
