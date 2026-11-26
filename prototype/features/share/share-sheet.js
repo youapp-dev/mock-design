@@ -25,7 +25,21 @@
   const TARGETS = [['whatsapp','Whatsapp'],['telegram','Telegram'],['instagram','Instagram'],['x','X'],['copy','Copy Link'],['more','More'],['facebook','Facebook'],['sms','SMS'],['email','Email'],['wechat','Wechat'],['threads','Threads'],['messenger','Messenger'],['discord','Discord']];
   const CONTACTS = [['Aaron Lim','ca5'],['Clarissa','ca3'],['Cherie Tan','ca2'],['Justin Ng','ca4'],['Daniel Ed','ca1'],['Lara','ca2'],['Fionna','ca4']];
   const ST = () => S.sh31 || (S.sh31 = {sel:[], q:'', search:false, what:'service'});
-  const open31 = what => { S.sh31 = {sel:[], q:'', search:false, what}; openSheet('share31'); };
+  const open31 = (what, merchantId) => {
+    const hasVariant = S.mxShareVariant && window.YouAppMerchantPreviews.items[S.mxShareVariant]?.id === merchantId;
+    S.sh31 = {sel:[], q:'', search:false, what, merchantId, previewKey:hasVariant ? S.mxShareVariant : merchantId};
+    openSheet('share31');
+  };
+  const shareGroups = () => groups().filter(g => !g.gone && (myRole(g) !== 'member' || g.perm.send));
+  const merchantPreview = key => {
+    const catalog = window.YouAppMerchantPreviews;
+    const supportedKey = Object.hasOwn(catalog.items, key) ? key : 'invalid';
+    const version = tripsEnabled ? '3.3.0' : '3.2.0';
+    const local = new URL(`../../share/merchant/${supportedKey}.html`, location.href);
+    const external = new URL(`${supportedKey}.html`, catalog.publicBase);
+    for (const link of [local, external]) link.searchParams.set('version', version);
+    return {item:catalog.items[supportedKey], local, external};
+  };
 
   const css = document.createElement('style');
   css.textContent = `
@@ -47,6 +61,8 @@
   .sh31-av{position:relative; width:60px; height:60px}
   .sh31-av img{width:60px; height:60px; border-radius:50%; object-fit:cover; display:block}
   .sh31-c.on .sh31-av img{outline:2.5px solid #38168E; outline-offset:2px}
+  .sh31-av .gav{width:60px; height:60px; display:grid; place-items:center}
+  .sh31-c.on .sh31-av .gav{outline:2.5px solid #38168E; outline-offset:2px}
   .sh31-ck{position:absolute; right:-2px; bottom:-2px; width:22px; height:22px; border-radius:50%; background:#38168E; border:2px solid #fff; display:grid; place-items:center}
   .sh31-ck svg{width:12px; height:12px}
   .sh31-nm{display:flex; align-items:center; justify-content:center; gap:2px; max-width:76px}
@@ -56,20 +72,35 @@
   .sh31-t span{width:100%; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; text-align:center; font:400 12px/16px Inter,sans-serif; color:#000}
   .sh31-empty{padding:24px 16px; margin:0; text-align:center; font:400 13px Inter,sans-serif; color:#99949E}
   .sh31-send{padding:0 16px 8px}
+  .sh31-preview{display:flex; align-items:center; gap:10px; margin:0 16px; padding:8px; min-height:64px; border:1px solid var(--a-line); border-radius:10px; color:var(--a-ink); text-decoration:none}
+  .sh31-preview img{width:72px; height:48px; flex:none; object-fit:cover; border-radius:6px}
+  .sh31-preview-copy{flex:1; min-width:0}
+  .sh31-preview-copy b,.sh31-preview-copy small{display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .sh31-preview-copy small{color:var(--a-ink-2); font-size:12px}
+  .sh31-preview:focus-visible{outline:2px solid #6a2ad8; outline-offset:2px}
+  .sh31-link-field{display:grid; gap:4px; margin:8px 16px; font-size:12px; color:var(--a-ink-2)}
   `;
   document.head.appendChild(css);
 
   const sheetHTML = () => { const st = ST(); const q = st.q.trim().toLowerCase();
-    const list = CONTACTS.filter(([n]) => !q || n.toLowerCase().includes(q));
+    const recipients = CONTACTS.map(([name, avatar]) => ({key:name, name, avatar}));
+    if (st.merchantId) recipients.unshift(...shareGroups().map(group => ({key:group.id, name:group.name, group})));
+    const list = recipients.filter(({name}) => !q || name.toLowerCase().includes(q));
+    const searchLabel = st.merchantId ? 'Search people and groups' : 'Search people';
     const top = st.search
-      ? `<div class="sh31-top"><button class="sh31-ib" data-act="sh31Search" aria-label="Close search">${ic('back')}</button><label class="sh31-q">${ic('search')}<input data-in="sh31Q" value="${esc(st.q)}" placeholder="Search" aria-label="Search people"></label></div>`
-      : `<div class="sh31-top"><button class="sh31-ib" data-act="sh31Search" aria-label="Search people">${ICON.search}</button><h2>Send to</h2><span></span></div>`;
-    const people = list.length ? `<div class="sh31-row" role="group" aria-label="People">${list.map(([n, a]) => { const on = st.sel.includes(n);
-        return `<button class="sh31-c ${on ? 'on' : ''}" data-act="sh31Pick" data-n="${esc(n)}" aria-pressed="${on}" aria-label="${esc(n)}"><span class="sh31-av">${img(a, n)}${on ? `<i class="sh31-ck" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2l2.3 2.3 4.7-4.9" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i>` : ''}</span><span class="sh31-nm" aria-hidden="true"><span>${esc(n.split(' ')[0])}</span>${ICON.tagVerified}${ICON.tagHost}</span></button>`; }).join('')}</div>`
+      ? `<div class="sh31-top"><button class="sh31-ib" data-act="sh31Search" aria-label="Close search">${ic('back')}</button><label class="sh31-q">${ic('search')}<input data-in="sh31Q" value="${esc(st.q)}" placeholder="Search" aria-label="${searchLabel}"></label></div>`
+      : `<div class="sh31-top"><button class="sh31-ib" data-act="sh31Search" aria-label="${searchLabel}">${ICON.search}</button><h2>Send to</h2><span></span></div>`;
+    const people = list.length ? `<div class="sh31-row" role="group" aria-label="${st.merchantId ? 'People and groups' : 'People'}">${list.map(({key, name, avatar, group}) => { const on = st.sel.includes(key);
+        return `<button class="sh31-c ${on ? 'on' : ''}" data-act="sh31Pick" data-n="${esc(key)}" aria-pressed="${on}" aria-label="${esc(name)}"><span class="sh31-av">${group ? gAv(group) : img(avatar, name)}${on ? `<i class="sh31-ck" aria-hidden="true"><svg viewBox="0 0 12 12" fill="none"><path d="M2.5 6.2l2.3 2.3 4.7-4.9" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg></i>` : ''}</span><span class="sh31-nm" aria-hidden="true"><span>${esc(group ? name : name.split(' ')[0])}</span>${group ? '' : ICON.tagVerified + ICON.tagHost}</span></button>`; }).join('')}</div>`
       : `<p class="sh31-empty">No one matches “${esc(st.q)}”.</p>`;
-    const share = `<div class="sh31-row sh31-share" role="group" aria-label="Share to">${TARGETS.map(([k, t]) => `<button class="sh31-t" data-act="sh31To" data-k="${k}">${ICON[k]}<span>${t}</span></button>`).join('')}</div>`;
-    const send = st.sel.length ? `<div class="sh31-send">${btn(st.sel.length > 1 ? `Send to ${st.sel.length} people` : `Send to ${esc(st.sel[0])}`, 'sh31Send')}</div>` : '';
-    return `<div class="scrim ${S.sheetAnim ? 'anim' : ''}" data-act="closeSheet2"></div><div class="sheet sh31 ${S.sheetAnim ? 'anim' : ''}" role="dialog" aria-label="Send to"><div class="grab" aria-hidden="true"></div>${top}${people}${share}${send}</div>`; };
+    const targets = st.merchantId ? [['whatsapp','WhatsApp'],['telegram','Telegram'],['copy','Copy Link'],['more','More']] : TARGETS;
+    const share = `<div class="sh31-row sh31-share" role="group" aria-label="Share to">${targets.map(([k, t]) => `<button class="sh31-t" data-act="sh31To" data-k="${k}">${ICON[k]}<span>${t}</span></button>`).join('')}</div>`;
+    const preview = st.merchantId ? merchantPreview(st.previewKey) : null;
+    const previewCard = preview ? `<a class="sh31-preview" href="${esc(preview.local.href)}" target="_blank" rel="noopener" aria-label="Open link preview for ${esc(preview.item.title)}"><img src="${esc(new URL(preview.item.image, preview.local).href)}" alt=""><span class="sh31-preview-copy"><b>${esc(preview.item.title)}</b><small>${esc(preview.item.description)}</small></span>${ic('chev')}</a>` : '';
+    const manualLink = preview && st.showLink ? `<label class="sh31-link-field">Copy this link<input readonly value="${esc(preview.external.href)}"></label>` : '';
+    const selectedName = recipients.find(item => item.key === st.sel[0])?.name;
+    const send = st.sel.length ? `<div class="sh31-send">${btn(st.sel.length > 1 ? `Send to ${st.sel.length} ${st.merchantId ? 'recipients' : 'people'}` : `Send to ${esc(selectedName || '1 recipient')}`, 'sh31Send')}</div>` : '';
+    return `<div class="scrim ${S.sheetAnim ? 'anim' : ''}" data-act="closeSheet2"></div><div class="sheet sh31 ${S.sheetAnim ? 'anim' : ''}" role="dialog" aria-label="Send to"><div class="grab" aria-hidden="true"></div>${top}${people}${previewCard}${manualLink}${share}${send}</div>`; };
 
   const _ov = overlayHTML;
   overlayHTML = () => _ov() + (S.sheet === 'share31' ? sheetHTML() : '');
@@ -79,16 +110,73 @@
   const _share = A.share;
   A.share = el => { const k = el && el.dataset && KIND[el.dataset.kind]; if (k && !isGuest()) { open31(k); return; } return _share(el); };
   const _mx = A.mxShare;
-  if (_mx) A.mxShare = el => { if (isGuest()) return _mx(el); open31('place'); };
+  if (_mx) A.mxShare = el => { if (isGuest()) return _mx(el); open31('place', S.mer); };
   const keep = () => { S.sheetAnim = false; render(); };
   Object.assign(A, {
     sh31Search: () => { const st = ST(); st.search = !st.search; if (!st.search) st.q = ''; keep(); if (st.search) setTimeout(() => document.querySelector('.sh31-q input')?.focus(), 0); },
     sh31Pick: el => { const st = ST(); const n = el.dataset.n; st.sel = st.sel.includes(n) ? st.sel.filter(x => x !== n) : [...st.sel, n]; keep(); },
-    sh31To: el => { const k = el.dataset.k;
+    sh31To: async el => { const k = el.dataset.k;
+      const st = ST();
+      if (st.merchantId) {
+        const {item, local, external} = merchantPreview(st.previewKey);
+        const offerCopy = () => {
+          if (S.sheet !== 'share31' || S.sh31 !== st) return;
+          st.showLink = true;
+          keep();
+          document.querySelector('.sh31-link-field input')?.select();
+        };
+        if (k === 'copy') {
+          try {
+            await navigator.clipboard.writeText(location.hostname === 'localhost' || location.hostname === '127.0.0.1' ? local.href : external.href);
+            if (S.sheet === 'share31' && S.sh31 === st) { S.sheet = null; render(); }
+            toast('Link copied.');
+          } catch {
+            offerCopy();
+          }
+          return;
+        }
+        if (scen.network === 'offline') return toast('No internet connection. Try again when connected, or copy the link.', 'err');
+        if (k === 'more') {
+          if (!navigator.share) return offerCopy();
+          try {
+            await navigator.share({title:item.title, text:item.description, url:external.href});
+          } catch (error) {
+            if (error.name !== 'AbortError') offerCopy();
+          }
+          return;
+        }
+        window.open(merchantShareTarget(k, item.title, external.href), '_blank', 'noopener,noreferrer');
+        return;
+      }
       if (k === 'copy') { try { navigator.clipboard.writeText('https://youapp.ai/share/demo').catch(() => {}); } catch(e) {} S.sheet = null; render(); toast('Link copied.'); return; }
       const name = (TARGETS.find(t => t[0] === k) || [])[1];
       S.sheet = null; render(); toast(k === 'more' ? 'Opens the phone’s share options.' : `Opens ${name} to share this ${ST().what}.`); },
-    sh31Send: () => { const st = ST(); const n = st.sel.length; S.sheet = null; render(); toast(n > 1 ? `Sent to ${n} people.` : `Sent to ${st.sel[0]}.`); },
+    sh31Send: () => {
+      const st = ST();
+      if (!st.sel.length) return;
+      let selectedName = st.sel[0];
+      if (st.merchantId) {
+        if (scen.network === 'offline') return toast('No internet connection. Check your connection and try again.', 'err');
+        const place = window.YouAppMerchantShare.place(st.merchantId);
+        if (!place) return toast('This merchant is unavailable.', 'err');
+        const targets = shareGroups().filter(group => st.sel.includes(group.id));
+        const contacts = CONTACTS.filter(([name]) => st.sel.includes(name));
+        if (targets.length + contacts.length !== st.sel.length) {
+          st.sel = [...targets.map(group => group.id), ...contacts.map(([name]) => name)];
+          keep();
+          toast('A selected group is unavailable. Review your recipients and try again.', 'err');
+          return;
+        }
+        for (const group of targets) {
+          group.msgs.push({id:nid(), t:'merchant', merchantId:place.id, me:true, text:place.name, at:nowHM(), st:'sent'});
+          group.at = 'Now';
+        }
+        selectedName = targets[0]?.name || selectedName;
+      }
+      S.sheet = null;
+      render();
+      toast(st.sel.length > 1 ? `Sent to ${st.sel.length} ${st.merchantId ? 'recipients' : 'people'}.` : `Sent to ${selectedName}.`);
+    },
   });
   /* search input: filter as you type without losing focus */
   document.addEventListener('input', e => { const t = e.target; if (!t.matches || !t.matches('[data-in="sh31Q"]')) return; ST().q = t.value; const pos = t.selectionStart; keep(); const i = document.querySelector('.sh31-q input'); if (i) { i.focus(); i.setSelectionRange(pos, pos); } }, true);

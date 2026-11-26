@@ -46,7 +46,25 @@ const productSeed = () => ({id:'g-products', group:true, name:'YouApp Products',
     {id:'yp-red', t:'angpao', tok:'apSeraFriday', who:'lara', at:'09:11'},
     {id:'yp-last', t:'text', who:'maulguy', text:'Try the phone and video buttons above, or attach a photo, video, document, voice note or Red Packet below.', at:'09:12'}
   ], pin:'yp-text'});
-function gStore(){ const c = C6(); if (!c.gInit) { c.gInit = true; c.convs.unshift(productSeed(), gSeed()); c.gInvite = true; } return c; }
+const merchantGroupSeed = () => ({
+  id:'g-merchants', group:true, name:'YouApp Merchant', letter:'YM', unread:0, at:'Today', myRole:'admin',
+  bio:'Try opening, forwarding, and sending merchant cards. From any merchant page, choose Share and search for this group.',
+  mem:[{k:'me', role:'admin'}, {k:'maulguy', role:'owner'}, {k:'lara', role:'member'}, {k:'catherine', role:'member'}],
+  perm:GPERM0(),
+  msgs:[
+    {id:'ym-open', t:'merchant', merchantId:'px-kopi', text:'Merchant with cashback', who:'lara', at:'09:00'},
+    {id:'ym-nocashback', t:'merchant', merchantId:'px-bread', text:'Merchant without cashback', me:true, at:'09:01', st:'sent'},
+    {id:'ym-closed', t:'merchant', merchantId:'px-salon', text:'Closed merchant', who:'catherine', at:'09:02'},
+    {id:'ym-forward', t:'merchant', merchantId:'px-boba', text:'Forwarded merchant', me:true, fwd:true, at:'09:03', st:'sent'},
+    {id:'ym-no-photo', t:'merchant', merchantId:'px-thread', merchantPhoto:false, text:'Merchant without a shared photo', who:'lara', at:'09:04'},
+    {id:'ym-unavailable', t:'merchant', merchantId:'ym-removed-place', text:'Unavailable merchant', who:'lara', at:'09:04'},
+    {id:'ym-retry', t:'merchant', merchantId:'px-kopi', text:'Merchant share to retry', me:true, at:'09:05', st:'fail'},
+    {id:'ym-deleted', t:'merchant', merchantId:'px-kopi', text:'Deleted merchant share', me:true, at:'09:06', del:true},
+    {id:'ym-invite', t:'ginvite', who:'maulguy', whoName:'Maulguy', av:'ca1', inv:{name:'Sera.cx', by:'Maulguy', gid:'g-sera', slug:'seracx'}, at:'09:07'},
+    {id:'ym-guide', t:'text', who:'lara', text:'Open a merchant card to try Share, check-in, directions, or Pay. Share it back to this group to see the new card.', at:'09:08'},
+  ],
+});
+function gStore(){ const c = C6(); if (!c.gInit) { c.gInit = true; c.convs.unshift(productSeed(), gSeed(), merchantGroupSeed()); c.gInvite = true; } return c; }
 const groups = () => gStore().convs.filter(x=>x.group);
 const grp = () => groups().find(g=>g.id===S.gid) || groups()[0];
 const myRole = g => g.myRole || (g.mine ? 'owner' : g.roleFix ? 'member' : (scen.gRole||'owner'));
@@ -129,6 +147,13 @@ appEntryRoutes.products = (open, context) => {
   C6();
   S.gid = 'g-products';
   S.conv = 'g-products';
+  S.ctab = 'group';
+  open('chat', context);
+  setTimeout(scrollChat, 30);
+};
+appEntryRoutes.merchantGroup = (open, context) => {
+  gStore();
+  S.gid = S.conv = 'g-merchants';
   S.ctab = 'group';
   open('chat', context);
   setTimeout(scrollChat, 30);

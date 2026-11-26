@@ -57,6 +57,44 @@ const PLACES = [
 /* existing merchants (search, recent, Scan) open the same page */
 const fromOld = m => ({id:m.id, name:m.name, type:m.cat||(m.tags||[])[0]||'Merchant', cat:'', price:'', addr:m.addr, full:m.addr, m:m.distance?Math.round(parseFloat(m.distance)*1000):900, open:!/clos/i.test(m.openLabel||''), close:((m.openLabel||'').match(/Closes (.+)$/)||[])[1]||'', rating:m.rating, rev:m.ratingCount||m.checkins||0, cb:m.cb||0, img:m.img, amb:'aiko', ambN:Math.max(5, Math.round((m.checkins||40)/7)), today:Math.round((m.checkins||20)/20), total:m.checkins||0, phone:'03-5631 2299', photos:12, board:[['aiko',Math.max(5, Math.round((m.checkins||40)/7))],['hafiz',Math.max(3, Math.round((m.checkins||40)/10))],['mei',Math.max(2, Math.round((m.checkins||40)/16))]], mine:0, old:true});
 const placeById = id => PLACES.find(p => p.id === id) || (typeof merById === 'function' && merById(id) ? (MX.oldMap[id] = MX.oldMap[id] || fromOld(merById(id))) : null);
+appEntryRoutes.merchantPlace = (open, context, id) => {
+  const place = placeById(id);
+  if (!place) {
+    open('discover', context);
+    toast('This merchant is unavailable.', 'err');
+    return;
+  }
+  S.mer = place.id;
+  S.mxShareVariant = '';
+  MX.hours = null;
+  open('mer', context);
+};
+
+window.YouAppMerchantShare = {
+  place: placeById,
+  card(message) {
+    const place = placeById(message.merchantId);
+    if (!place) return '<div class="mx-share-card"><div class="mx-share-details"><b>Merchant unavailable</b><span class="mx-share-address">This merchant can no longer be opened.</span></div></div>';
+    const photo = message.merchantPhoto !== false && IMG[place.img]
+      ? `<div class="mx-share-photo">${img(place.img)}</div>` : '';
+    const status = place.open ? 'Open' : 'Closed';
+    const hours = place.open ? place.close && `Closes at ${place.close}` : place.opens && `Opens at ${place.opens}`;
+    const cashback = place.cb ? `<span class="mx-share-cashback">${place.cb}% cashback</span>` : '';
+    return `<div class="mx-share-card">${photo}
+      <div class="mx-share-details">
+        <b>${esc(place.name)}</b>
+        <span class="mx-share-address">${esc(place.type)} · ${esc(place.addr)}</span>
+        <div class="mx-share-meta"><b class="mx-op ${place.open ? 'on' : 'off'}">${status}</b>${hours ? `<span>${esc(hours)}</span>` : ''}</div>
+        ${cashback}
+      </div>
+      <button type="button" data-act="mxSharedOpen" data-id="${esc(place.id)}"${message.merchantPhoto === false && place.id === 'px-thread' ? ' data-preview="px-thread-no-photo"' : ''}>View merchant ${ic('chev')}</button>
+    </div>`;
+  },
+};
+document.addEventListener('error', event => {
+  const photo = event.target.closest?.('.mx-share-photo');
+  if (photo) photo.hidden = true;
+}, true);
 
 /* our own state: check-ins, reviews */
 const MX = window.MX = {mine:{}, last:{}, reviews:{}, oldMap:{}, flt:'all', sort:'near', area:'near', km:3};
@@ -355,7 +393,12 @@ V.merWho = () => `<div class="screen mxw">${statusBar()}${topBar('Who checks in 
 
 /* ---------- actions ---------- */
 Object.assign(A, {
-  mxOpen: el => { if (isGuest()) { openSheet('loginGuest'); return; } S.mer = el.dataset.id; MX.hours = null; go('mer'); },
+  mxOpen: el => { if (isGuest()) { openSheet('loginGuest'); return; } S.mer = el.dataset.id; S.mxShareVariant = el.dataset.preview || ''; MX.hours = null; go('mer'); },
+  mxSharedOpen: el => {
+    if (scen.network === 'offline') return toast('No internet connection. Try again when connected.', 'err');
+    if (!placeById(el.dataset.id)) return toast('This merchant is unavailable.', 'err');
+    A.mxOpen(el);
+  },
   mxFlt: el => { MX.flt = el.dataset.k; render(); },
   mxSort: () => { MX.sort = MX.sort === 'top' ? 'near' : 'top'; render(); toast(MX.sort === 'top' ? 'Sorted by top rated.' : 'Sorted by nearest.'); },
   mxArea: () => { MX.ad = {id:MX.area, km:MX.km, q:''}; go('merArea'); },
@@ -469,6 +512,20 @@ document.head.insertAdjacentHTML('beforeend', `<style id="mx-css">
 .mx-list{display:grid; gap:12px; padding:4px 16px 8px}
 .mx-row{border:1.5px solid #ECE7F7; border-radius:18px; overflow:hidden; background:#fff}
 .mx-rm{display:flex; gap:12px; width:100%; padding:10px; border:0; background:none; text-align:left; font:inherit}
+.mx-share-card{display:grid; width:248px; max-width:100%; overflow:hidden; border:1px solid var(--a-line); border-radius:12px; background:var(--a-surface,#fff); text-align:left}
+.mx-share-card{color:var(--a-ink)}
+.bub .mx-share-card span{margin-top:0; text-align:left}
+.mx-share-photo{display:block; aspect-ratio:16/9; overflow:hidden; background:var(--a-gray-100)}
+.mx-share-photo[hidden]{display:none}
+.mx-share-photo img{display:block; width:100%; height:100%; object-fit:cover}
+.mx-share-details{display:grid; gap:4px; padding:10px 12px}
+.mx-share-details>b{font-size:14px; line-height:20px}
+.bub .mx-share-details .mx-share-address,.bub .mx-share-meta span{color:var(--a-ink-2); font-size:12px; line-height:16px}
+.mx-share-meta{display:flex; align-items:baseline; flex-wrap:wrap; gap:2px 6px; font-size:12px}
+.bub .mx-share-details .mx-share-cashback{justify-self:start; border-radius:999px; padding:2px 8px; background:var(--a-indigo-100); color:var(--a-indigo); font-size:12px; font-weight:700}
+.mx-share-card button{display:flex; align-items:center; justify-content:space-between; gap:8px; width:100%; min-height:44px; margin:0; padding:4px 12px; border:0; border-top:1px solid var(--a-line); background:none; color:var(--a-indigo); font:inherit; font-weight:700; cursor:pointer}
+.mx-share-card button:focus-visible{outline:2px solid currentColor; outline-offset:-3px}
+.mx-share-card button svg{width:16px; height:16px}
 .mx-ph{flex:none; width:96px; height:108px; border-radius:14px; overflow:hidden; background:#F4EFFF} .mx-ph img{width:100%; height:100%; object-fit:cover; display:block}
 .mx-ri{flex:1; min-width:0; display:grid; gap:3px; align-content:start}
 .mx-nm{display:flex; align-items:center; gap:6px; min-width:0} .mx-nm b{font:800 15.5px/1.25 Inter, sans-serif; color:#1E1050; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}

@@ -65,6 +65,16 @@ Open **Red Packet → Create → Lucky draw**. To test as a recipient, open **Lu
 | Create packets before and after changing the rates | Passed. The first packet keeps version 1 and its 10 MYRT maximum. The second packet uses version 2 and its 2 MYRT maximum. |
 | Make two quick successive requests to open a packet with 4.20 MYRT remaining | Passed. The highest available prize is 4 MYRT. The account gets one payout, and the packet closes with 0.20 MYRT remaining. |
 
+## Packet Testing group
+
+Open **Locals → Group → Packet Testing** in 3.2.0 or **Inbox → Group → Packet Testing** in 3.3.0. Use **KYC Approved** and **Wallet Active** for the standard claims.
+
+Red, Raya, Deepavali, Birthday, and YouApp each have the same twelve cards. The four interactive claim cases are Lucky draw, Random, Equal split with the last slot, and Lucky draw with a 1.20 MYRT budget that closes after a 1 MYRT payout. The remaining cards cover already opened, fully claimed, expired, cancelled, invalid link, simulated sign-in, simulated verification, and the sender details view.
+
+Tap **Open** to exercise the theme's opening artwork, celebration, payout count-up, and result. Close and reopen the same card to check that it shows the settled payout without crediting the wallet again. Reload the prototype for fresh claims. Use the wallet scenario controls to exercise activation and reconnection entry from any theme card.
+
+Windows Chrome at 390 × 844 passed all 60 card scenarios in 3.2.0, including the opening artwork, celebration, payout count-up and single balance credit across 20 interactive claims. In 3.3.0, one claim per theme passed with reduced motion and the celebration hidden. Both versions passed wallet activation entry and Back for inactive and locked scenarios across all five themes. These are browser prototype results.
+
 ## Prize distribution and admin panel
 
 Feedback from YY via Cing on November 19, 2026. With default rates, a 100 MYRT budget and 10 openings yield an average prize of 5.50 MYRT per opening and an expected payout of 55 MYRT. The chance that all ten openings yield 10 MYRT is `0.1^10`, or 1 in 10 billion. There is no recipient cap while the budget can cover a prize and the packet is active.

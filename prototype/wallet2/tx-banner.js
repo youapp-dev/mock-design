@@ -19,7 +19,7 @@
   const STATUS_IC = {processing:'clock', done:'check', failed:'alert', multi:'clock'};
   const KIND_IC = {topup:'plus', pay:'scan', sub:'crown', multi:'clock'};
   /* coin of the token moved, like the live app (MYRT hibiscus coin); falls back to the kind icon */
-  const COIN = {MYRT:'assets/tokens/myrt.png', USDC:'assets/tokens/usdc.png'};
+  const COIN = {MYRT:'../../design-system/assets/Logos/myrt-icon.svg', USDC:'assets/tokens/usdc.png'};
   const lead = b => { const src = b.status !== 'multi' && COIN[b.tok || 'MYRT'];
     return src ? `<span class="txb-ic coin" aria-hidden="true"><img src="${src}" alt=""></span>` : `<span class="txb-ic" aria-hidden="true">${ic(KIND_IC[b.kind] || 'clock')}</span>`; };
   const banner = b => { const failed = b.status === 'failed', done = b.status === 'done';
