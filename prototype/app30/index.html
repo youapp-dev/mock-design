@@ -113,7 +113,7 @@ button.actc{cursor:pointer}
 /* Group chat (Figma 3.2) */
 .gav{display:inline-grid; place-items:center; border-radius:50%; background:#0CC25F; color:#fff; overflow:hidden; flex:none}
 .gav b{font-weight:800; line-height:1}
-.gav img{width:100%; height:100%; object-fit:cover}
+.gav{position:relative} .gav img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
 .av44g{width:44px; height:44px} .av44g b{font-size:24px}
 .av36g{width:36px; height:36px} .av36g b{font-size:20px}
 .av64g{width:64px; height:64px} .av64g b{font-size:34px}
@@ -182,7 +182,7 @@ button.actc{cursor:pointer}
 .gck{width:20px; height:20px; border:1.5px solid var(--a-line-strong); border-radius:5px; display:grid; place-items:center; font-style:normal; font-size:13px; color:#fff; flex:none}
 .gck.on{background:var(--a-indigo); border-color:var(--a-indigo)}
 .gfpic{position:relative; display:grid; place-items:center; width:140px; height:140px; margin:4px auto 16px; border-radius:50%; border:0; background:#0CC25F; color:#fff; padding:0}
-.gfpic b{font-size:72px; font-weight:800} .gfpic img{width:100%; height:100%; border-radius:50%; object-fit:cover}
+.gfpic b{font-size:72px; font-weight:800} .gfpic img{position:absolute; inset:0; width:100%; height:100%; border-radius:50%; object-fit:cover}
 .gfph{display:grid; place-items:center; width:100%; height:100%; border-radius:50%; background:#d9d9de; color:#5f5c66} .gfph .ico{width:56px; height:56px}
 .gfpic > i{position:absolute; right:6px; bottom:8px; width:32px; height:32px; border-radius:50%; background:#fff; color:var(--a-ink); display:grid; place-items:center; box-shadow:0 2px 6px rgba(0,0,0,.15)}
 .gfpic > i .ico{width:16px; height:16px}
@@ -901,7 +901,7 @@ button.actc{cursor:pointer}
 .gp-wrap{display:grid; justify-items:center; align-content:start; padding:24px 16px}
 .gp-big{width:300px; height:300px; border-radius:32px; overflow:hidden; display:grid; place-items:center; color:#fff; background:linear-gradient(135deg,#A887DA 0%,#6A45C2 45%,#3A1B92 100%); box-shadow:0 14px 34px rgba(42,20,102,.22)}
 .gp-big.logo{background:linear-gradient(135deg,#3BD98A 0%,#0CC25F 45%,#058A43 100%)}
-.gp-big b{font:800 150px Inter} .gp-big img{width:100%; height:100%; object-fit:cover}
+.gp-big{position:relative} .gp-big b{font:800 150px Inter} .gp-big img{position:absolute; inset:0; width:100%; height:100%; object-fit:cover}
 .gp-name{margin:20px 0 0; font:800 20px Inter; color:#2A1466} .gp-sub{margin:4px 0 0; font:500 13px Inter; color:#6E6688}
 /* sheets */
 .gx-sheet .sh-t{margin:0; font:800 19px Inter; color:#1E1050; text-align:center}
@@ -1157,7 +1157,7 @@ button.am-card.am-tap{border:1.5px solid #ECE7F7}
 .gc-id .field{flex:1; min-width:0}
 .gc-pic{position:relative; flex:none; width:72px; height:72px; margin-top:26px; border:0; padding:0; border-radius:20px; background:#F4EFFF; color:#5E35B8; display:grid; place-items:center}
 .gc-pic > .ico{width:28px; height:28px}
-.gc-pic img{width:100%; height:100%; border-radius:20px; object-fit:cover}
+.gc-pic img{position:absolute; inset:0; width:100%; height:100%; border-radius:20px; object-fit:cover}
 .gc-pic b{font:800 26px Inter; color:#5E35B8}
 .gc-pic > i{position:absolute; right:-6px; bottom:-6px; width:28px; height:28px; border-radius:10px; display:grid; place-items:center; background:linear-gradient(100deg,#9A6BBF,#3D1C96); color:#fff; border:2px solid #fff} .gc-pic > i .ico{width:14px; height:14px}
 .gc-pic:not(.has) > i{display:none}
@@ -1182,9 +1182,11 @@ button.am-card.am-tap{border:1.5px solid #ECE7F7}
 .gc-gid{display:flex; align-items:center; gap:12px; padding:4px 2px 12px}
 .gc-gid .gav{border-radius:14px}
 .gc-gid b{display:block; font:700 16px Inter; color:#1E1050} .gc-gid small{font:500 12.5px Inter; color:#6E6688}
-.gc-qrc{border:1.5px solid #ECE7F7; border-radius:22px; padding:18px 16px 16px; text-align:center}
-.gc-qr{width:192px; height:192px; margin:0 auto; padding:12px; border-radius:18px; background:#fff; box-shadow:0 6px 20px rgba(75,42,158,.12)} .gc-qr svg{width:100%; height:100%; display:block}
-.gc-qrc > small{display:block; margin-top:12px; font:600 12.5px Inter; color:#6E6688}
+.gc-qrc{border:1.5px solid #ECE7F7; border-radius:24px; padding:22px 16px 16px; text-align:center; background:linear-gradient(180deg,#F4EFFF 0%,#FAF7FF 46%,#fff 72%)}
+.gc-qr{position:relative; width:212px; height:212px; margin:0 auto; padding:14px; border-radius:22px; background:#fff; box-shadow:0 10px 28px rgba(75,42,158,.14), 0 0 0 1px rgba(75,42,158,.06)} .gc-qr svg{width:100%; height:100%; display:block}
+.gc-qmark{position:absolute; left:50%; top:50%; transform:translate(-50%,-50%); padding:4px; border-radius:14px; background:#fff; display:grid}
+.gc-qmark .gav.gc-qav{width:40px; height:40px; border-radius:11px} .gc-qmark .gav.gc-qav b{font-size:18px}
+.gc-qrc > small{display:flex; align-items:center; justify-content:center; gap:6px; margin-top:14px; font:600 13px Inter; color:#4B2A9E} .gc-qrc > small .ico{width:16px; height:16px}
 .gc-qrc .gx-code{text-align:left}
 .gx-sr.dng .gx-si{background:#FDECEA; color:#C0392B} .gx-sr.dng b{color:#C0392B}
 
@@ -2939,6 +2941,8 @@ p.kicker3.pad16{margin:18px 0 6px; color:var(--a-ink-3)}
 <script src="../features/trips/trips-stops.js"></script>
 <script src="../features/trips/trips-plans.js"></script>
 <script src="../features/trips/trips-board.js"></script>
+<script src="../../share/merchant/catalog.js"></script>
+<script src="../../share/merchant/channels.js"></script>
 <script src="../features/share/share-sheet.js"></script>
 <script src="../features/phone/countries.js"></script>
 <script src="../features/phone/profile-phone.js"></script>

@@ -5,7 +5,7 @@ SVG.apList = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-
 SVG.apFlag = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"><path d="M5 21V4h11l-1.5 4L16 12H5"/></svg>';
 
 const C = n => fmt2(n/100);                       /* cents → "12.34" */
-const MY_ = n => `${C(n)} MYRT`;
+const MY_ = n => `RM${C(n)}`;   /* 26 Nov: red packet amounts show in RM */
 const NOW = () => Date.now();
 const AP_TYPES = {lucky:'Lucky draw', random:'Random', equal:'Equal split'};
 const AP_CREATE_TITLE = 'Create packet';
@@ -53,6 +53,54 @@ const apMine = () => redPackets.packets.filter(a => a.creator === 'me');
 
 /* sample red packet from other people (chat cards) */
 let apHistorySamples;
+const PACKET_TEST_GROUP = 'g-packet-testing';
+const PACKET_TEST_TOKEN_PREFIX = 'packet-test-';
+const apMissingTestCards = new Map();
+const apTestGates = new Map();
+
+function apTestingGroup() {
+  const who = 'lara';
+  const msgs = [];
+  const cases = [
+    {label:'Lucky draw · claim', type:'lucky', total:10000},
+    {label:'Random · claim', type:'random', total:800, count:3},
+    {label:'Equal split · last slot', count:1},
+    {label:'Lucky draw · small remainder', type:'lucky', total:120},
+    {label:'Already opened', claimed:['me']},
+    {label:'Fully claimed', count:2, claimed:['catherine','daniel']},
+    {label:'Expired', expiresAt:NOW() - 1000, expLbl:'1 hour'},
+    {label:'Cancelled', close:'CANCELLED'},
+    {label:'Invalid link', missing:true},
+    {label:'Sign-in required', gate:'guest'},
+    {label:'Verification required', gate:'kyc'},
+    {label:'Sent by you', creator:'me'},
+  ];
+  for (const [theme, {name}] of Object.entries(redPacketThemes)) {
+    cases.forEach(({label, close, missing, gate, ...options}, index) => {
+      const tok = `${PACKET_TEST_TOKEN_PREFIX}${theme}-${index}`;
+      const msg = `${name} · ${label}`;
+      if (missing) apMissingTestCards.set(tok, {theme, msg});
+      else {
+        const packet = redPackets.packets.find(item => item.token === tok) || redPackets.create({
+          type:'equal', per:200, count:3, creator:who, historical:true,
+          luckyRates:YouAppLuckyDraw.baseline, ...options, theme, msg, token:tok,
+        });
+        if (close) redPackets.close(packet, close);
+        else redPackets.settle(packet);
+        if (options.creator === 'me' || options.claimed?.includes('me')) apHistorySamples.add(tok);
+      }
+      if (gate) apTestGates.set(tok, gate);
+      msgs.push({id:tok, t:'angpao', tok, who, text:msg, me:options.creator === 'me', at:'Today'});
+    });
+  }
+  return {
+    id:PACKET_TEST_GROUP, group:true, name:'Packet Testing', letter:'PT', unread:0, at:'Today',
+    bio:'Claim scenarios for all five Red Packet themes. Reload the prototype to replay a fresh claim.',
+    myRole:'member', perm:GPERM0(), msgs,
+    mem:[{k:'me', role:'member'}, {k:who, role:'owner'}, {k:'catherine', role:'member'}, {k:'daniel', role:'member'}],
+  };
+}
+
 function apSeed(){
   if (apHistorySamples) return;
   const first = redPackets.packets.length;
@@ -79,6 +127,10 @@ function apSeed(){
 }
 const _C6ap = C6;
 C6 = function(){ const c = _C6ap(); apSeed();
+  if (!c.apTestingGroupSeeded) {
+    c.apTestingGroupSeeded = true;
+    c.convs.unshift(apTestingGroup());
+  }
   c.convs.forEach(v => { if (v.apSeed) return;
     if (v.id === 'c-cat') { v.apSeed = true; v.msgs.push({id:'apm-c1', t:'angpao', tok:'apCatherine', at:'15:02'}); }
     if (v.id === 'c-lara' && !v.apShowcaseV1) { v.apSeed = true; v.apShowcaseV1 = true; v.draft = ''; v.at = 'Now'; v.msgs.push(
@@ -134,12 +186,12 @@ function apCalc(chat = apConversation(S.apCtx)){
   const a = Math.round((parseFloat(f.amt) || 0) * 100), n = isLucky(f) ? 0 : parseInt(count, 10) || 0;
   const total = f.type === 'equal' ? a * n : a, fee = feeOf(total), ded = total + fee;
   const e = {};
-  if (f.amt !== '' && a < 100) e.amt = f.type === 'equal' ? 'Minimum 1.00 MYRT per person.' : 'Enter at least 1.00 MYRT.';
+  if (f.amt !== '' && a < 100) e.amt = f.type === 'equal' ? 'Minimum RM1.00 per person.' : 'Enter at least RM1.00.';
   if (!isLucky(f) && count !== '') {
     if (maxPeople === 0) e.count = 'There’s no one else in this group yet.';
     else if (n < 1) e.count = 'Enter at least 1 person.';
     else if (n > maxPeople) e.count = maxPeople === 100 ? 'Maximum 100 people.' : `Choose up to ${apPeople(maxPeople)} for this group.`;
-    else if (f.type === 'random' && a >= 100 && n > Math.floor(a / 100)) e.count = `With ${C(a)} MYRT, you can send to up to ${Math.floor(a / 100)} ${Math.floor(a/100)===1?'person':'people'} (min 1 MYRT each).`;
+    else if (f.type === 'random' && a >= 100 && n > Math.floor(a / 100)) e.count = `With RM${C(a)}, you can send to up to ${Math.floor(a / 100)} ${Math.floor(a/100)===1?'person':'people'} (min RM1 each).`;
   }
   const customExp = parseInt(f.days, 10), expUnit = f.expUnit || 'days', expMax = expUnit === 'hours' ? 168 : 365;
   if (!f.forever && f.dur === 'custom' && f.days !== '' && !(String(customExp) === f.days.trim() && customExp >= 1 && customExp <= expMax)) e.days = `Enter whole ${expUnit} from 1 to ${expMax}.`;
@@ -157,9 +209,9 @@ const fld = (id, key, label, val, o={}) => `<label class="apfld ${o.err?'err':''
 V.apconf = () => { const f = S.apf, r = apCalc(), x = expOf();
   const rows = [['Type', AP_TYPES[f.type]], ['Recipients', isLucky(f) ? 'No people limit' : apPeople(r.n)], ...(f.type==='equal'?[['Per person', MY_(r.a)]]:[]), [isLucky(f) ? 'Budget' : 'Total', MY_(r.total)], ['Validity', x.lbl], ...(f.msg?[['Message', esc(f.msg)]]:[])];
   return `<div class="screen">${statusBar()}${topBar('Confirm Red Packet')}<div class="scroll"><div class="pad16">
-    <div class="apcf-top"><span class="apgate-ic">${ic('apGift')}</span><small>You pay</small><b>${C(r.ded)}<span>MYRT</span></b></div>
+    <div class="apcf-top"><span class="apgate-ic">${ic('apGift')}</span><small>You pay</small><b><span style="margin-right:4px">RM</span>${C(r.ded)}</b></div>
     <div class="boxcard apkv">${rows.map(([k,v])=>`<div class="kv">${k}<b>${v}</b></div>`).join('')}</div>
-    <p class="apnote" style="text-align:left">Your MYRT is locked when you pay and paid out as people open it.${x.at?' Anything unclaimed comes back to you when it expires.':''}</p></div></div>
+    <p class="apnote" style="text-align:left">Your money is locked when you pay and paid out as people open it.${x.at?' Anything unclaimed comes back to you when it expires.':''}</p></div></div>
     <div class="pad16 apfoot">${btn(`Pay ${MY_(r.ded)}`,'apPay',{cls:'btn-block', loading:S.apBusy, disabled:S.apBusy})}</div></div>`; };
 
 /* ---- section 5: success + share ---- */
@@ -180,7 +232,7 @@ V.apdone = () => { const a = apGet(S.apTok); const cx = S.apCtx && C6().convs.fi
   const sub = `${apTypeDetails(a)} · ${a.expLbl}`;
   return `<div class="screen rp20-share" style="${redPacketThemeStyle(a.theme)}">${statusBar()}<div class="topbar"><span style="width:32px"></span><span class="t-headline" style="flex:1; text-align:center">Red Packet ready</span><button class="iconbtn" data-act="apDoneX" aria-label="Close">${ic('close')}</button></div>
     <div class="scroll"><div class="apd">
-      <div class="apd-top"><span class="apd-badge">${ic('check')}Paid</span><div class="apd-amt">${C(a.total + a.fee)}<span>MYRT</span></div><p>Locked for ${sub}</p></div>
+      <div class="apd-top"><span class="apd-badge">${ic('check')}Paid</span><div class="apd-amt"><span style="margin-right:4px">RM</span>${C(a.total + a.fee)}</div><p>Locked for ${sub}</p></div>
       <div class="apd-qrc">
         <div class="apd-h">${img(ME_AV(), 'You', 'apd-av')}<span><b>${esc(a.msg || 'Best wishes!')}</b><small>Your red packet · ${MY_(a.total)} inside</small></span><span class="apd-env">${redPacketArt(a.theme, 'packet', 'rp20-detail-thumb')}</span></div>
         <div class="apd-qr">${qrSVG(a.token)}</div>
@@ -268,7 +320,7 @@ function apOpenResult(a, claim, sender) {
   return `<section class="rp20-result${S.apJust ? ' is-new' : ''}">
     <header class="rp20-sender-chip">${img(sender.av, '')}<span>${esc(sender.n)} · “${esc(a.msg || 'Best wishes!')}”</span></header>
     <div class="apreceive-result" role="status" aria-label="You got ${MY_(claim.amt)}. Added to YouWallet." tabindex="-1">
-      <small>You got</small><strong aria-hidden="true"><span data-ap-payout="${claim.amt}">${C(claim.amt)}</span><span class="rp20-unit">MYRT</span></strong>
+      <small>You got</small><strong aria-hidden="true"><span class="rp20-unit pre">RM</span><span data-ap-payout="${claim.amt}">${C(claim.amt)}</span></strong>
       <span>✓ Added to YouWallet</span>
     </div>
     <div class="rp20-result-actions">${source ? '<button type="button" class="rp20-secondary" data-act="apThanks">Say thanks</button>' : ''}${target ? '<button type="button" class="rp20-primary" data-act="apReturnGift">Send one back</button>' : ''}</div>
@@ -300,19 +352,20 @@ function apReceivePanel(a, claim) {
 
 V.aprecv = () => {
   const a = apGet(S.apTok);
+  const theme = a?.theme || apMissingTestCards.get(S.apTok)?.theme;
   const st = apState(a);
   if (st === 'guest' || st === 'kyc') return gateHTML('Red Packet', 'open this red packet');
   const top = `<div class="topbar"><button class="iconbtn" type="button" data-act="back" aria-label="Close">${ic('close')}</button><span class="t-headline" style="flex:1;text-align:center">${['ready','claimed'].includes(st) ? '' : 'Red packet'}</span>${a ? `<button class="iconbtn" type="button" data-act="apReport" aria-label="Report red packet">${ic('apFlag')}</button>` : ''}</div>`;
   const state = (title, detail, extra = '') => `<div class="rp20-state"><section class="rp20-state-card">
-    ${redPacketArt(a?.theme, 'packet')}<h2>${title}</h2><p>${detail}</p>${extra}</section></div>`;
+    ${redPacketArt(theme, 'packet')}<h2>${title}</h2><p>${detail}</p>${extra}</section></div>`;
   let body;
   if (st === 'notfound') body = state('Red packet not found', 'Check that you have the full link or QR code.');
   else if (st === 'ended') body = state(a.status === 'CANCELLED' ? 'Red packet cancelled' : 'Red packet expired', a.status === 'CANCELLED' ? 'The sender cancelled this red packet.' : 'The time to open this red packet has ended.', claimList(a));
   else if (st === 'own') body = state('This is your red packet', 'Share it so others can open it.', `<button class="rp20-primary" type="button" data-act="apDetail" data-tok="${esc(a.token)}">View details</button>`);
   else if (st === 'full') body = state('Red packet fully claimed', isLucky(a) ? 'All available prizes have been drawn.' : 'All packets have been opened.', claimList(a));
   else body = apReceivePanel(a, st === 'claimed' ? a.slots.find(slot => slot.by === 'me') : null);
-  return `<div class="screen rp20-receive${st === 'claimed' ? ' is-claimed' : ''}" style="${redPacketThemeStyle(a?.theme)}">
-    ${redPacketArt(a?.theme, 'scene', 'rp20-scene')}${statusBar()}${top}<div class="scroll">${body}</div></div>`;
+  return `<div class="screen rp20-receive${st === 'claimed' ? ' is-claimed' : ''}" style="${redPacketThemeStyle(theme)}">
+    ${redPacketArt(theme, 'scene', 'rp20-scene')}${statusBar()}${top}<div class="scroll">${body}</div></div>`;
 };
 
 function apAnimatePayout() {
@@ -342,7 +395,7 @@ function apCompletedRecap(a) {
   const summary = `<p class="rp20-recap-summary">${progress} · ${MY_(claimed)} claimed${a.refunded ? ` · <b>${MY_(a.refunded)} back to you</b>` : ''}</p>`;
   if (!winner) return `<section class="rp20-recap-neutral">${redPacketArt(a.theme, 'packet', 'rp20-detail-thumb')}<h1>Red packet complete</h1>${summary}</section>`;
   return `<section class="rp20-winner">
-    <div class="rp20-winner-art"><img src="../features/red-packet/art/winner.svg" alt="Luckiest" width="358" height="230">${img(winner.av, '', 'rp20-winner-avatar')}</div>
+    <div class="rp20-winner-art"><img src="../features/red-packet/art/winner.svg?v=coin-rm" alt="Luckiest" width="358" height="230">${img(winner.av, '', 'rp20-winner-avatar')}</div>
     ${redPacketArt(a.theme, 'packet', 'rp20-detail-thumb')}
     <h1>${esc(winner.n)} got the most!</h1>
     <p><strong>${MY_(t.luck.amt)}</strong> from your ${MY_(a.total)} red packet</p>
@@ -414,6 +467,7 @@ const _msgHTMLap = msgHTML;
 msgHTML = function(m, c, idx){
   if (m.t !== 'angpao') return _msgHTMLap(m, c, idx);
   const a = apGet(m.tok); if (m.id === undefined) m.id = 'm'+idx;
+  const card = a || apMissingTestCards.get(m.tok);
   let st = 'Tap to open', dim = false;
   if (!a) { st = 'Red Packet not found'; dim = true; }
   else { redPackets.settle(a);
@@ -423,7 +477,7 @@ msgHTML = function(m, c, idx){
     else if (a.status === 'CANCELLED') { st = 'Cancelled by sender'; dim = true; }
     else if (a.status === 'FULLY_CLAIMED') { st = 'Fully claimed'; dim = true; } }
   const p = c.group && !m.me && m.who ? GP(m.who) : null;
-  const bub = `<div class="bub apbub rp20-chat ${m.me?'me':''} ${dim?'apdim':''}" style="${redPacketThemeStyle(a?.theme)}" data-id="${m.id}">${p?`<b class="gwho">${esc(p.n)}</b>`:''}<button class="rp-chat-card" data-act="apTap" data-tok="${m.tok}"><span class="rp-chat-icon">${redPacketArt(a?.theme, 'packet')}</span><span class="rp-chat-copy"><b>${esc((a && a.msg) || 'Best wishes!')}</b><small>${st}</small></span></button><span class="apb-f">YouApp Red Packet</span><span class="bmeta">${m.at}${m.me?' ✓✓':''}</span></div>`;
+  const bub = `<div class="bub apbub rp20-chat ${m.me?'me':''} ${dim?'apdim':''}" style="${redPacketThemeStyle(card?.theme)}" data-id="${m.id}">${p?`<b class="gwho">${esc(p.n)}</b>`:''}<button class="rp-chat-card" data-act="apTap" data-tok="${m.tok}"><span class="rp-chat-icon">${redPacketArt(card?.theme, 'packet')}</span><span class="rp-chat-copy"><b>${esc(card?.msg || 'Best wishes!')}</b><small>${st}</small></span></button><span class="apb-f">YouApp Red Packet</span><span class="bmeta">${m.at}${m.me?' ✓✓':''}</span></div>`;
   return p ? `<div class="grow">${img(p.av, p.n, 'gmav')}${bub}</div>` : bub; };
 
 /* ---- overlays: attach row, chooser, chat/group picker, cancel dialog ---- */
@@ -455,7 +509,7 @@ overlayHTML = () => { let h = _ovAp();
   }
   if (S.dialog === 'apCancel') { const a = apGet(S.apTok); const left = apLeft(a); const amt = redPacketAmountLeft(a);
     const refund = isLucky(a) ? `${MY_(amt)} in unused budget` : `${left} unclaimed packet${left===1?'':'s'} (${MY_(amt)})`;
-    h += gModal('alert', 'Cancel remaining red packet?', `${refund} will go back to your wallet. Any MYRT already paid out stays with its recipient.`, ['Cancel Red Packet','apCancelOk'], ['Keep It','closeDialog']); }
+    h += gModal('alert', 'Cancel remaining red packet?', `${refund} will go back to your wallet. Anything already paid out stays with its recipient.`, ['Cancel Red Packet','apCancelOk'], ['Keep It','closeDialog']); }
   return h; };
 
 /* ---- actions ---- */
@@ -599,7 +653,8 @@ Object.assign(A, {
   },
   apHistoryChats: () => { S.ctab = 'message'; S.cq = ''; go('chats'); },
   apOpenTok: el => { S.apTok = el.dataset.tok; S.apJust = false; S.apSource = null; S.apShowOpeners = false; go('aprecv'); },
-  apTap: el => { const a = apGet(el.dataset.tok); S.apTok = el.dataset.tok; S.apJust = false; S.apSim = null; S.apSource = S.screen === 'chat' ? S.conv : null; S.apShowOpeners = false;
+  apTap: el => { const a = apGet(el.dataset.tok); S.apTok = el.dataset.tok; S.apJust = false; S.apSource = S.screen === 'chat' ? S.conv : null; S.apShowOpeners = false;
+    S.apSim = S.apSource === PACKET_TEST_GROUP ? apTestGates.get(S.apTok) || null : null;
     if (a && a.creator === 'me') { go('apdet'); return; } go('aprecv'); },
   apOpenIt: () => {
     const a = apGet(S.apTok);
@@ -633,7 +688,7 @@ Object.assign(A, {
     if (S.session !== 'user') { S.session = 'user'; S.apResume = null; render(); toast('Logged in. Back to your red packet.'); return; }
     if (kyc() !== 'approved') { A.kycGate({dataset:{from:'angpao'}}); return; }
     S.actFrom = 'angpao'; go('activate'); },
-  apExpireNow: () => { const a = apMine().reverse().find(x => x.status === 'ACTIVE'); if (!a) { toast('No active red packet of yours to expire.'); return; }
+  apExpireNow: () => { const a = apMine().reverse().find(x => x.status === 'ACTIVE' && !x.token.startsWith(PACKET_TEST_TOKEN_PREFIX)); if (!a) { toast('No active red packet of yours to expire.'); return; }
     if (!a.expiresAt) { a.expiresAt = NOW() - 1000; a.expLbl = a.expLbl === 'Never expires' ? 'Test expiry' : a.expLbl; } else a.expiresAt = NOW() - 1000; redPackets.settle(a); render(); },
 });
 function resumeRedPacketAfterWallet() {
@@ -718,7 +773,7 @@ Object.assign(appEntryRoutes, {
 /* scenario panel */
 if (!scen.apLim) scen.apLim = 'ok';
 Object.assign(META, {
-  apform:{name:'Red Packet · Create', group:'V2 · Red Packet', figma:'Spec: Red Packet 1–4', rules:['Gate: logged in, KYC approved, wallet active; otherwise onboarding, then back to this form','Random: total ≥ people × 1 MYRT, people ≤ floor(total). Equal: amount per person ≥ 1 MYRT. Max 100 people','Message ≤ 50 characters. Never expires is on by default; off: 1h / 6h / 24h / 3d / 7d / Custom 1–365 days','Fee (placeholder): Free 1% min 0.50 · VIP 0.5% min 0.30 · SVIP free. Charged on top; recipients get the full amount','total + fee must fit balance, per-transaction and monthly limit; over limit disables Continue and shows Upgrade']},
+  apform:{name:'Red Packet · Create', group:'V2 · Red Packet', figma:'Spec: Red Packet 1–4', rules:['Gate: logged in, KYC approved, wallet active; otherwise onboarding, then back to this form','Random: total ≥ people × RM1, people ≤ floor(total). Equal: amount per person ≥ RM1. Max 100 people','Message ≤ 50 characters. Never expires is on by default; off: 1h / 6h / 24h / 3d / 7d / Custom 1–365 days','Fee (placeholder): Free 1% min 0.50 · VIP 0.5% min 0.30 · SVIP free. Charged on top; recipients get the full amount','total + fee must fit balance, per-transaction and monthly limit; over limit disables Continue and shows Upgrade']},
   apconf:{name:'Red Packet · Confirm', group:'V2 · Red Packet', rules:['Total, fee, deducted, recipients, validity','PIN, then one server transaction: debit total + fee, total to escrow, fee to revenue, record ACTIVE, all slots generated, random token','Idempotency key: a double tap never charges twice']},
   apdone:{name:'Red Packet · Ready to share', group:'V2 · Red Packet', rules:['Card with QR','Send to chat / Send to group / Copy link, any number of times, same token (no new transaction)','View details for the sender']},
   aprecv:{name:'Red Packet · Receive', group:'V2 · Red Packet', rules:['Checks in order: not logged in → login; KYC/wallet → onboarding; token not found; expired/cancelled → ended; sender → View details only; already claimed → your result; all slots taken → fully claimed; else Open','Open: one free slot taken with a lock, unique (red packet, user), credited without fee or PIN','Amounts are fixed at create and never sent to the app before opening','Random shows a Luckiest label on the top amount']},
@@ -728,7 +783,7 @@ Object.assign(META, {
 const _rpAp = renderPanel;
 renderPanel = function(){ _rpAp(); const p = document.getElementById('panel'); if (!p) return;
   const sc = [...p.querySelectorAll('.pgroup h2')].find(x=>x.textContent==='Scenario'); const later = sc && sc.parentElement.querySelector('.later:last-child');
-  if (later && !p.querySelector('[data-k="apLim"]')) later.insertAdjacentHTML('beforebegin', `${segCtl('Red Packet · monthly limit','apLim',[['ok','Plenty left'],['near','30 MYRT left']],'30 MYRT left: bigger red packet disable Continue and show Upgrade. Tier and balance come from the Wallet 2.0 scenario (Tier, Balance).')}
+  if (later && !p.querySelector('[data-k="apLim"]')) later.insertAdjacentHTML('beforebegin', `${segCtl('Red Packet · monthly limit','apLim',[['ok','Plenty left'],['near','RM30 left']],'RM30 left: bigger red packet disable Continue and show Upgrade. Tier and balance come from the Wallet 2.0 scenario (Tier, Balance).')}
     <div class="ctl"><span class="lab">Red Packet · demo</span><div class="segp" role="group" aria-label="Red Packet demo">${[['ready','Ready'],['guest','Not logged in'],['kyc','KYC not done'],['notfound','Not found'],['ended','Ended'],['own','Own'],['claimed','Claimed'],['full','Fully claimed'],['lucky','Lucky draw']].map(([v,t])=>`<button data-act="apDemoGo" data-v="${v}">${t}</button>`).join('')}</div><button class="pbtn" style="margin-top:6px" data-act="apExpireNow">Expire my latest active red packet now</button></div>`); };
 A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist = S.screen === t ? S.hist : [...S.hist, S.screen]; S.screen = t; S.sheet = null; S.dialog = null; render(); };
 
@@ -756,7 +811,7 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
       <button type="button" data-act="apExpiryOptions" aria-expanded="${f.expiryOpen}" aria-controls="apExpiryFields">${ic('clock')}
         <span class="rp20-exp-copy"><small>Leftover money</small><b>${label}</b></span>${ic('chevdown')}</button>
       <div id="apExpiryFields"${f.expiryOpen ? '' : ' hidden'}><div class="apexp">
-        <button type="button" class="apchk" role="checkbox" aria-checked="${f.forever}" data-act="apForever"><i>${f.forever?'✓':''}</i><span><b>Never expires</b><small>Choose when unclaimed MYRT returns to your wallet.</small></span></button>
+        <button type="button" class="apchk" role="checkbox" aria-checked="${f.forever}" data-act="apForever"><i>${f.forever?'✓':''}</i><span><b>Never expires</b><small>Choose when unclaimed money returns to your wallet.</small></span></button>
         ${f.forever ? '' : `<div class="apdurs">${DURS.map(([v,t]) => `<button type="button" aria-pressed="${f.dur===v}" data-act="apDur" data-v="${v}">${t}</button>`).join('')}</div>
         ${f.dur === 'custom' ? `<div class="apcustom"><div class="apunits" role="group" aria-label="Custom expiry unit">${['hours','days'].map(value => `<button type="button" aria-pressed="${unit === value}" data-act="apExpUnit" data-v="${value}">${value === 'hours' ? 'Hours' : 'Days'}</button>`).join('')}</div>
           ${fld('apDays','days',`Number of ${unit}`,f.days,{mode:'numeric', ph:`1–${max}`, suf:unit, err:r.e.days, help:`Whole ${unit}, 1 to ${max}`})}</div>` : ''}`}
@@ -797,7 +852,7 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
           ${amountHelp ? `<p class="rp20-error" id="apAmtH">${esc(amountHelp)} ${r.e.lim ? '<button class="link" type="button" data-act="apUpgrade">Upgrade</button>' : ''}</p>` : ''}
           <div class="rp20-wallet"><img class="rp20-wallet-flag" src="../features/red-packet/art/wallet-flag.svg" alt=""><span${amountHelp ? '' : ' id="apAmtH"'}>YouWallet · ${RM(r.bal / 100)}</span>
             <button class="rp20-wallet-change" type="button" data-act="apChangeWallet" aria-label="Change wallet" aria-haspopup="dialog">Change ${ic('chevdown')}</button></div>
-          ${r.e.bal ? '<p class="rp20-error" id="apAmtBalance">Not enough MYRT in your wallet. <button class="link" type="button" data-act="apTopUp">Top up</button></p>' : ''}
+          ${r.e.bal ? '<p class="rp20-error" id="apAmtBalance">Not enough balance in your wallet. <button class="link" type="button" data-act="apTopUp">Top up</button></p>' : ''}
         </section>
         ${lucky ? '' : `<div class="rp20-box rp20-people">${ic('group')}<div>
           <label for="apCount">How many people</label><input id="apCount" data-apf="count" value="${esc(r.count)}" inputmode="numeric" placeholder="0" autocomplete="off" aria-invalid="${Boolean(r.e.count)}"${r.e.count ? ' aria-describedby="apCountError"' : ''}></div>
@@ -885,7 +940,7 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
   const _authAp = auth;
   auth = function(reason, ok, opts){ if (reason === 'Send angpao' && S.apAuthSum) reason = S.apAuthSum; return _authAp(reason, ok, opts); };
   if (typeof META === 'object') {
-    if (META.apform) META.apform.rules = ['Gate: logged in, KYC approved, wallet active; otherwise onboarding, then back to this form','Random: Total ≥ people × 1 MYRT, people ≤ floor(total). Equal: amount per person ≥ 1 MYRT. Both allow up to 100 people','Lucky draw: set a MYRT budget with no people limit. Each person gets one draw. The payout is calculated when they open it','Message ≤ 50 characters, empty uses “Best wishes!”','Expiry: Never expires, presets from 1 hour to 7 days, or Custom using 1–168 hours / 1–365 days. Unclaimed MYRT returns on expiry or cancellation','No fee: you pay exactly the red packet total','Send {total} opens PIN with the summary (no separate confirm screen). Double tap never charges twice'];
+    if (META.apform) META.apform.rules = ['Gate: logged in, KYC approved, wallet active; otherwise onboarding, then back to this form','Random: Total ≥ people × RM1, people ≤ floor(total). Equal: amount per person ≥ RM1. Both allow up to 100 people','Lucky draw: set a RM budget with no people limit. Each person gets one draw. The payout is calculated when they open it','Message ≤ 50 characters, empty uses “Best wishes!”','Expiry: Never expires, presets from 1 hour to 7 days, or Custom using 1–168 hours / 1–365 days. Unclaimed RM returns on expiry or cancellation','No fee: you pay exactly the red packet total','Send {total} opens PIN with the summary (no separate confirm screen). Double tap never charges twice'];
     if (META.aprecv) META.aprecv.rules = ['An eligible recipient can open each packet once. The sender can only view details','Lucky draw uses the prize rates saved when the packet is created and draws from prizes the budget can afford','Luckiest marks the largest positive claim so far for Random and Lucky draw'];
     if (META.apconf) META.apconf.rules = ['Not used in the main flow any more: Send on the form goes straight to PIN'];
     if (META.apdet) META.apdet.rules = (META.apdet.rules || []).map(x => x.replace('Status, total, fee, validity', 'Status, total, validity').replace(', fee not refunded', ''));

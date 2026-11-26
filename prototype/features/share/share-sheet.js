@@ -23,9 +23,27 @@
   const TARGETS = [['whatsapp','WhatsApp'],['telegram','Telegram'],['copy','Copy link'],['instagram','Instagram'],['x','X'],['more','More'],['facebook','Facebook'],['sms','SMS'],['email','Email'],['wechat','Wechat'],['threads','Threads'],['messenger','Messenger'],['discord','Discord']];
   const CONTACTS = [['Aaron Lim','ca5'],['Clarissa','ca3'],['Cherie Tan','ca2'],['Justin Ng','ca4'],['Daniel Ed','ca1'],['Lara','ca2'],['Fionna','ca4']];
   const ST = () => S.sh31 || (S.sh31 = {sel:[], q:'', search:false, what:'service'});
-  const open31 = (what, merchantId) => { S.sh31 = {sel:[], q:'', search:false, what, merchantId}; openSheet('share31'); };
+  const open31 = (what, merchantId) => {
+    const hasVariant = S.mxShareVariant && window.YouAppMerchantPreviews.items[S.mxShareVariant]?.id === merchantId;
+    S.sh31 = {sel:[], q:'', search:false, what, merchantId, previewKey:hasVariant ? S.mxShareVariant : merchantId};
+    openSheet('share31');
+  };
   const shareContacts = () => ST().what === 'place'
     ? CONTACTS.filter(([name]) => !C6().blocked.some(person => person.name === name)) : CONTACTS;
+  const shareGroups = () => groups().filter(g => !g.gone && (myRole(g) !== 'member' || g.perm.send));
+  const shareRecipients = () => [
+    ...shareContacts(),
+    ...(ST().merchantId ? shareGroups().map(group => [group.name, null, group]) : []),
+  ];
+  const merchantPreview = key => {
+    const catalog = window.YouAppMerchantPreviews;
+    const supportedKey = Object.hasOwn(catalog.items, key) ? key : 'invalid';
+    const version = tripsEnabled ? '3.3.0' : '3.2.0';
+    const local = new URL(`../../share/merchant/${supportedKey}.html`, location.href);
+    const external = new URL(`${supportedKey}.html`, catalog.publicBase);
+    for (const link of [local, external]) link.searchParams.set('version', version);
+    return {item:catalog.items[supportedKey], local, external};
+  };
 
   const css = document.createElement('style');
   css.textContent = `
@@ -49,6 +67,8 @@
   .sh31-av{position:relative;width:54px;height:54px;flex:none}
   .sh31-av img{width:100%;height:100%;border-radius:50%;object-fit:cover;display:block}
   .sh31-c.on .sh31-av img{outline:2px solid var(--a-indigo);outline-offset:2px}
+  .sh31-av .gav{width:100%;height:100%}
+  .sh31-c.on .sh31-av .gav{outline:2px solid var(--a-indigo);outline-offset:2px}
   .sh31-ck{position:absolute;right:-2px;bottom:-2px;width:20px;height:20px;border:2px solid #fff;border-radius:50%;background:var(--a-indigo);color:#fff;display:grid;place-items:center}
   .sh31-ck .ico,.sh31-indicator .ico{width:12px;height:12px}
   .sh31-nm{display:flex;align-items:center;gap:3px;min-width:0;max-width:100%}
@@ -73,20 +93,28 @@
   .sh31-status{position:absolute;width:1px;height:1px;overflow:hidden;clip-path:inset(50%);white-space:nowrap}
   @media (max-width:360px){.sh31-top{margin-inline:12px}.sh31-row,.sh31-results,.sh31-send{padding-inline:12px}.sh31-c,.sh31-t{flex-basis:64px}}
   @media (prefers-reduced-motion:reduce){.sh31.anim{animation:none}}
+  .sh31-preview{display:flex; align-items:center; gap:10px; margin:0 16px; padding:8px; min-height:64px; border:1px solid var(--a-line); border-radius:10px; color:var(--a-ink); text-decoration:none}
+  .sh31-preview img{width:72px; height:48px; flex:none; object-fit:cover; border-radius:6px}
+  .sh31-preview-copy{flex:1; min-width:0}
+  .sh31-preview-copy b,.sh31-preview-copy small{display:block; overflow:hidden; text-overflow:ellipsis; white-space:nowrap}
+  .sh31-preview-copy small{color:var(--a-ink-2); font-size:12px}
+  .sh31-preview:focus-visible{outline:2px solid #6a2ad8; outline-offset:2px}
+  .sh31-link-field{display:grid; gap:4px; margin:8px 16px; font-size:12px; color:var(--a-ink-2)}
   `;
   document.head.appendChild(css);
 
-  function personButton([name, avatar], expanded) {
-    const on = ST().sel.includes(name);
-    return `<button type="button" class="${expanded ? 'sh31-profile' : 'sh31-c'}${on ? ' on' : ''}" data-act="sh31Pick" data-n="${esc(name)}" aria-pressed="${on}" aria-label="${esc(name)}">
-      <span class="sh31-av">${img(avatar, '')}${on && !expanded ? `<i class="sh31-ck" aria-hidden="true">${ic('check')}</i>` : ''}</span>
-      <span class="sh31-nm" aria-hidden="true"><span>${esc(expanded ? name : name.split(' ')[0])}</span>${ICON.tagVerified}${ICON.tagHost}</span>
+  function personButton([name, avatar, group], expanded) {
+    const key = group?.id || name;
+    const on = ST().sel.includes(key);
+    return `<button type="button" class="${expanded ? 'sh31-profile' : 'sh31-c'}${on ? ' on' : ''}" data-act="sh31Pick" data-n="${esc(key)}" aria-pressed="${on}" aria-label="${esc(name)}">
+      <span class="sh31-av">${group ? gAv(group) : img(avatar, '')}${on && !expanded ? `<i class="sh31-ck" aria-hidden="true">${ic('check')}</i>` : ''}</span>
+      <span class="sh31-nm" aria-hidden="true"><span>${esc(expanded || group ? name : name.split(' ')[0])}</span>${group ? '' : ICON.tagVerified + ICON.tagHost}</span>
       ${expanded ? `<span class="sh31-indicator" aria-hidden="true">${ic('check')}</span>` : ''}</button>`;
   }
 
   function searchResults() {
     const query = ST().q.trim().toLowerCase();
-    const list = query ? shareContacts().filter(([name]) => name.toLowerCase().includes(query)) : [];
+    const list = query ? shareRecipients().filter(([name]) => name.toLowerCase().includes(query)) : [];
     if (list.length) return {status:`${list.length} ${list.length === 1 ? 'person found' : 'people found'}`, html:list.map(person => personButton(person, true)).join('')};
     const title = query ? 'No people found' : 'Find someone to share with';
     const detail = query ? 'Try a different name or check the spelling.' : 'Start typing a name to find a friend on YouApp.';
@@ -97,15 +125,22 @@
     const st = ST();
     const expanded = st.search;
     const results = expanded ? searchResults() : null;
+    const searchLabel = st.merchantId ? 'Search people and groups' : 'Search people';
+    const recipients = shareRecipients();
+    const targets = st.merchantId ? TARGETS.filter(([key]) => ['whatsapp','telegram','copy','more'].includes(key)) : TARGETS;
     const top = expanded
-      ? `<div class="sh31-top"><button type="button" class="sh31-ib" data-act="sh31Search" aria-label="Back to share options">${ic('back')}</button><label class="sh31-q">${ic('search')}<input type="search" data-in="sh31Q" value="${esc(st.q)}" placeholder="Search by name" aria-label="Search by name" autocomplete="off"></label></div>`
-      : `<div class="sh31-top"><button type="button" class="sh31-q" data-act="sh31Search">${ic('search')}<span>Search people</span></button></div>`;
+      ? `<div class="sh31-top"><button type="button" class="sh31-ib" data-act="sh31Search" aria-label="Back to share options">${ic('back')}</button><label class="sh31-q">${ic('search')}<input type="search" data-in="sh31Q" value="${esc(st.q)}" placeholder="Search by name" aria-label="${searchLabel}" autocomplete="off"></label></div>`
+      : `<div class="sh31-top"><button type="button" class="sh31-q" data-act="sh31Search">${ic('search')}<span>${searchLabel}</span></button></div>`;
     const body = expanded
       ? `<div class="sh31-status" role="status">${results.status}</div><div class="sh31-results" role="group" aria-label="Search results">${results.html}</div>`
-      : `<div class="sh31-row" role="group" aria-label="People">${shareContacts().map(person => personButton(person, false)).join('')}</div>
-        <div class="sh31-row" role="group" aria-label="Share options">${TARGETS.map(([key, label]) => `<button type="button" class="sh31-t" data-act="sh31To" data-k="${key}">${ICON[key]}<span>${label}</span></button>`).join('')}</div>`;
-    const send = st.sel.length ? `<div class="sh31-send">${btn(st.sel.length > 1 ? `Send to ${st.sel.length} people` : `Send to ${esc(st.sel[0])}`, 'sh31Send')}</div>` : '';
-    return `<div class="scrim ${S.sheetAnim ? 'anim' : ''}" data-act="closeSheet2"></div><div class="sheet sh31${expanded ? ' is-search' : ''}${S.sheetAnim ? ' anim' : ''}" role="dialog" aria-modal="true" aria-label="${expanded ? 'Search people' : 'Share'}">${expanded ? statusBar() : '<div class="grab" aria-hidden="true"></div>'}${top}${body}${send}</div>`;
+      : `<div class="sh31-row" role="group" aria-label="${st.merchantId ? 'People and groups' : 'People'}">${recipients.map(person => personButton(person, false)).join('')}</div>
+        <div class="sh31-row" role="group" aria-label="Share options">${targets.map(([key, label]) => `<button type="button" class="sh31-t" data-act="sh31To" data-k="${key}">${ICON[key]}<span>${label}</span></button>`).join('')}</div>`;
+    const preview = st.merchantId ? merchantPreview(st.previewKey) : null;
+    const previewCard = preview ? `<a class="sh31-preview" href="${esc(preview.local.href)}" target="_blank" rel="noopener" aria-label="Open link preview for ${esc(preview.item.title)}"><img src="${esc(new URL(preview.item.image, preview.local).href)}" alt=""><span class="sh31-preview-copy"><b>${esc(preview.item.title)}</b><small>${esc(preview.item.description)}</small></span>${ic('chev')}</a>` : '';
+    const manualLink = preview && st.showLink ? `<label class="sh31-link-field">Copy this link<input readonly value="${esc(preview.external.href)}"></label>` : '';
+    const selectedName = recipients.find(([name, , group]) => (group?.id || name) === st.sel[0])?.[0];
+    const send = st.sel.length ? `<div class="sh31-send">${btn(st.sel.length > 1 ? `Send to ${st.sel.length} ${st.merchantId ? "recipients" : "people"}` : `Send to ${esc(selectedName || "1 recipient")}`, 'sh31Send')}</div>` : '';
+    return `<div class="scrim ${S.sheetAnim ? 'anim' : ''}" data-act="closeSheet2"></div><div class="sheet sh31${expanded ? ' is-search' : ''}${S.sheetAnim ? ' anim' : ''}" role="dialog" aria-modal="true" aria-label="${expanded ? searchLabel : 'Share'}">${expanded ? statusBar() : '<div class="grab" aria-hidden="true"></div>'}${top}${body}${expanded ? '' : previewCard + manualLink}${send}</div>`;
   };
 
   const _ov = overlayHTML;
@@ -140,10 +175,42 @@
       }
     },
     sh31To: async el => { const k = el.dataset.k;
+      const st = ST();
+      if (st.merchantId) {
+        const {item, local, external} = merchantPreview(st.previewKey);
+        const offerCopy = () => {
+          if (S.sheet !== 'share31' || S.sh31 !== st) return;
+          st.showLink = true;
+          keep();
+          document.querySelector('.sh31-link-field input')?.select();
+        };
+        if (k === 'copy') {
+          try {
+            await navigator.clipboard.writeText(location.hostname === 'localhost' || location.hostname === '127.0.0.1' ? local.href : external.href);
+            if (S.sheet === 'share31' && S.sh31 === st) { S.sheet = null; render(); }
+            toast('Link copied.');
+          } catch {
+            offerCopy();
+          }
+          return;
+        }
+        if (scen.network === 'offline') return toast('No internet connection. Try again when connected, or copy the link.', 'err');
+        if (k === 'more') {
+          if (!navigator.share) return offerCopy();
+          try {
+            await navigator.share({title:item.title, text:item.description, url:external.href});
+          } catch (error) {
+            if (error.name !== 'AbortError') offerCopy();
+          }
+          return;
+        }
+        window.open(merchantShareTarget(k, item.title, external.href), '_blank', 'noopener,noreferrer');
+        return;
+      }
       if (k === 'copy') {
         const state = ST();
         try { await navigator.clipboard.writeText('https://youapp.ai/share/demo'); }
-        catch { toast('Couldn?t copy the link. Try again.'); return; }
+        catch { toast('Could not copy the link. Try again.'); return; }
         if (S.sheet === 'share31' && ST() === state) { S.sheet = null; render(); }
         toast('Link copied.');
         return;
@@ -154,8 +221,14 @@
       const st = ST();
       if (!st.sel.length) return;
       if (st.what === 'place') {
-        const people = shareContacts();
-        MX.shareInChat(st.merchantId, st.sel.map(name => people.find(person => person[0] === name)).filter(Boolean));
+        const recipients = shareRecipients();
+        const selected = st.sel.map(key => recipients.find(([name, , group]) => (group?.id || name) === key)).filter(Boolean);
+        if (selected.length !== st.sel.length) {
+          st.sel = selected.map(([name, , group]) => group?.id || name);
+          keep();
+          return toast('A recipient is unavailable. Review your selection and try again.', 'err');
+        }
+        MX.shareInChat(st.merchantId, selected);
         return;
       }
       S.sheet = null; render(); toast(st.sel.length > 1 ? `Sent to ${st.sel.length} people.` : `Sent to ${st.sel[0]}.`);
@@ -173,7 +246,7 @@
   document.addEventListener('keydown', event => {
     if (event.key !== 'Tab' || S.sheet !== 'share31') return;
     const sheet = document.querySelector('.sh31');
-    const controls = sheet?.querySelectorAll('button:not(:disabled), input:not(:disabled)');
+    const controls = sheet?.querySelectorAll('button:not(:disabled), input:not(:disabled), a[href]');
     if (!controls?.length) return;
     const first = controls[0];
     const last = controls[controls.length - 1];

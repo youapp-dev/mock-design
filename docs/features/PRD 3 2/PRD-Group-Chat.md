@@ -350,6 +350,24 @@ Push-notification wording is not specified because push delivery is not represen
 
 ## 7. Prototype Edge Cases
 
+The **YouApp Merchant** group is available in the Group tab and from the prototype controls in 3.2.0 and 3.3.0. It contains cards for an open merchant with cashback, a merchant without cashback, a closed merchant, a forwarded card, a merchant share without a photo, an unavailable merchant, a failed send with retry, a deleted share, and a group invitation.
+
+Cards use the merchant's existing photo when available. An image that fails to load collapses the photo area and keeps the details and **View merchant** action visible. Closed merchants display their next opening time when available. Unavailable merchants display a status with no open action. Deleted shares use the existing chat deletion state.
+
+Windows Chrome passed the card checks in 3.2.0 at 320 px and 3.3.0 at 390 px. Checks covered decoded photos, status and cashback text, the no-photo case and image error fallback, 44 px merchant actions, retry, deletion, and the invite action's visibility. The group sharing and copied link checks also passed in both browser versions.
+
+Open an available card to reach the merchant page. Use **Share**, find **YouApp Merchant**, and send. The new card appears in the group chat. An offline send keeps the selected recipients available for retry. Sharing to sample contacts remains simulated.
+
+### External merchant sharing
+
+- **Merchant share previews** in prototype controls opens the external scenario list. It covers a photo with cashback, a photo without cashback, a closed merchant, the YouApp image fallback, an unavailable merchant, and an invalid link.
+- Merchant **Share** shows the title, description and image of the recipient preview. **WhatsApp** and **Telegram** open their share destinations with the preview URL and prepared text. The sender still chooses the recipient and confirms the message.
+- **Copy Link** copies the HTTPS preview URL when hosted. On localhost it copies the equivalent local preview for browser QA. The recipient page works without a session and its merchant action preserves the version from the link. An unavailable or invalid link offers a way back to YouApp.
+- When offline, opening an external share target is blocked and copying remains available. **More** opens the native share sheet where supported. Cancelling keeps the current share sheet open. Unsupported native share or clipboard access exposes the public link for manual copying.
+- Static Open Graph and social metadata are served in the HTML head. Images are public 1200 × 630 JPEGs, with a branded fallback. Run `python tools/build-merchant-share.py` with Pillow installed after changing seeded merchant details or images. Published client previews can be cached. Native WhatsApp and Telegram rendering requires the preview pages to be deployed at the canonical HTTPS URL.
+
+Local Windows Chrome passed at 320 px in 3.2.0 and 390 px in 3.3.0 for external handoff URLs, offline handling, copying, version-preserving landing links, and unavailable and invalid states. A separate check verified all 18 HTML responses and JPEGs without relying on JavaScript. Simulated native cancellation and clipboard failure passed in 3.3.0. WhatsApp and Telegram client rendering remains untested.
+
 | # | Scenario | Expected Behavior |
 |---|---|---|
 | 1 | KYC is not approved when the user starts Create Group or Join Group | The KYC gate opens |
