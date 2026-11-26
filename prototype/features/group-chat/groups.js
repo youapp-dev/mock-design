@@ -91,7 +91,10 @@ V.chats = () => { const c = gStore();
       : `<div class="pad16">${list.map(gRow).join('')}${!list.length?stateBlock('search','No groups found',`No groups match “${esc(S.cq)}”.`):''}</div>`;
     h = h.replace(/<div class="scroll" style="padding-bottom:96px">[\s\S]*<\/div>\s*<button class="cfab"/, `<div class="scroll" style="padding-bottom:96px">${body}</div>\n  <button class="cfab"`); }
   if (tab==='group') h = h.replace(/<button class="cfab" data-act="addPeople" aria-label="Add people">[\s\S]*?<\/button>/, gl.length ? `<button class="cfab" data-act="gNew" aria-label="Create group">${ic('userplus')}</button>` : '');
+  /* Host tab (26 Nov): the floating button finds hosts: Discover › Locals › Hosts, with a discover (compass) icon */
+  if (tab==='host') h = h.replace(/<button class="cfab" data-act="addPeople" aria-label="Add people">[\s\S]*?<\/button>/, `<button class="cfab" data-act="findHosts" aria-label="Find hosts on Discover">${ic('compass')}</button>`);
   return h; };
+A.findHosts = () => { S.hist = []; S.htab = 'discover'; S.seg = 'locals'; go('discover', {replace:true}); document.querySelector('.scroll')?.scrollTo(0, 0); };
 const gFix = g => { const o = g.mem.find(m=>m.k!=='me'); g.msgs.forEach(m=>{ if (!m.me && !m.who && !m.gsys && !m.sys && m.t!=='ginvite' && o) m.who = o.k; }); };
 function gRow(g){ gFix(g); const last = [...g.msgs].reverse().find(m=>!m.gsys && !m.sys) || g.msgs[g.msgs.length-1] || {};
   const who = last.me ? 'You: ' : last.who ? GP(last.who).n.split(' ')[0]+': ' : '';
