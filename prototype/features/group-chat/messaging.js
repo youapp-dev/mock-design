@@ -274,9 +274,9 @@ V.ginvite = () => { const g = grp(); if (!g) return V.chats(); const link = link
   </div></div>`; };
 { const st = document.createElement('style'); st.textContent = `
   .gq-head{position:relative; overflow:hidden; display:flex; align-items:center; gap:14px; min-height:128px; padding:18px 16px; background:linear-gradient(100deg,#9A6BBF 0%,#6A3FB8 48%,#3D1C96 100%); color:#fff}
-  .gq-art{position:absolute; right:-6px; bottom:0; width:168px; height:auto; pointer-events:none}
+  .gq-art{position:absolute; right:-22px; bottom:-14px; width:132px; height:auto; opacity:.7; pointer-events:none}
   .gq-head .gav.gq-hav{position:relative; width:64px; height:64px; border-radius:20px; box-shadow:0 0 0 3px rgba(255,255,255,.85)} .gq-head .gav.gq-hav b{font-size:28px}
-  .gq-hid{position:relative; display:grid; gap:2px; min-width:0; justify-items:start}
+  .gq-hid{position:relative; display:grid; gap:2px; min-width:0; justify-items:start; padding-right:64px}
   .gq-hid b{font:700 18px/1.3 Inter, sans-serif; color:#fff; overflow-wrap:anywhere; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden}
   .gq-hid small{font:500 13px Inter, sans-serif; color:rgba(255,255,255,.82)}
   .gq-hid i{margin-top:4px; padding:2px 10px; border-radius:999px; background:rgba(255,255,255,.22); font:600 11.5px/18px Inter, sans-serif; font-style:normal; color:#fff}
