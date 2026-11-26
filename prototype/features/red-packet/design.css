@@ -173,6 +173,7 @@
 .rp20-result .apreceive-result { margin-top:9px; color:var(--rp-accent); align-self:start; }
 .rp20-result .apreceive-result strong { color:var(--rp-accent); font-size:clamp(38px,14vw,62px); letter-spacing:-.055em; }
 .rp20-result .apreceive-result strong span.rp20-unit { font-size:.39em; letter-spacing:0; margin-left:5px; }
+.rp20-result .apreceive-result strong span.rp20-unit.pre { margin-left:0; margin-right:5px; }
 .rp20-result .apreceive-result > span { color:#08725a; font-size:13px; font-weight:690; }
 .rp20-result-actions { width:100%; margin:14px 0 11px; display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:9px; }
 .rp20-result-actions:has(button:only-child) { grid-template-columns:minmax(0,1fr); }
