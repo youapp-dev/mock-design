@@ -46,6 +46,31 @@ const productSeed = () => ({id:'g-products', group:true, name:'YouApp Products',
     {id:'yp-red', t:'angpao', tok:'apSeraFriday', who:'lara', at:'09:11'},
     {id:'yp-last', t:'text', who:'maulguy', text:'Try the phone and video buttons above, or attach a photo, video, document, voice note or Red Packet below.', at:'09:12'}
   ], pin:'yp-text'});
+function merchantGroupText(message) {
+  const text = String(message || '');
+  const catalog = window.YouAppMerchantPreviews;
+  const publicBase = new URL(catalog.publicBase);
+  const localBase = new URL('../../share/merchant/', location.href);
+  let html = '';
+  let offset = 0;
+  for (const match of text.matchAll(/https?:\/\/[^\s<>"']+/gi)) {
+    const candidate = match[0].replace(/[.,!?;)]+$/, '');
+    let url;
+    try { url = new URL(candidate); } catch { continue; }
+    const base = [publicBase, localBase].find(base => url.origin === base.origin && url.pathname.startsWith(base.pathname));
+    if (!base) continue;
+    const filename = url.pathname.slice(base.pathname.length);
+    if (!filename.endsWith('.html') || !Object.hasOwn(catalog.items, filename.slice(0, -5))) continue;
+    const destination = new URL(filename, localBase);
+    const version = url.searchParams.get('version');
+    destination.searchParams.set('version', ['3.2.0', '3.3.0'].includes(version) ? version : tripsEnabled ? '3.3.0' : '3.2.0');
+    html += esc(text.slice(offset, match.index));
+    html += '<a class="merchant-chat-link" href="' + esc(destination.href) + '" target="_blank" rel="noopener noreferrer">' + esc(candidate) + '</a>';
+    offset = match.index + candidate.length;
+  }
+  return html + esc(text.slice(offset));
+}
+
 const merchantGroupSeed = () => ({
   id:'g-merchants', group:true, name:'YouApp Merchant', letter:'YM', unread:0, at:'Today', myRole:'admin',
   bio:'Try opening, forwarding, and sending merchant cards. From any merchant page, choose Share and search for this group.',
@@ -61,6 +86,7 @@ const merchantGroupSeed = () => ({
     {id:'ym-retry', t:'merchant', merchantId:'px-kopi', text:'Merchant share to retry', me:true, at:'09:05', st:'fail'},
     {id:'ym-deleted', t:'merchant', merchantId:'px-kopi', text:'Deleted merchant share', me:true, at:'09:06', del:true},
     {id:'ym-invite', t:'ginvite', who:'maulguy', whoName:'Maulguy', av:'ca1', inv:{name:'Sera.cx', by:'Maulguy', gid:'g-sera', slug:'seracx'}, at:'09:07'},
+    {id:'ym-web-link', t:'text', who:'lara', text:'Kedai Kopi Lima on YouApp Engage\nhttps://youapp-dev.github.io/mock-design/share/merchant/px-kopi.html', at:'09:08'},
     {id:'ym-guide', t:'text', who:'lara', text:'Open a merchant card to try Share, check-in, directions, or Pay. Share it back to this group to see the new card.', at:'09:08'},
   ],
 });

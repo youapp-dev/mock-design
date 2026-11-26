@@ -8,98 +8,210 @@ window.YouAppMerchantPreviews = {
       "title": "Kedai Kopi Lima",
       "description": "Café · 12, Jalan Telawi 3, Bangsar · 5% cashback",
       "image": "mx_cafe.jpg",
-      "alt": "Photo for Kedai Kopi Lima"
+      "alt": "Photo for Kedai Kopi Lima",
+      "place": {
+        "category": "Café",
+        "address": "12, Jalan Telawi 3, Bangsar",
+        "rating": 4.6,
+        "phone": "03-2201 1234",
+        "hours": "Open · Closes at 6 PM",
+        "cashback": 5
+      }
     },
     "px-noodle": {
       "id": "px-noodle",
       "title": "Mak Cik Noodle House",
       "description": "Malaysian · Lorong Maarof, Bangsar",
       "image": "mx_hawker.jpg",
-      "alt": "Photo for Mak Cik Noodle House"
+      "alt": "Photo for Mak Cik Noodle House",
+      "place": {
+        "category": "Malaysian",
+        "address": "Lorong Maarof, Bangsar",
+        "rating": 4.4,
+        "phone": "03-2282 4410",
+        "hours": "Open · Closes at 10 PM",
+        "cashback": 0
+      }
     },
     "px-dimsum": {
       "id": "px-dimsum",
       "title": "Dim Sum Garden",
       "description": "Chinese · Jalan Ara, Bangsar Baru · 3% cashback",
       "image": "mx_dimsum.jpg",
-      "alt": "Photo for Dim Sum Garden"
+      "alt": "Photo for Dim Sum Garden",
+      "place": {
+        "category": "Chinese",
+        "address": "Jalan Ara, Bangsar Baru",
+        "rating": 4.5,
+        "phone": "03-2287 6650",
+        "hours": "Open · Closes at 3 PM",
+        "cashback": 3
+      }
     },
     "px-bread": {
       "id": "px-bread",
       "title": "Bangsar Bread Co.",
       "description": "Bakery · Bangsar Shopping Centre, G-21",
       "image": "mx_bakery.jpg",
-      "alt": "Photo for Bangsar Bread Co."
+      "alt": "Photo for Bangsar Bread Co.",
+      "place": {
+        "category": "Bakery",
+        "address": "Bangsar Shopping Centre, G-21",
+        "rating": 4.7,
+        "phone": "03-2093 1180",
+        "hours": "Open · Closes at 9 PM",
+        "cashback": 0
+      }
     },
     "px-boba": {
       "id": "px-boba",
       "title": "Boba Lab",
       "description": "Drinks · Jalan Telawi 2, Bangsar · 5% cashback",
       "image": "mx_bubble.jpg",
-      "alt": "Photo for Boba Lab"
+      "alt": "Photo for Boba Lab",
+      "place": {
+        "category": "Drinks",
+        "address": "Jalan Telawi 2, Bangsar",
+        "rating": 4.3,
+        "phone": "03-2201 7788",
+        "hours": "Open · Closes at 11 PM",
+        "cashback": 5
+      }
     },
     "px-salon": {
       "id": "px-salon",
       "title": "Lane Studio Salon",
       "description": "Hair salon · Jalan Kemuja, Bangsar · Closed, opens at 10 AM",
       "image": "mx_salon.jpg",
-      "alt": "Photo for Lane Studio Salon"
+      "alt": "Photo for Lane Studio Salon",
+      "place": {
+        "category": "Hair salon",
+        "address": "Jalan Kemuja, Bangsar",
+        "rating": 4.8,
+        "phone": "03-2283 0091",
+        "hours": "Closed · Opens at 10 AM",
+        "cashback": 0
+      }
     },
     "px-thread": {
       "id": "px-thread",
       "title": "Thread & Co.",
       "description": "Clothing store · Bangsar Village II, Level 1",
       "image": "mx_shop.jpg",
-      "alt": "Photo for Thread & Co."
+      "alt": "Photo for Thread & Co.",
+      "place": {
+        "category": "Clothing store",
+        "address": "Bangsar Village II, Level 1",
+        "rating": 4.2,
+        "phone": "03-2287 3320",
+        "hours": "Open · Closes at 10 PM",
+        "cashback": 0
+      }
     },
     "m-pakdin": {
       "id": "m-pakdin",
       "title": "Warung Pak Din",
       "description": "Food & drink · Jalan Petaling, City Centre, 50000 Kuala Lumpur · 8% cashback",
       "image": "act4.jpg",
-      "alt": "Photo for Warung Pak Din"
+      "alt": "Photo for Warung Pak Din",
+      "place": {
+        "category": "Food & drink",
+        "address": "Jalan Petaling, City Centre, 50000 Kuala Lumpur",
+        "rating": 4.6,
+        "phone": null,
+        "hours": "Open · Closes 10 PM",
+        "cashback": 8
+      }
     },
     "m-club9": {
       "id": "m-club9",
       "title": "Club Nine",
       "description": "Nightlife · Jalan Bukit Bintang, 55100 Kuala Lumpur · 6% cashback",
       "image": "act6.jpg",
-      "alt": "Photo for Club Nine"
+      "alt": "Photo for Club Nine",
+      "place": {
+        "category": "Nightlife",
+        "address": "Jalan Bukit Bintang, 55100 Kuala Lumpur",
+        "rating": 4.5,
+        "phone": null,
+        "hours": "Open · Closes 2 AM",
+        "cashback": 6
+      }
     },
     "m-kopi": {
       "id": "m-kopi",
       "title": "Kopitiam Lee",
       "description": "Food & drink · Jalan SS 2/24, 47300 Petaling Jaya, Selangor · 5% cashback",
       "image": "act5.jpg",
-      "alt": "Photo for Kopitiam Lee"
+      "alt": "Photo for Kopitiam Lee",
+      "place": {
+        "category": "Food & drink",
+        "address": "Jalan SS 2/24, 47300 Petaling Jaya, Selangor",
+        "rating": 4.7,
+        "phone": null,
+        "hours": "Open now",
+        "cashback": 5
+      }
     },
     "m-vibes": {
       "id": "m-vibes",
       "title": "Vibees Music Instrument Store",
       "description": "Shopping · Jalan PJS 11/15, Bandar Sunway, 47500 Selangor · 3% cashback",
       "image": "mer1.jpg",
-      "alt": "Photo for Vibees Music Instrument Store"
+      "alt": "Photo for Vibees Music Instrument Store",
+      "place": {
+        "category": "Shopping",
+        "address": "Jalan PJS 11/15, Bandar Sunway, 47500 Selangor",
+        "rating": 4.7,
+        "phone": null,
+        "hours": "Open now",
+        "cashback": 3
+      }
     },
     "m-tentrem": {
       "id": "m-tentrem",
       "title": "Tentrem Hotel",
       "description": "Jl. P. Mangkubumi No.72A, Yogyakarta 55233",
       "image": "mer2.jpg",
-      "alt": "Photo for Tentrem Hotel"
+      "alt": "Photo for Tentrem Hotel",
+      "place": {
+        "category": "Place",
+        "address": "Jl. P. Mangkubumi No.72A, Yogyakarta 55233",
+        "rating": 4.8,
+        "phone": null,
+        "hours": "",
+        "cashback": 0
+      }
     },
     "m-being": {
       "id": "m-being",
       "title": "Being Juice Dink Arena",
       "description": "Sports · Jalan SS 15/4, Subang Jaya, 47500 Selangor · 5% cashback",
       "image": "mer3.jpg",
-      "alt": "Photo for Being Juice Dink Arena"
+      "alt": "Photo for Being Juice Dink Arena",
+      "place": {
+        "category": "Sports",
+        "address": "Jalan SS 15/4, Subang Jaya, 47500 Selangor",
+        "rating": 4.6,
+        "phone": null,
+        "hours": "Open now",
+        "cashback": 5
+      }
     },
     "m-uss": {
       "id": "m-uss",
       "title": "Universal Studios Singapore",
       "description": "8 Sentosa Gateway, Singapore 098269",
       "image": "mer4.jpg",
-      "alt": "Photo for Universal Studios Singapore"
+      "alt": "Photo for Universal Studios Singapore",
+      "place": {
+        "category": "Place",
+        "address": "8 Sentosa Gateway, Singapore 098269",
+        "rating": 4.7,
+        "phone": null,
+        "hours": "",
+        "cashback": 0
+      }
     },
     "m-lawang": {
       "id": null,
@@ -113,7 +225,15 @@ window.YouAppMerchantPreviews = {
       "title": "Thread & Co.",
       "description": "Clothing store · Bangsar Village II, Level 1",
       "image": "youapp-logo.jpg",
-      "alt": "YouApp logo"
+      "alt": "YouApp logo",
+      "place": {
+        "category": "Clothing store",
+        "address": "Bangsar Village II, Level 1",
+        "rating": 4.2,
+        "phone": "03-2287 3320",
+        "hours": "Open · Closes at 10 PM",
+        "cashback": 0
+      }
     },
     "unavailable": {
       "id": null,

@@ -21,17 +21,53 @@
   <meta name="twitter:description" content="Discover local places and experiences with YouApp Engage. Travel like a local.">
   <meta name="twitter:image" content="https://youapp-dev.github.io/mock-design/share/merchant/act6.jpg">
   <meta name="twitter:image:alt" content="Photo for Club Nine">
+  <link rel="stylesheet" href="../../design-system/tokens.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap">
   <link rel="stylesheet" href="share.css">
 </head>
-<body>
-  <main class="preview">
-    <img src="act6.jpg" width="1200" height="630" alt="Photo for Club Nine">
-    <div class="details">
-      <h1>Club Nine</h1>
-      <p>Nightlife · Jalan Bukit Bintang, 55100 Kuala Lumpur · 6% cashback</p>
-      <a class="primary" data-open-merchant href="../../?app=app30&amp;jump=merchantPlace%3Am-club9">View merchant</a>
+<body class="place-page">
+  <header class="place-header">
+    <div class="place-wrap place-header-inner">
+      <a href="https://youapp.ai/en-us" aria-label="YouApp homepage"><img src="../../design-system/assets/Logos/youapp-horizontal-gradient-mark-ink.svg" alt="YouApp" width="132" height="36"></a>
+      <a class="place-nav" href="./#places">Browse places</a>
     </div>
+  </header>
+  <main>
+    <section class="place-hero" aria-labelledby="place-name">
+      <div class="place-wrap place-hero-layout">
+        <div class="place-identity">
+          <p>Nightlife</p>
+          <h1 id="place-name">Club Nine</h1>
+          <div class="place-hero-actions"><span class="place-rating" aria-label="4.5 out of 5 stars">★ 4.5</span><a class="primary" data-open-merchant href="../../?app=app30&amp;jump=merchantPlace%3Am-club9">Open in YouApp <span aria-hidden="true">→</span></a></div>
+        </div>
+        <div class="place-cover-frame">
+          <img class="place-cover" src="act6.jpg" width="1200" height="630" alt="Photo for Club Nine" fetchpriority="high">
+        </div>
+      </div>
+    </section>
+    <nav class="place-wrap place-jumps" aria-label="Merchant sections" hidden></nav>
+    <div class="place-wrap place-grid">
+      <section class="place-details" aria-labelledby="visit-title">
+        <h2 id="visit-title">Plan your visit</h2>
+        <dl><div><dt>Address</dt><dd>Jalan Bukit Bintang, 55100 Kuala Lumpur</dd></div><div><dt>Hours</dt><dd>Open · Closes 2 AM</dd></div></dl>
+        <div class="place-actions"><a class="secondary" href="https://www.google.com/maps/search/?api=1&amp;query=Club+Nine+Jalan+Bukit+Bintang%2C+55100+Kuala+Lumpur" target="_blank" rel="noopener noreferrer">Get directions</a></div>
+      </section>
+      <aside class="place-offer">
+        <img src="illustrations/cashback.svg" width="240" height="160" alt="" loading="lazy">
+        <div><strong>6% cashback</strong><p>Pay with YouApp at this merchant.</p></div>
+      </aside>
+    </div>
+    <div class="place-wrap place-community" hidden></div>
   </main>
+  <footer class="place-footer">
+    <div class="place-wrap place-footer-inner">
+      <a href="https://youapp.ai/en-us"><img src="../../design-system/assets/Logos/youapp-horizontal-white.svg" alt="YouApp" width="132" height="36"></a>
+      <span>Travel like a local. Pay like a local.</span>
+    </div>
+  </footer>
+  <script src="catalog.js" defer></script>
+  <script src="merchant-details.js" defer></script>
   <script src="landing.js" defer></script>
+  <script src="community.js" defer></script>
 </body>
 </html>

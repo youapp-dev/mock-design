@@ -253,6 +253,12 @@ document.addEventListener('input', e => { if (e.target.id !== 'mxAq' || !MX.ad) 
 
 /* ---------- 2. Merchant page ---------- */
 const AGE = [['25–30',512,'#5B7FD6'],['18–24',301,'#C2557F'],['31–40',268,'#5FB58A'],['41–50',132,'#F2A65A'],['Other',71,'#E35B6B']];
+const REVIEW_RATINGS = [[5,.78],[4,.14],[3,.04],[2,.02],[1,.02]];
+const CHECK_IN_PEOPLE = {
+  today:['aiko','hafiz','mei','jason','priya','ravi'],
+  week:['jason','priya','aiko','ravi','mei','hafiz'],
+  all:['hafiz','aiko','mei','jason','ravi','priya'],
+};
 const GENDER = [['Female',706,'#C2557F'],['Male',578,'#5B7FD6']];
 const MORE = [
   ['From', [['Malaysia',822,'#5B7FD6'],['Singapore',141,'#C2557F'],['Japan',90,'#5FB58A'],['China',77,'#F2A65A'],['Other',154,'#B8B2C8']]],
@@ -290,7 +296,7 @@ V.mer = () => { const p = placeById(S.mer) || PLACES[0]; if (MX.hiFor !== p.id) 
   const gal = p.id === 'px-kopi' ? [['mx_coffee'],['mx_bakery'],['mx_rest'],['mx_cafe','50% 80%']] : [[p.img,'20% 30%'],[p.img,'80% 40%'],[p.img,'40% 85%'],[p.img,'90% 90%']];
   const top = b.slice(0, 1)[0]; const rest = b.slice(1, 4); const meRow = b.find(r => r.k === 'me'); if (meRow && !rest.includes(meRow) && meRow !== top) rest.push(meRow);
   const ahead = rank && rank > 1 ? b[rank - 2] : null; const gap = ahead ? ahead.n - (meRow ? meRow.n : 0) + 1 : 0;
-  const ratings = [[5,.78],[4,.14],[3,.04],[2,.02],[1,.02]];
+  const ratings = REVIEW_RATINGS;
   const revs = REVS(p).slice(0, 3); const ppl = Object.keys(PPL).slice(0, 5);
   const hoursOpen = MX.hours === p.id;
   return `<div class="screen mxp"><div class="scroll mx-scroll">
@@ -364,6 +370,26 @@ const allRevs = p => { const base = REVS(p); const yk = ['hafiz','mei','jason','
     : (([t, r]) => ({g:GNAMES[(i + 1) % GNAMES.length], r, t, ago:AGOS[Math.min(11, 2 + (i >> 2))]}))(GTEXT[i % GTEXT.length]));
   return base.concat(more).map((v, i) => ({...v, _i:i})); };
 const RVF = [['all','All'],['ya','YouApp'],['g','Google'],['ph','With photos']];
+MX.publicSnapshot = id => {
+  const p = placeById(id);
+  if (!p) return null;
+  const visitor = person => ({name:person.n, origin:person.from, photo:person.img, age:person.age});
+  const ranking = all => board(p, all).filter(row => row.k !== 'me')
+    .map(row => ({...visitor(who(row.k)), count:row.n}));
+  return {
+    address:p.full, category:p.type, price:p.price, today:p.today, total:p.total, reviewCount:p.rev + 86,
+    periods:{recent:ranking(false), all:ranking(true)},
+    visitors:Object.fromEntries(Object.entries(CHECK_IN_PEOPLE).map(([period, keys]) =>
+      [period, keys.map(key => visitor(PPL[key]))])),
+    ratingBreakdown:REVIEW_RATINGS,
+    charts:p.total >= 50 ? [['Age', AGE], ['Gender', GENDER], ...MORE] : [],
+    photos:photosOf(p),
+    reviews:allRevs(p).map(review => ({
+      name:review.g || who(review.k).n, source:review.g ? 'Google' : 'YouApp',
+      score:review.r, text:review.t, ago:review.ago, photos:review.ph || [],
+    })),
+  };
+};
 const RVS = [['new','Newest'],['high','Highest'],['low','Lowest']];
 function reviewSortSheet() {
   const current = MX.rvs || 'new';
@@ -381,7 +407,7 @@ V.merReviews = () => { const p = placeById(S.mer) || PLACES[0]; const f = MX.rvf
   if (so !== 'new') list = [...list].sort((a, b) => so === 'high' ? b.r - a.r || a._i - b._i : a.r - b.r || a._i - b._i);
   const mineV = MX.reviews[p.id]; if (mineV && f !== 'g') list = [list.find(v => v.k === 'me') || mineV, ...list.filter(v => v.k !== 'me')];
   const shown = list.slice(0, n); const count = f === 'all' ? total : f === 'ya' ? 86 + (mineV ? 1 : 0) : f === 'g' ? p.rev : 214;
-  const ratings = [[5,.78],[4,.14],[3,.04],[2,.02],[1,.02]];
+  const ratings = REVIEW_RATINGS;
   return `<div class="screen mxrl">${statusBar()}${topBar('Reviews')}<div class="scroll mx-pad">
     <div class="mx-rsum"><div><b>${p.rating}</b>${starRow(p.rating, 'sm')}<small>${fmt(total)} reviews</small></div><div class="mx-bars">${ratings.map(([s2, v]) => `<span><em>${s2}</em><i><b style="width:${v * 100}%"></b></i></span>`).join('')}</div></div>
     <div class="mx-flt mx-rvflt" role="tablist" aria-label="Filter reviews">${RVF.map(([k, t]) => `<button role="tab" aria-selected="${f === k}" data-act="mxRvF" data-k="${k}">${t}</button>`).join('')}</div>
@@ -460,7 +486,7 @@ V.merRev = () => { const p = placeById(S.mer) || PLACES[0]; const f = MX.rf; con
 
 /* ---------- 6. People who checked in ---------- */
 V.merPeople = () => { const p = placeById(S.mer) || PLACES[0]; const t = MX.pt || 'today';
-  const keys = t === 'today' ? ['aiko','hafiz','mei','jason','priya','ravi'] : t === 'week' ? ['jason','priya','aiko','ravi','mei','hafiz'] : ['hafiz','aiko','mei','jason','ravi','priya'];
+  const keys = CHECK_IN_PEOPLE[t] || CHECK_IN_PEOPLE.all;
   return `<div class="screen mxpp">${statusBar()}${topBar('Checked in here')}<div class="scroll mx-pad">
     <span class="mx-loc">${SV.pin}${esc(p.name)}</span>
     <div class="mx-chips" role="tablist">${[['today', `Today · ${p.today}`],['week','This week'],['all', `All · ${fmt(p.total)}`]].map(([k, l]) => `<button role="tab" aria-selected="${t === k}" data-act="mxPt" data-k="${k}">${l}</button>`).join('')}</div>

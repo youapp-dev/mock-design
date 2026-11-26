@@ -8,6 +8,9 @@ Decision owner &nbsp; Merchant and Chat product owners for native handoff.
 - Open **Discover → Merchants → Kedai Kopi Lima → Share**, select one or more people, and tap Send. A single selection opens the direct chat immediately. Multiple selections receive one card each, and the first selected chat opens. Blocked contacts are excluded.
 - Open **Locals → Group → YouApp Merchants** in 3.2.0 or **Inbox → Group → YouApp Merchants** in 3.3.0. Scroll through the seeded cards to inspect each state.
 - The same card renders in direct and group conversations, using the chat’s sender, timestamp, and delivery patterns. Selecting **View merchant** opens the listing. Back returns to the conversation.
+- A shared merchant URL opens its public web listing directly. Guests can read merchant details and get directions. In either prototype version, open **Merchant web app** from the scenarios menu or open the shared URL in the **YouApp Merchant** showcase group. The web listing’s **Open in YouApp** action leads to the selected prototype version.
+- The public listing uses the merchant prototype’s sample data for the 30-day and all-time leaderboard, visitor periods, reviews and rating breakdown, photos, and nine aggregate check-in charts. Aggregate charts appear at 50 or more check-ins. Check-in, payment, and review writing open the merchant in the prototype.
+- The public listing adopts the [YouApp website](https://youapp.ai/en-us) visual theme, including the dark-purple gradient, Inter typography, and the official Cashback illustration.
 
 ## Card examples
 
@@ -34,3 +37,7 @@ The browser prototype stores a merchant ID and a display snapshot with the messa
 | AC-03 | Open YouApp Merchants and inspect its nine cards. Retry the failed outgoing card. | All variants render. An unavailable card cannot open, and retry updates the outgoing message. | Passed in Chrome on Windows. |
 
 The browser checks covered 390 px in 3.2.0 and 3.3.0 and 320 px in 3.3.0. Chat sends and retries are simulated. Native iOS and Android are untested.
+
+The guest merchant web listing was checked in Chrome on Windows at 390, 768, 1024, 1440, and 1920 px. Checks covered the cover photo, merchant details, directions target and logo fallback for missing photos, invalid links, and unavailable listings. Clicking the seeded URL opened a guest listing in a new browser tab from the 3.2.0 and 3.3.0 showcase groups.
+
+Chrome on Windows passed the expanded guest listing checks at 390 and 1440 px. The checks exercised both leaderboard periods, switching the visitor period, expanding all nine charts, filtering and loading more reviews, opening and navigating the photo viewer, and copying the branded share message.

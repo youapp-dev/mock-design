@@ -21,17 +21,53 @@
   <meta name="twitter:description" content="Discover local places and experiences with YouApp Engage. Travel like a local.">
   <meta name="twitter:image" content="https://youapp-dev.github.io/mock-design/share/merchant/act5.jpg">
   <meta name="twitter:image:alt" content="Photo for Kopitiam Lee">
+  <link rel="stylesheet" href="../../design-system/tokens.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap">
   <link rel="stylesheet" href="share.css">
 </head>
-<body>
-  <main class="preview">
-    <img src="act5.jpg" width="1200" height="630" alt="Photo for Kopitiam Lee">
-    <div class="details">
-      <h1>Kopitiam Lee</h1>
-      <p>Food &amp; drink · Jalan SS 2/24, 47300 Petaling Jaya, Selangor · 5% cashback</p>
-      <a class="primary" data-open-merchant href="../../?app=app30&amp;jump=merchantPlace%3Am-kopi">View merchant</a>
+<body class="place-page">
+  <header class="place-header">
+    <div class="place-wrap place-header-inner">
+      <a href="https://youapp.ai/en-us" aria-label="YouApp homepage"><img src="../../design-system/assets/Logos/youapp-horizontal-gradient-mark-ink.svg" alt="YouApp" width="132" height="36"></a>
+      <a class="place-nav" href="./#places">Browse places</a>
     </div>
+  </header>
+  <main>
+    <section class="place-hero" aria-labelledby="place-name">
+      <div class="place-wrap place-hero-layout">
+        <div class="place-identity">
+          <p>Food &amp; drink</p>
+          <h1 id="place-name">Kopitiam Lee</h1>
+          <div class="place-hero-actions"><span class="place-rating" aria-label="4.7 out of 5 stars">★ 4.7</span><a class="primary" data-open-merchant href="../../?app=app30&amp;jump=merchantPlace%3Am-kopi">Open in YouApp <span aria-hidden="true">→</span></a></div>
+        </div>
+        <div class="place-cover-frame">
+          <img class="place-cover" src="act5.jpg" width="1200" height="630" alt="Photo for Kopitiam Lee" fetchpriority="high">
+        </div>
+      </div>
+    </section>
+    <nav class="place-wrap place-jumps" aria-label="Merchant sections" hidden></nav>
+    <div class="place-wrap place-grid">
+      <section class="place-details" aria-labelledby="visit-title">
+        <h2 id="visit-title">Plan your visit</h2>
+        <dl><div><dt>Address</dt><dd>Jalan SS 2/24, 47300 Petaling Jaya, Selangor</dd></div><div><dt>Hours</dt><dd>Open now</dd></div></dl>
+        <div class="place-actions"><a class="secondary" href="https://www.google.com/maps/search/?api=1&amp;query=Kopitiam+Lee+Jalan+SS+2%2F24%2C+47300+Petaling+Jaya%2C+Selangor" target="_blank" rel="noopener noreferrer">Get directions</a></div>
+      </section>
+      <aside class="place-offer">
+        <img src="illustrations/cashback.svg" width="240" height="160" alt="" loading="lazy">
+        <div><strong>5% cashback</strong><p>Pay with YouApp at this merchant.</p></div>
+      </aside>
+    </div>
+    <div class="place-wrap place-community" hidden></div>
   </main>
+  <footer class="place-footer">
+    <div class="place-wrap place-footer-inner">
+      <a href="https://youapp.ai/en-us"><img src="../../design-system/assets/Logos/youapp-horizontal-white.svg" alt="YouApp" width="132" height="36"></a>
+      <span>Travel like a local. Pay like a local.</span>
+    </div>
+  </footer>
+  <script src="catalog.js" defer></script>
+  <script src="merchant-details.js" defer></script>
   <script src="landing.js" defer></script>
+  <script src="community.js" defer></script>
 </body>
 </html>

@@ -1,5 +1,5 @@
 const previewCatalog = window.YouAppMerchantPreviews;
-for (const row of document.querySelectorAll('.cases li')) {
+for (const row of document.querySelectorAll('.cases > ul > li')) {
   const preview = row.querySelector('a');
   const filename = preview.getAttribute('href');
   const item = previewCatalog.items[filename.replace(/\.html$/, '')];
@@ -16,4 +16,15 @@ for (const row of document.querySelectorAll('.cases li')) {
     actions.append(link);
   }
   row.append(actions);
+}
+
+const directory = document.querySelector('.place-directory');
+for (const [key, item] of Object.entries(previewCatalog.items)) {
+  if (item.id !== key) continue;
+  const row = document.createElement('li');
+  const link = document.createElement('a');
+  link.href = key + '.html';
+  link.textContent = item.title;
+  row.append(link);
+  directory.append(row);
 }

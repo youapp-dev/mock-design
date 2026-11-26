@@ -21,17 +21,34 @@
   <meta name="twitter:description" content="Discover local places and experiences with YouApp Engage. Travel like a local.">
   <meta name="twitter:image" content="https://youapp-dev.github.io/mock-design/share/merchant/youapp-logo.jpg">
   <meta name="twitter:image:alt" content="YouApp logo">
+  <link rel="stylesheet" href="../../design-system/tokens.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap">
   <link rel="stylesheet" href="share.css">
 </head>
-<body>
-  <main class="preview">
-    <img src="youapp-logo.jpg" width="1200" height="630" alt="YouApp logo">
-    <div class="details">
+<body class="place-page">
+  <header class="place-header">
+    <div class="place-wrap place-header-inner">
+      <a href="https://youapp.ai/en-us" aria-label="YouApp homepage"><img src="../../design-system/assets/Logos/youapp-horizontal-gradient-mark-ink.svg" alt="YouApp" width="132" height="36"></a>
+      <a class="place-nav" href="./#places">Browse places</a>
+    </div>
+  </header>
+  <main>
+    <section class="place-wrap place-empty">
+      <img src="youapp-logo.jpg" width="1200" height="630" alt="YouApp logo">
       <h1>Merchant unavailable</h1>
       <p>This merchant can no longer be opened. Explore other places on YouApp.</p>
-      <a class="primary" data-open-merchant href="../../">Open YouApp</a>
-    </div>
+      <a class="primary" href="./#places">Browse places</a>
+    </section>
   </main>
+  <footer class="place-footer">
+    <div class="place-wrap place-footer-inner">
+      <a href="https://youapp.ai/en-us"><img src="../../design-system/assets/Logos/youapp-horizontal-white.svg" alt="YouApp" width="132" height="36"></a>
+      <span>Travel like a local. Pay like a local.</span>
+    </div>
+  </footer>
+  <script src="catalog.js" defer></script>
+  <script src="merchant-details.js" defer></script>
   <script src="landing.js" defer></script>
+  <script src="community.js" defer></script>
 </body>
 </html>

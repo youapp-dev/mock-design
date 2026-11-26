@@ -4,13 +4,22 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>Merchant sharing scenarios · YouApp</title>
+  <link rel="stylesheet" href="../../design-system/tokens.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap">
   <link rel="stylesheet" href="share.css">
 </head>
-<body>
-  <main class="cases">
+<body class="place-page">
+  <header class="place-header">
+    <div class="place-wrap place-header-inner">
+      <a href="https://youapp.ai/en-us" aria-label="YouApp homepage"><img src="../../design-system/assets/Logos/youapp-horizontal-gradient-mark-ink.svg" alt="YouApp" width="132" height="36"></a>
+      <a class="place-nav" href="#places">Browse places</a>
+    </div>
+  </header>
+  <main class="cases place-wrap">
     <h1>Merchant sharing scenarios</h1>
     <p>Open a case to review the recipient page, or choose an app to test the share handoff.</p>
     <ul>
+      <li><a href="m-kopi.html">Guest merchant web app · Kopitiam Lee</a></li>
       <li><a href="px-kopi.html">Photo and cashback · Kedai Kopi Lima</a></li>
       <li><a href="px-bread.html">Photo without cashback · Bangsar Bread Co.</a></li>
       <li><a href="px-salon.html">Closed merchant · Lane Studio Salon</a></li>
@@ -18,6 +27,10 @@
       <li><a href="unavailable.html">Merchant removed or unavailable</a></li>
       <li><a href="invalid.html">Invalid link</a></li>
     </ul>
+    <section id="places" aria-labelledby="places-title">
+      <h2 id="places-title">Browse places</h2>
+      <ul class="place-directory"></ul>
+    </section>
   </main>
   <script src="catalog.js"></script>
   <script src="channels.js"></script>

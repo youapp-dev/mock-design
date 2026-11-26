@@ -21,17 +21,53 @@
   <meta name="twitter:description" content="Discover local places and experiences with YouApp Engage. Travel like a local.">
   <meta name="twitter:image" content="https://youapp-dev.github.io/mock-design/share/merchant/mx_dimsum.jpg">
   <meta name="twitter:image:alt" content="Photo for Dim Sum Garden">
+  <link rel="stylesheet" href="../../design-system/tokens.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap">
   <link rel="stylesheet" href="share.css">
 </head>
-<body>
-  <main class="preview">
-    <img src="mx_dimsum.jpg" width="1200" height="630" alt="Photo for Dim Sum Garden">
-    <div class="details">
-      <h1>Dim Sum Garden</h1>
-      <p>Chinese · Jalan Ara, Bangsar Baru · 3% cashback</p>
-      <a class="primary" data-open-merchant href="../../?app=app30&amp;jump=merchantPlace%3Apx-dimsum">View merchant</a>
+<body class="place-page">
+  <header class="place-header">
+    <div class="place-wrap place-header-inner">
+      <a href="https://youapp.ai/en-us" aria-label="YouApp homepage"><img src="../../design-system/assets/Logos/youapp-horizontal-gradient-mark-ink.svg" alt="YouApp" width="132" height="36"></a>
+      <a class="place-nav" href="./#places">Browse places</a>
     </div>
+  </header>
+  <main>
+    <section class="place-hero" aria-labelledby="place-name">
+      <div class="place-wrap place-hero-layout">
+        <div class="place-identity">
+          <p>Chinese</p>
+          <h1 id="place-name">Dim Sum Garden</h1>
+          <div class="place-hero-actions"><span class="place-rating" aria-label="4.5 out of 5 stars">★ 4.5</span><a class="primary" data-open-merchant href="../../?app=app30&amp;jump=merchantPlace%3Apx-dimsum">Open in YouApp <span aria-hidden="true">→</span></a></div>
+        </div>
+        <div class="place-cover-frame">
+          <img class="place-cover" src="mx_dimsum.jpg" width="1200" height="630" alt="Photo for Dim Sum Garden" fetchpriority="high">
+        </div>
+      </div>
+    </section>
+    <nav class="place-wrap place-jumps" aria-label="Merchant sections" hidden></nav>
+    <div class="place-wrap place-grid">
+      <section class="place-details" aria-labelledby="visit-title">
+        <h2 id="visit-title">Plan your visit</h2>
+        <dl><div><dt>Address</dt><dd>Jalan Ara, Bangsar Baru</dd></div><div><dt>Hours</dt><dd>Open · Closes at 3 PM</dd></div><div><dt>Phone</dt><dd><a href="tel:0322876650">03-2287 6650</a></dd></div></dl>
+        <div class="place-actions"><a class="secondary" href="https://www.google.com/maps/search/?api=1&amp;query=Dim+Sum+Garden+Jalan+Ara%2C+Bangsar+Baru" target="_blank" rel="noopener noreferrer">Get directions</a></div>
+      </section>
+      <aside class="place-offer">
+        <img src="illustrations/cashback.svg" width="240" height="160" alt="" loading="lazy">
+        <div><strong>3% cashback</strong><p>Pay with YouApp at this merchant.</p></div>
+      </aside>
+    </div>
+    <div class="place-wrap place-community" hidden></div>
   </main>
+  <footer class="place-footer">
+    <div class="place-wrap place-footer-inner">
+      <a href="https://youapp.ai/en-us"><img src="../../design-system/assets/Logos/youapp-horizontal-white.svg" alt="YouApp" width="132" height="36"></a>
+      <span>Travel like a local. Pay like a local.</span>
+    </div>
+  </footer>
+  <script src="catalog.js" defer></script>
+  <script src="merchant-details.js" defer></script>
   <script src="landing.js" defer></script>
+  <script src="community.js" defer></script>
 </body>
 </html>

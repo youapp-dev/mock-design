@@ -21,17 +21,49 @@
   <meta name="twitter:description" content="Discover local places and experiences with YouApp Engage. Travel like a local.">
   <meta name="twitter:image" content="https://youapp-dev.github.io/mock-design/share/merchant/mx_salon.jpg">
   <meta name="twitter:image:alt" content="Photo for Lane Studio Salon">
+  <link rel="stylesheet" href="../../design-system/tokens.css">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&amp;display=swap">
   <link rel="stylesheet" href="share.css">
 </head>
-<body>
-  <main class="preview">
-    <img src="mx_salon.jpg" width="1200" height="630" alt="Photo for Lane Studio Salon">
-    <div class="details">
-      <h1>Lane Studio Salon</h1>
-      <p>Hair salon · Jalan Kemuja, Bangsar · Closed, opens at 10 AM</p>
-      <a class="primary" data-open-merchant href="../../?app=app30&amp;jump=merchantPlace%3Apx-salon">View merchant</a>
+<body class="place-page">
+  <header class="place-header">
+    <div class="place-wrap place-header-inner">
+      <a href="https://youapp.ai/en-us" aria-label="YouApp homepage"><img src="../../design-system/assets/Logos/youapp-horizontal-gradient-mark-ink.svg" alt="YouApp" width="132" height="36"></a>
+      <a class="place-nav" href="./#places">Browse places</a>
     </div>
+  </header>
+  <main>
+    <section class="place-hero" aria-labelledby="place-name">
+      <div class="place-wrap place-hero-layout">
+        <div class="place-identity">
+          <p>Hair salon</p>
+          <h1 id="place-name">Lane Studio Salon</h1>
+          <div class="place-hero-actions"><span class="place-rating" aria-label="4.8 out of 5 stars">★ 4.8</span><a class="primary" data-open-merchant href="../../?app=app30&amp;jump=merchantPlace%3Apx-salon">Open in YouApp <span aria-hidden="true">→</span></a></div>
+        </div>
+        <div class="place-cover-frame">
+          <img class="place-cover" src="mx_salon.jpg" width="1200" height="630" alt="Photo for Lane Studio Salon" fetchpriority="high">
+        </div>
+      </div>
+    </section>
+    <nav class="place-wrap place-jumps" aria-label="Merchant sections" hidden></nav>
+    <div class="place-wrap place-grid">
+      <section class="place-details" aria-labelledby="visit-title">
+        <h2 id="visit-title">Plan your visit</h2>
+        <dl><div><dt>Address</dt><dd>Jalan Kemuja, Bangsar</dd></div><div><dt>Hours</dt><dd>Closed · Opens at 10 AM</dd></div><div><dt>Phone</dt><dd><a href="tel:0322830091">03-2283 0091</a></dd></div></dl>
+        <div class="place-actions"><a class="secondary" href="https://www.google.com/maps/search/?api=1&amp;query=Lane+Studio+Salon+Jalan+Kemuja%2C+Bangsar" target="_blank" rel="noopener noreferrer">Get directions</a></div>
+      </section>
+    </div>
+    <div class="place-wrap place-community" hidden></div>
   </main>
+  <footer class="place-footer">
+    <div class="place-wrap place-footer-inner">
+      <a href="https://youapp.ai/en-us"><img src="../../design-system/assets/Logos/youapp-horizontal-white.svg" alt="YouApp" width="132" height="36"></a>
+      <span>Travel like a local. Pay like a local.</span>
+    </div>
+  </footer>
+  <script src="catalog.js" defer></script>
+  <script src="merchant-details.js" defer></script>
   <script src="landing.js" defer></script>
+  <script src="community.js" defer></script>
 </body>
 </html>
