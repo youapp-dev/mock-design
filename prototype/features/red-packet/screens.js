@@ -61,7 +61,10 @@ window.__apHistory = () => [...redPackets.movements, ...apSampleMovements()].fil
   id:`ap-${AP_HISTORY_KIND[m.kind]}-${m.packet.token}`, apTok:m.packet.token, at:m.at,
   m:m.at.toLocaleDateString('en-MY', {month:'short', year:'numeric'}),
   d:m.at.toLocaleString('en-MY', {dateStyle:'medium', timeStyle:'short'}).replace(/\b(am|pm)$/, x => x.toUpperCase()),
-  t:apHistoryTitle(m), st:'Completed', v:m.cents / 100, ic:m.kind === 'refund' ? 'refresh' : 'apGift', kind:'ap'}));
+  t:apHistoryTitle(m), st:'Completed', v:m.cents / 100, ic:m.kind === 'refund' ? 'refresh' : 'apGift', kind:'ap',
+  /* receipt details (Wallet 2.0 red packet receipt) */
+  ap:{k:AP_HISTORY_KIND[m.kind], from:who(m.packet.creator).n, type:AP_TYPES[m.packet.type], people:isLucky(m.packet) ? 'No people limit' : apPeople(m.packet.count),
+    msg:m.packet.msg, total:m.packet.total / 100, fee:(m.packet.fee || 0) / 100, expiry:m.packet.expLbl, reason:AP_REFUND_LABEL[m.reason] || ''}}));
 function apBal() {
   const fallback = w2s().bal === 'low' ? 1240 : 124050;
   const base = window.parent.YouAppPrototypeWallet?.baseCents() ?? fallback;
