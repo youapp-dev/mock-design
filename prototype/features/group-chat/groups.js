@@ -142,8 +142,9 @@ V.chat = () => { const c = conv(); if (!c.group) return _chatV(); c.unread = 0; 
   return h; };
 A.chatMenu = (orig => () => { if (S.screen==='chat' && conv().group) { A.gInfo(); return; } orig(); })(A.chatMenu);
 /* Scenario panel › Group permissions: open YouApp Products as a member with Send media set.
-   variant: off (no media), doc (documents only), all (every media type). Opening YouApp Products again restores it. */
-const G_PERM_DEMO = {off:[], doc:['document'], all:['photo', 'video', 'document', 'gif', 'voice']};
+   variant: off (photo, video, document off), doc (documents only), voice (voice off), none (media and voice off),
+   all (everything allowed). Opening YouApp Products again restores it. */
+const G_PERM_DEMO = {off:['voice'], doc:['document', 'voice'], voice:['photo', 'video', 'document', 'gif'], none:[], all:['photo', 'video', 'document', 'gif', 'voice']};
 function gPermDemoReset(c) {
   if (!c?.permDemo) return;
   c.perm.media = c.permDemo.media; delete c.myRole; delete c.permDemo;

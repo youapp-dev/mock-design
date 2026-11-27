@@ -505,13 +505,29 @@ const RP_ICON = `<svg viewBox="0.75 0.9 22 22" width="30" height="30" aria-hidde
     return h.replace(m[0], `<div class="catt ${S.sheetAnim ? 'anim' : ''}${picked ? ' has-note' : ''}${items.length < 5 ? ' few' : ''}" id="cAttPanel" role="group" aria-label="Attach">${note}${tiles}</div>`); };
   /* restricted tile: explain instead of opening the picker */
   A.cattOff = el => { S.cattNote = el.dataset.k; S.sheetAnim = false; render(); };
+  /* Group permissions (Send media › Voice off): the mic explains instead of recording (27 Nov) */
+  const VOICE_OFF_ART = `<svg class="catt-art" viewBox="0 0 160 120" aria-hidden="true">
+    <ellipse cx="80" cy="64" rx="66" ry="50" fill="#F1EBFE"/><circle cx="26" cy="30" r="4" fill="#D9C9F7"/><circle cx="138" cy="96" r="5" fill="#D9C9F7"/><path d="M132 20l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#B79CF2"/>
+    <path d="M30 60h6M28 70h10M30 80h6M124 60h6M122 70h10M124 80h6" stroke="#C9B6F3" stroke-width="3" stroke-linecap="round"/>
+    <rect x="50" y="26" width="60" height="76" rx="18" fill="#fff" stroke="#C9B6F3" stroke-width="2"/>
+    <rect x="69" y="38" width="22" height="36" rx="11" fill="#996CB7"/><path d="M62 62a18 18 0 0 0 36 0" fill="none" stroke="#996CB7" stroke-width="4" stroke-linecap="round"/><path d="M80 80v10" stroke="#996CB7" stroke-width="4" stroke-linecap="round"/>
+    <defs><linearGradient id="cattBadgeV" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#996CB7"/><stop offset="1" stop-color="#38168E"/></linearGradient></defs>
+    <circle cx="108" cy="90" r="17" fill="url(#cattBadgeV)" stroke="#fff" stroke-width="3"/><circle cx="108" cy="90" r="8" fill="none" stroke="#fff" stroke-width="2.6"/><path d="M102.5 95.5l11-11" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>`;
+  const voiceOff = () => { const c = S.screen === 'chat' ? conv() : null; return !!(c && c.group && c.perm && myRole(c) === 'member' && !c.perm.media.voice); };
+  A.recStart = (orig => (...args) => { if (!voiceOff()) return orig(...args);
+    if (S.sheet === 'cVoiceOff') { closeSheet(); return; } S.sheet = 'cVoiceOff'; S.sheetAnim = true; render(); })(A.recStart);
+  const _ovVoice = overlayHTML;
+  overlayHTML = () => S.sheet === 'cVoiceOff'
+    ? `<div class="catt solo ${S.sheetAnim ? 'anim' : ''}" id="cAttPanel" role="group" aria-label="Voice messages"><div class="catt-note" role="status">${VOICE_OFF_ART}<b>Sending voice messages isn't allowed in this group</b><small>Only the group owner or an admin can change this in Group permissions.</small></div></div>`
+    : _ovVoice();
   /* paperclip toggles the panel */
   A.cAttach = (orig => () => { if (S.sheet === 'cAttach') { closeSheet(); return; } S.cattNote = null; orig(); })(A.cAttach);
   A.cxLoc = () => { S.sheet = null; toast('Shares your current location in the chat.'); };
   /* close when tapping outside the panel (chat, header, the message box) without re-rendering, so typing still works */
-  const shut = () => { if (S.sheet !== 'cAttach') return; S.sheet = null; document.getElementById('cAttPanel')?.remove(); document.querySelector('[data-act="cAttach"]')?.setAttribute('aria-expanded', 'false'); };
-  document.addEventListener('pointerdown', e => { if (S.sheet === 'cAttach' && !e.target.closest('#cAttPanel, [data-act="cAttach"]')) shut(); }, true);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && S.sheet === 'cAttach') { shut(); document.querySelector('[data-act="cAttach"]')?.focus(); } });
+  const PANELS = ['cAttach', 'cVoiceOff'];
+  const shut = () => { if (!PANELS.includes(S.sheet)) return; S.sheet = null; document.getElementById('cAttPanel')?.remove(); document.querySelector('[data-act="cAttach"]')?.setAttribute('aria-expanded', 'false'); };
+  document.addEventListener('pointerdown', e => { if (PANELS.includes(S.sheet) && !e.target.closest('#cAttPanel, [data-act="cAttach"], [data-act="recStart"]')) shut(); }, true);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && PANELS.includes(S.sheet)) { const back = S.sheet === 'cAttach' ? 'cAttach' : 'recStart'; shut(); document.querySelector(`[data-act="${back}"]`)?.focus(); } });
   /* expose the open state on the paperclip */
   const _rAt = render;
   render = function(){ _rAt.apply(this, arguments); const b = document.querySelector('.cbar2 [data-act="cAttach"]'); if (b) { b.setAttribute('aria-expanded', S.sheet === 'cAttach' ? 'true' : 'false'); b.setAttribute('aria-controls', 'cAttPanel'); b.setAttribute('aria-label', 'Attach'); } };
@@ -530,6 +546,8 @@ const RP_ICON = `<svg viewBox="0.75 0.9 22 22" width="30" height="30" aria-hidde
   #phone .catt.few{display:flex; flex-wrap:wrap; justify-content:center; column-gap:12px} #phone .catt.few .catt-b{width:76px}
   #phone .catt.few .catt-note{width:100%}
   #phone .catt-b.on .catt-ic{box-shadow:0 0 0 2px #996CB7}
+  #phone .catt.solo{display:block} #phone .catt.solo .catt-note{border-bottom:0; margin-bottom:0; padding-bottom:8px}
+  #phone:has(.catt.solo) .cfoot{padding-bottom:262px}
   #phone .catt-note{grid-column:1 / -1; display:flex; flex-direction:column; align-items:center; text-align:center; gap:4px; padding:4px 16px 18px; margin-bottom:14px; border-bottom:1px solid #EFEAF7}
   #phone .catt-art{width:140px; height:105px; margin-bottom:6px}
   #phone .catt-note b{font:600 15px/21px Inter, sans-serif; color:#1A1466; color:var(--a-ink,#1a181b)}
