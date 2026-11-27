@@ -415,7 +415,13 @@ A.gPickTog = (orig => el => { const fromList = el && !el.classList.contains('gpk
     giMedia: () => { S.gmtab = 'media'; go('gimedia'); },
     giMTab: el => { S.gmtab = el.dataset.k; render(); },
     giAll: () => { S.giAll = !S.giAll; render(); },
-    giReport: () => { toConv(); A.openReport(); },
+    /* Report group: reasons like Report this user, in a group context; option to exit and delete the chat (27 Nov) */
+    giReport: () => { S.gRep = {reason:null, exit:true}; S.sheet = 'gReport'; S.sheetAnim = true; render(); },
+    gRepReason: el => { S.gRep.reason = el.dataset.r; S.sheetAnim = false; render(); },
+    gRepExit: () => { S.gRep.exit = !S.gRep.exit; S.sheetAnim = false; render(); },
+    gRepSend: el => { if (el.getAttribute('aria-disabled')) return; const g = grp(); S.sheet = null;
+      if (S.gRep.exit && g) { const c = gStore(); c.convs = c.convs.filter(x => x !== g); gHome(); toast('Report sent. You left the group and the chat was deleted.'); }
+      else { render(); toast('Report sent. Thanks for helping keep YouApp safe.'); } },
     giEdit: () => { S.sheet = null; A.gEdit(); },
     giInvite: () => { S.sheet = null; A.gcMenuInvite(); },
     giPerm: () => { S.sheet = null; A.gPerm(); },
@@ -520,6 +526,17 @@ const RP_ICON = `<svg viewBox="0.75 0.9 22 22" width="30" height="30" aria-hidde
   overlayHTML = () => S.sheet === 'cVoiceOff'
     ? `<div class="catt solo ${S.sheetAnim ? 'anim' : ''}" id="cAttPanel" role="group" aria-label="Voice messages"><div class="catt-note" role="status">${VOICE_OFF_ART}<b>Sending voice messages isn't allowed in this group</b><small>Only the group owner or an admin can change this in Group permissions.</small></div></div>`
     : _ovVoice();
+  /* Report group sheet */
+  const G_REP_REASONS = ['Spam or scam', 'Inappropriate content', 'Harassment or hate', 'Fake or misleading group', 'Something else'];
+  const _ovRep = overlayHTML;
+  overlayHTML = () => { if (S.sheet !== 'gReport' || !S.gRep) return _ovRep();
+    const r = S.gRep, g = grp(), own = g && myRole(g) === 'owner';
+    return `<div class="scrim ${S.sheetAnim ? 'anim' : ''}" data-act="closeSheet2"></div><div class="sheet ${S.sheetAnim ? 'anim' : ''}" role="dialog" aria-label="Report this group"><div class="grab" aria-hidden="true"></div>
+      <b class="t-headline" style="display:block">Report this group</b><p class="t-body muted" style="margin:4px 0 12px">Tell us what’s wrong. Your report is anonymous. No members will be notified.</p>
+      <div role="radiogroup" aria-label="Reason" style="display:grid">${G_REP_REASONS.map(x => `<button role="radio" aria-checked="${r.reason === x}" class="radrow" data-act="gRepReason" data-r="${esc(x)}"><span>${x}</span><i class="${r.reason === x ? 'on' : ''}"></i></button>`).join('')}</div>
+      <p class="t-caption muted" style="margin:12px 0 0">The last 5 messages in this group will be sent to YouApp for review.</p>
+      <label class="chk" style="margin-top:12px; min-height:44px; align-items:center"><input type="checkbox" data-act="gRepExit" ${r.exit ? 'checked' : ''}><span>Exit group and delete chat${own ? '<br><small class="muted">The earliest admin becomes the owner.</small>' : ''}</span></label>
+      <div style="margin-top:10px">${btn('Send Report', 'gRepSend', {disabled:!r.reason})}</div></div>`; };
   /* paperclip toggles the panel */
   A.cAttach = (orig => () => { if (S.sheet === 'cAttach') { closeSheet(); return; } S.cattNote = null; orig(); })(A.cAttach);
   A.cxLoc = () => { S.sheet = null; toast('Shares your current location in the chat.'); };
