@@ -475,7 +475,15 @@ const RP_ICON = `<svg viewBox="0.75 0.9 22 22" width="30" height="30" aria-hidde
     /* Red Packet: two packets (back purple, front red) with a purple seal, recoloured from the reference icon to fit the app (25 Nov) */
     apAttach: ['Red Packet', RP_ICON]
   };
-  const ORDER = ['apAttach', 'attachGal', 'attachCam', 'cxDocs', 'cxLoc'];   /* Red Packet first (25 Nov) */
+  const ORDER = ['apAttach', 'attachGal', 'attachCam', 'cxDocs', 'cxLoc'];
+  /* Media not allowed: photo cards with a blocked badge, in the app palette (27 Nov) */
+  const MEDIA_OFF_ART = `<svg class="catt-art" viewBox="0 0 160 120" aria-hidden="true">
+    <ellipse cx="80" cy="64" rx="66" ry="50" fill="#F1EBFE"/><circle cx="24" cy="26" r="4" fill="#D9C9F7"/><circle cx="140" cy="94" r="5" fill="#D9C9F7"/><path d="M134 22l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#B79CF2"/>
+    <g transform="rotate(-10 62 62)"><rect x="34" y="34" width="56" height="48" rx="9" fill="#DCCDFA"/></g>
+    <g transform="rotate(6 88 64)"><rect x="56" y="36" width="62" height="54" rx="10" fill="#fff" stroke="#C9B6F3" stroke-width="2"/><rect x="63" y="43" width="48" height="34" rx="6" fill="#EDE6FA"/>
+      <circle cx="74" cy="53" r="4.5" fill="#B79CF2"/><path d="M63 72l13-12 9 8 7-6 19 15v0H63z" fill="#996CB7"/><rect x="63" y="81" width="26" height="4" rx="2" fill="#E2D7F7"/></g>
+    <defs><linearGradient id="cattBadge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#996CB7"/><stop offset="1" stop-color="#38168E"/></linearGradient></defs>
+    <circle cx="113" cy="86" r="17" fill="url(#cattBadge)" stroke="#fff" stroke-width="3"/><circle cx="113" cy="86" r="8" fill="none" stroke="#fff" stroke-width="2.6"/><path d="M107.5 91.5l11-11" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>`;   /* Red Packet first (25 Nov) */
   const SHEET = /<div class="scrim[^"]*" data-act="closeSheet2"><\/div><div class="sheet[^"]*" role="dialog" aria-label="Attach"><div class="grab" aria-hidden="true"><\/div><div style="display:grid">([\s\S]*?)<\/div><\/div>/;
   const _ovAt = overlayHTML;
   overlayHTML = () => { let h = _ovAt();
@@ -483,16 +491,43 @@ const RP_ICON = `<svg viewBox="0.75 0.9 22 22" width="30" height="30" aria-hidde
     const m = h.match(SHEET); if (!m) return h;
     const acts = [...m[1].matchAll(/data-act="([^"]+)"/g)].map(x => x[1]);
     if (acts.includes('attachGal')) acts.push('cxLoc');           /* Location sits with the media items */
+    /* Group permissions (Send media): every tile stays. For a member, a tile whose media type the admin turned off
+       shows why when tapped (photo or video → Gallery and Camera, document → Document). Red Packet and Location are not media. */
+    const c = S.screen === 'chat' ? conv() : null;
+    const allowed = c && c.group && c.perm && myRole(c) === 'member' ? c.perm.media : null;
+    const OK = {attachGal: p => p.photo || p.video, attachCam: p => p.photo || p.video, cxDocs: p => p.document};
+    const off = a => allowed && OK[a] && !OK[a](allowed);
     const items = ORDER.filter(a => acts.includes(a) && TILE[a]);
-    const tiles = items.map(a => `<button type="button" class="catt-b" data-act="${a}"><span class="catt-ic">${TILE[a][1]}</span><span class="catt-l">${TILE[a][0]}</span></button>`).join('');
-    return h.replace(m[0], `<div class="catt ${S.sheetAnim ? 'anim' : ''}" id="cAttPanel" role="group" aria-label="Attach">${tiles}</div>`); };
+    const picked = items.includes(S.cattNote) && off(S.cattNote) ? S.cattNote : null;
+    const what = picked === 'cxDocs' ? 'documents' : allowed && (allowed.photo || allowed.video) ? 'this media' : 'photos and videos';
+    const note = picked ? `<div class="catt-note" role="status">${MEDIA_OFF_ART}<b>Sending ${what} isn't allowed in this group</b><small>Only the group owner or an admin can change this in Group permissions.</small></div>` : '';
+    const tiles = items.map(a => `<button type="button" class="catt-b${a === picked ? ' on' : ''}" data-act="${off(a) ? 'cattOff' : a}" data-k="${a}"${off(a) ? ` aria-pressed="${a === picked}"` : ''}><span class="catt-ic">${TILE[a][1]}</span><span class="catt-l">${TILE[a][0]}</span></button>`).join('');
+    return h.replace(m[0], `<div class="catt ${S.sheetAnim ? 'anim' : ''}${picked ? ' has-note' : ''}${items.length < 5 ? ' few' : ''}" id="cAttPanel" role="group" aria-label="Attach">${note}${tiles}</div>`); };
+  /* restricted tile: explain instead of opening the picker */
+  A.cattOff = el => { S.cattNote = el.dataset.k; S.sheetAnim = false; render(); };
+  /* Group permissions (Send media › Voice off): the mic explains instead of recording (27 Nov) */
+  const VOICE_OFF_ART = `<svg class="catt-art" viewBox="0 0 160 120" aria-hidden="true">
+    <ellipse cx="80" cy="64" rx="66" ry="50" fill="#F1EBFE"/><circle cx="26" cy="30" r="4" fill="#D9C9F7"/><circle cx="138" cy="96" r="5" fill="#D9C9F7"/><path d="M132 20l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#B79CF2"/>
+    <path d="M30 60h6M28 70h10M30 80h6M124 60h6M122 70h10M124 80h6" stroke="#C9B6F3" stroke-width="3" stroke-linecap="round"/>
+    <rect x="50" y="26" width="60" height="76" rx="18" fill="#fff" stroke="#C9B6F3" stroke-width="2"/>
+    <rect x="69" y="38" width="22" height="36" rx="11" fill="#996CB7"/><path d="M62 62a18 18 0 0 0 36 0" fill="none" stroke="#996CB7" stroke-width="4" stroke-linecap="round"/><path d="M80 80v10" stroke="#996CB7" stroke-width="4" stroke-linecap="round"/>
+    <defs><linearGradient id="cattBadgeV" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#996CB7"/><stop offset="1" stop-color="#38168E"/></linearGradient></defs>
+    <circle cx="108" cy="90" r="17" fill="url(#cattBadgeV)" stroke="#fff" stroke-width="3"/><circle cx="108" cy="90" r="8" fill="none" stroke="#fff" stroke-width="2.6"/><path d="M102.5 95.5l11-11" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>`;
+  const voiceOff = () => { const c = S.screen === 'chat' ? conv() : null; return !!(c && c.group && c.perm && myRole(c) === 'member' && !c.perm.media.voice); };
+  A.recStart = (orig => (...args) => { if (!voiceOff()) return orig(...args);
+    if (S.sheet === 'cVoiceOff') { closeSheet(); return; } S.sheet = 'cVoiceOff'; S.sheetAnim = true; render(); })(A.recStart);
+  const _ovVoice = overlayHTML;
+  overlayHTML = () => S.sheet === 'cVoiceOff'
+    ? `<div class="catt solo ${S.sheetAnim ? 'anim' : ''}" id="cAttPanel" role="group" aria-label="Voice messages"><div class="catt-note" role="status">${VOICE_OFF_ART}<b>Sending voice messages isn't allowed in this group</b><small>Only the group owner or an admin can change this in Group permissions.</small></div></div>`
+    : _ovVoice();
   /* paperclip toggles the panel */
-  A.cAttach = (orig => () => { if (S.sheet === 'cAttach') { closeSheet(); return; } orig(); })(A.cAttach);
+  A.cAttach = (orig => () => { if (S.sheet === 'cAttach') { closeSheet(); return; } S.cattNote = null; orig(); })(A.cAttach);
   A.cxLoc = () => { S.sheet = null; toast('Shares your current location in the chat.'); };
   /* close when tapping outside the panel (chat, header, the message box) without re-rendering, so typing still works */
-  const shut = () => { if (S.sheet !== 'cAttach') return; S.sheet = null; document.getElementById('cAttPanel')?.remove(); document.querySelector('[data-act="cAttach"]')?.setAttribute('aria-expanded', 'false'); };
-  document.addEventListener('pointerdown', e => { if (S.sheet === 'cAttach' && !e.target.closest('#cAttPanel, [data-act="cAttach"]')) shut(); }, true);
-  document.addEventListener('keydown', e => { if (e.key === 'Escape' && S.sheet === 'cAttach') { shut(); document.querySelector('[data-act="cAttach"]')?.focus(); } });
+  const PANELS = ['cAttach', 'cVoiceOff'];
+  const shut = () => { if (!PANELS.includes(S.sheet)) return; S.sheet = null; document.getElementById('cAttPanel')?.remove(); document.querySelector('[data-act="cAttach"]')?.setAttribute('aria-expanded', 'false'); };
+  document.addEventListener('pointerdown', e => { if (PANELS.includes(S.sheet) && !e.target.closest('#cAttPanel, [data-act="cAttach"], [data-act="recStart"]')) shut(); }, true);
+  document.addEventListener('keydown', e => { if (e.key === 'Escape' && PANELS.includes(S.sheet)) { const back = S.sheet === 'cAttach' ? 'cAttach' : 'recStart'; shut(); document.querySelector(`[data-act="${back}"]`)?.focus(); } });
   /* expose the open state on the paperclip */
   const _rAt = render;
   render = function(){ _rAt.apply(this, arguments); const b = document.querySelector('.cbar2 [data-act="cAttach"]'); if (b) { b.setAttribute('aria-expanded', S.sheet === 'cAttach' ? 'true' : 'false'); b.setAttribute('aria-controls', 'cAttPanel'); b.setAttribute('aria-label', 'Attach'); } };
@@ -508,6 +543,17 @@ const RP_ICON = `<svg viewBox="0.75 0.9 22 22" width="30" height="30" aria-hidde
   #phone .catt-b:focus-visible{outline:none} #phone .catt-b:focus-visible .catt-ic{outline:2px solid #5E35B8; outline-offset:2px}
   #phone .catt-l{font:500 12px/16px Inter, sans-serif; text-align:center; max-width:100%; overflow-wrap:anywhere}
   #phone:has(.catt) .cfoot{padding-bottom:150px}
+  #phone .catt.few{display:flex; flex-wrap:wrap; justify-content:center; column-gap:12px} #phone .catt.few .catt-b{width:76px}
+  #phone .catt.few .catt-note{width:100%}
+  #phone .catt-b.on .catt-ic{box-shadow:0 0 0 2px #996CB7}
+  #phone .catt.solo{display:block} #phone .catt.solo .catt-note{border-bottom:0; margin-bottom:0; padding-bottom:8px}
+  #phone:has(.catt.solo) .cfoot{padding-bottom:262px}
+  #phone .catt-note{grid-column:1 / -1; display:flex; flex-direction:column; align-items:center; text-align:center; gap:4px; padding:4px 16px 18px; margin-bottom:14px; border-bottom:1px solid #EFEAF7}
+  #phone .catt-art{width:140px; height:105px; margin-bottom:6px}
+  #phone .catt-note b{font:600 15px/21px Inter, sans-serif; color:#1A1466; color:var(--a-ink,#1a181b)}
+  #phone .catt-note small{font:400 13px/18px Inter, sans-serif; color:#66616B; max-width:260px}
+  #phone:has(.catt.has-note) .cfoot{padding-bottom:362px}
+  @media (max-width:340px){ #phone:has(.catt.has-note) .cfoot{padding-bottom:384px} }
   @media (max-width:340px){ #phone .catt{left:8px; right:8px; padding:14px 4px 12px; gap:2px} #phone .catt-ic{width:50px; height:50px} #phone .catt-l{font-size:11.5px; line-height:14px} #phone:has(.catt) .cfoot{padding-bottom:156px} }`;
   document.head.appendChild(css);
 })();

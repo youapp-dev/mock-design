@@ -284,6 +284,36 @@ V.txReceipt = () => { const x = TXS.find(t=>t.id===S.txId)||TXS[0]; const top = 
     <div class="bl-rcact"><button data-act="toast" data-msg="Saves the receipt as a PDF.">${ic('download')}Download</button><button data-act="toast" data-msg="Opens the share sheet.">${ic('share')}Share</button></div>
   </div></div></div>`; };
 
+/* Red packet receipt: same layout as the top-up and payment receipts. Rows come from the app frame. */
+const apReceiptRow = id => walletScanHistory().find(x => x.id === id);
+V.apReceipt = () => { const x = apReceiptRow(S.txId); if (!x || !x.ap) return V.txHist();
+  const r = x.ap, a = Math.abs(x.v), sent = r.k === 's', refund = r.k === 'r';
+  const ref = '2378' + String([...x.id].reduce((h, c) => (h * 31 + c.charCodeAt(0)) % 1e9, 7)).padStart(9, '0');
+  const kind = sent ? 'Sent' : refund ? 'Refunded' : 'Received';
+  const sub = sent ? `${r.type} · ${r.people}` : refund ? (r.reason === 'Cancelled' ? 'Unclaimed money from your cancelled red packet' : r.reason === 'Expired' ? 'Unclaimed money from your expired red packet' : 'Money left after everyone opened your red packet') : `from ${esc(r.from)}`;
+  return `<div class="screen bz">${statusBar()}${topBar('Receipt')}
+  <div class="scroll" style="padding-bottom:20px"><div class="success" style="padding-top:0">${cele()}<b class="bl-ok">${kind}</b><b class="sp-big">RM${myrt(a)}</b><span class="t-body subtle">${sub}</span></div>
+  <div class="pad16 stack" style="gap:16px">
+    <section><h2 class="bl-cap">Transaction details</h2><div class="kvbox sp-box">
+      ${v3row('Reference ID',`${ref} <button class="iconbtn sm" data-act="copy" data-v="${ref}" aria-label="Copy">${ic('copy')}</button>`)}
+      ${v3row('Transaction Type', `Red Packet · ${sent ? 'Sent' : refund ? 'Refund' : 'Received'}`)}
+      ${refund ? v3row('Reason', r.reason || 'Refunded') : v3row('Packet type', r.type)}
+      ${!sent && !refund ? v3row('From', esc(r.from)) : ''}
+      ${r.msg ? v3row('Message', esc(r.msg)) : ''}
+      ${sent ? v3row('Expiry', esc(r.expiry)) : ''}
+      ${v3row('Timestamp', x.d)}</div></section>
+    <section><h2 class="bl-cap">Payment detail</h2><div class="kvbox sp-box">
+      ${sent ? v3row('Red packet', RM(r.total)) + v3row('Fee', RM(r.fee)) + v3row('Payment method', 'YouWallet · MYRT')
+        : refund ? v3row('Red packet', RM(r.total)) + v3row('Refund', RM(a)) + v3row('Refunded to', 'YouWallet · MYRT')
+        : v3row('Amount received', RM(a)) + v3row('Fee', RM(0)) + v3row('Received in', 'YouWallet · MYRT')}
+      ${v3row('Total', `${sent ? '' : '+'}${myrt(a)} MYRT`, 'total')}</div></section>
+    <div class="bl-rcact"><button data-act="toast" data-msg="Saves the receipt as a PDF.">${ic('download')}Download</button><button data-act="toast" data-msg="Opens the share sheet.">${ic('share')}Share</button></div>
+    <button class="link" data-act="apReceiptOpen" style="align-self:center; min-height:44px; font-weight:600">View red packet</button>
+  </div></div></div>`; };
+A.apReceiptOpen = () => { const x = apReceiptRow(S.txId); if (!x) return;
+  try { window.parent.__bridge('w2', `apReceipt:${x.id.slice(3)}`); } catch (error) { toast('Opens the red packet in the full flow.'); } };
+META.apReceipt = {name:'Red Packet receipt', ph:1, rules:['Same layout as the top-up and payment receipts.', 'Received: from, packet type, message. Sent: packet type, people, expiry, no fee. Refund: reason and the original amount.', 'View red packet opens the packet in the app; back returns to this receipt.']};
+
 /* ===== Settings (Flow Settings 3053:41568) ===== */
 V.settings = () => { const sw = (k,on) => `<button class="st-sw ${on?'on':''}" data-act="stSw" data-k="${k}" role="switch" aria-checked="${!!on}"><i></i></button>`; const P3 = S.priv||{loc:true, msg:true, act:false};
   const r = (i,t,sub,right,act='toast',data='') => `<button class="st-row" data-act="${act}" ${data}>${ic(i)}<span><b>${t}</b>${sub?`<small>${sub}</small>`:''}</span>${right===undefined?ic('chev'):right}</button>`;
@@ -592,6 +622,7 @@ Object.assign(A, {
   txHist: () => { S.txF='all'; S.txTab='tx'; go('txHist'); },
   txF: el => { S.txF = el.dataset.k; render(); }, txTab: el => { S.txTab = el.dataset.k; render(); },
   txOpen: el => {
+    if ((el.dataset.id || '').startsWith('ap-')) { S.txId = el.dataset.id; go('apReceipt'); return; }
     const fromWalletHistory = S.screen === 'scanHistory';
     S.txId = el.dataset.id;
     S.scanReceiptFrom = 'history';

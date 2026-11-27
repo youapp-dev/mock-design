@@ -177,7 +177,7 @@ button{font:inherit; color:inherit; cursor:pointer}
         <button data-j="products">YouApp Products<small>Group chat showcase</small></button>
         <button data-j="merchantGroup">YouApp Merchant<small>Merchant sharing showcase</small></button>
         <a href="share/merchant/px-kopi.html?version=3.2.0" target="_blank" rel="noopener">Merchant web app<small>Open a shared place as a guest</small></a>
-        <a href="share/merchant/" target="_blank" rel="noopener">Merchant sharing scenarios<small>Guest web pages, WhatsApp and Telegram</small></a>
+        <a href="share/merchant/index.html" target="_blank" rel="noopener">Merchant sharing scenarios<small>Guest web pages, WhatsApp and Telegram</small></a>
         <button data-j="settings">Settings<small>PIN, profile</small></button>
       </div>
     </div>
@@ -204,6 +204,7 @@ button{font:inherit; color:inherit; cursor:pointer}
       <div class="ctl"><span>MYRT balance</span><div class="seg" role="group" aria-label="MYRT balance" style="grid-template-columns:repeat(2,1fr)"><button data-s="bal" data-v="enough">RM50 or more</button><button data-s="bal" data-v="low">Below RM50</button></div></div>
       <div class="ctl"><span>My Activities</span><div class="seg" role="group" aria-label="My Activities" style="grid-template-columns:repeat(2,1fr)"><button data-s="actMine" data-v="has">Has activities</button><button data-s="actMine" data-v="empty">Empty</button></div></div>
       <div class="ctl"><span>Group chats (Locals › Group)</span><div class="seg" role="group" aria-label="Group chats" style="grid-template-columns:repeat(4,1fr)"><button data-s="gList" data-v="empty">No groups</button><button data-s="gList" data-v="owner">As owner</button><button data-s="gList" data-v="admin">As admin</button><button data-s="gList" data-v="member">As member</button></div></div>
+      <div class="ctl"><span>Group permissions (as member)</span><div class="seg" role="group" aria-label="Group permissions as member" style="grid-template-columns:repeat(3,1fr)"><button data-j="gPerm:off">Media off</button><button data-j="gPerm:doc">Documents only</button><button data-j="gPerm:voice">Voice off</button><button data-j="gPerm:none">Media and voice off</button><button data-j="gPerm:all" style="grid-column:span 2">Everything allowed</button></div></div>
       <div class="ctl"><span>Group creation</span><div class="seg" role="group" aria-label="Group creation" style="grid-template-columns:repeat(2,1fr)"><button data-j="localsGroup">Locals › Group</button><button data-j="gInvite">Invite link</button></div></div>
       <div class="ctl"><span>Red Packet</span><div class="jumps" role="group" aria-label="Red Packet"><button data-j="apNew">Create</button><button data-j="apChat">Chat card</button><button data-j="apRecv:ready">Receive</button><button data-j="apRecv:full">Fully claimed</button><button data-j="apRecv:lucky">Lucky draw from Lara</button><button data-j="apHistory">My Red Packet</button><button data-j="apHistory:empty">Empty history</button></div></div>
       <details class="lucky-rates" id="luckyRateAdmin">
@@ -239,7 +240,7 @@ button{font:inherit; color:inherit; cursor:pointer}
 <script src="prototype/features/red-packet/rates.js"></script>
 <script src="prototype/routes.js"></script>
 <script src="prototype/forms-webview.js"></script>
-<script src="prototype/shell.js"></script>
+<script src="prototype/shell.js?v=rp-history"></script>
 <script src="prototype/features/red-packet/admin.js"></script>
 </body>
 </html>

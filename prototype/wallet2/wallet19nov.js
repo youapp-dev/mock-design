@@ -228,7 +228,9 @@ function walletScanHistory() {
     t:tx.merchant, d:formatDate(tx), st:tx.status, v:-tx.totalCents / 100, ic:'store', kind:'pay'}));
   const topUps = (S.walletTopUps || []).map(tx => ({id:tx.id, m:month(tx.at), at:tx.at,
     t:`Top up · ${tx.method}`, d:formatDate({paidAt:tx.at}), st:'Completed', v:tx.value, ic:'plus', kind:'top'}));
-  return [...payments, ...topUps].sort((a,b) => b.at - a.at);
+  let redPackets = [];
+  try { redPackets = window.parent.YouAppPrototypeWallet?.redPacketHistory?.() || []; } catch (error) {}
+  return [...payments, ...topUps, ...redPackets].sort((a,b) => b.at - a.at);
 }
 
 window.__walletScanHistory = walletScanHistory;

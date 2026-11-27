@@ -164,13 +164,37 @@ V.chat = () => { const c = conv(); if (!c.group) return _chatV(); c.unread = 0; 
   h = h.replace(/<button class="iconbtn" data-act="cxCall" data-k="video" aria-label="Video call">[\s\S]*?<\/button>/, '');
   const r = myRole(c);
   if (r==='member' && !c.perm.send) h = h.replace(/<div class="cbar2[\s\S]*?<\/div>(?=<\/div><\/div>$)/, `<div class="gnosend">${ic('lock')}Only admins can send messages in this group.</div>`);
-  else if (r==='member' && !Object.values(c.perm.media).some(Boolean)) h = h.replace(/<button class="iconbtn" style="margin:0" data-act="cAttach"[\s\S]*?<\/button>/, '');
+  /* Send media off: the paperclip stays; the attach panel explains it (messaging.js) */
   return h; };
 A.chatMenu = (orig => () => { if (S.screen==='chat' && conv().group) { A.gInfo(); return; } orig(); })(A.chatMenu);
+/* Scenario panel › Group permissions: open YouApp Products as a member with Send media set.
+   variant: off (photo, video, document off), doc (documents only), voice (voice off), none (media and voice off),
+   all (everything allowed). Opening YouApp Products again restores it. */
+const G_PERM_DEMO = {off:['voice'], doc:['document', 'voice'], voice:['photo', 'video', 'document', 'gif'], none:[], all:['photo', 'video', 'document', 'gif', 'voice']};
+function gPermDemoReset(c) {
+  if (!c?.permDemo) return;
+  c.perm.media = c.permDemo.media; delete c.myRole; delete c.permDemo;
+}
+appEntryRoutes.gPerm = (open, context, variant = 'off') => {
+  scen.gList = 'has';
+  saveScen();
+  const c = C6().convs.find(x => x.id === 'g-products');
+  if (c) {
+    if (!c.permDemo) c.permDemo = {media:{...c.perm.media}};
+    const on = G_PERM_DEMO[variant] || [];
+    Object.keys(c.perm.media).forEach(k => { c.perm.media[k] = on.includes(k); });
+    c.myRole = 'member';
+  }
+  S.gid = S.conv = 'g-products';
+  S.ctab = 'group';
+  S.sheet = null;
+  open('chat', context);
+  setTimeout(scrollChat, 30);
+};
 appEntryRoutes.products = (open, context) => {
   scen.gList = 'has';
   saveScen();
-  C6();
+  gPermDemoReset(C6().convs.find(x => x.id === 'g-products'));
   S.gid = 'g-products';
   S.conv = 'g-products';
   S.ctab = 'group';

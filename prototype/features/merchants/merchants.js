@@ -69,6 +69,8 @@ appEntryRoutes.merchantPlace = (open, context, id) => {
   MX.hours = null;
   open('mer', context);
 };
+/* merchant web app: Browse places */
+appEntryRoutes.discover = (open, context) => open('discover', context);
 
 window.YouAppMerchantShare = {
   place: placeById,

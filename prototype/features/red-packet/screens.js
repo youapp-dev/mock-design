@@ -40,6 +40,31 @@ const redPackets = createRedPacketStore({
   },
 });
 window.__apWalletDelta = redPackets.balanceDelta;
+/* Red packet money movements for the Wallet 2.0 Transaction History (rows use its format):
+   received (claim), sent (send), and money back when a packet is cancelled, expires or has an unclaimed balance (refund). */
+const AP_REFUND_LABEL = {cancelled:'Cancelled', expired:'Expired', 'unused budget':'Unclaimed balance'};
+const AP_HISTORY_KIND = {claim:'c', send:'s', refund:'r'};
+const apHistoryTitle = m => m.kind === 'claim' ? `Red Packet from ${who(m.packet.creator).n}`
+  : m.kind === 'send' ? 'Red Packet sent' : `Red Packet refund · ${AP_REFUND_LABEL[m.reason] || 'Refunded'}`;
+/* The sample red packets in Red Packet history get matching past rows, one day apart, so the wallet history matches it. */
+const apSampleMovements = () => { apSeed(); const day = 864e5, out = [];
+  [...apHistorySamples].filter(tok => !tok.startsWith(PACKET_TEST_TOKEN_PREFIX)).map(apGet).filter(Boolean).forEach((a, i) => {
+    const at = new Date(Date.now() - (i + 1) * day); at.setHours(9 + (i * 3) % 10, (i * 17) % 60, 0, 0);
+    if (a.creator === 'me') {
+      out.push({kind:'send', packet:a, cents:-(a.total + a.fee), at});
+      if (a.refunded && a.status !== 'ACTIVE' && !redPackets.movements.some(m => m.kind === 'refund' && m.packet === a)) out.push({kind:'refund', packet:a, cents:a.refunded, at:new Date(at.getTime() + (a.status === 'EXPIRED' ? 6 : 2) * 3600e3),
+        reason:{EXPIRED:'expired', CANCELLED:'cancelled', FULLY_CLAIMED:'unused budget'}[a.status]});
+    } else { const mine = a.slots.find(slot => slot.by === 'me'); if (mine?.amt) out.push({kind:'claim', packet:a, cents:mine.amt, at}); }
+  });
+  return out; };
+window.__apHistory = () => [...redPackets.movements, ...apSampleMovements()].filter(m => AP_HISTORY_KIND[m.kind] && m.cents).reverse().map(m => ({
+  id:`ap-${AP_HISTORY_KIND[m.kind]}-${m.packet.token}`, apTok:m.packet.token, at:m.at,
+  m:m.at.toLocaleDateString('en-MY', {month:'short', year:'numeric'}),
+  d:m.at.toLocaleString('en-MY', {dateStyle:'medium', timeStyle:'short'}).replace(/\b(am|pm)$/, x => x.toUpperCase()),
+  t:apHistoryTitle(m), st:'Completed', v:m.cents / 100, ic:m.kind === 'refund' ? 'refresh' : 'apGift', kind:'ap',
+  /* receipt details (Wallet 2.0 red packet receipt) */
+  ap:{k:AP_HISTORY_KIND[m.kind], from:who(m.packet.creator).n, type:AP_TYPES[m.packet.type], people:isLucky(m.packet) ? 'No people limit' : apPeople(m.packet.count),
+    msg:m.packet.msg, total:m.packet.total / 100, fee:(m.packet.fee || 0) / 100, expiry:m.packet.expLbl, reason:AP_REFUND_LABEL[m.reason] || ''}}));
 function apBal() {
   const fallback = w2s().bal === 'low' ? 1240 : 124050;
   const base = window.parent.YouAppPrototypeWallet?.baseCents() ?? fallback;
@@ -320,7 +345,7 @@ function apOpenResult(a, claim, sender) {
   return `<section class="rp20-result${S.apJust ? ' is-new' : ''}">
     <header class="rp20-sender-chip">${img(sender.av, '')}<span>${esc(sender.n)} · “${esc(a.msg || 'Best wishes!')}”</span></header>
     <div class="apreceive-result" role="status" aria-label="You got ${MY_(claim.amt)}. Added to YouWallet." tabindex="-1">
-      <small>You got</small><strong aria-hidden="true"><span class="rp20-unit pre">RM</span><span data-ap-payout="${claim.amt}">${C(claim.amt)}</span></strong>
+      <small>You got</small><strong aria-hidden="true"><span class="rp20-cur">RM</span><span data-ap-payout="${claim.amt}">${C(claim.amt)}</span></strong>
       <span>✓ Added to YouWallet</span>
     </div>
     <div class="rp20-result-actions">${source ? '<button type="button" class="rp20-secondary" data-act="apThanks">Say thanks</button>' : ''}${target ? '<button type="button" class="rp20-primary" data-act="apReturnGift">Send one back</button>' : ''}</div>
@@ -768,6 +793,15 @@ Object.assign(appEntryRoutes, {
     setTimeout(scrollChat, 30);
   },
   apRecv: (open, context, variant) => open(apDemo(variant || 'ready'), context),
+  /* Transaction History row → the received red packet (back returns to the wallet) */
+  /* variant is "<c|s|r>-<token>": received opens the packet, sent and refund open its details */
+  apReceipt(open, context, variant = '') {
+    const kind = variant.slice(0, 1);
+    S.apTok = variant.slice(2);
+    S.apJust = false;
+    S.apSim = null;
+    return open(kind === 'c' ? 'aprecv' : 'apdet', context);
+  },
 });
 
 /* scenario panel */

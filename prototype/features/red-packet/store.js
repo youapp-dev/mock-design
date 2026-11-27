@@ -94,7 +94,7 @@ function createRedPacketStore({rates, onMovement, onExpiry, onScheduledExpiry}) 
   }
 
   function record(kind, packet, cents, reason) {
-    const movement = {kind, packet, cents, reason};
+    const movement = {kind, packet, cents, reason, at:new Date()};
     movements.push(movement);
     onMovement(movement);
   }
@@ -162,6 +162,7 @@ function createRedPacketStore({rates, onMovement, onExpiry, onScheduledExpiry}) 
     receiveState,
     close,
     settle,
+    movements,
     sentWithKey: key => sent.get(key),
     balanceDelta: () => movements.reduce((total, movement) => total + movement.cents, 0),
   };
