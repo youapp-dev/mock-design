@@ -848,7 +848,7 @@ A.apDemoGo = el => { const t = apDemo(el.dataset.v); S.session = 'user'; S.hist 
         <button type="button" class="apchk" role="checkbox" aria-checked="${f.forever}" data-act="apForever"><i>${f.forever?'✓':''}</i><span><b>Never expires</b><small>Choose when unclaimed money returns to your wallet.</small></span></button>
         ${f.forever ? '' : `<div class="apdurs">${DURS.map(([v,t]) => `<button type="button" aria-pressed="${f.dur===v}" data-act="apDur" data-v="${v}">${t}</button>`).join('')}</div>
         ${f.dur === 'custom' ? `<div class="apcustom"><div class="apunits" role="group" aria-label="Custom expiry unit">${['hours','days'].map(value => `<button type="button" aria-pressed="${unit === value}" data-act="apExpUnit" data-v="${value}">${value === 'hours' ? 'Hours' : 'Days'}</button>`).join('')}</div>
-          ${fld('apDays','days',`Number of ${unit}`,f.days,{mode:'numeric', ph:`1–${max}`, suf:unit, err:r.e.days, help:`Whole ${unit}, 1 to ${max}`})}</div>` : ''}`}
+          ${fld('apDays','days',`Number of ${unit}`,f.days,{mode:'numeric', ph:`1–${max}`, suf:unit, err:r.e.days, help:'Set how long the packet stays available'})}</div>` : ''}`}
       </div></div>
     </section>`;
   }
