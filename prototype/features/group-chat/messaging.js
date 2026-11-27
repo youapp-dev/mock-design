@@ -491,18 +491,22 @@ const RP_ICON = `<svg viewBox="0.75 0.9 22 22" width="30" height="30" aria-hidde
     const m = h.match(SHEET); if (!m) return h;
     const acts = [...m[1].matchAll(/data-act="([^"]+)"/g)].map(x => x[1]);
     if (acts.includes('attachGal')) acts.push('cxLoc');           /* Location sits with the media items */
-    /* Group permissions (Send media): a member only sees the media types the admin allows.
-       Photo or video → Gallery and Camera, document → Document. Red Packet and Location are not media. */
+    /* Group permissions (Send media): every tile stays. For a member, a tile whose media type the admin turned off
+       shows why when tapped (photo or video → Gallery and Camera, document → Document). Red Packet and Location are not media. */
     const c = S.screen === 'chat' ? conv() : null;
     const allowed = c && c.group && c.perm && myRole(c) === 'member' ? c.perm.media : null;
     const OK = {attachGal: p => p.photo || p.video, attachCam: p => p.photo || p.video, cxDocs: p => p.document};
-    const items = ORDER.filter(a => acts.includes(a) && TILE[a] && (!allowed || !OK[a] || OK[a](allowed)));
-    const blocked = allowed && !allowed.photo && !allowed.video && !allowed.document;
-    const note = blocked ? `<div class="catt-note" role="status">${MEDIA_OFF_ART}<b>Sending media isn't allowed in this group</b><small>Only the group owner or an admin can change this in Group permissions.</small></div>` : '';
-    const tiles = items.map(a => `<button type="button" class="catt-b" data-act="${a}"><span class="catt-ic">${TILE[a][1]}</span><span class="catt-l">${TILE[a][0]}</span></button>`).join('');
-    return h.replace(m[0], `<div class="catt ${S.sheetAnim ? 'anim' : ''}${blocked ? ' has-note' : ''}${items.length < 5 ? ' few' : ''}" id="cAttPanel" role="group" aria-label="Attach">${note}${tiles}</div>`); };
+    const off = a => allowed && OK[a] && !OK[a](allowed);
+    const items = ORDER.filter(a => acts.includes(a) && TILE[a]);
+    const picked = items.includes(S.cattNote) && off(S.cattNote) ? S.cattNote : null;
+    const what = picked === 'cxDocs' ? 'documents' : allowed && (allowed.photo || allowed.video) ? 'this media' : 'photos and videos';
+    const note = picked ? `<div class="catt-note" role="status">${MEDIA_OFF_ART}<b>Sending ${what} isn't allowed in this group</b><small>Only the group owner or an admin can change this in Group permissions.</small></div>` : '';
+    const tiles = items.map(a => `<button type="button" class="catt-b${a === picked ? ' on' : ''}" data-act="${off(a) ? 'cattOff' : a}" data-k="${a}"${off(a) ? ` aria-pressed="${a === picked}"` : ''}><span class="catt-ic">${TILE[a][1]}</span><span class="catt-l">${TILE[a][0]}</span></button>`).join('');
+    return h.replace(m[0], `<div class="catt ${S.sheetAnim ? 'anim' : ''}${picked ? ' has-note' : ''}${items.length < 5 ? ' few' : ''}" id="cAttPanel" role="group" aria-label="Attach">${note}${tiles}</div>`); };
+  /* restricted tile: explain instead of opening the picker */
+  A.cattOff = el => { S.cattNote = el.dataset.k; S.sheetAnim = false; render(); };
   /* paperclip toggles the panel */
-  A.cAttach = (orig => () => { if (S.sheet === 'cAttach') { closeSheet(); return; } orig(); })(A.cAttach);
+  A.cAttach = (orig => () => { if (S.sheet === 'cAttach') { closeSheet(); return; } S.cattNote = null; orig(); })(A.cAttach);
   A.cxLoc = () => { S.sheet = null; toast('Shares your current location in the chat.'); };
   /* close when tapping outside the panel (chat, header, the message box) without re-rendering, so typing still works */
   const shut = () => { if (S.sheet !== 'cAttach') return; S.sheet = null; document.getElementById('cAttPanel')?.remove(); document.querySelector('[data-act="cAttach"]')?.setAttribute('aria-expanded', 'false'); };
@@ -525,6 +529,7 @@ const RP_ICON = `<svg viewBox="0.75 0.9 22 22" width="30" height="30" aria-hidde
   #phone:has(.catt) .cfoot{padding-bottom:150px}
   #phone .catt.few{display:flex; flex-wrap:wrap; justify-content:center; column-gap:12px} #phone .catt.few .catt-b{width:76px}
   #phone .catt.few .catt-note{width:100%}
+  #phone .catt-b.on .catt-ic{box-shadow:0 0 0 2px #996CB7}
   #phone .catt-note{grid-column:1 / -1; display:flex; flex-direction:column; align-items:center; text-align:center; gap:4px; padding:4px 16px 18px; margin-bottom:14px; border-bottom:1px solid #EFEAF7}
   #phone .catt-art{width:140px; height:105px; margin-bottom:6px}
   #phone .catt-note b{font:600 15px/21px Inter, sans-serif; color:#1A1466; color:var(--a-ink,#1a181b)}
