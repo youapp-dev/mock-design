@@ -475,7 +475,15 @@ const RP_ICON = `<svg viewBox="0.75 0.9 22 22" width="30" height="30" aria-hidde
     /* Red Packet: two packets (back purple, front red) with a purple seal, recoloured from the reference icon to fit the app (25 Nov) */
     apAttach: ['Red Packet', RP_ICON]
   };
-  const ORDER = ['apAttach', 'attachGal', 'attachCam', 'cxDocs', 'cxLoc'];   /* Red Packet first (25 Nov) */
+  const ORDER = ['apAttach', 'attachGal', 'attachCam', 'cxDocs', 'cxLoc'];
+  /* Media not allowed: photo cards with a blocked badge, in the app palette (27 Nov) */
+  const MEDIA_OFF_ART = `<svg class="catt-art" viewBox="0 0 160 120" aria-hidden="true">
+    <ellipse cx="80" cy="64" rx="66" ry="50" fill="#F1EBFE"/><circle cx="24" cy="26" r="4" fill="#D9C9F7"/><circle cx="140" cy="94" r="5" fill="#D9C9F7"/><path d="M134 22l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#B79CF2"/>
+    <g transform="rotate(-10 62 62)"><rect x="34" y="34" width="56" height="48" rx="9" fill="#DCCDFA"/></g>
+    <g transform="rotate(6 88 64)"><rect x="56" y="36" width="62" height="54" rx="10" fill="#fff" stroke="#C9B6F3" stroke-width="2"/><rect x="63" y="43" width="48" height="34" rx="6" fill="#EDE6FA"/>
+      <circle cx="74" cy="53" r="4.5" fill="#B79CF2"/><path d="M63 72l13-12 9 8 7-6 19 15v0H63z" fill="#996CB7"/><rect x="63" y="81" width="26" height="4" rx="2" fill="#E2D7F7"/></g>
+    <defs><linearGradient id="cattBadge" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#996CB7"/><stop offset="1" stop-color="#38168E"/></linearGradient></defs>
+    <circle cx="113" cy="86" r="17" fill="url(#cattBadge)" stroke="#fff" stroke-width="3"/><circle cx="113" cy="86" r="8" fill="none" stroke="#fff" stroke-width="2.6"/><path d="M107.5 91.5l11-11" stroke="#fff" stroke-width="2.6" stroke-linecap="round"/></svg>`;   /* Red Packet first (25 Nov) */
   const SHEET = /<div class="scrim[^"]*" data-act="closeSheet2"><\/div><div class="sheet[^"]*" role="dialog" aria-label="Attach"><div class="grab" aria-hidden="true"><\/div><div style="display:grid">([\s\S]*?)<\/div><\/div>/;
   const _ovAt = overlayHTML;
   overlayHTML = () => { let h = _ovAt();
@@ -483,9 +491,16 @@ const RP_ICON = `<svg viewBox="0.75 0.9 22 22" width="30" height="30" aria-hidde
     const m = h.match(SHEET); if (!m) return h;
     const acts = [...m[1].matchAll(/data-act="([^"]+)"/g)].map(x => x[1]);
     if (acts.includes('attachGal')) acts.push('cxLoc');           /* Location sits with the media items */
-    const items = ORDER.filter(a => acts.includes(a) && TILE[a]);
+    /* Group permissions (Send media): a member only sees the media types the admin allows.
+       Photo or video → Gallery and Camera, document → Document. Red Packet and Location are not media. */
+    const c = S.screen === 'chat' ? conv() : null;
+    const allowed = c && c.group && c.perm && myRole(c) === 'member' ? c.perm.media : null;
+    const OK = {attachGal: p => p.photo || p.video, attachCam: p => p.photo || p.video, cxDocs: p => p.document};
+    const items = ORDER.filter(a => acts.includes(a) && TILE[a] && (!allowed || !OK[a] || OK[a](allowed)));
+    const blocked = allowed && !allowed.photo && !allowed.video && !allowed.document;
+    const note = blocked ? `<div class="catt-note" role="status">${MEDIA_OFF_ART}<b>Sending media isn't allowed in this group</b><small>Only the group owner or an admin can change this in Group permissions.</small></div>` : '';
     const tiles = items.map(a => `<button type="button" class="catt-b" data-act="${a}"><span class="catt-ic">${TILE[a][1]}</span><span class="catt-l">${TILE[a][0]}</span></button>`).join('');
-    return h.replace(m[0], `<div class="catt ${S.sheetAnim ? 'anim' : ''}" id="cAttPanel" role="group" aria-label="Attach">${tiles}</div>`); };
+    return h.replace(m[0], `<div class="catt ${S.sheetAnim ? 'anim' : ''}${blocked ? ' has-note' : ''}${items.length < 5 ? ' few' : ''}" id="cAttPanel" role="group" aria-label="Attach">${note}${tiles}</div>`); };
   /* paperclip toggles the panel */
   A.cAttach = (orig => () => { if (S.sheet === 'cAttach') { closeSheet(); return; } orig(); })(A.cAttach);
   A.cxLoc = () => { S.sheet = null; toast('Shares your current location in the chat.'); };
@@ -508,6 +523,14 @@ const RP_ICON = `<svg viewBox="0.75 0.9 22 22" width="30" height="30" aria-hidde
   #phone .catt-b:focus-visible{outline:none} #phone .catt-b:focus-visible .catt-ic{outline:2px solid #5E35B8; outline-offset:2px}
   #phone .catt-l{font:500 12px/16px Inter, sans-serif; text-align:center; max-width:100%; overflow-wrap:anywhere}
   #phone:has(.catt) .cfoot{padding-bottom:150px}
+  #phone .catt.few{display:flex; flex-wrap:wrap; justify-content:center; column-gap:12px} #phone .catt.few .catt-b{width:76px}
+  #phone .catt.few .catt-note{width:100%}
+  #phone .catt-note{grid-column:1 / -1; display:flex; flex-direction:column; align-items:center; text-align:center; gap:4px; padding:4px 16px 18px; margin-bottom:14px; border-bottom:1px solid #EFEAF7}
+  #phone .catt-art{width:140px; height:105px; margin-bottom:6px}
+  #phone .catt-note b{font:600 15px/21px Inter, sans-serif; color:#1A1466; color:var(--a-ink,#1a181b)}
+  #phone .catt-note small{font:400 13px/18px Inter, sans-serif; color:#66616B; max-width:260px}
+  #phone:has(.catt.has-note) .cfoot{padding-bottom:362px}
+  @media (max-width:340px){ #phone:has(.catt.has-note) .cfoot{padding-bottom:384px} }
   @media (max-width:340px){ #phone .catt{left:8px; right:8px; padding:14px 4px 12px; gap:2px} #phone .catt-ic{width:50px; height:50px} #phone .catt-l{font-size:11.5px; line-height:14px} #phone:has(.catt) .cfoot{padding-bottom:156px} }`;
   document.head.appendChild(css);
 })();

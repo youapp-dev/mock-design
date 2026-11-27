@@ -138,7 +138,7 @@ V.chat = () => { const c = conv(); if (!c.group) return _chatV(); c.unread = 0; 
   h = h.replace(/<button class="iconbtn" data-act="cxCall" data-k="video" aria-label="Video call">[\s\S]*?<\/button>/, '');
   const r = myRole(c);
   if (r==='member' && !c.perm.send) h = h.replace(/<div class="cbar2[\s\S]*?<\/div>(?=<\/div><\/div>$)/, `<div class="gnosend">${ic('lock')}Only admins can send messages in this group.</div>`);
-  else if (r==='member' && !Object.values(c.perm.media).some(Boolean)) h = h.replace(/<button class="iconbtn" style="margin:0" data-act="cAttach"[\s\S]*?<\/button>/, '');
+  /* Send media off: the paperclip stays; the attach panel explains it (messaging.js) */
   return h; };
 A.chatMenu = (orig => () => { if (S.screen==='chat' && conv().group) { A.gInfo(); return; } orig(); })(A.chatMenu);
 appEntryRoutes.products = (open, context) => {
