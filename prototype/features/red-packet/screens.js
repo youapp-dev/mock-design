@@ -40,12 +40,17 @@ const redPackets = createRedPacketStore({
   },
 });
 window.__apWalletDelta = redPackets.balanceDelta;
-/* Received red packets for the Wallet 2.0 Transaction History (rows use its format). */
-window.__apHistory = () => redPackets.movements.filter(m => m.kind === 'claim').map(m => ({
-  id:`ap-${m.packet.token}`, apTok:m.packet.token, at:m.at,
+/* Red packet money movements for the Wallet 2.0 Transaction History (rows use its format):
+   received (claim), sent (send), and money back when a packet is cancelled, expires or has an unclaimed balance (refund). */
+const AP_REFUND_LABEL = {cancelled:'Cancelled', expired:'Expired', 'unused budget':'Unclaimed balance'};
+const AP_HISTORY_KIND = {claim:'c', send:'s', refund:'r'};
+const apHistoryTitle = m => m.kind === 'claim' ? `Red Packet from ${who(m.packet.creator).n}`
+  : m.kind === 'send' ? 'Red Packet sent' : `Red Packet refund · ${AP_REFUND_LABEL[m.reason] || 'Refunded'}`;
+window.__apHistory = () => redPackets.movements.filter(m => AP_HISTORY_KIND[m.kind] && m.cents).reverse().map(m => ({
+  id:`ap-${AP_HISTORY_KIND[m.kind]}-${m.packet.token}`, apTok:m.packet.token, at:m.at,
   m:m.at.toLocaleDateString('en-MY', {month:'short', year:'numeric'}),
   d:m.at.toLocaleString('en-MY', {dateStyle:'medium', timeStyle:'short'}).replace(/\b(am|pm)$/, x => x.toUpperCase()),
-  t:`Red Packet from ${who(m.packet.creator).n}`, st:'Completed', v:m.cents / 100, ic:'apGift', kind:'ap'}));
+  t:apHistoryTitle(m), st:'Completed', v:m.cents / 100, ic:m.kind === 'refund' ? 'refresh' : 'apGift', kind:'ap'}));
 function apBal() {
   const fallback = w2s().bal === 'low' ? 1240 : 124050;
   const base = window.parent.YouAppPrototypeWallet?.baseCents() ?? fallback;
@@ -775,11 +780,13 @@ Object.assign(appEntryRoutes, {
   },
   apRecv: (open, context, variant) => open(apDemo(variant || 'ready'), context),
   /* Transaction History row → the received red packet (back returns to the wallet) */
-  apReceipt(open, context, token) {
-    S.apTok = token;
+  /* variant is "<c|s|r>-<token>": received opens the packet, sent and refund open its details */
+  apReceipt(open, context, variant = '') {
+    const kind = variant.slice(0, 1);
+    S.apTok = variant.slice(2);
     S.apJust = false;
     S.apSim = null;
-    return open('aprecv', context);
+    return open(kind === 'c' ? 'aprecv' : 'apdet', context);
   },
 });
 
