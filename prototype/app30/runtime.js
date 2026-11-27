@@ -1529,7 +1529,7 @@ V.bchat = () => { const b = bkById(S.txn) || D.bookings[0]; const h = HOSTS[b.ho
       <div style="display:flex; gap:10px; margin-top:8px">${img(b.img,b.title,'thumb56')}<div style="min-width:0; text-align:left"><b>${esc(b.title)}</b><span class="t-caption" style="display:block">${b.when} · ${b.time}</span><span class="t-caption" style="display:flex; gap:4px; align-items:center">${ic('pin')}${b.place}</span></div></div>
       <p class="t-caption subtle" style="margin:8px 0 0; display:flex; gap:6px; text-align:left">${ic('info')}You’ll be responsible for the cost of activity at the venue, e.g. F&amp;B, tickets and any other purchases.</p></button>
     <p class="sysline">This conversation is about <b>${esc(b.title)}</b></p>
-    ${b.msgs.map(m => m.sys ? `<div class="sysmsg">${m.text}${m.kyc && kyc()!=='approved'?`<button class="btn btn-tertiary btn-sm" style="margin-top:10px; color:var(--a-indigo)" data-act="chatKyc">Badge Verification</button>`:''}<span class="t-caption subtle" style="display:block; text-align:right; margin-top:6px">System Generated · ${m.at}</span></div>`
+    ${b.msgs.filter(m => !m.kyc).map(m => m.sys ? `<div class="sysmsg">${m.text}${m.kyc && kyc()!=='approved'?`<button class="btn btn-tertiary btn-sm" style="margin-top:10px; color:var(--a-indigo)" data-act="chatKyc">Badge Verification</button>`:''}<span class="t-caption subtle" style="display:block; text-align:right; margin-top:6px">System Generated · ${m.at}</span></div>`
       : `<div class="bub ${m.me?'me':''}">${esc(m.text)}<span>${m.at}${m.me?' ✓':''}</span></div>`).join('')}
   </div>
   <div class="cbar"><input class="cinput" id="bchatIn" placeholder="Message..." maxlength="500"><button class="iconbtn" data-act="sendBchat" aria-label="Send" style="color:var(--a-indigo); margin:0">${ic('send')}</button></div></div>`; };
@@ -1803,7 +1803,7 @@ function finishPay(){ const b = S.bk; const sm = bkSummary(b); const disc = b.pr
     sub:sm.sub, promo:disc, total, method:b.method, methodLabel:{balance:'Booking Balance', stripe:'Stripe', card:'Card Payment', ewallet:'E-wallet', bank:'Bank (FPX)'}[b.method],
     txn:'#Y'+D.txnSeq, paidAt:'15 Oct 2026, 03:0'+(D.txnSeq%10)+' PM', status:'pending', review:null,
     msgs:[{me:false, text:`Hi, thank you for requesting this ${b.kind}. Please wait while I review your booking.`, at:'15:00'}]};
-  if (kyc()!=='approved') bk.msgs.push({sys:true, kyc:true, text:'Hi! Please verify your account to help make the meeting more trusted and secure 😊', at:'15:00'});
+  /* No identity check in the host chat for services and experiences (27 Nov): the user chats with the host freely. */
   D.bookings.unshift(bk); S.txn = bk.id; S.bk = null; S.paying=false;
   const i = S.hist.lastIndexOf(b.kind==='service'?'svc':'exp'); if (i>=0) S.hist = S.hist.slice(0,i+1);
   go('paid',{replace:true}); }
@@ -1890,7 +1890,7 @@ Object.assign(META, {
   expres:{name:'Reserve date and time (experience)', group:'Booking', figma:'Flow Discover - Activities › Booking Experience flow', rules:['Slots: Available, N pax left, Fully booked, Passed','Guests capped by the pax left on the chosen slot','Total = price/pax × guests']},
   pay:{name:'Confirm and pay', group:'Booking', figma:'Booking flow › Confirm and pay', rules:['Balance needs an active wallet and enough Booking Balance (MYR)','Promo YOUAPP50 = RM50 off; invalid codes show an error','Balance asks for the PIN (demo 123456); other methods hand off to the gateway']},
   paid:{name:'Payment Successful', group:'Booking', figma:'Transaction Detail › Payment Success', rules:['Booking is now pending host acceptance']},
-  bchat:{name:'Booking chat (slice)', group:'Booking', figma:'Booking flow › Chatroom', rules:['Booking card with status; tap for transaction detail','Unverified users get the system message with Badge Verification','Full chat arrives in Phase 6']},
+  bchat:{name:'Booking chat (slice)', group:'Booking', figma:'Booking flow › Chatroom', rules:['Booking card with status; tap for transaction detail','No identity check: anyone can chat with the host','Full chat arrives in Phase 6']},
   txn:{name:'Transaction detail', group:'Booking', figma:'Flow Discover - Locals › Transaction Details - Buyer', rules:['Status: Waiting for Host, Accepted, Completed, Refunded','My Review only after Completed; 5 levels with labels, anonymous option']},
   plans:{name:'Service / Experience Plans', group:'Booking', figma:'Upcoming Service Plans › Plans', rules:['Opened from the floating Plans (Locals) or Experiences (Activities) pill','Pending, Completed, Canceled tabs with counts']},
 });
@@ -3636,7 +3636,7 @@ const copy6 = (txt, msg) => { try { navigator.clipboard.writeText(txt).catch(()=
 /* ---------- Locals: chat list ---------- */
 V.chats = () => { const c = C6(); const tab = S.ctab||'message'; const q = (S.cq||'').trim().toLowerCase(); const st = scen.content;
   const head = `<div class="screen">${statusBar()}
-  <div class="topbar"><button class="iconbtn av-btn" data-act="youpage" aria-label="Open YouPage">${img('avatar','You','av32')}</button><span class="t-headline" style="flex:1; text-align:center">Locals</span><button class="iconbtn" style="margin:0 -8px 0 0; color:var(--a-indigo)" data-act="toast" data-msg="People you liked show up here in a later release." aria-label="Liked people">${ic('heart')}</button></div>
+  <div class="topbar"><button class="iconbtn av-btn" data-act="youpage" aria-label="Open YouPage">${img('avatar','You','av32')}</button><span class="t-headline" style="flex:1; text-align:center">Locals</span><button class="iconbtn" style="margin:0 -8px 0 0; color:var(--a-indigo)" data-act="pplOpen" aria-label="Liked people">${ic('heart')}</button></div>
   <div class="pad16"><label class="search" style="margin:0; width:100%">${ic('search')}<input id="cq" data-model="cq" value="${esc(S.cq||'')}" placeholder="Search" style="border:0; outline:0; flex:1; font:inherit; font-size:16px; background:none; min-width:0"></label>
   <div class="ctabs" role="tablist">${[['message','msg','Message'],['service','person','Service'],['experience','cal','Experience']].map(([k,i,t])=>`<button role="tab" aria-selected="${tab===k}" data-act="ctab" data-k="${k}">${ic(i)}${t}</button>`).join('')}</div></div>`;
   let body = '';
@@ -3660,6 +3660,7 @@ V.chats = () => { const c = C6(); const tab = S.ctab||'message'; const q = (S.cq
 
 /* ---------- chatroom (shared by personal chats and booking chats) ---------- */
 function msgHTML(m, c, idx){
+  if (m.sys && m.kyc) return ''; /* no identity check in host chats (27 Nov) */
   if (m.sys) return `<div class="sysmsg">${m.text}${m.kyc && kyc()!=='approved'?`<button class="btn btn-tertiary btn-sm" style="margin-top:10px; color:var(--a-indigo)" data-act="chatKyc">Badge Verification</button>`:''}${m.review && c.bk && !c.bk.review?`<button class="btn btn-tertiary btn-sm" style="margin-top:10px; color:var(--a-indigo)" data-act="openTxn" data-id="${c.bk.id}">Give Review</button>`:''}<span class="t-caption subtle" style="display:block; text-align:right; margin-top:6px">System Generated · ${m.at}</span></div>`;
   if (m.id===undefined) m.id = 'm'+idx;
   const sel = S.cs===m.id; const pl = S.vplay && S.vplay.id===m.id;
@@ -4245,7 +4246,7 @@ P.jump = el => { const to = el.dataset.to; const P6 = ['chats','chat','ann','rev
 Object.assign(META, {
   chats:{name:'Locals · chat list', group:'Chat', figma:'Flow Chat - Locals › Chat List', rules:['KYC not started or rejected: the Badge Verification gate shows every time Locals opens (Get your verified badge, or Verification rejected with Re-Submit); Maybe Later opens the chat list this time','Announcement & Notification row only when there is something to show','Message, Service and Experience tabs; drafts and voice previews; Content switch states']},
   chat:{name:'Chatroom', group:'Chat', figma:'Flow Chat - Locals › Chatroom states', rules:['Voice note: tap mic, Slide to cancel, lock for hands-free, pause, send; back while recording asks first','Tap a message: Reply, Pin, Copy, Delete (own); pinned bar','Photos go through the full editor; videos skip it; uploading and retry (Chat media upload switch)','Offline: Connecting to the network…']},
-  bchat:{name:'Booking chat', group:'Chat', figma:'Flow Chat - Locals › Chatroom (booking card)', rules:['Booking card on top; same composer as chats','Unverified party sees the Badge Verification system message','Completed experience: Give Review system message opens the transaction']},
+  bchat:{name:'Booking chat', group:'Chat', figma:'Flow Chat - Locals › Chatroom (booking card)', rules:['Booking card on top; same composer as chats','No identity check: anyone can chat with the host (27 Nov)','Completed experience: Give Review system message opens the transaction']},
   ann:{name:'Announcement', group:'Chat', figma:'Announcement › list, empty, skeleton', rules:['Newest first; Content switch shows Loading, Empty and Error']},
   annd:{name:'Announcement details', group:'Chat', figma:'Announcement › details', rules:['Check Your Coupon Here only when linked','Broken image falls back to a placeholder','Unpublished: Nothing to See Here Now + Go Back']},
   coupons:{name:'You Coupon', group:'Chat', figma:'YouPage › You Coupon', rules:['Copy a code to use at checkout']},
