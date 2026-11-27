@@ -141,10 +141,33 @@ V.chat = () => { const c = conv(); if (!c.group) return _chatV(); c.unread = 0; 
   /* Send media off: the paperclip stays; the attach panel explains it (messaging.js) */
   return h; };
 A.chatMenu = (orig => () => { if (S.screen==='chat' && conv().group) { A.gInfo(); return; } orig(); })(A.chatMenu);
+/* Scenario panel › Group permissions: open YouApp Products as a member with Send media set.
+   variant: off (no media), doc (documents only), all (every media type). Opening YouApp Products again restores it. */
+const G_PERM_DEMO = {off:[], doc:['document'], all:['photo', 'video', 'document', 'gif', 'voice']};
+function gPermDemoReset(c) {
+  if (!c?.permDemo) return;
+  c.perm.media = c.permDemo.media; delete c.myRole; delete c.permDemo;
+}
+appEntryRoutes.gPerm = (open, context, variant = 'off') => {
+  scen.gList = 'has';
+  saveScen();
+  const c = C6().convs.find(x => x.id === 'g-products');
+  if (c) {
+    if (!c.permDemo) c.permDemo = {media:{...c.perm.media}};
+    const on = G_PERM_DEMO[variant] || [];
+    Object.keys(c.perm.media).forEach(k => { c.perm.media[k] = on.includes(k); });
+    c.myRole = 'member';
+  }
+  S.gid = S.conv = 'g-products';
+  S.ctab = 'group';
+  S.sheet = null;
+  open('chat', context);
+  setTimeout(scrollChat, 30);
+};
 appEntryRoutes.products = (open, context) => {
   scen.gList = 'has';
   saveScen();
-  C6();
+  gPermDemoReset(C6().convs.find(x => x.id === 'g-products'));
   S.gid = 'g-products';
   S.conv = 'g-products';
   S.ctab = 'group';
