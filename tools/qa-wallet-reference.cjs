@@ -528,16 +528,17 @@ let ws;
   await frame('all');
   assert.deepEqual(await wallet(`(() => {
     const rail = document.querySelector('.wx');
-    const topUp = document.querySelector('.tx[data-id="t1"]');
+    /* Recent starts with the sample red packets (newest), shown as credits with their own icon */
+    const topUp = document.querySelector('.tx[data-id^="ap-c-"]');
     return {
       scrolls: getComputedStyle(rail).overflowX === 'auto',
       hidesScrollbar: getComputedStyle(rail).scrollbarWidth === 'none',
       topUpIcon: !!topUp.querySelector('.wr-transaction-icon svg'),
       topUpCredit: topUp.querySelector('.rt b').classList.contains('pos'),
-      nextTransaction: topUp.nextElementSibling?.dataset.id,
+      nextTransaction: topUp.nextElementSibling?.dataset.id.startsWith('ap-') ? 'red packet' : topUp.nextElementSibling?.dataset.id,
       hasBanner: !!document.querySelector('.wr-money .adrow'),
     };
-  })()`), {scrolls:true, hidesScrollbar:true, topUpIcon:true, topUpCredit:true, nextTransaction:'t2', hasBanner:false});
+  })()`), {scrolls:true, hidesScrollbar:true, topUpIcon:true, topUpCredit:true, nextTransaction:'red packet', hasBanner:false});
   await act('walletMoneyFilter', '[data-id="mm"]');
   assert.equal(await wallet(`document.querySelector('.tot2 small').textContent`), 'MetaMask balance');
   assert.match(await wallet(`document.querySelector('.lst').textContent`), /US dollar/);
