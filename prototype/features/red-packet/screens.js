@@ -46,7 +46,18 @@ const AP_REFUND_LABEL = {cancelled:'Cancelled', expired:'Expired', 'unused budge
 const AP_HISTORY_KIND = {claim:'c', send:'s', refund:'r'};
 const apHistoryTitle = m => m.kind === 'claim' ? `Red Packet from ${who(m.packet.creator).n}`
   : m.kind === 'send' ? 'Red Packet sent' : `Red Packet refund · ${AP_REFUND_LABEL[m.reason] || 'Refunded'}`;
-window.__apHistory = () => redPackets.movements.filter(m => AP_HISTORY_KIND[m.kind] && m.cents).reverse().map(m => ({
+/* The sample red packets in Red Packet history get matching past rows, one day apart, so the wallet history matches it. */
+const apSampleMovements = () => { apSeed(); const day = 864e5, out = [];
+  [...apHistorySamples].filter(tok => !tok.startsWith(PACKET_TEST_TOKEN_PREFIX)).map(apGet).filter(Boolean).forEach((a, i) => {
+    const at = new Date(Date.now() - (i + 1) * day); at.setHours(9 + (i * 3) % 10, (i * 17) % 60, 0, 0);
+    if (a.creator === 'me') {
+      out.push({kind:'send', packet:a, cents:-(a.total + a.fee), at});
+      if (a.refunded && a.status !== 'ACTIVE' && !redPackets.movements.some(m => m.kind === 'refund' && m.packet === a)) out.push({kind:'refund', packet:a, cents:a.refunded, at:new Date(at.getTime() + (a.status === 'EXPIRED' ? 6 : 2) * 3600e3),
+        reason:{EXPIRED:'expired', CANCELLED:'cancelled', FULLY_CLAIMED:'unused budget'}[a.status]});
+    } else { const mine = a.slots.find(slot => slot.by === 'me'); if (mine?.amt) out.push({kind:'claim', packet:a, cents:mine.amt, at}); }
+  });
+  return out; };
+window.__apHistory = () => [...redPackets.movements, ...apSampleMovements()].filter(m => AP_HISTORY_KIND[m.kind] && m.cents).reverse().map(m => ({
   id:`ap-${AP_HISTORY_KIND[m.kind]}-${m.packet.token}`, apTok:m.packet.token, at:m.at,
   m:m.at.toLocaleDateString('en-MY', {month:'short', year:'numeric'}),
   d:m.at.toLocaleString('en-MY', {dateStyle:'medium', timeStyle:'short'}).replace(/\b(am|pm)$/, x => x.toUpperCase()),
