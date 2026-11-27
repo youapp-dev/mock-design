@@ -569,6 +569,7 @@
     },
     walletCurrencyOpen: el => { S.moneyCurrency = el.dataset.key; go('walletCurrency'); },
     walletReferenceTx: el => {
+      if ((el.dataset.id || '').startsWith('ap-')) { A.txOpen(el); return; }
       S.txId = el.dataset.id;
       S.scanReceiptFrom = 'history';
       go(S.walletTopUps?.some(tx => tx.id === S.txId) ? 'walletTopUpReceipt' : walletScanRecord() ? 'scanReceipt' : 'scanArchiveReceipt');

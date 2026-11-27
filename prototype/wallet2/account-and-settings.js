@@ -592,6 +592,10 @@ Object.assign(A, {
   txHist: () => { S.txF='all'; S.txTab='tx'; go('txHist'); },
   txF: el => { S.txF = el.dataset.k; render(); }, txTab: el => { S.txTab = el.dataset.k; render(); },
   txOpen: el => {
+    if ((el.dataset.id || '').startsWith('ap-')) {
+      try { window.parent.__bridge('w2', `apReceipt:${el.dataset.id.slice(3)}`); } catch (error) { toast('Opens the red packet in the full flow.'); }
+      return;
+    }
     const fromWalletHistory = S.screen === 'scanHistory';
     S.txId = el.dataset.id;
     S.scanReceiptFrom = 'history';

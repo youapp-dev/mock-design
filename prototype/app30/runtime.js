@@ -4616,7 +4616,7 @@ const txRow7 = (act, id, icon, title, date, status, amtTxt, cls) => `<button cla
 function walletScanRows() {
   try {
     const wallet = window.parent.document.getElementById('w2')?.contentWindow;
-    return (wallet?.__walletScanHistory?.() || []).map(tx => ({
+    return (wallet?.__walletScanHistory?.() || []).filter(tx => tx.kind !== 'ap').map(tx => ({
       id:tx.id, mon:tx.m, title:tx.t, date:tx.d, amt:tx.v, status:tx.st, type:'scan',
     }));
   } catch (error) { return []; }

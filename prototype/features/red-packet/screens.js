@@ -40,6 +40,12 @@ const redPackets = createRedPacketStore({
   },
 });
 window.__apWalletDelta = redPackets.balanceDelta;
+/* Received red packets for the Wallet 2.0 Transaction History (rows use its format). */
+window.__apHistory = () => redPackets.movements.filter(m => m.kind === 'claim').map(m => ({
+  id:`ap-${m.packet.token}`, apTok:m.packet.token, at:m.at,
+  m:m.at.toLocaleDateString('en-MY', {month:'short', year:'numeric'}),
+  d:m.at.toLocaleString('en-MY', {dateStyle:'medium', timeStyle:'short'}).replace(/\b(am|pm)$/, x => x.toUpperCase()),
+  t:`Red Packet from ${who(m.packet.creator).n}`, st:'Completed', v:m.cents / 100, ic:'apGift', kind:'ap'}));
 function apBal() {
   const fallback = w2s().bal === 'low' ? 1240 : 124050;
   const base = window.parent.YouAppPrototypeWallet?.baseCents() ?? fallback;
@@ -768,6 +774,13 @@ Object.assign(appEntryRoutes, {
     setTimeout(scrollChat, 30);
   },
   apRecv: (open, context, variant) => open(apDemo(variant || 'ready'), context),
+  /* Transaction History row → the received red packet (back returns to the wallet) */
+  apReceipt(open, context, token) {
+    S.apTok = token;
+    S.apJust = false;
+    S.apSim = null;
+    return open('aprecv', context);
+  },
 });
 
 /* scenario panel */

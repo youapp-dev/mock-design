@@ -11,6 +11,7 @@
     baseCents: () => win('w2').__apBal?.(),
     connectedNames: () => win('w2').__apConnectedNames?.() ?? [],
     redPacketDelta: () => win('a30').__apWalletDelta?.() ?? 0,
+    redPacketHistory: () => win('a30').__apHistory?.() ?? [],
     refreshBalance() {
       if (active === 'w2') win('w2').__refresh?.();
     },
