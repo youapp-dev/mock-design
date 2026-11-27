@@ -415,7 +415,14 @@ A.gPickTog = (orig => el => { const fromList = el && !el.classList.contains('gpk
     giMedia: () => { S.gmtab = 'media'; go('gimedia'); },
     giMTab: el => { S.gmtab = el.dataset.k; render(); },
     giAll: () => { S.giAll = !S.giAll; render(); },
-    giReport: () => { toConv(); A.openReport(); },
+    /* Report group: reasons like Report this user, in a group context; option to exit and delete the chat (27 Nov) */
+    giReport: () => { S.gRep = {reason:null, exit:true, text:''}; S.sheet = 'gReport'; S.sheetAnim = true; render(); },
+    gRepReason: el => { const other = el.dataset.r === 'Something else' && S.gRep.reason !== 'Something else'; S.gRep.reason = el.dataset.r; S.sheetAnim = false; render();
+      if (other) document.getElementById('gRepText')?.focus(); },
+    gRepExit: () => { S.gRep.exit = !S.gRep.exit; S.sheetAnim = false; render(); },
+    gRepSend: el => { if (el.getAttribute('aria-disabled') || !gRepReady(S.gRep)) return; const g = grp(); S.sheet = null;
+      if (S.gRep.exit && g) { const c = gStore(); c.convs = c.convs.filter(x => x !== g); gHome(); toast('Report sent. You left the group and the chat was deleted.'); }
+      else { render(); toast('Report sent. Thanks for helping keep YouApp safe.'); } },
     giEdit: () => { S.sheet = null; A.gEdit(); },
     giInvite: () => { S.sheet = null; A.gcMenuInvite(); },
     giPerm: () => { S.sheet = null; A.gPerm(); },
@@ -520,6 +527,25 @@ const RP_ICON = `<svg viewBox="0.75 0.9 22 22" width="30" height="30" aria-hidde
   overlayHTML = () => S.sheet === 'cVoiceOff'
     ? `<div class="catt solo ${S.sheetAnim ? 'anim' : ''}" id="cAttPanel" role="group" aria-label="Voice messages"><div class="catt-note" role="status">${VOICE_OFF_ART}<b>Sending voice messages isn't allowed in this group</b><small>Only the group owner or an admin can change this in Group permissions.</small></div></div>`
     : _ovVoice();
+  /* Report group sheet */
+  const G_REP_REASONS = ['Spam or scam', 'Inappropriate content', 'Harassment or hate', 'Fake or misleading group', 'Something else'];
+  const G_REP_MAX = 200;
+  /* Something else needs a typed reason */
+  const gRepReady = r => !!r.reason && (r.reason !== 'Something else' || r.text.trim().length > 0);
+  const _ovRep = overlayHTML;
+  overlayHTML = () => { if (S.sheet !== 'gReport' || !S.gRep) return _ovRep();
+    const r = S.gRep, g = grp(), own = g && myRole(g) === 'owner';
+    return `<div class="scrim ${S.sheetAnim ? 'anim' : ''}" data-act="closeSheet2"></div><div class="sheet ${S.sheetAnim ? 'anim' : ''}" role="dialog" aria-label="Report this group"><div class="grab" aria-hidden="true"></div>
+      <b class="t-headline" style="display:block">Report this group</b><p class="t-body muted" style="margin:4px 0 12px">Tell us what’s wrong. Your report is anonymous. No members will be notified.</p>
+      <div role="radiogroup" aria-label="Reason" style="display:grid">${G_REP_REASONS.map(x => `<button role="radio" aria-checked="${r.reason === x}" class="radrow" data-act="gRepReason" data-r="${esc(x)}"><span>${x}</span><i class="${r.reason === x ? 'on' : ''}"></i></button>`).join('')}</div>
+      ${r.reason === 'Something else' ? `<div class="grep-other"><label for="gRepText">Tell us what's wrong</label><textarea id="gRepText" maxlength="${G_REP_MAX}" rows="3" placeholder="Tell us what's wrong with this group" aria-describedby="gRepCount">${esc(r.text)}</textarea><small id="gRepCount" aria-live="polite">${r.text.length}/${G_REP_MAX}</small></div>` : ''}
+      <p class="t-caption muted" style="margin:12px 0 0">The last 5 messages in this group will be sent to YouApp for review.</p>
+      <label class="chk" style="margin-top:12px; min-height:44px; align-items:center"><input type="checkbox" data-act="gRepExit" ${r.exit ? 'checked' : ''}><span>Exit group and delete chat${own ? '<br><small class="muted">The earliest admin becomes the owner.</small>' : ''}</span></label>
+      <div style="margin-top:10px">${btn('Send Report', 'gRepSend', {disabled:!gRepReady(r)})}</div></div>`; };
+  /* typing keeps focus: update the counter and the button without re-rendering */
+  document.addEventListener('input', e => { if (e.target.id !== 'gRepText' || !S.gRep) return;
+    S.gRep.text = e.target.value; const n = document.getElementById('gRepCount'); if (n) n.textContent = `${e.target.value.length}/${G_REP_MAX}`;
+    const b = document.querySelector('[data-act="gRepSend"]'); if (b) { if (gRepReady(S.gRep)) b.removeAttribute('aria-disabled'); else b.setAttribute('aria-disabled', 'true'); } });
   /* paperclip toggles the panel */
   A.cAttach = (orig => () => { if (S.sheet === 'cAttach') { closeSheet(); return; } S.cattNote = null; orig(); })(A.cAttach);
   A.cxLoc = () => { S.sheet = null; toast('Shares your current location in the chat.'); };
@@ -546,6 +572,11 @@ const RP_ICON = `<svg viewBox="0.75 0.9 22 22" width="30" height="30" aria-hidde
   #phone .catt.few{display:flex; flex-wrap:wrap; justify-content:center; column-gap:12px} #phone .catt.few .catt-b{width:76px}
   #phone .catt.few .catt-note{width:100%}
   #phone .catt-b.on .catt-ic{box-shadow:0 0 0 2px #996CB7}
+  #phone .grep-other{position:relative; margin-top:8px}
+  #phone .grep-other label{display:block; margin:4px 0 6px; font:600 13px/18px Inter, sans-serif; color:#1a181b}
+  #phone .grep-other textarea{display:block; width:100%; min-height:84px; padding:10px 12px 22px; border:1px solid #D9D2E6; border-radius:12px; font:400 14px/20px Inter, sans-serif; color:#1a181b; resize:none; background:#fff}
+  #phone .grep-other textarea:focus{outline:none; border-color:#5E35B8; box-shadow:0 0 0 3px #EDE6FA}
+  #phone .grep-other small{position:absolute; right:12px; bottom:6px; font-size:12px; color:#8a8590}
   #phone .catt.solo{display:block} #phone .catt.solo .catt-note{border-bottom:0; margin-bottom:0; padding-bottom:8px}
   #phone:has(.catt.solo) .cfoot{padding-bottom:262px}
   #phone .catt-note{grid-column:1 / -1; display:flex; flex-direction:column; align-items:center; text-align:center; gap:4px; padding:4px 16px 18px; margin-bottom:14px; border-bottom:1px solid #EFEAF7}
